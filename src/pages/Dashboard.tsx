@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -327,7 +326,7 @@ const Dashboard = () => {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
                       <YAxis domain={[0, 1]} tickFormatter={(tick) => `${tick * 100}%`} />
-                      <Tooltip formatter={(value) => [`${(value * 100).toFixed(0)}%`, 'Turnover Rate']} />
+                      <Tooltip formatter={(value) => [`${(Number(value) * 100).toFixed(0)}%`, 'Turnover Rate']} />
                       <Bar dataKey="rate" fill="#7209B7" />
                     </BarChart>
                   </ResponsiveContainer>
