@@ -127,3 +127,33 @@
 .scene-container canvas {
   outline: none;
 }
+
+/* Modern UI Elements */
+.modern-card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-100;
+  transition: all 0.2s ease-in-out;
+}
+
+.modern-card:hover {
+  @apply shadow-md;
+}
+
+.modern-button {
+  @apply px-4 py-2 rounded-md font-medium transition-all duration-200 ease-in-out;
+}
+
+.modern-button-primary {
+  @apply bg-warehouse-primary text-white hover:bg-warehouse-primary/90;
+}
+
+.modern-button-secondary {
+  @apply bg-warehouse-secondary text-white hover:bg-warehouse-secondary/90;
+}
+
+.modern-button-outline {
+  @apply border border-warehouse-primary text-warehouse-primary hover:bg-warehouse-primary/10;
+}
+
+.modern-input {
+  @apply border border-gray-200 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-warehouse-primary/30 focus:border-warehouse-primary;
+}
