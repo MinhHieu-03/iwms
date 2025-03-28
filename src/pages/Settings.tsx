@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { 
@@ -9,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const Settings = () => {
   const [warehouseSettings, setWarehouseSettings] = useState({
@@ -87,12 +89,10 @@ const Settings = () => {
                 </div>
                 
                 <div className="flex items-center space-x-2 pt-4">
-                  <input 
+                  <Checkbox 
                     id="temperatureControl" 
-                    type="checkbox" 
                     checked={warehouseSettings.temperatureControl} 
-                    onChange={(e) => handleSettingChange("temperatureControl", e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-warehouse-primary focus:ring-warehouse-primary"
+                    onCheckedChange={(checked) => handleSettingChange("temperatureControl", !!checked)}
                   />
                   <Label htmlFor="temperatureControl">Temperature Controlled Environment</Label>
                 </div>
@@ -103,7 +103,7 @@ const Settings = () => {
                     id="automationLevel" 
                     value={warehouseSettings.automationLevel}
                     onChange={(e) => handleSettingChange("automationLevel", e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-warehouse-primary focus:ring-warehouse-primary"
+                    className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   >
                     <option value="low">Low - Manual with minimal automation</option>
                     <option value="medium">Medium - Partially automated processes</option>
@@ -140,7 +140,7 @@ const Settings = () => {
                 <Label htmlFor="pathPlanning">Path Planning Algorithm</Label>
                 <select 
                   id="pathPlanning" 
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-warehouse-primary focus:ring-warehouse-primary"
+                  className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   defaultValue="aStar"
                 >
                   <option value="aStar">A* Algorithm</option>
@@ -156,7 +156,7 @@ const Settings = () => {
           </Card>
         </TabsContent>
         
-        {/* Other tabs would have similar structures */}
+        {/* Security Tab */}
         <TabsContent value="security" className="space-y-4">
           <Card className="p-6">
             <h3 className="text-lg font-medium mb-4">Security Settings</h3>
@@ -167,6 +167,7 @@ const Settings = () => {
           </Card>
         </TabsContent>
         
+        {/* Notifications Tab */}
         <TabsContent value="notifications" className="space-y-4">
           <Card className="p-6">
             <h3 className="text-lg font-medium mb-4">Notification Preferences</h3>
