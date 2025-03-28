@@ -22,7 +22,7 @@ export const WarehouseHeatmap: React.FC<WarehouseHeatmapProps> = ({ sections }) 
   };
   
   return (
-    <div className="p-4">
+    <div className="p-4 overflow-auto max-h-[400px]">
       {sections.map((section) => (
         <div key={section.id} className="mb-8 bg-white p-4 rounded-lg shadow-sm">
           <h3 className="text-md font-medium mb-3 text-warehouse-primary">{section.name}</h3>

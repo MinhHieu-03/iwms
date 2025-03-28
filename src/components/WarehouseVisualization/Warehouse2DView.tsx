@@ -16,9 +16,13 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
   return (
     <div className="p-4 h-full overflow-auto">
       <div className="space-y-8">
-        {sections.map((section) => (
+        {sections.map((section, sectionIndex) => {
+          // Change from Section to Shelf
+          const shelfName = `Shelf ${String.fromCharCode(65 + sectionIndex)}`;
+          
+          return (
           <div key={section.id} className="border rounded-lg p-4 bg-white shadow-sm">
-            <h4 className="text-lg font-medium mb-3 text-warehouse-primary">{section.name}</h4>
+            <h4 className="text-lg font-medium mb-3 text-warehouse-primary">{shelfName}</h4>
             <div className="grid grid-cols-1 gap-4">
               {/* Each row represents a physical row of shelves */}
               {Array.from({ length: section.rows }).map((_, row) => (
@@ -31,7 +35,8 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
                     gap: '8px'
                   }}>
                     {Array.from({ length: section.columns }).map((_, col) => {
-                      const shelfId = `${section.id}-${row + 1}-${col + 1}`;
+                      // Change the shelfId format to include the shelf letter
+                      const shelfId = `${shelfName}-${row + 1}-${col + 1}`;
                       const occupancyFactor = section.occupancy / 100;
                       const isOccupied = Math.random() < occupancyFactor;
                       const isHighlighted = highlightedShelf === shelfId;
@@ -64,7 +69,7 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
               ))}
             </div>
           </div>
-        ))}
+        )})}
       </div>
     </div>
   );
