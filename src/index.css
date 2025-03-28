@@ -1,11 +1,10 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -14,16 +13,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 215 76% 24%;
+    --primary: 221 78% 60%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 188 53% 33%;
+    --secondary: 174 63% 50%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 32 94% 58%;
+    --accent: 0 86% 70%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -156,4 +155,50 @@
 
 .modern-input {
   @apply border border-gray-200 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-warehouse-primary/30 focus:border-warehouse-primary;
+}
+
+/* Modern UI Elements - Updated */
+.modern-card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-100 transition-all duration-200 ease-in-out hover:shadow-md;
+}
+
+.modern-button {
+  @apply px-4 py-2 rounded-md font-medium transition-all duration-200 ease-in-out;
+}
+
+.modern-button-primary {
+  @apply bg-warehouse-primary text-white hover:bg-warehouse-primary/90;
+}
+
+.modern-button-secondary {
+  @apply bg-warehouse-secondary text-white hover:bg-warehouse-secondary/90;
+}
+
+.modern-button-accent {
+  @apply bg-warehouse-accent1 text-white hover:bg-warehouse-accent1/90;
+}
+
+.modern-button-outline {
+  @apply border border-warehouse-primary text-warehouse-primary hover:bg-warehouse-primary/10;
+}
+
+.modern-input {
+  @apply border border-gray-200 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-warehouse-primary/30 focus:border-warehouse-primary;
+}
+
+/* Warehouse Viz Styles */
+.warehouse-shelf {
+  @apply transition-all duration-200;
+}
+
+.warehouse-shelf-occupied {
+  @apply bg-warehouse-secondary text-white;
+}
+
+.warehouse-shelf-empty {
+  @apply bg-gray-100 text-gray-600;
+}
+
+.warehouse-shelf-highlighted {
+  @apply ring-2 ring-warehouse-highlight scale-105 shadow-md;
 }
