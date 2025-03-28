@@ -15,41 +15,53 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
 }) => {
   return (
     <div className="p-4 h-full overflow-auto">
-      <div className="space-y-6">
+      <div className="space-y-8">
         {sections.map((section) => (
           <div key={section.id} className="border rounded-lg p-4 bg-white shadow-sm">
-            <h4 className="text-lg font-medium mb-3">{section.name}</h4>
+            <h4 className="text-lg font-medium mb-3 text-warehouse-primary">{section.name}</h4>
             <div className="grid grid-cols-1 gap-4">
-              <div className="grid" style={{ 
-                gridTemplateColumns: `repeat(${section.columns}, minmax(40px, 1fr))`,
-                gap: '4px'
-              }}>
-                {Array.from({ length: section.rows }).map((_, row) =>
-                  Array.from({ length: section.columns }).map((_, col) => {
-                    const shelfId = `${section.id}-${row + 1}-${col + 1}`;
-                    const occupancyFactor = section.occupancy / 100;
-                    const isOccupied = Math.random() < occupancyFactor;
-                    const isHighlighted = highlightedShelf === shelfId;
-                    
-                    return (
-                      <button
-                        key={shelfId}
-                        className={`
-                          aspect-square flex items-center justify-center text-xs font-medium
-                          transition-all duration-200 ease-in-out
-                          ${isOccupied ? 'bg-warehouse-secondary text-white' : 'bg-gray-100 text-gray-600'}
-                          ${isHighlighted ? 'ring-2 ring-warehouse-highlight scale-105' : 'ring-1 ring-gray-200'}
-                          ${isHighlighted ? 'shadow-md' : ''}
-                          hover:shadow-md rounded-md
-                        `}
-                        onClick={() => onShelfClick(shelfId)}
-                      >
-                        {row + 1}-{col + 1}
-                      </button>
-                    );
-                  })
-                )}
-              </div>
+              {/* Each row represents a physical row of shelves */}
+              {Array.from({ length: section.rows }).map((_, row) => (
+                <div key={`row-${row}`} className="flex items-center gap-2">
+                  <div className="text-xs font-medium text-muted-foreground w-6">
+                    R{row + 1}
+                  </div>
+                  <div className="flex-1 grid" style={{ 
+                    gridTemplateColumns: `repeat(${section.columns}, minmax(40px, 1fr))`,
+                    gap: '8px'
+                  }}>
+                    {Array.from({ length: section.columns }).map((_, col) => {
+                      const shelfId = `${section.id}-${row + 1}-${col + 1}`;
+                      const occupancyFactor = section.occupancy / 100;
+                      const isOccupied = Math.random() < occupancyFactor;
+                      const isHighlighted = highlightedShelf === shelfId;
+                      
+                      return (
+                        <button
+                          key={shelfId}
+                          className={`
+                            aspect-square flex items-center justify-center text-xs font-medium
+                            transition-all duration-200 ease-in-out
+                            ${isOccupied ? 'bg-warehouse-secondary/80 text-white' : 'bg-gray-100/80 text-gray-600'}
+                            ${isHighlighted ? 'ring-2 ring-warehouse-highlight scale-105 z-10' : 'ring-1 ring-gray-200'}
+                            ${isHighlighted ? 'shadow-md' : ''}
+                            hover:shadow-md rounded-md relative
+                          `}
+                          onClick={() => onShelfClick(shelfId)}
+                        >
+                          {/* Visual indication of a shelf */}
+                          <div className="absolute inset-0 flex flex-col">
+                            <div className="border-b border-gray-300/40 flex-1"></div>
+                            <div className="border-b border-gray-300/40 flex-1"></div>
+                            <div className="flex-1"></div>
+                          </div>
+                          <span className="z-10">{col + 1}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ))}

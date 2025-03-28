@@ -7,14 +7,14 @@ interface WarehouseHeatmapProps {
 }
 
 export const WarehouseHeatmap: React.FC<WarehouseHeatmapProps> = ({ sections }) => {
-  // Generate color based on occupancy percentage
+  // Generate color based on occupancy percentage with modern colors
   const getHeatColor = (occupancy: number) => {
-    // Color gradient from green (low occupancy) to red (high occupancy)
-    if (occupancy < 30) return "bg-green-100";
-    if (occupancy < 50) return "bg-green-300";
-    if (occupancy < 70) return "bg-yellow-300";
-    if (occupancy < 85) return "bg-orange-300";
-    return "bg-red-300";
+    // Modern color gradient
+    if (occupancy < 20) return "bg-indigo-100";
+    if (occupancy < 40) return "bg-blue-200";
+    if (occupancy < 60) return "bg-teal-300";
+    if (occupancy < 80) return "bg-amber-300";
+    return "bg-rose-300";
   };
   
   const getOpacity = (occupancy: number) => {
@@ -24,8 +24,8 @@ export const WarehouseHeatmap: React.FC<WarehouseHeatmapProps> = ({ sections }) 
   return (
     <div className="p-4">
       {sections.map((section) => (
-        <div key={section.id} className="mb-6">
-          <h3 className="text-md font-medium mb-2">{section.name}</h3>
+        <div key={section.id} className="mb-8 bg-white p-4 rounded-lg shadow-sm">
+          <h3 className="text-md font-medium mb-3 text-warehouse-primary">{section.name}</h3>
           <div 
             className="grid gap-1" 
             style={{ 
@@ -36,6 +36,7 @@ export const WarehouseHeatmap: React.FC<WarehouseHeatmapProps> = ({ sections }) 
             {Array.from({ length: section.rows * section.columns }).map((_, i) => {
               const row = Math.floor(i / section.columns);
               const col = i % section.columns;
+              
               // Determine cell occupancy - for heatmap we'll use section occupancy 
               // and distance from center to create a realistic heat pattern
               const centerRow = Math.floor(section.rows / 2);
@@ -54,7 +55,7 @@ export const WarehouseHeatmap: React.FC<WarehouseHeatmapProps> = ({ sections }) 
               return (
                 <div 
                   key={`${section.id}-${row}-${col}`} 
-                  className={`h-6 rounded-sm ${getHeatColor(cellOccupancy)} hover:opacity-80`}
+                  className={`h-6 rounded-md ${getHeatColor(cellOccupancy)} hover:brightness-110 transition-all`}
                   style={{ 
                     opacity: getOpacity(cellOccupancy),
                   }}
