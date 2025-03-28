@@ -1,96 +1,55 @@
 
-import React, { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React from "react";
 import { Card } from "@/components/ui/card";
-import { generateWarehouseData } from "@/lib/utils";
+import { 
+  Tabs,
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from "@/components/ui/tabs";
 
 const WarehouseLayout = () => {
-  const [viewMode, setViewMode] = useState("2d");
-  
-  // Generate sample warehouse data
-  const warehouseCells = generateWarehouseData(10, 15);
-  
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Warehouse Layout</h2>
-        <Tabs value={viewMode} onValueChange={setViewMode}>
-          <TabsList>
-            <TabsTrigger value="2d">2D View</TabsTrigger>
-            <TabsTrigger value="3d">3D View</TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
+      <h2 className="text-xl font-semibold">Warehouse Layout</h2>
       
-      <Card className="p-6">
-        <TabsContent value="2d" className="mt-0">
-          <div className="border rounded overflow-auto p-4">
-            <div className="flex justify-end mb-4">
-              <div className="flex space-x-4 text-sm">
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                  <span>Occupied</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-gray-200 rounded-full mr-2"></div>
-                  <span>Empty</span>
-                </div>
-              </div>
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="zones">Zones</TabsTrigger>
+          <TabsTrigger value="racks">Racks</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="overview" className="space-y-4">
+          <Card className="p-6">
+            <h3 className="text-lg font-medium mb-4">Warehouse Overview</h3>
+            <p className="text-gray-500">View the overall layout of the warehouse.</p>
+            <div className="mt-4 bg-gray-100 rounded-lg h-96 flex items-center justify-center">
+              <p className="text-gray-400">Warehouse visualization will be displayed here</p>
             </div>
-            
-            <div className="grid grid-cols-15 gap-1">
-              {warehouseCells.map((cell) => (
-                <div
-                  key={cell.id}
-                  className={`w-10 h-10 flex items-center justify-center text-xs border rounded ${
-                    cell.occupied ? "bg-green-100 border-green-500" : "bg-gray-100"
-                  }`}
-                  title={cell.content || "Empty"}
-                >
-                  {cell.content ? cell.content.split('-')[1] : ""}
-                </div>
-              ))}
-            </div>
-          </div>
+          </Card>
         </TabsContent>
         
-        <TabsContent value="3d" className="mt-0">
-          <div className="border rounded p-4 h-96 flex items-center justify-center bg-gray-50">
-            <p className="text-center text-gray-500">
-              3D visualization of the warehouse would be rendered here.<br />
-              (Feature in development)
-            </p>
-          </div>
+        <TabsContent value="zones" className="space-y-4">
+          <Card className="p-6">
+            <h3 className="text-lg font-medium mb-4">Warehouse Zones</h3>
+            <p className="text-gray-500">Manage warehouse zones and their configurations.</p>
+            <div className="mt-4 text-center text-gray-400">
+              Zone configuration content to be implemented.
+            </div>
+          </Card>
         </TabsContent>
-      </Card>
-      
-      <Card className="p-6">
-        <h3 className="text-lg font-medium mb-4">Warehouse Statistics</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h4 className="text-sm text-gray-500 mb-1">Total Cells</h4>
-            <p className="text-2xl font-bold">{warehouseCells.length}</p>
-          </div>
-          <div className="bg-green-50 p-4 rounded-lg">
-            <h4 className="text-sm text-gray-500 mb-1">Occupied</h4>
-            <p className="text-2xl font-bold">
-              {warehouseCells.filter(cell => cell.occupied).length}
-            </p>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="text-sm text-gray-500 mb-1">Empty</h4>
-            <p className="text-2xl font-bold">
-              {warehouseCells.filter(cell => !cell.occupied).length}
-            </p>
-          </div>
-          <div className="bg-yellow-50 p-4 rounded-lg">
-            <h4 className="text-sm text-gray-500 mb-1">Utilization</h4>
-            <p className="text-2xl font-bold">
-              {Math.round((warehouseCells.filter(cell => cell.occupied).length / warehouseCells.length) * 100)}%
-            </p>
-          </div>
-        </div>
-      </Card>
+        
+        <TabsContent value="racks" className="space-y-4">
+          <Card className="p-6">
+            <h3 className="text-lg font-medium mb-4">Rack Configurations</h3>
+            <p className="text-gray-500">Configure storage racks and shelving units.</p>
+            <div className="mt-4 text-center text-gray-400">
+              Rack configuration content to be implemented.
+            </div>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
