@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,7 +9,7 @@ import {
   Tooltip, Legend, ResponsiveContainer,
   AreaChart, Area
 } from "recharts";
-import { inventoryAnalytics, orderAnalytics, missionAnalytics, warehouseSections } from "@/lib/mock-data";
+import { inventoryAnalytics, orderAnalytics, warehouseSections } from "@/lib/mock-data";
 import { WarehouseHeatmap } from "@/components/WarehouseVisualization/WarehouseHeatmap";
 
 const Dashboard = () => {
@@ -26,16 +27,16 @@ const Dashboard = () => {
   
   // Most active zones data
   const mostActiveZones = [
-    { name: "Section A", activity: 85 },
-    { name: "Section C", activity: 72 },
-    { name: "Section B", activity: 58 },
-    { name: "Section D", activity: 47 },
+    { name: "Shelf A", activity: 85 },
+    { name: "Shelf C", activity: 72 },
+    { name: "Shelf B", activity: 58 },
+    { name: "Shelf D", activity: 47 },
   ];
   
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="bg-gradient-to-br from-warehouse-primary to-warehouse-primary/80 text-white">
           <CardContent className="p-6">
             <div className="flex flex-col">
@@ -99,40 +100,13 @@ const Dashboard = () => {
             </div>
           </CardContent>
         </Card>
-        
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex flex-col">
-              <span className="text-xs font-medium text-muted-foreground uppercase">Robot Efficiency</span>
-              <div className="flex items-end gap-2 mt-2">
-                <span className="text-3xl font-bold">
-                  {Math.round(missionAnalytics.robotPerformance.reduce(
-                    (acc, robot) => acc + robot.efficiency, 0) / missionAnalytics.robotPerformance.length
-                  )}%
-                </span>
-                <span className="text-sm text-warehouse-success font-medium">+2.5%</span>
-              </div>
-              <div className="mt-4 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Completed:</span>
-                  <span className="font-medium text-warehouse-success">{missionAnalytics.completed}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Failed:</span>
-                  <span className="font-medium text-warehouse-danger">{missionAnalytics.failed}</span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Detailed Analytics */}
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid grid-cols-3 md:w-[400px]">
+        <TabsList className="grid grid-cols-2 md:w-[300px]">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="inventory">Inventory</TabsTrigger>
-          <TabsTrigger value="operations">Operations</TabsTrigger>
         </TabsList>
         
         <TabsContent value="overview" className="space-y-6">
@@ -206,69 +180,42 @@ const Dashboard = () => {
             </Card>
           </div>
           
-          <div className="grid gap-6 md:grid-cols-2">
-            {/* Robot Performance */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-medium">Robot Performance</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={missionAnalytics.robotPerformance}
-                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="completed" name="Completed" fill="#06D6A0" />
-                      <Bar dataKey="failed" name="Failed" fill="#EF476F" />
-                    </BarChart>
-                  </ResponsiveContainer>
+          {/* Recent Activity */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg font-medium">Recent Activity</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                <div className="border-l-4 border-warehouse-primary pl-3">
+                  <p className="text-sm text-gray-500">Today, 10:23 AM</p>
+                  <p className="font-medium">Inbound order #IN-291 received</p>
                 </div>
-              </CardContent>
-            </Card>
-            
-            {/* Recent Activity */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-medium">Recent Activity</CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  <div className="border-l-4 border-warehouse-primary pl-3">
-                    <p className="text-sm text-gray-500">Today, 10:23 AM</p>
-                    <p className="font-medium">Inbound order #IN-291 received</p>
-                  </div>
-                  <div className="border-l-4 border-warehouse-secondary pl-3">
-                    <p className="text-sm text-gray-500">Today, 09:45 AM</p>
-                    <p className="font-medium">Robot #3 completed mission #M-082</p>
-                  </div>
-                  <div className="border-l-4 border-warehouse-accent1 pl-3">
-                    <p className="text-sm text-gray-500">Yesterday, 04:12 PM</p>
-                    <p className="font-medium">Outbound order #OUT-187 shipped</p>
-                  </div>
-                  <div className="border-l-4 border-warehouse-accent2 pl-3">
-                    <p className="text-sm text-gray-500">Yesterday, 02:30 PM</p>
-                    <p className="font-medium">Inventory audit completed</p>
-                  </div>
-                  <div className="border-l-4 border-warehouse-success pl-3">
-                    <p className="text-sm text-gray-500">Yesterday, 09:15 AM</p>
-                    <p className="font-medium">Restocking of Section A completed</p>
-                  </div>
+                <div className="border-l-4 border-warehouse-secondary pl-3">
+                  <p className="text-sm text-gray-500">Today, 09:45 AM</p>
+                  <p className="font-medium">Restock completed in Shelf B</p>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+                <div className="border-l-4 border-warehouse-accent1 pl-3">
+                  <p className="text-sm text-gray-500">Yesterday, 04:12 PM</p>
+                  <p className="font-medium">Outbound order #OUT-187 shipped</p>
+                </div>
+                <div className="border-l-4 border-warehouse-accent2 pl-3">
+                  <p className="text-sm text-gray-500">Yesterday, 02:30 PM</p>
+                  <p className="font-medium">Inventory audit completed</p>
+                </div>
+                <div className="border-l-4 border-warehouse-success pl-3">
+                  <p className="text-sm text-gray-500">Yesterday, 09:15 AM</p>
+                  <p className="font-medium">Restocking of Shelf A completed</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
         
         <TabsContent value="inventory" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6">
             {/* Warehouse Heatmap */}
-            <Card className="md:col-span-2">
+            <Card>
               <CardHeader>
                 <CardTitle className="text-lg font-medium">Warehouse Occupancy Heatmap</CardTitle>
               </CardHeader>
@@ -279,169 +226,63 @@ const Dashboard = () => {
               </CardContent>
             </Card>
             
-            {/* Most Active Zones */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-medium">Most Active Zones</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={mostActiveZones}
-                      layout="vertical"
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number" />
-                      <YAxis dataKey="name" type="category" />
-                      <Tooltip />
-                      <Bar dataKey="activity" fill="#3CCFCF">
-                        {mostActiveZones.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* Item Turnover */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-medium">Item Turnover Rate</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-64 flex items-center justify-center">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={[
-                        { name: 'Electronics', rate: 0.82 },
-                        { name: 'Furniture', rate: 0.45 },
-                        { name: 'Appliances', rate: 0.63 }
-                      ]}
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis domain={[0, 1]} tickFormatter={(tick) => `${tick * 100}%`} />
-                      <Tooltip formatter={(value) => [`${(Number(value) * 100).toFixed(0)}%`, 'Turnover Rate']} />
-                      <Bar dataKey="rate" fill="#7209B7" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="operations" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            {/* Order Status */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-medium">Order Status Distribution</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={[
-                          { name: 'Pending', value: orderAnalytics.pending },
-                          { name: 'Processing', value: orderAnalytics.processing },
-                          { name: 'Completed', value: orderAnalytics.completed },
-                          { name: 'Canceled', value: orderAnalytics.canceled }
-                        ]}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({name, value, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Most Active Zones */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-medium">Most Active Zones</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={mostActiveZones}
+                        layout="vertical"
+                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                       >
-                        <Cell fill="#FFD166" /> {/* Pending */}
-                        <Cell fill="#4361EE" /> {/* Processing */}
-                        <Cell fill="#06D6A0" /> {/* Completed */}
-                        <Cell fill="#EF476F" /> {/* Canceled */}
-                      </Pie>
-                      <Tooltip formatter={(value, name) => [value, name]} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* Mission Status */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-medium">Mission Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis type="number" />
+                        <YAxis dataKey="name" type="category" />
+                        <Tooltip />
+                        <Bar dataKey="activity" fill="#3CCFCF">
+                          {mostActiveZones.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Item Turnover */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-medium">Item Turnover Rate</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64 flex items-center justify-center">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
                         data={[
-                          { name: 'Completed', value: missionAnalytics.completed },
-                          { name: 'In Progress', value: missionAnalytics.inProgress },
-                          { name: 'Pending', value: missionAnalytics.pending },
-                          { name: 'Failed', value: missionAnalytics.failed }
+                          { name: 'Electronics', rate: 0.82 },
+                          { name: 'Furniture', rate: 0.45 },
+                          { name: 'Appliances', rate: 0.63 }
                         ]}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({name, value, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                       >
-                        <Cell fill="#06D6A0" /> {/* Completed */}
-                        <Cell fill="#4361EE" /> {/* In Progress */}
-                        <Cell fill="#FFD166" /> {/* Pending */}
-                        <Cell fill="#EF476F" /> {/* Failed */}
-                      </Pie>
-                      <Tooltip formatter={(value, name) => [value, name]} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis domain={[0, 1]} tickFormatter={(tick) => `${tick * 100}%`} />
+                        <Tooltip formatter={(value) => [`${(Number(value) * 100).toFixed(0)}%`, 'Turnover Rate']} />
+                        <Bar dataKey="rate" fill="#7209B7" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
-          
-          {/* Robot Efficiency Trends */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg font-medium">Robot Efficiency Trends</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={[
-                      { month: 'Jan', efficiency: 92 },
-                      { month: 'Feb', efficiency: 93 },
-                      { month: 'Mar', efficiency: 91 },
-                      { month: 'Apr', efficiency: 94 },
-                      { month: 'May', efficiency: 95 },
-                      { month: 'Jun', efficiency: 97 },
-                      { month: 'Jul', efficiency: 96 },
-                      { month: 'Aug', efficiency: 98 },
-                      { month: 'Sep', efficiency: 97 },
-                      { month: 'Oct', efficiency: 98 },
-                    ]}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis domain={[85, 100]} />
-                    <Tooltip formatter={(value) => [`${value}%`, 'Efficiency']} />
-                    <Line type="monotone" dataKey="efficiency" stroke="#7209B7" activeDot={{ r: 8 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
       </Tabs>
     </div>

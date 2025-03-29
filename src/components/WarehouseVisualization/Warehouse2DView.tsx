@@ -1,12 +1,28 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { WarehouseSection } from "@/lib/mock-data";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 interface Warehouse2DViewProps {
   sections: WarehouseSection[];
   highlightedShelf: string | null;
   onShelfClick: (shelfId: string) => void;
 }
+
+// Mock item data for hover display
+const getRandomItems = (shelfId: string, isOccupied: boolean) => {
+  if (!isOccupied) return [];
+  
+  const itemTypes = ["Electronics", "Furniture", "Clothing", "Tools", "Food", "Books"];
+  const count = Math.floor(Math.random() * 3) + 1;
+  
+  return Array.from({ length: count }).map((_, i) => ({
+    id: `item-${shelfId}-${i}`,
+    name: `${itemTypes[Math.floor(Math.random() * itemTypes.length)]} Item ${i+1}`,
+    quantity: Math.floor(Math.random() * 10) + 1,
+    status: Math.random() > 0.2 ? "In Stock" : "Low Stock"
+  }));
+};
 
 const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
   sections,
@@ -40,28 +56,64 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
                       const occupancyFactor = section.occupancy / 100;
                       const isOccupied = Math.random() < occupancyFactor;
                       const isHighlighted = highlightedShelf === shelfId;
+                      const storedItems = getRandomItems(shelfId, isOccupied);
                       
                       return (
-                        <button
-                          key={shelfId}
-                          className={`
-                            aspect-square flex items-center justify-center text-xs font-medium
-                            transition-all duration-200 ease-in-out
-                            ${isOccupied ? 'bg-warehouse-secondary/80 text-white' : 'bg-gray-100/80 text-gray-600'}
-                            ${isHighlighted ? 'ring-2 ring-warehouse-highlight scale-105 z-10' : 'ring-1 ring-gray-200'}
-                            ${isHighlighted ? 'shadow-md' : ''}
-                            hover:shadow-md rounded-md relative
-                          `}
-                          onClick={() => onShelfClick(shelfId)}
-                        >
-                          {/* Visual indication of a shelf */}
-                          <div className="absolute inset-0 flex flex-col">
-                            <div className="border-b border-gray-300/40 flex-1"></div>
-                            <div className="border-b border-gray-300/40 flex-1"></div>
-                            <div className="flex-1"></div>
-                          </div>
-                          <span className="z-10">{col + 1}</span>
-                        </button>
+                        <HoverCard key={shelfId}>
+                          <HoverCardTrigger asChild>
+                            <button
+                              className={`
+                                aspect-square flex items-center justify-center text-xs font-medium
+                                transition-all duration-200 ease-in-out
+                                ${isOccupied ? 'bg-warehouse-secondary/80 text-white' : 'bg-gray-100/80 text-gray-600'}
+                                ${isHighlighted ? 'ring-2 ring-warehouse-highlight scale-105 z-10' : 'ring-1 ring-gray-200'}
+                                ${isHighlighted ? 'shadow-md' : ''}
+                                hover:shadow-md rounded-md relative
+                              `}
+                              onClick={() => onShelfClick(shelfId)}
+                            >
+                              {/* Visual indication of a shelf */}
+                              <div className="absolute inset-0 flex flex-col">
+                                <div className="border-b border-gray-300/40 flex-1"></div>
+                                <div className="border-b border-gray-300/40 flex-1"></div>
+                                <div className="flex-1"></div>
+                              </div>
+                              <span className="z-10">{col + 1}</span>
+                            </button>
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-64 p-0">
+                            <div className="bg-warehouse-primary text-white px-3 py-2 text-sm font-medium rounded-t-md">
+                              {shelfId}
+                            </div>
+                            <div className="p-3">
+                              {isOccupied ? (
+                                <>
+                                  <h5 className="font-medium mb-2">Stored Items:</h5>
+                                  <div className="space-y-2">
+                                    {storedItems.map(item => (
+                                      <div key={item.id} className="flex justify-between text-sm border-b pb-1">
+                                        <span>{item.name}</span>
+                                        <div className="flex gap-2">
+                                          <span className="text-gray-500">Qty: {item.quantity}</span>
+                                          <span className={item.status === "In Stock" ? "text-green-500" : "text-amber-500"}>
+                                            {item.status}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="py-2 text-center text-gray-500">
+                                  No items stored in this location
+                                </div>
+                              )}
+                              <div className="mt-2 text-xs text-gray-500">
+                                Occupancy: {Math.round(isOccupied ? 70 + Math.random() * 30 : Math.random() * 10)}%
+                              </div>
+                            </div>
+                          </HoverCardContent>
+                        </HoverCard>
                       );
                     })}
                   </div>

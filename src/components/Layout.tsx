@@ -54,25 +54,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="flex min-h-screen bg-warehouse-background">
-      {/* Sidebar */}
-      <div className="w-64 bg-warehouse-primary text-white">
-        <div className="p-4 flex items-center space-x-2 border-b border-warehouse-dark/20">
-          <Box className="h-6 w-6" />
-          <h1 className="text-lg font-bold">SmartWareHub</h1>
+      {/* Sidebar - updated with modern styling */}
+      <div className="w-64 bg-white border-r border-gray-200 shadow-sm">
+        <div className="p-4 flex items-center space-x-2 border-b border-gray-100">
+          <Box className="h-6 w-6 text-warehouse-primary" />
+          <h1 className="text-lg font-bold text-warehouse-primary">SmartWareHub</h1>
         </div>
         <nav className="p-2">
           {navItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-md mb-1 hover:bg-warehouse-dark/20 transition-colors ${
+              className={`flex items-center space-x-3 px-4 py-3 rounded-md mb-1 hover:bg-gray-50 transition-colors ${
                 location.pathname === item.path
-                  ? "bg-warehouse-dark/20 text-warehouse-highlight"
-                  : ""
+                  ? "bg-warehouse-primary/10 text-warehouse-primary font-medium"
+                  : "text-gray-600"
               }`}
             >
               {item.icon}
-              <span className="font-medium">{item.name}</span>
+              <span>{item.name}</span>
             </Link>
           ))}
         </nav>
