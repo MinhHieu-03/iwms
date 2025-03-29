@@ -7,7 +7,6 @@ import {
   Settings, 
   Box, 
   Truck,
-  Home,
   Bot,
   User
 } from "lucide-react";
@@ -69,7 +68,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="flex min-h-screen bg-warehouse-background">
-      {/* Sidebar - updated with modern styling */}
+      {/* Sidebar - enhanced with active state highlighting */}
       <div className="w-64 bg-white border-r border-gray-200 shadow-sm">
         <div className="p-4 flex items-center space-x-2 border-b border-gray-100">
           <Box className="h-6 w-6 text-warehouse-primary" />
@@ -80,10 +79,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-md mb-1 hover:bg-gray-50 transition-colors ${
+              className={`flex items-center space-x-3 px-4 py-3 rounded-md mb-1 transition-all duration-200 ${
                 location.pathname === item.path
-                  ? "bg-warehouse-primary/10 text-warehouse-primary font-medium"
-                  : "text-gray-600"
+                  ? "bg-warehouse-primary text-white font-medium shadow-sm"
+                  : "text-gray-600 hover:bg-gray-50"
               }`}
             >
               {item.icon}
@@ -96,7 +95,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         <header className="bg-white shadow-sm h-16 flex items-center justify-between px-6 border-b">
-          {/* Remove redundant view name */}
           <div className="flex items-center">
             <div className={`h-8 w-1 rounded-full mr-2 ${
               location.pathname === "/" ? "bg-warehouse-primary" :

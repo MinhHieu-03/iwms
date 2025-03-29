@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,16 +19,27 @@ const WarehouseLayout = () => {
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview" className="flex items-center gap-2">
+        <TabsList className="bg-background border border-border p-1">
+          <TabsTrigger 
+            value="overview" 
+            className="flex items-center gap-2 data-[state=active]:bg-warehouse-primary data-[state=active]:text-white transition-colors"
+          >
             <ViewIcon className="h-4 w-4" />
             <span>Overview</span>
           </TabsTrigger>
-          <TabsTrigger value="zones" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="zones" 
+            className="flex items-center gap-2 data-[state=active]:bg-warehouse-primary data-[state=active]:text-white transition-colors"
+          >
             <Layers3Icon className="h-4 w-4" />
             <span>Zones</span>
           </TabsTrigger>
-          <TabsTrigger value="racks">Racks</TabsTrigger>
+          <TabsTrigger 
+            value="racks"
+            className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white transition-colors"
+          >
+            Racks
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="overview">
