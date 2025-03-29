@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card } from "@/components/ui/card";
 import StatusBadge from "@/components/StatusBadge";
@@ -26,7 +25,6 @@ const Missions = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Robot Missions</h2>
         <div className="space-x-2">
           <button className="bg-warehouse-primary text-white px-4 py-2 rounded-md hover:bg-warehouse-dark transition-colors">
             New Mission
