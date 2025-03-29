@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { 
@@ -12,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Lock, Bell, Database, Robot } from "lucide-react";
+import { User, Lock, Bell, Database, Bot } from "lucide-react";
 
 const Settings = () => {
   const [warehouseSettings, setWarehouseSettings] = useState({
@@ -60,7 +59,7 @@ const Settings = () => {
             Warehouse
           </TabsTrigger>
           <TabsTrigger value="robots" className="flex items-center">
-            <Robot className="w-4 h-4 mr-2" />
+            <Bot className="w-4 h-4 mr-2" />
             Robots
           </TabsTrigger>
           <TabsTrigger value="security" className="flex items-center">
