@@ -1,19 +1,34 @@
-import React from "react";
+
+import React, { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { History, FileText } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import StatusBadge from "@/components/StatusBadge";
+import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
+import MissionsHistory from "@/components/missions/MissionsHistory";
+import MissionsTemplates from "@/components/missions/MissionsTemplates";
+import TemplateGraph from "@/components/missions/TemplateGraph";
 
 const Missions = () => {
-  const activeMissions = [
-    { id: "M-083", robot: "Robot-01", type: "Transfer", status: "In Progress", from: "A-12", to: "D-05", start: "2023-05-15T11:30:00" },
-    { id: "M-084", robot: "Robot-03", type: "Pick", status: "In Progress", from: "B-08", to: "Loading", start: "2023-05-15T11:45:00" },
-  ];
+  const location = useLocation();
+  const navigate = useNavigate();
   
-  const recentMissions = [
-    { id: "M-082", robot: "Robot-02", type: "Transfer", status: "Completed", from: "C-14", to: "A-04", start: "2023-05-15T10:15:00", end: "2023-05-15T10:35:00" },
-    { id: "M-081", robot: "Robot-01", type: "Store", status: "Completed", from: "Receiving", to: "B-11", start: "2023-05-15T09:20:00", end: "2023-05-15T09:45:00" },
-    { id: "M-080", robot: "Robot-03", type: "Pick", status: "Failed", from: "D-02", to: "Loading", start: "2023-05-15T08:30:00", end: "2023-05-15T08:40:00" },
-  ];
+  // Determine the active tab based on the current URL
+  const currentPath = location.pathname;
   
+  const isHistoryTab = currentPath === "/missions" || currentPath === "/missions/";
+  const isTemplatesTab = currentPath.includes("/missions/templates");
+  
+  const activeTab = isHistoryTab ? "history" : isTemplatesTab ? "templates" : "history";
+
+  // Handle tab change
+  const handleTabChange = (value: string) => {
+    if (value === "history") {
+      navigate("/missions");
+    } else if (value === "templates") {
+      navigate("/missions/templates");
+    }
+  };
+
   const robotStatuses = [
     { id: "Robot-01", status: "Busy", battery: 82, location: "Moving: A-12 → D-05" },
     { id: "Robot-02", status: "Available", battery: 67, location: "Dock-1" },
@@ -24,95 +39,35 @@ const Missions = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div className="space-x-2">
-          <button className="bg-warehouse-primary text-white px-4 py-2 rounded-md hover:bg-warehouse-dark transition-colors">
-            New Mission
-          </button>
-          <button className="border border-warehouse-primary text-warehouse-primary px-4 py-2 rounded-md hover:bg-warehouse-primary/10 transition-colors">
-            View Templates
-          </button>
-        </div>
-      </div>
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
+        <TabsList className="bg-background border border-border p-1">
+          <TabsTrigger 
+            value="history" 
+            className="flex items-center gap-2 data-[state=active]:bg-warehouse-primary data-[state=active]:text-white transition-colors"
+          >
+            <History className="h-4 w-4" />
+            <span>History</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="templates" 
+            className="flex items-center gap-2 data-[state=active]:bg-warehouse-primary data-[state=active]:text-white transition-colors"
+          >
+            <FileText className="h-4 w-4" />
+            <span>Templates</span>
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="history">
+          {location.pathname === "/missions" && <MissionsHistory />}
+        </TabsContent>
+        
+        <TabsContent value="templates">
+          {location.pathname === "/missions/templates" && <MissionsTemplates />}
+        </TabsContent>
+      </Tabs>
       
-      <Card className="p-6">
-        <h3 className="text-lg font-medium mb-4">Active Missions</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 text-left">Mission ID</th>
-                <th className="px-4 py-2 text-left">Robot</th>
-                <th className="px-4 py-2 text-left">Type</th>
-                <th className="px-4 py-2 text-left">Status</th>
-                <th className="px-4 py-2 text-left">From</th>
-                <th className="px-4 py-2 text-left">To</th>
-                <th className="px-4 py-2 text-left">Started</th>
-                <th className="px-4 py-2 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {activeMissions.map((mission) => (
-                <tr key={mission.id} className="border-b">
-                  <td className="px-4 py-3">{mission.id}</td>
-                  <td className="px-4 py-3">{mission.robot}</td>
-                  <td className="px-4 py-3">{mission.type}</td>
-                  <td className="px-4 py-3">
-                    <StatusBadge status={mission.status} />
-                  </td>
-                  <td className="px-4 py-3">{mission.from}</td>
-                  <td className="px-4 py-3">{mission.to}</td>
-                  <td className="px-4 py-3">{new Date(mission.start).toLocaleString()}</td>
-                  <td className="px-4 py-3">
-                    <button className="text-yellow-600 hover:text-yellow-800 mr-2">
-                      Pause
-                    </button>
-                    <button className="text-red-600 hover:text-red-800">
-                      Cancel
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-      
-      <Card className="p-6">
-        <h3 className="text-lg font-medium mb-4">Recent Missions</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 text-left">Mission ID</th>
-                <th className="px-4 py-2 text-left">Robot</th>
-                <th className="px-4 py-2 text-left">Type</th>
-                <th className="px-4 py-2 text-left">Status</th>
-                <th className="px-4 py-2 text-left">From</th>
-                <th className="px-4 py-2 text-left">To</th>
-                <th className="px-4 py-2 text-left">Started</th>
-                <th className="px-4 py-2 text-left">Finished</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentMissions.map((mission) => (
-                <tr key={mission.id} className="border-b">
-                  <td className="px-4 py-3">{mission.id}</td>
-                  <td className="px-4 py-3">{mission.robot}</td>
-                  <td className="px-4 py-3">{mission.type}</td>
-                  <td className="px-4 py-3">
-                    <StatusBadge status={mission.status} />
-                  </td>
-                  <td className="px-4 py-3">{mission.from}</td>
-                  <td className="px-4 py-3">{mission.to}</td>
-                  <td className="px-4 py-3">{new Date(mission.start).toLocaleString()}</td>
-                  <td className="px-4 py-3">{new Date(mission.end).toLocaleString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
+      {/* Show template editor when on a specific template route */}
+      {currentPath.match(/\/missions\/templates\/t-\d+/) && <TemplateGraph />}
       
       <Card className="p-6">
         <h3 className="text-lg font-medium mb-4">Robot Status</h3>

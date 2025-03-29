@@ -26,6 +26,8 @@ const App = () => (
           <Route path="/inbound-outbound" element={<Layout><InboundOutbound /></Layout>} />
           <Route path="/layout" element={<Layout><WarehouseLayout /></Layout>} />
           <Route path="/missions" element={<Layout><Missions /></Layout>} />
+          <Route path="/missions/templates" element={<Layout><Missions /></Layout>} />
+          <Route path="/missions/templates/:id" element={<Layout><Missions /></Layout>} />
           <Route path="/settings" element={<Layout><Settings /></Layout>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
