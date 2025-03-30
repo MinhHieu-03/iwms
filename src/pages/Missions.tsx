@@ -1,7 +1,9 @@
+
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { History, FileText } from "lucide-react";
+import { History, FileText, Plus } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import MissionsHistory from "@/components/missions/MissionsHistory";
 import MissionsTemplates from "@/components/missions/MissionsTemplates";
@@ -37,6 +39,14 @@ const Missions = () => {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Missions</h2>
+        <Button className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90">
+          <Plus className="mr-2 h-4 w-4" />
+          New Mission
+        </Button>
+      </div>
+
       <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
         <TabsList className="bg-background border border-border p-1">
           <TabsTrigger 

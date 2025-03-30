@@ -14,7 +14,11 @@ import UserSettings from "./pages/UserSettings";
 import SystemSettings from "./pages/SystemSettings";
 import TeamSettings from "./pages/TeamSettings";
 import OperatorInterface from "./pages/OperatorInterface";
+import OperatorInbound from "./pages/OperatorInbound";
+import OperatorOutbound from "./pages/OperatorOutbound";
+import OrderHistory from "./pages/OrderHistory";
 import Help from "./pages/Help";
+import HelpGuides from "./pages/HelpGuides";
 import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 
@@ -28,8 +32,16 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout><Dashboard /></Layout>} />
+          
+          {/* Operator Interface routes */}
           <Route path="/operator-interface" element={<Layout><OperatorInterface /></Layout>} />
+          <Route path="/operator-interface/inbound" element={<Layout><OperatorInbound /></Layout>} />
+          <Route path="/operator-interface/outbound" element={<Layout><OperatorOutbound /></Layout>} />
+          
+          {/* Inbound/Outbound routes */}
           <Route path="/inbound-outbound" element={<Layout><InboundOutbound /></Layout>} />
+          <Route path="/inbound-outbound/history" element={<Layout><OrderHistory /></Layout>} />
+          
           <Route path="/layout" element={<Layout><WarehouseLayout /></Layout>} />
           
           {/* Missions routes */}
@@ -44,6 +56,7 @@ const App = () => (
           
           {/* Support routes */}
           <Route path="/help" element={<Layout><Help /></Layout>} />
+          <Route path="/help/guides/:guideId" element={<Layout><HelpGuides /></Layout>} />
           <Route path="/notifications" element={<Layout><Notifications /></Layout>} />
           
           {/* 404 route */}

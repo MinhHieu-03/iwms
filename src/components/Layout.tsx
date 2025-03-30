@@ -53,12 +53,12 @@ const navSections: NavSection[] = [
       },
       {
         path: "/inbound-outbound",
-        name: "In/Out",
+        name: "Inbound/Outbound",
         icon: <Truck className="w-5 h-5" />,
       },
       {
         path: "/layout",
-        name: "Layout",
+        name: "Warehouse Layout",
         icon: <LayoutList className="w-5 h-5" />,
       },
       {

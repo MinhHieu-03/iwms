@@ -2,7 +2,15 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Package, ArrowDownToLine, ArrowUpFromLine, Truck, BarChart4 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { 
+  Package, 
+  ArrowDownToLine, 
+  ArrowUpFromLine, 
+  Truck, 
+  BarChart4,
+  History
+} from "lucide-react";
 
 const OperatorInterface = () => {
   return (
@@ -10,11 +18,19 @@ const OperatorInterface = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Operator Controls</h2>
         <div className="flex space-x-2">
-          <Button variant="outline" className="text-green-600 border-green-600 hover:bg-green-50">
+          <Button 
+            as={Link}
+            to="/operator-interface/inbound"
+            className="bg-green-600 hover:bg-green-700 text-white"
+          >
             <ArrowDownToLine className="mr-2 h-4 w-4" />
             Start Inbound
           </Button>
-          <Button variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
+          <Button 
+            as={Link}
+            to="/operator-interface/outbound"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
             <ArrowUpFromLine className="mr-2 h-4 w-4" />
             Start Outbound
           </Button>
@@ -23,11 +39,17 @@ const OperatorInterface = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="col-span-1">
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="flex items-center">
               <Truck className="mr-2 h-5 w-5 text-warehouse-primary" />
               Active Dock Operations
             </CardTitle>
+            <Link to="/inbound-outbound/history">
+              <Button variant="outline" size="sm" className="flex items-center">
+                <History className="mr-2 h-4 w-4" />
+                View History
+              </Button>
+            </Link>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
