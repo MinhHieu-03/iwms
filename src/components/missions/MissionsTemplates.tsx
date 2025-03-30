@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,7 +30,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -125,6 +123,12 @@ const MissionsTemplates = () => {
     });
   };
 
+  const handleCreateNewEmptyTemplate = () => {
+    // Navigate directly to a new empty template with a temporary ID
+    const tempId = `t-new-${Date.now()}`;
+    navigate(`/missions/templates/${tempId}`);
+  };
+
   const handleDeleteTemplate = () => {
     if (templateToDelete) {
       const templateName = templates.find(t => t.id === templateToDelete)?.name;
@@ -153,68 +157,12 @@ const MissionsTemplates = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Mission Templates</h2>
-        <Dialog open={isNewTemplateDialogOpen} onOpenChange={setIsNewTemplateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90">
-              <Plus className="mr-1 h-4 w-4" /> New Template
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New Template</DialogTitle>
-              <DialogDescription>
-                Create a new mission template for robots to follow.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-2">
-              <div className="space-y-2">
-                <Label htmlFor="template-name">Template Name</Label>
-                <Input 
-                  id="template-name"
-                  value={newTemplate.name}
-                  onChange={(e) => setNewTemplate({...newTemplate, name: e.target.value})}
-                  placeholder="Enter template name"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="template-desc">Description</Label>
-                <textarea 
-                  id="template-desc"
-                  value={newTemplate.description}
-                  onChange={(e) => setNewTemplate({...newTemplate, description: e.target.value})}
-                  placeholder="Brief description of the template"
-                  className="min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="template-category">Category</Label>
-                <select 
-                  id="template-category"
-                  value={newTemplate.category}
-                  onChange={(e) => setNewTemplate({...newTemplate, category: e.target.value})}
-                  className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                >
-                  <option value="Transport">Transport</option>
-                  <option value="Inventory">Inventory</option>
-                  <option value="Picking">Picking</option>
-                  <option value="Custom">Custom</option>
-                </select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsNewTemplateDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button 
-                onClick={handleCreateTemplate}
-                disabled={!newTemplate.name}
-                className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90"
-              >
-                Create Template
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <Button 
+          className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90"
+          onClick={handleCreateNewEmptyTemplate}
+        >
+          <Plus className="mr-1 h-4 w-4" /> New Template
+        </Button>
       </div>
 
       <div className="flex items-center justify-between">

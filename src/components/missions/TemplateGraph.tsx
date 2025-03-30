@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -35,6 +35,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 const initialNodes = [
   {
@@ -141,12 +142,51 @@ const initialEdges = [
   },
 ];
 
+// Empty template initial state
+const emptyNodes = [
+  {
+    id: "1",
+    type: "input",
+    data: { label: "Start" },
+    position: { x: 250, y: 100 },
+    style: { background: "#d0f0c0", border: "1px solid #4caf50" },
+  },
+  {
+    id: "2",
+    type: "output",
+    data: { label: "End" },
+    position: { x: 250, y: 200 },
+    style: { background: "#ffcccc", border: "1px solid #ff5252" },
+  },
+];
+
+const emptyEdges = [
+  {
+    id: "e1-2",
+    source: "1",
+    target: "2",
+    animated: true,
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+    },
+  },
+];
+
 const nodeTypes = {};
 
 const TemplateGraph = () => {
   const { id } = useParams<{ id: string }>();
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const isNewTemplate = id?.startsWith('t-new');
+  
+  const [templateName, setTemplateName] = useState(isNewTemplate ? "New Template" : `Template ${id?.split('-')[1]}`);
+  const [templateDescription, setTemplateDescription] = useState(isNewTemplate ? "" : "This template defines the workflow for robots to pick items from storage.");
+  
+  // Use empty template if this is a new template
+  const startingNodes = isNewTemplate ? emptyNodes : initialNodes;
+  const startingEdges = isNewTemplate ? emptyEdges : initialEdges;
+  
+  const [nodes, setNodes, onNodesChange] = useNodesState(startingNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(startingEdges);
   const [selectedNode, setSelectedNode] = useState(null);
 
   const onConnect = useCallback(
@@ -170,6 +210,11 @@ const TemplateGraph = () => {
     };
     setNodes((nds) => [...nds, newNode]);
   };
+  
+  const handleSaveTemplate = () => {
+    // In a real app, we would save the template to the database
+    toast.success("Template saved successfully");
+  };
 
   return (
     <div className="space-y-6">
@@ -185,7 +230,7 @@ const TemplateGraph = () => {
             </Link>
           </Button>
           <h2 className="text-2xl font-bold">
-            {id?.startsWith('t-') ? `Edit Template: ${id}` : 'Create New Template'}
+            {isNewTemplate ? 'Create New Template' : `Edit Template: ${id}`}
           </h2>
         </div>
         <div className="space-x-2">
@@ -226,7 +271,10 @@ const TemplateGraph = () => {
             </DropdownMenuContent>
           </DropdownMenu>
           
-          <Button className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90">
+          <Button 
+            className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90"
+            onClick={handleSaveTemplate}
+          >
             <Save className="mr-1 h-4 w-4" /> Save Template
           </Button>
         </div>
@@ -327,7 +375,8 @@ const TemplateGraph = () => {
                   <label className="text-sm font-medium">Template Name</label>
                   <input 
                     type="text" 
-                    defaultValue={id ? `Template ${id.split('-')[1]}` : "New Template"} 
+                    value={templateName}
+                    onChange={(e) => setTemplateName(e.target.value)}
                     className="border rounded px-3 py-2"
                   />
                 </div>
@@ -335,7 +384,8 @@ const TemplateGraph = () => {
                   <label className="text-sm font-medium">Description</label>
                   <textarea 
                     rows={3}
-                    defaultValue="This template defines the workflow for robots to pick items from storage."
+                    value={templateDescription}
+                    onChange={(e) => setTemplateDescription(e.target.value)}
                     className="border rounded px-3 py-2"
                   />
                 </div>

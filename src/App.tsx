@@ -13,6 +13,7 @@ import Missions from "./pages/Missions";
 import UserSettings from "./pages/UserSettings";
 import SystemSettings from "./pages/SystemSettings";
 import TeamSettings from "./pages/TeamSettings";
+import WarehouseSettings from "./pages/WarehouseSettings";
 import OperatorInterface from "./pages/OperatorInterface";
 import OperatorInbound from "./pages/OperatorInbound";
 import OperatorOutbound from "./pages/OperatorOutbound";
@@ -52,7 +53,9 @@ const App = () => (
           {/* Settings routes */}
           <Route path="/user-settings" element={<Layout><UserSettings /></Layout>} />
           <Route path="/system-settings" element={<Layout><SystemSettings /></Layout>} />
+          <Route path="/warehouse-settings" element={<Layout><WarehouseSettings /></Layout>} />
           <Route path="/team-settings" element={<Layout><TeamSettings /></Layout>} />
+          <Route path="/team-settings/:section" element={<Layout><TeamSettings /></Layout>} />
           
           {/* Support routes */}
           <Route path="/help" element={<Layout><Help /></Layout>} />
