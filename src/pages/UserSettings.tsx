@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,13 +7,60 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Bell, Moon, SunMedium, Eye, Lock } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const UserSettings = () => {
+  const { toast } = useToast();
+  const [darkMode, setDarkMode] = useState(false);
+  const [highContrast, setHighContrast] = useState(false);
+
+  // Apply dark mode
+  useEffect(() => {
+    const root = document.documentElement;
+    if (darkMode) {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+
+    // Save preference to localStorage
+    localStorage.setItem("darkMode", darkMode.toString());
+  }, [darkMode]);
+
+  // Apply high contrast
+  useEffect(() => {
+    const root = document.documentElement;
+    if (highContrast) {
+      root.classList.add("high-contrast");
+    } else {
+      root.classList.remove("high-contrast");
+    }
+    
+    // Save preference to localStorage
+    localStorage.setItem("highContrast", highContrast.toString());
+  }, [highContrast]);
+
+  // Load saved preferences on initial load
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem("darkMode") === "true";
+    const savedHighContrast = localStorage.getItem("highContrast") === "true";
+    
+    setDarkMode(savedDarkMode);
+    setHighContrast(savedHighContrast);
+  }, []);
+
+  const handleSaveChanges = () => {
+    toast({
+      title: "Settings saved!",
+      description: "Your preferences have been updated.",
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">User Settings</h2>
-        <Button>Save Changes</Button>
+        <Button onClick={handleSaveChanges}>Save Changes</Button>
       </div>
 
       <Card>
@@ -33,7 +80,11 @@ const UserSettings = () => {
             </div>
             <div className="flex items-center space-x-2">
               <SunMedium className="h-4 w-4" />
-              <Switch id="dark-mode" />
+              <Switch 
+                id="dark-mode" 
+                checked={darkMode}
+                onCheckedChange={setDarkMode}
+              />
               <Moon className="h-4 w-4" />
             </div>
           </div>
@@ -47,7 +98,11 @@ const UserSettings = () => {
                 Increase contrast for better visibility
               </div>
             </div>
-            <Switch id="high-contrast" />
+            <Switch 
+              id="high-contrast" 
+              checked={highContrast}
+              onCheckedChange={setHighContrast}
+            />
           </div>
         </CardContent>
       </Card>

@@ -13,7 +13,8 @@ import {
   Bell,
   HelpCircle,
   LogOut,
-  MonitorSmartphone
+  MonitorSmartphone,
+  Warehouse
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -63,7 +64,7 @@ const navSections: NavSection[] = [
       },
       {
         path: "/missions",
-        name: "Robot Missions",  // Changed from "Missions" to "Robot Missions"
+        name: "Robot Missions",
         icon: <Bot className="w-5 h-5" />,
       },
     ],
@@ -73,7 +74,7 @@ const navSections: NavSection[] = [
     items: [
       {
         path: "/team-settings",
-        name: "Team Management",  // Changed from "Team" to "Team Management"
+        name: "Team Management",
         icon: <Users className="w-5 h-5" />,
       },
       {
@@ -85,6 +86,11 @@ const navSections: NavSection[] = [
         path: "/system-settings",
         name: "System Settings",
         icon: <Settings className="w-5 h-5" />,
+      },
+      {
+        path: "/warehouse-settings",
+        name: "Warehouse Settings",
+        icon: <Warehouse className="w-5 h-5" />,
       },
     ],
   },

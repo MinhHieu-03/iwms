@@ -1,271 +1,162 @@
 
-import React, { useState } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { ArrowLeft, MessageCircleQuestion, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Search, ThumbsUp, ThumbsDown } from "lucide-react";
 
-// FAQ data structure
-interface FAQ {
-  id: string;
-  question: string;
-  answer: string;
-  category: string;
-  helpful: number;
-  notHelpful: number;
-}
-
-const faqs: FAQ[] = [
-  {
-    id: "faq-1",
-    question: "How do I create a new robot mission?",
-    answer: "To create a new robot mission, navigate to the Robot Missions page and click on the 'New Mission' button in the top right corner. Fill in the required details in the popup form and click 'Create Mission'.",
-    category: "missions",
-    helpful: 24,
-    notHelpful: 3,
-  },
-  {
-    id: "faq-2",
-    question: "How do I configure warehouse zones?",
-    answer: "To configure warehouse zones, go to Warehouse Settings > Zones & Layout. Here you can add, edit, or remove zones, set their colors, and specify their purposes.",
-    category: "warehouse",
-    helpful: 18,
-    notHelpful: 2,
-  },
-  {
-    id: "faq-3",
-    question: "What happens if a robot mission fails?",
-    answer: "If a robot mission fails, it will be marked as 'Failed' in the Robot Missions history. You can view details of the failure by clicking on the mission. The system will also create an alert and notify administrators.",
-    category: "missions",
-    helpful: 15,
-    notHelpful: 1,
-  },
-  {
-    id: "faq-4",
-    question: "How do I add a new user to the system?",
-    answer: "To add a new user, navigate to Team Management and click the 'Create User' button. Fill in the user details, assign appropriate roles and permissions, then click 'Save'.",
-    category: "users",
-    helpful: 22,
-    notHelpful: 0,
-  },
-  {
-    id: "faq-5",
-    question: "Can I customize the dashboard widgets?",
-    answer: "Yes, you can customize dashboard widgets. Click on the 'Customize' button in the top-right corner of the dashboard, then drag and drop widgets to rearrange them. You can also add new widgets or remove existing ones.",
-    category: "dashboard",
-    helpful: 11,
-    notHelpful: 4,
-  },
-  {
-    id: "faq-6",
-    question: "How do I set up automation rules?",
-    answer: "Automation rules can be created in System Settings > Automation. Click 'Add Rule', then define the trigger conditions and the actions that should occur when those conditions are met.",
-    category: "automation",
-    helpful: 19,
-    notHelpful: 2,
-  },
-  {
-    id: "faq-7",
-    question: "What is the difference between a mission and a template?",
-    answer: "A mission is a specific task assigned to a robot to complete, while a template is a reusable blueprint for creating similar missions. Templates help you create consistent missions without having to define all the steps each time.",
-    category: "missions",
-    helpful: 28,
-    notHelpful: 1,
-  },
-  {
-    id: "faq-8",
-    question: "How often is inventory data updated?",
-    answer: "Inventory data is updated in real-time whenever changes occur. You can also manually trigger an inventory sync from the Inventory Settings page if needed.",
-    category: "inventory",
-    helpful: 13,
-    notHelpful: 5,
-  },
-  {
-    id: "faq-9",
-    question: "How do I reset my password?",
-    answer: "Click on 'Forgot password' on the login screen, or go to your User Settings and click 'Change Password'. In both cases, you'll need to verify your identity via email.",
-    category: "account",
-    helpful: 31,
-    notHelpful: 2,
-  },
-  {
-    id: "faq-10",
-    question: "Can I integrate with my existing WMS?",
-    answer: "Yes, our system can integrate with most major Warehouse Management Systems. Go to System Settings > Integrations to set up the connection with your WMS using our API or pre-built connectors.",
-    category: "integrations",
-    helpful: 16,
-    notHelpful: 3,
-  },
-];
-
-const categories = [
-  { id: "all", name: "All Questions" },
-  { id: "missions", name: "Robot Missions" },
-  { id: "warehouse", name: "Warehouse" },
-  { id: "users", name: "Users" },
-  { id: "dashboard", name: "Dashboard" },
-  { id: "automation", name: "Automation" },
-  { id: "inventory", name: "Inventory" },
-  { id: "account", name: "Account" },
-  { id: "integrations", name: "Integrations" },
-];
-
-const HelpFAQs: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [feedbackGiven, setFeedbackGiven] = useState<{[key: string]: "helpful" | "notHelpful" | null}>({});
-  
-  // Filter FAQs based on search query and selected category
-  const filteredFAQs = faqs.filter((faq) => {
-    const matchesSearch = searchQuery.trim() === "" || 
-      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
-      
-    const matchesCategory = selectedCategory === "all" || faq.category === selectedCategory;
-    
-    return matchesSearch && matchesCategory;
-  });
-  
-  // Handle feedback on FAQs
-  const handleFeedback = (faqId: string, isHelpful: boolean) => {
-    setFeedbackGiven((prev) => ({
-      ...prev,
-      [faqId]: isHelpful ? "helpful" : "notHelpful"
-    }));
-  };
-  
+const HelpFAQs = () => {
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Frequently Asked Questions</h1>
+      <div className="flex items-center gap-4">
+        <Button variant="outline" size="icon" asChild>
+          <Link to="/help">
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </Button>
+        <h2 className="text-2xl font-bold">Frequently Asked Questions</h2>
       </div>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Search FAQs</CardTitle>
-          <CardDescription>
-            Find answers to common questions about SmartWareHub
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search questions or keywords..."
-              className="pl-9"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          
-          <div className="flex flex-wrap gap-2 pt-2">
-            {categories.map((category) => (
-              <Badge
-                key={category.id}
-                variant={selectedCategory === category.id ? "default" : "outline"}
-                className={`cursor-pointer ${
-                  selectedCategory === category.id ? "bg-warehouse-primary" : ""
-                }`}
-                onClick={() => setSelectedCategory(category.id)}
-              >
-                {category.name}
-              </Badge>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-      
-      <div className="space-y-4">
-        {filteredFAQs.length > 0 ? (
-          <Accordion type="single" collapsible className="w-full">
-            {filteredFAQs.map((faq) => (
-              <AccordionItem key={faq.id} value={faq.id}>
-                <AccordionTrigger className="text-left">
-                  {faq.question}
-                </AccordionTrigger>
+
+      <div className="relative">
+        <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+        <Input
+          placeholder="Search FAQs..."
+          className="pl-10"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <MessageCircleQuestion className="mr-2 h-5 w-5" />
+              General Questions
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>What is SmartWareHub?</AccordionTrigger>
                 <AccordionContent>
-                  <div className="space-y-4">
-                    <p className="text-gray-700">{faq.answer}</p>
-                    
-                    <div className="flex justify-between items-center pt-2 border-t">
-                      <Badge variant="outline">{categories.find(c => c.id === faq.category)?.name}</Badge>
-                      
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm text-gray-500">Was this helpful?</span>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className={`flex items-center space-x-1 ${feedbackGiven[faq.id] === "helpful" ? "text-green-600" : ""}`}
-                          disabled={feedbackGiven[faq.id] !== undefined}
-                          onClick={() => handleFeedback(faq.id, true)}
-                        >
-                          <ThumbsUp className="h-4 w-4" />
-                          <span>{faq.helpful + (feedbackGiven[faq.id] === "helpful" ? 1 : 0)}</span>
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className={`flex items-center space-x-1 ${feedbackGiven[faq.id] === "notHelpful" ? "text-red-600" : ""}`}
-                          disabled={feedbackGiven[faq.id] !== undefined}
-                          onClick={() => handleFeedback(faq.id, false)}
-                        >
-                          <ThumbsDown className="h-4 w-4" />
-                          <span>{faq.notHelpful + (feedbackGiven[faq.id] === "notHelpful" ? 1 : 0)}</span>
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+                  SmartWareHub is an advanced warehouse management system that helps businesses optimize their warehouse operations through automation, real-time tracking, and smart inventory management. It integrates with robotic systems to provide a complete warehouse management solution.
                 </AccordionContent>
               </AccordionItem>
-            ))}
-          </Accordion>
-        ) : (
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-muted-foreground">No FAQs match your search criteria.</p>
-              <Button 
-                variant="link" 
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedCategory("all");
-                }}
-              >
-                Clear filters
-              </Button>
-            </CardContent>
-          </Card>
-        )}
+              <AccordionItem value="item-2">
+                <AccordionTrigger>How do I get started with the platform?</AccordionTrigger>
+                <AccordionContent>
+                  To get started with SmartWareHub, you should first configure your warehouse layout in the Warehouse Settings section. Then set up your team members in the Team Management section, assigning appropriate roles and permissions. Once the basic setup is complete, you can start managing your inventory and operations.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger>What browsers are supported?</AccordionTrigger>
+                <AccordionContent>
+                  SmartWareHub supports all modern browsers including Chrome, Firefox, Safari, and Edge. For the best experience, we recommend using the latest version of these browsers. Internet Explorer is not supported.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <MessageCircleQuestion className="mr-2 h-5 w-5" />
+              Robot Missions
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>How do I create a new robot mission?</AccordionTrigger>
+                <AccordionContent>
+                  To create a new robot mission, navigate to the Robot Missions page and click the "New Mission" button in the top right corner. Fill in the required information in the form that appears, including mission name and type, then click the "Create" button.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>Can I schedule recurring missions?</AccordionTrigger>
+                <AccordionContent>
+                  Yes, you can schedule recurring missions by creating a mission template. Go to the Robot Missions page, click on the "Templates" tab, then click "New Template". Once you've created a template, you can use it to schedule recurring missions by setting up a schedule in the System Settings section.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger>What happens if a mission fails?</AccordionTrigger>
+                <AccordionContent>
+                  If a mission fails, the system will automatically alert the appropriate team members based on your notification settings. The failed mission will be logged in the Missions History with a "Failed" status. You can then investigate the cause of the failure, make necessary adjustments, and retry the mission.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <MessageCircleQuestion className="mr-2 h-5 w-5" />
+              Inbound & Outbound Operations
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>How do I process an inbound shipment?</AccordionTrigger>
+                <AccordionContent>
+                  To process an inbound shipment, go to the Operator Interface and click "Start Inbound". Select the appropriate dock (or use your default dock), fill in the supplier information, PO number, and item count, then click "Process Inbound". The system will guide you through the remaining steps to complete the inbound process.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>How do I track outbound orders?</AccordionTrigger>
+                <AccordionContent>
+                  You can track outbound orders in the Inbound/Outbound section by clicking on the "History" tab. This will show you all processed outbound orders with their current status. You can filter the list by date range, status, or order number to find specific orders.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger>Can I assign specific docks for certain types of operations?</AccordionTrigger>
+                <AccordionContent>
+                  Yes, you can configure dock assignments in the Warehouse Settings section. Navigate to Warehouse Settings, go to the "Loading Docks" tab, and configure each dock with its appropriate type (inbound, outbound, or both). This helps ensure that operations are directed to the appropriate docks.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <MessageCircleQuestion className="mr-2 h-5 w-5" />
+              Account & Settings
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>How do I change my password?</AccordionTrigger>
+                <AccordionContent>
+                  To change your password, go to the User Settings page and scroll down to the Security section. Enter your current password, then enter and confirm your new password. Click "Update Password" to save your changes.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>How do I update notification preferences?</AccordionTrigger>
+                <AccordionContent>
+                  You can update your notification preferences in the User Settings page under the Notification Preferences section. Toggle the switches for email and push notifications according to your preferences, then click "Save Changes" at the top of the page.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger>Can I set a default dock for operations?</AccordionTrigger>
+                <AccordionContent>
+                  Yes, you can set your default working dock in the Operator Interface page. Look for the Operator Settings section where you can select your default dock from the dropdown menu and save your preference. This dock will be pre-selected when you start inbound or outbound operations.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </CardContent>
+        </Card>
       </div>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Can't find what you're looking for?</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">
-            If you can't find an answer to your question, you can contact our support team for assistance.
-          </p>
-        </CardContent>
-        <CardFooter>
-          <Button className="bg-warehouse-primary hover:bg-warehouse-primary/90">
-            Contact Support
-          </Button>
-        </CardFooter>
-      </Card>
     </div>
   );
 };

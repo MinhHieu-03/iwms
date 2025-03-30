@@ -1,520 +1,293 @@
 
 import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { 
-  Grid3X3,
-  Save,
-  RefreshCcw,
-  FileSpreadsheet,
-  Upload,
-  Building2,
-  Package,
-} from "lucide-react";
-import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Warehouse, Save, Plus, Trash2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const WarehouseSettings = () => {
-  const [warehouseStructure, setWarehouseStructure] = useState({
-    name: "Main Warehouse",
-    dimensions: {
-      length: 50,
-      width: 30,
-      height: 12,
-    },
-    zones: [
-      { id: "A", name: "Storage Zone A", type: "storage", color: "#9b87f5" },
-      { id: "B", name: "Storage Zone B", type: "storage", color: "#6E59A5" },
-      { id: "C", name: "Loading Zone", type: "loading", color: "#F97316" },
-      { id: "D", name: "Receiving Zone", type: "receiving", color: "#0EA5E9" },
-    ],
-    units: "meters",
-    gridSize: 0.5,
-    hasMultipleFloors: false,
-    floorCount: 1,
+  const { toast } = useToast();
+  const [zones, setZones] = useState([
+    { id: "zone1", name: "Storage Zone A", rows: 10, columns: 15, shelfLevels: 4 },
+    { id: "zone2", name: "Storage Zone B", rows: 8, columns: 12, shelfLevels: 5 },
+    { id: "zone3", name: "Inbound Zone", rows: 5, columns: 8, shelfLevels: 3 },
+  ]);
+
+  const [docks, setDocks] = useState([
+    { id: "dock1", name: "Dock 1", type: "inbound", status: "active" },
+    { id: "dock2", name: "Dock 2", type: "inbound", status: "active" },
+    { id: "dock3", name: "Dock 3", type: "inbound", status: "active" },
+    { id: "dock4", name: "Dock 4", type: "outbound", status: "active" },
+    { id: "dock5", name: "Dock 5", type: "outbound", status: "active" },
+    { id: "dock6", name: "Dock 6", type: "outbound", status: "active" },
+    { id: "dock7", name: "Dock 7", type: "outbound", status: "maintenance" },
+  ]);
+
+  const [newZone, setNewZone] = useState({
+    name: "",
+    rows: 10,
+    columns: 10,
+    shelfLevels: 4
   });
 
-  const [shelving, setShelving] = useState({
-    defaultShelfHeight: 2.5,
-    defaultRowSpacing: 3,
-    defaultAisleWidth: 2.5,
+  const [newDock, setNewDock] = useState({
+    name: "",
+    type: "inbound",
+    status: "active"
   });
-
-  const [selectedZone, setSelectedZone] = useState(warehouseStructure.zones[0].id);
-
-  const handleWarehouseUpdate = () => {
-    toast.success("Warehouse settings updated successfully");
-  };
-
-  const handleZoneUpdate = (zoneId: string, field: string, value: any) => {
-    setWarehouseStructure(prev => ({
-      ...prev,
-      zones: prev.zones.map(zone => 
-        zone.id === zoneId ? { ...zone, [field]: value } : zone
-      )
-    }));
-  };
 
   const handleAddZone = () => {
-    const newId = String.fromCharCode(65 + warehouseStructure.zones.length);
-    setWarehouseStructure(prev => ({
-      ...prev,
-      zones: [
-        ...prev.zones, 
-        { 
-          id: newId, 
-          name: `Zone ${newId}`, 
-          type: "storage", 
-          color: "#" + Math.floor(Math.random()*16777215).toString(16) 
-        }
-      ]
-    }));
+    if (newZone.name) {
+      const zoneId = `zone${zones.length + 1}`;
+      setZones([...zones, { id: zoneId, ...newZone }]);
+      setNewZone({
+        name: "",
+        rows: 10,
+        columns: 10,
+        shelfLevels: 4
+      });
+      toast({
+        title: "Zone Added",
+        description: `${newZone.name} has been added to the warehouse.`,
+      });
+    }
   };
 
-  const handleRemoveZone = (zoneId: string) => {
-    if (warehouseStructure.zones.length <= 1) {
-      toast.error("Cannot remove last zone");
-      return;
-    }
-    
-    setWarehouseStructure(prev => ({
-      ...prev,
-      zones: prev.zones.filter(zone => zone.id !== zoneId)
-    }));
-    
-    if (selectedZone === zoneId) {
-      setSelectedZone(warehouseStructure.zones[0].id);
+  const handleAddDock = () => {
+    if (newDock.name) {
+      const dockId = `dock${docks.length + 1}`;
+      setDocks([...docks, { id: dockId, ...newDock }]);
+      setNewDock({
+        name: "",
+        type: "inbound",
+        status: "active"
+      });
+      toast({
+        title: "Dock Added",
+        description: `${newDock.name} has been added to the warehouse.`,
+      });
     }
   };
-  
+
+  const handleDeleteZone = (id: string) => {
+    setZones(zones.filter(zone => zone.id !== id));
+    toast({
+      title: "Zone Deleted",
+      description: "The selected zone has been removed from the warehouse.",
+    });
+  };
+
+  const handleDeleteDock = (id: string) => {
+    setDocks(docks.filter(dock => dock.id !== id));
+    toast({
+      title: "Dock Deleted",
+      description: "The selected dock has been removed from the warehouse.",
+    });
+  };
+
+  const handleSaveStructure = () => {
+    toast({
+      title: "Structure Saved",
+      description: "Your warehouse structure has been saved successfully.",
+    });
+    // In a real app, we would save to a database here
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Warehouse Settings</h1>
-        <Button onClick={handleWarehouseUpdate} className="bg-warehouse-primary hover:bg-warehouse-primary/90">
+        <h2 className="text-2xl font-bold">Warehouse Settings</h2>
+        <Button onClick={handleSaveStructure}>
           <Save className="mr-2 h-4 w-4" />
-          Save Changes
+          Save Structure
         </Button>
       </div>
-      
-      <Tabs defaultValue="structure" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="structure" className="flex items-center gap-2">
-            <Building2 className="h-4 w-4" />
-            Structure
-          </TabsTrigger>
-          <TabsTrigger value="zones" className="flex items-center gap-2">
-            <Grid3X3 className="h-4 w-4" />
-            Zones & Layout
-          </TabsTrigger>
-          <TabsTrigger value="inventory" className="flex items-center gap-2">
-            <Package className="h-4 w-4" />
-            Inventory Settings
-          </TabsTrigger>
-          <TabsTrigger value="import" className="flex items-center gap-2">
-            <FileSpreadsheet className="h-4 w-4" />
-            Import/Export
-          </TabsTrigger>
+
+      <Tabs defaultValue="zones">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="zones">Storage Zones</TabsTrigger>
+          <TabsTrigger value="docks">Loading Docks</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="structure">
+        <TabsContent value="zones" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Warehouse Structure</CardTitle>
-              <CardDescription>
-                Configure the physical dimensions and properties of your warehouse
-              </CardDescription>
+              <CardTitle className="flex items-center">
+                <Warehouse className="mr-2 h-5 w-5" />
+                Add Storage Zone
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="warehouse-name">Warehouse Name</Label>
-                <Input 
-                  id="warehouse-name" 
-                  value={warehouseStructure.name}
-                  onChange={(e) => setWarehouseStructure({...warehouseStructure, name: e.target.value})}
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="length">Length ({warehouseStructure.units})</Label>
-                  <Input 
-                    id="length" 
-                    type="number"
-                    value={warehouseStructure.dimensions.length}
-                    onChange={(e) => setWarehouseStructure({
-                      ...warehouseStructure, 
-                      dimensions: {
-                        ...warehouseStructure.dimensions, 
-                        length: parseFloat(e.target.value)
-                      }
-                    })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="width">Width ({warehouseStructure.units})</Label>
-                  <Input 
-                    id="width" 
-                    type="number"
-                    value={warehouseStructure.dimensions.width}
-                    onChange={(e) => setWarehouseStructure({
-                      ...warehouseStructure, 
-                      dimensions: {
-                        ...warehouseStructure.dimensions, 
-                        width: parseFloat(e.target.value)
-                      }
-                    })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="height">Height ({warehouseStructure.units})</Label>
-                  <Input 
-                    id="height" 
-                    type="number"
-                    value={warehouseStructure.dimensions.height}
-                    onChange={(e) => setWarehouseStructure({
-                      ...warehouseStructure, 
-                      dimensions: {
-                        ...warehouseStructure.dimensions, 
-                        height: parseFloat(e.target.value)
-                      }
-                    })}
-                  />
-                </div>
-              </div>
-              
+            <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="units">Measurement Units</Label>
-                  <Select 
-                    value={warehouseStructure.units}
-                    onValueChange={(value) => setWarehouseStructure({...warehouseStructure, units: value})}
+                  <Label htmlFor="zoneName">Zone Name</Label>
+                  <Input 
+                    id="zoneName" 
+                    value={newZone.name}
+                    onChange={(e) => setNewZone({...newZone, name: e.target.value})}
+                    placeholder="e.g., Storage Zone C"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="zoneRows">Number of Rows</Label>
+                  <Input 
+                    id="zoneRows" 
+                    type="number" 
+                    value={newZone.rows}
+                    onChange={(e) => setNewZone({...newZone, rows: parseInt(e.target.value) || 0})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="zoneColumns">Number of Columns</Label>
+                  <Input 
+                    id="zoneColumns" 
+                    type="number" 
+                    value={newZone.columns}
+                    onChange={(e) => setNewZone({...newZone, columns: parseInt(e.target.value) || 0})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="zoneShelfLevels">Shelf Levels</Label>
+                  <Input 
+                    id="zoneShelfLevels" 
+                    type="number" 
+                    value={newZone.shelfLevels}
+                    onChange={(e) => setNewZone({...newZone, shelfLevels: parseInt(e.target.value) || 0})}
+                  />
+                </div>
+              </div>
+              <Button onClick={handleAddZone} className="mt-4">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Zone
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Configured Storage Zones</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {zones.map((zone) => (
+                  <div key={zone.id} className="border rounded-lg p-4 flex justify-between items-center">
+                    <div>
+                      <h3 className="font-medium">{zone.name}</h3>
+                      <p className="text-sm text-gray-500">
+                        {zone.rows} rows × {zone.columns} columns × {zone.shelfLevels} levels
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm">Edit</Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-red-500 hover:text-red-700"
+                        onClick={() => handleDeleteZone(zone.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="docks" className="space-y-4 mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Add Loading Dock</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="dockName">Dock Name</Label>
+                  <Input 
+                    id="dockName" 
+                    value={newDock.name}
+                    onChange={(e) => setNewDock({...newDock, name: e.target.value})}
+                    placeholder="e.g., Dock 8"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="dockType">Dock Type</Label>
+                  <Select
+                    value={newDock.type}
+                    onValueChange={(value) => setNewDock({...newDock, type: value})}
                   >
-                    <SelectTrigger id="units">
-                      <SelectValue placeholder="Select units" />
+                    <SelectTrigger id="dockType">
+                      <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="meters">Meters</SelectItem>
-                      <SelectItem value="feet">Feet</SelectItem>
+                      <SelectItem value="inbound">Inbound</SelectItem>
+                      <SelectItem value="outbound">Outbound</SelectItem>
+                      <SelectItem value="both">Both</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                
                 <div className="space-y-2">
-                  <Label htmlFor="grid-size">Grid Size ({warehouseStructure.units})</Label>
-                  <div className="pt-2">
-                    <Slider 
-                      id="grid-size"
-                      min={0.1}
-                      max={2}
-                      step={0.1}
-                      value={[warehouseStructure.gridSize]}
-                      onValueChange={(values) => setWarehouseStructure({...warehouseStructure, gridSize: values[0]})}
-                    />
-                    <div className="mt-1 text-right text-sm text-muted-foreground">
-                      {warehouseStructure.gridSize} {warehouseStructure.units}
-                    </div>
-                  </div>
+                  <Label htmlFor="dockStatus">Status</Label>
+                  <Select
+                    value={newDock.status}
+                    onValueChange={(value) => setNewDock({...newDock, status: value})}
+                  >
+                    <SelectTrigger id="dockStatus">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="maintenance">Maintenance</SelectItem>
+                      <SelectItem value="inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-start space-x-3 space-y-0">
-                  <div className="flex h-4 items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300"
-                      id="multifloor"
-                      checked={warehouseStructure.hasMultipleFloors}
-                      onChange={(e) => setWarehouseStructure({...warehouseStructure, hasMultipleFloors: e.target.checked})}
-                    />
-                    <Label htmlFor="multifloor">Multiple Floors</Label>
-                  </div>
-                </div>
-                
-                {warehouseStructure.hasMultipleFloors && (
-                  <div className="space-y-2">
-                    <Label htmlFor="floor-count">Number of Floors</Label>
-                    <Input 
-                      id="floor-count" 
-                      type="number"
-                      min={1}
-                      max={10}
-                      value={warehouseStructure.floorCount}
-                      onChange={(e) => setWarehouseStructure({...warehouseStructure, floorCount: parseInt(e.target.value)})}
-                    />
-                  </div>
-                )}
-              </div>
+              <Button onClick={handleAddDock} className="mt-4">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Dock
+              </Button>
             </CardContent>
           </Card>
-          
-          <Card className="mt-6">
+
+          <Card>
             <CardHeader>
-              <CardTitle>Shelving Configuration</CardTitle>
-              <CardDescription>
-                Set default values for shelving units in your warehouse
-              </CardDescription>
+              <CardTitle>Configured Loading Docks</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="shelf-height">Default Shelf Height ({warehouseStructure.units})</Label>
-                  <Input 
-                    id="shelf-height" 
-                    type="number"
-                    step={0.1}
-                    value={shelving.defaultShelfHeight}
-                    onChange={(e) => setShelving({...shelving, defaultShelfHeight: parseFloat(e.target.value)})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="row-spacing">Row Spacing ({warehouseStructure.units})</Label>
-                  <Input 
-                    id="row-spacing" 
-                    type="number"
-                    step={0.1}
-                    value={shelving.defaultRowSpacing}
-                    onChange={(e) => setShelving({...shelving, defaultRowSpacing: parseFloat(e.target.value)})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="aisle-width">Aisle Width ({warehouseStructure.units})</Label>
-                  <Input 
-                    id="aisle-width" 
-                    type="number"
-                    step={0.1}
-                    value={shelving.defaultAisleWidth}
-                    onChange={(e) => setShelving({...shelving, defaultAisleWidth: parseFloat(e.target.value)})}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="zones">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1">
-              <Card className="h-full">
-                <CardHeader>
-                  <CardTitle>Warehouse Zones</CardTitle>
-                  <CardDescription>
-                    Configure zones in your warehouse
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {warehouseStructure.zones.map((zone) => (
-                    <div 
-                      key={zone.id}
-                      className={`p-3 border rounded-md cursor-pointer flex items-center justify-between ${selectedZone === zone.id ? 'border-primary bg-primary/5' : ''}`}
-                      onClick={() => setSelectedZone(zone.id)}
-                    >
-                      <div className="flex items-center">
-                        <div 
-                          className="w-4 h-4 rounded-full mr-3" 
-                          style={{ backgroundColor: zone.color }}
-                        />
-                        <div>
-                          <div className="font-medium">{zone.name}</div>
-                          <div className="text-xs text-muted-foreground">Type: {zone.type}</div>
-                        </div>
-                      </div>
+            <CardContent>
+              <div className="space-y-4">
+                {docks.map((dock) => (
+                  <div key={dock.id} className="border rounded-lg p-4 flex justify-between items-center">
+                    <div>
+                      <h3 className="font-medium">{dock.name}</h3>
+                      <p className="text-sm text-gray-500">
+                        Type: <span className="capitalize">{dock.type}</span> • 
+                        Status: <span className={`capitalize ${
+                          dock.status === 'active' ? 'text-green-500' : 
+                          dock.status === 'maintenance' ? 'text-amber-500' : 'text-red-500'
+                        }`}>{dock.status}</span>
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm">Edit</Button>
                       <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveZone(zone.id);
-                        }}
-                        className="h-8 w-8 p-0"
+                        variant="outline" 
+                        size="sm" 
+                        className="text-red-500 hover:text-red-700"
+                        onClick={() => handleDeleteDock(dock.id)}
                       >
-                        <span className="sr-only">Remove zone</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M20 5H9l-7 7 7 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z"/><path d="m18 9-6 6"/><path d="m12 9 6 6"/></svg>
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
-                  ))}
-                  
-                  <Button 
-                    variant="outline" 
-                    className="w-full mt-4" 
-                    onClick={handleAddZone}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                    Add Zone
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-            
-            <div className="lg:col-span-2">
-              {warehouseStructure.zones.map((zone) => (
-                zone.id === selectedZone && (
-                  <Card key={zone.id}>
-                    <CardHeader>
-                      <CardTitle>Zone Details: {zone.name}</CardTitle>
-                      <CardDescription>
-                        Configure details for this zone
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="zone-name">Zone Name</Label>
-                        <Input 
-                          id="zone-name" 
-                          value={zone.name}
-                          onChange={(e) => handleZoneUpdate(zone.id, "name", e.target.value)}
-                        />
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="zone-type">Zone Type</Label>
-                          <Select 
-                            value={zone.type}
-                            onValueChange={(value) => handleZoneUpdate(zone.id, "type", value)}
-                          >
-                            <SelectTrigger id="zone-type">
-                              <SelectValue placeholder="Select zone type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="storage">Storage</SelectItem>
-                              <SelectItem value="picking">Picking</SelectItem>
-                              <SelectItem value="packing">Packing</SelectItem>
-                              <SelectItem value="shipping">Shipping</SelectItem>
-                              <SelectItem value="receiving">Receiving</SelectItem>
-                              <SelectItem value="loading">Loading</SelectItem>
-                              <SelectItem value="staging">Staging</SelectItem>
-                              <SelectItem value="office">Office</SelectItem>
-                              <SelectItem value="other">Other</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="zone-color">Zone Color</Label>
-                          <div className="flex items-center space-x-2">
-                            <Input 
-                              id="zone-color" 
-                              type="color"
-                              value={zone.color}
-                              onChange={(e) => handleZoneUpdate(zone.id, "color", e.target.value)}
-                              className="w-12 h-12 p-1 border rounded-md"
-                            />
-                            <Input 
-                              value={zone.color} 
-                              onChange={(e) => handleZoneUpdate(zone.id, "color", e.target.value)}
-                              className="font-mono"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )
-              ))}
-            </div>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="inventory">
-          <Card>
-            <CardHeader>
-              <CardTitle>Inventory Settings</CardTitle>
-              <CardDescription>
-                Configure inventory management settings for your warehouse
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <p className="text-muted-foreground">
-                Configure inventory settings such as SKU formats, reorder thresholds, and inventory tracking methods.
-              </p>
-              
-              {/* Placeholder for future inventory settings */}
-              <div className="rounded-md border border-dashed p-8 text-center">
-                <h3 className="text-lg font-medium mb-2">Inventory Settings Coming Soon</h3>
-                <p className="text-sm text-muted-foreground">
-                  Advanced inventory management settings will be available in a future update.
-                </p>
+                  </div>
+                ))}
               </div>
             </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="import">
-          <Card>
-            <CardHeader>
-              <CardTitle>Import & Export</CardTitle>
-              <CardDescription>
-                Import or export warehouse configuration data
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="border rounded-md p-6">
-                  <h3 className="text-lg font-medium mb-2">Import Configuration</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Upload a JSON or CSV file to import warehouse configuration
-                  </p>
-                  <div className="flex items-center justify-center w-full">
-                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <Upload className="w-8 h-8 mb-2 text-gray-500" />
-                        <p className="mb-2 text-sm text-gray-500">
-                          <span className="font-semibold">Click to upload</span> or drag and drop
-                        </p>
-                        <p className="text-xs text-gray-500">JSON or CSV (MAX. 10MB)</p>
-                      </div>
-                      <input type="file" className="hidden" />
-                    </label>
-                  </div>
-                </div>
-                
-                <div className="border rounded-md p-6">
-                  <h3 className="text-lg font-medium mb-2">Export Configuration</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Export your current warehouse configuration
-                  </p>
-                  <div className="space-y-4">
-                    <Button className="w-full" variant="outline">
-                      <FileSpreadsheet className="mr-2 h-4 w-4" />
-                      Export as JSON
-                    </Button>
-                    <Button className="w-full" variant="outline">
-                      <FileSpreadsheet className="mr-2 h-4 w-4" />
-                      Export as CSV
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <p className="text-sm text-muted-foreground">
-                Note: Importing a new configuration will override your current settings.
-              </p>
-            </CardFooter>
           </Card>
         </TabsContent>
       </Tabs>

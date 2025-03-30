@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 
 const OperatorOutbound = () => {
+  const { toast } = useToast();
   const [history, setHistory] = useState([
     { id: "OUT-001", timestamp: "2023-06-15T09:30:00", items: 15, dock: "Dock 4" },
     { id: "OUT-002", timestamp: "2023-06-15T11:45:00", items: 8, dock: "Dock 5" },
@@ -29,6 +31,16 @@ const OperatorOutbound = () => {
     itemCount: "",
     notes: ""
   });
+  
+  // Load operator's preferred dock from localStorage
+  useEffect(() => {
+    const savedDock = localStorage.getItem("preferredDock");
+    if (savedDock) {
+      // Convert from UI format "Dock #4" to the select format "Dock 4"
+      const formattedDock = savedDock.replace("#", "");
+      setNewOutbound(prev => ({ ...prev, dock: formattedDock }));
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +50,28 @@ const OperatorOutbound = () => {
       items: parseInt(newOutbound.itemCount) || 0,
       dock: newOutbound.dock
     };
+    
+    // Update history
     setHistory([newRecord, ...history]);
+    
+    // Save operation to localStorage
+    const operationRecord = {
+      id: newRecord.id,
+      type: "Outbound",
+      dock: newOutbound.dock,
+      timestamp: newRecord.timestamp,
+      details: {
+        customer: newOutbound.customer,
+        orderNumber: newOutbound.orderNumber,
+        items: newRecord.items
+      }
+    };
+    
+    // Save to localStorage history
+    const existingHistory = JSON.parse(localStorage.getItem("operationHistory") || "[]");
+    localStorage.setItem("operationHistory", JSON.stringify([operationRecord, ...existingHistory]));
+    
+    // Reset form
     setNewOutbound({
       customer: "",
       orderNumber: "",
@@ -46,7 +79,12 @@ const OperatorOutbound = () => {
       itemCount: "",
       notes: ""
     });
-    // Here we'd normally send the data to an API
+    
+    // Show success notification
+    toast({
+      title: "Outbound processed",
+      description: `${newRecord.items} items shipped from ${newOutbound.dock}`,
+    });
   };
 
   return (

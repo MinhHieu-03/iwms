@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 
 const OperatorInbound = () => {
+  const { toast } = useToast();
   const [history, setHistory] = useState([
     { id: "INB-001", timestamp: "2023-06-15T08:15:00", items: 24, dock: "Dock 3" },
     { id: "INB-002", timestamp: "2023-06-15T10:30:00", items: 18, dock: "Dock 1" },
@@ -29,6 +31,16 @@ const OperatorInbound = () => {
     itemCount: "",
     notes: ""
   });
+  
+  // Load operator's preferred dock from localStorage
+  useEffect(() => {
+    const savedDock = localStorage.getItem("preferredDock");
+    if (savedDock) {
+      // Convert from UI format "Dock #1" to the select format "Dock 1"
+      const formattedDock = savedDock.replace("#", "");
+      setNewInbound(prev => ({ ...prev, dock: formattedDock }));
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +50,28 @@ const OperatorInbound = () => {
       items: parseInt(newInbound.itemCount) || 0,
       dock: newInbound.dock
     };
+    
+    // Update history
     setHistory([newRecord, ...history]);
+    
+    // Save operation to localStorage
+    const operationRecord = {
+      id: newRecord.id,
+      type: "Inbound",
+      dock: newInbound.dock,
+      timestamp: newRecord.timestamp,
+      details: {
+        supplier: newInbound.supplier,
+        poNumber: newInbound.poNumber,
+        items: newRecord.items
+      }
+    };
+    
+    // Save to localStorage history
+    const existingHistory = JSON.parse(localStorage.getItem("operationHistory") || "[]");
+    localStorage.setItem("operationHistory", JSON.stringify([operationRecord, ...existingHistory]));
+    
+    // Reset form
     setNewInbound({
       supplier: "",
       poNumber: "",
@@ -46,7 +79,12 @@ const OperatorInbound = () => {
       itemCount: "",
       notes: ""
     });
-    // Here we'd normally send the data to an API
+    
+    // Show success notification
+    toast({
+      title: "Inbound processed",
+      description: `${newRecord.items} items processed at ${newInbound.dock}`,
+    });
   };
 
   return (
