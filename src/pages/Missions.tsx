@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { History, FileText } from "lucide-react";
@@ -7,12 +6,12 @@ import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-
 import MissionsHistory from "@/components/missions/MissionsHistory";
 import MissionsTemplates from "@/components/missions/MissionsTemplates";
 import TemplateGraph from "@/components/missions/TemplateGraph";
+import StatusBadge from "@/components/StatusBadge";
 
 const Missions = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Determine the active tab based on the current URL
   const currentPath = location.pathname;
   
   const isHistoryTab = currentPath === "/missions" || currentPath === "/missions/";
@@ -20,7 +19,6 @@ const Missions = () => {
   
   const activeTab = isHistoryTab ? "history" : isTemplatesTab ? "templates" : "history";
 
-  // Handle tab change
   const handleTabChange = (value: string) => {
     if (value === "history") {
       navigate("/missions");
@@ -66,7 +64,6 @@ const Missions = () => {
         </TabsContent>
       </Tabs>
       
-      {/* Show template editor when on a specific template route */}
       {currentPath.match(/\/missions\/templates\/t-\d+/) && <TemplateGraph />}
       
       <Card className="p-6">
