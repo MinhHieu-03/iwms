@@ -19,20 +19,22 @@ const OperatorInterface = () => {
         <h2 className="text-2xl font-bold">Operator Controls</h2>
         <div className="flex space-x-2">
           <Button 
-            as={Link}
-            to="/operator-interface/inbound"
+            asChild
             className="bg-green-600 hover:bg-green-700 text-white"
           >
-            <ArrowDownToLine className="mr-2 h-4 w-4" />
-            Start Inbound
+            <Link to="/operator-interface/inbound">
+              <ArrowDownToLine className="mr-2 h-4 w-4" />
+              Start Inbound
+            </Link>
           </Button>
           <Button 
-            as={Link}
-            to="/operator-interface/outbound"
+            asChild
             className="bg-blue-600 hover:bg-blue-700 text-white"
           >
-            <ArrowUpFromLine className="mr-2 h-4 w-4" />
-            Start Outbound
+            <Link to="/operator-interface/outbound">
+              <ArrowUpFromLine className="mr-2 h-4 w-4" />
+              Start Outbound
+            </Link>
           </Button>
         </div>
       </div>
@@ -44,12 +46,12 @@ const OperatorInterface = () => {
               <Truck className="mr-2 h-5 w-5 text-warehouse-primary" />
               Active Dock Operations
             </CardTitle>
-            <Link to="/inbound-outbound/history">
-              <Button variant="outline" size="sm" className="flex items-center">
+            <Button variant="outline" size="sm" className="flex items-center" asChild>
+              <Link to="/inbound-outbound/history">
                 <History className="mr-2 h-4 w-4" />
                 View History
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
