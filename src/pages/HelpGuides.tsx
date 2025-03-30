@@ -149,7 +149,7 @@ const guides: Record<string, GuideContent> = {
         
         <h4 className="text-md font-medium mt-6">Creating a Mission Template</h4>
         <ol className="list-decimal pl-5 space-y-2">
-          <li>Navigate to Missions > Templates and click "New Template"</li>
+          <li>Navigate to Missions {'>'}{'>'} Templates and click "New Template"</li>
           <li>Name your template and select a mission type</li>
           <li>Use the graph editor to define mission steps and logic</li>
           <li>Connect nodes to establish the workflow sequence</li>
