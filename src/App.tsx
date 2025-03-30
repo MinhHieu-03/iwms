@@ -20,6 +20,7 @@ import OperatorOutbound from "./pages/OperatorOutbound";
 import OrderHistory from "./pages/OrderHistory";
 import Help from "./pages/Help";
 import HelpGuides from "./pages/HelpGuides";
+import HelpFAQs from "./pages/HelpFAQs";
 import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 
@@ -60,6 +61,7 @@ const App = () => (
           {/* Support routes */}
           <Route path="/help" element={<Layout><Help /></Layout>} />
           <Route path="/help/guides/:guideId" element={<Layout><HelpGuides /></Layout>} />
+          <Route path="/help/faqs" element={<Layout><HelpFAQs /></Layout>} />
           <Route path="/notifications" element={<Layout><Notifications /></Layout>} />
           
           {/* 404 route */}

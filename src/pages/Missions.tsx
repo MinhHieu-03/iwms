@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { History, FileText, Plus } from "lucide-react";
@@ -72,88 +71,92 @@ const Missions = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Missions</h2>
-        <Dialog open={isNewMissionDialogOpen} onOpenChange={setIsNewMissionDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90">
-              <Plus className="mr-2 h-4 w-4" />
-              New Mission
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New Mission</DialogTitle>
-              <DialogDescription>
-                Create a new mission for robots to execute.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-2">
+        <Button className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90">
+          <Plus className="mr-2 h-4 w-4" />
+          New Mission
+        </Button>
+      </div>
+
+      <Dialog open={isNewMissionDialogOpen} onOpenChange={setIsNewMissionDialogOpen}>
+        <DialogTrigger asChild>
+          <Button className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90">
+            <Plus className="mr-2 h-4 w-4" />
+            New Mission
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Mission</DialogTitle>
+            <DialogDescription>
+              Create a new mission for robots to execute.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="mission-name">Mission Name</Label>
+              <Input 
+                id="mission-name"
+                value={newMission.name}
+                onChange={(e) => setNewMission({...newMission, name: e.target.value})}
+                placeholder="Enter mission name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="mission-desc">Description</Label>
+              <textarea 
+                id="mission-desc"
+                value={newMission.description}
+                onChange={(e) => setNewMission({...newMission, description: e.target.value})}
+                placeholder="Brief description of the mission"
+                className="min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="mission-name">Mission Name</Label>
-                <Input 
-                  id="mission-name"
-                  value={newMission.name}
-                  onChange={(e) => setNewMission({...newMission, name: e.target.value})}
-                  placeholder="Enter mission name"
-                />
+                <Label htmlFor="mission-type">Type</Label>
+                <select 
+                  id="mission-type"
+                  value={newMission.type}
+                  onChange={(e) => setNewMission({...newMission, type: e.target.value})}
+                  className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                >
+                  <option value="standard">Standard</option>
+                  <option value="pickup">Pickup</option>
+                  <option value="delivery">Delivery</option>
+                  <option value="transport">Transport</option>
+                  <option value="custom">Custom</option>
+                </select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="mission-desc">Description</Label>
-                <textarea 
-                  id="mission-desc"
-                  value={newMission.description}
-                  onChange={(e) => setNewMission({...newMission, description: e.target.value})}
-                  placeholder="Brief description of the mission"
-                  className="min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="mission-type">Type</Label>
-                  <select 
-                    id="mission-type"
-                    value={newMission.type}
-                    onChange={(e) => setNewMission({...newMission, type: e.target.value})}
-                    className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                  >
-                    <option value="standard">Standard</option>
-                    <option value="pickup">Pickup</option>
-                    <option value="delivery">Delivery</option>
-                    <option value="transport">Transport</option>
-                    <option value="custom">Custom</option>
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="mission-priority">Priority</Label>
-                  <select 
-                    id="mission-priority"
-                    value={newMission.priority}
-                    onChange={(e) => setNewMission({...newMission, priority: e.target.value})}
-                    className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                  >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                    <option value="urgent">Urgent</option>
-                  </select>
-                </div>
+                <Label htmlFor="mission-priority">Priority</Label>
+                <select 
+                  id="mission-priority"
+                  value={newMission.priority}
+                  onChange={(e) => setNewMission({...newMission, priority: e.target.value})}
+                  className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="urgent">Urgent</option>
+                </select>
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsNewMissionDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button 
-                onClick={handleCreateMission}
-                disabled={!newMission.name}
-                className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90"
-              >
-                Create Mission
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsNewMissionDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleCreateMission}
+              disabled={!newMission.name}
+              className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90"
+            >
+              Create Mission
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
         <TabsList className="bg-background border border-border p-1">

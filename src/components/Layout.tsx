@@ -63,7 +63,7 @@ const navSections: NavSection[] = [
       },
       {
         path: "/missions",
-        name: "Robot Missions",
+        name: "Robot Missions",  // Changed from "Missions" to "Robot Missions"
         icon: <Bot className="w-5 h-5" />,
       },
     ],
@@ -73,7 +73,7 @@ const navSections: NavSection[] = [
     items: [
       {
         path: "/team-settings",
-        name: "Team",
+        name: "Team Management",  // Changed from "Team" to "Team Management"
         icon: <Users className="w-5 h-5" />,
       },
       {

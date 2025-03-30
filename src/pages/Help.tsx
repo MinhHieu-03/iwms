@@ -1,203 +1,206 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { 
-  BookOpen, 
-  PlayCircle, 
-  FileQuestion, 
-  MessageSquare, 
-  ArrowRight,
-  Phone
-} from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import {
+  FileText,
+  Search,
+  HelpCircle,
+  MessageSquare,
+  Book,
+  BookOpen,
+  Video,
+  FileQuestion,
+  ArrowRight,
+} from "lucide-react";
 
 const Help = () => {
-  const helpGuides = [
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const guideCategories = [
     {
       id: "getting-started",
       title: "Getting Started",
-      description: "Learn the basics of navigating and using the system",
-      icon: <BookOpen className="h-6 w-6" />
-    },
-    {
-      id: "inbound-outbound",
-      title: "Inbound & Outbound",
-      description: "Managing product receiving and shipping",
-      icon: <BookOpen className="h-6 w-6" />
-    },
-    {
-      id: "warehouse-layout",
-      title: "Warehouse Layout",
-      description: "Optimize your warehouse space and organization",
-      icon: <BookOpen className="h-6 w-6" />
+      icon: <Book className="h-5 w-5 text-warehouse-primary" />,
+      description: "Learn the basics of SmartWareHub",
+      guides: [
+        { id: "welcome", title: "Welcome to SmartWareHub", duration: "2 min read" },
+        { id: "dashboard", title: "Using the Dashboard", duration: "3 min read" },
+        { id: "first-mission", title: "Creating Your First Mission", duration: "5 min read" },
+      ],
     },
     {
       id: "missions",
-      title: "Missions",
-      description: "Creating and managing automated workflows",
-      icon: <BookOpen className="h-6 w-6" />
+      title: "Robot Missions",
+      icon: <FileText className="h-5 w-5 text-warehouse-accent2" />,
+      description: "Everything about robot mission management",
+      guides: [
+        { id: "mission-types", title: "Understanding Mission Types", duration: "4 min read" },
+        { id: "templates", title: "Creating Mission Templates", duration: "6 min read" },
+        { id: "scheduling", title: "Scheduling Recurring Missions", duration: "5 min read" },
+      ],
     },
     {
-      id: "settings",
-      title: "Settings",
-      description: "Configure system and user preferences",
-      icon: <BookOpen className="h-6 w-6" />
-    }
+      id: "warehouse",
+      title: "Warehouse Management",
+      icon: <BookOpen className="h-5 w-5 text-warehouse-accent1" />,
+      description: "Configure and optimize your warehouse",
+      guides: [
+        { id: "zones", title: "Setting Up Warehouse Zones", duration: "7 min read" },
+        { id: "layout", title: "Optimizing Warehouse Layout", duration: "8 min read" },
+        { id: "inventory", title: "Inventory Management Basics", duration: "6 min read" },
+      ],
+    },
+    {
+      id: "videos",
+      title: "Video Tutorials",
+      icon: <Video className="h-5 w-5 text-red-500" />,
+      description: "Watch step-by-step video guides",
+      guides: [
+        { id: "video-overview", title: "Platform Overview", duration: "5:22" },
+        { id: "video-robots", title: "Managing Robot Fleet", duration: "8:15" },
+        { id: "video-analytics", title: "Using Analytics Dashboard", duration: "6:48" },
+      ],
+    },
+  ];
+
+  const supportResources = [
+    {
+      title: "Frequently Asked Questions",
+      icon: <FileQuestion className="h-6 w-6" />,
+      description: "Browse answers to common questions about SmartWareHub features",
+      link: "/help/faqs",
+      linkText: "Browse FAQs",
+      color: "bg-purple-100 text-purple-600",
+    },
+    {
+      title: "Contact Support",
+      icon: <MessageSquare className="h-6 w-6" />,
+      description: "Get in touch with our support team for personalized help",
+      link: "#",
+      linkText: "Create Support Ticket",
+      color: "bg-blue-100 text-blue-600",
+    },
+    {
+      title: "Documentation",
+      icon: <Book className="h-6 w-6" />,
+      description: "Access detailed technical documentation and API references",
+      link: "#",
+      linkText: "View Documentation",
+      color: "bg-green-100 text-green-600",
+    },
   ];
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Help Center</h2>
-      
-      <div className="relative">
-        <div className="bg-warehouse-primary rounded-lg p-8 text-white">
-          <div className="max-w-2xl">
-            <h3 className="text-2xl font-semibold mb-4">How can we help you today?</h3>
-            <p className="text-white/80 mb-6">
-              Search our knowledge base or browse the help guides below to find answers to your questions.
-            </p>
-            <div className="relative">
-              <Input
-                placeholder="Search for help topics..."
-                className="pr-10 bg-white text-black placeholder:text-gray-500"
-              />
-              <Button 
-                className="absolute right-0 top-0 h-full rounded-l-none"
-                variant="default"
-              >
-                Search
-              </Button>
-            </div>
-          </div>
-        </div>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Help Center</h2>
       </div>
       
-      <h3 className="text-xl font-semibold">Popular Help Guides</h3>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {helpGuides.map((guide) => (
-          <Card key={guide.id} className="overflow-hidden">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center text-lg">
-                {guide.icon}
-                <span className="ml-2">{guide.title}</span>
-              </CardTitle>
+      <div className="relative">
+        <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+        <Input
+          placeholder="What do you need help with?"
+          className="pl-10 py-6 text-lg"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      {/* Support Resources */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {supportResources.map((resource, i) => (
+          <Card key={i}>
+            <CardHeader className="pb-2">
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${resource.color}`}>
+                {resource.icon}
+              </div>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">{guide.description}</p>
+            <CardContent className="pb-2">
+              <h3 className="text-lg font-medium">{resource.title}</h3>
+              <p className="text-gray-500 mt-1">{resource.description}</p>
             </CardContent>
-            <CardFooter className="pt-3 border-t">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="w-full justify-between" 
-                asChild
-              >
-                <Link to={`/help/guides/${guide.id}`}>
-                  Read guide
-                  <ArrowRight className="ml-2 h-4 w-4" />
+            <CardFooter>
+              <Button variant="link" className="p-0 h-auto" asChild>
+                <Link to={resource.link}>
+                  {resource.linkText}
+                  <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
             </CardFooter>
           </Card>
         ))}
+      </div>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center text-lg">
-              <PlayCircle className="h-6 w-6" />
-              <span className="ml-2">Video Tutorials</span>
-            </CardTitle>
+      {/* Guide Categories */}
+      {guideCategories.map((category) => (
+        <Card key={category.id}>
+          <CardHeader>
+            <div className="flex items-center space-x-2">
+              {category.icon}
+              <CardTitle>{category.title}</CardTitle>
+            </div>
+            <CardDescription>{category.description}</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">
-              Watch step-by-step video tutorials to learn key features
-            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {category.guides.map((guide) => (
+                <Link
+                  key={guide.id}
+                  to={`/help/guides/${guide.id}`}
+                  className="group block border rounded-lg p-4 hover:border-warehouse-primary hover:bg-gray-50 transition-colors"
+                >
+                  <h4 className="font-medium group-hover:text-warehouse-primary transition-colors">
+                    {guide.title}
+                  </h4>
+                  <div className="flex items-center mt-2 text-sm text-gray-500">
+                    <FileText className="h-3 w-3 mr-1" />
+                    {guide.duration}
+                  </div>
+                </Link>
+              ))}
+            </div>
           </CardContent>
-          <CardFooter className="pt-3 border-t">
-            <Button variant="ghost" size="sm" className="w-full justify-between">
-              Watch videos
-              <ArrowRight className="ml-2 h-4 w-4" />
+          <CardFooter>
+            <Button variant="ghost" size="sm">
+              View All {category.title} Guides
+              <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
           </CardFooter>
         </Card>
+      ))}
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center text-lg">
-              <FileQuestion className="h-6 w-6" />
-              <span className="ml-2">FAQs</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground text-sm">
-              Find answers to commonly asked questions
+      <Card>
+        <CardHeader>
+          <CardTitle>Still Need Help?</CardTitle>
+          <CardDescription>
+            Our support team is always ready to assist you.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex items-center">
+          <HelpCircle className="h-8 w-8 text-warehouse-primary mr-4" />
+          <div>
+            <h3 className="font-medium">Contact Support</h3>
+            <p className="text-sm text-gray-500 mt-1">
+              Our average response time is under 2 hours during business hours.
             </p>
-          </CardContent>
-          <CardFooter className="pt-3 border-t">
-            <Button variant="ghost" size="sm" className="w-full justify-between">
-              View FAQs
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-      
-      <h3 className="text-xl font-semibold pt-4">Support Options</h3>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <MessageSquare className="mr-2 h-5 w-5" />
-              Chat Support
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex items-center space-x-4">
-            <div className="flex-1">
-              <p className="text-sm text-muted-foreground mb-4">
-                Chat with our support team for immediate assistance during business hours.
-              </p>
-              <div className="flex items-center text-sm">
-                <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
-                <span>Support agents online now</span>
-              </div>
-            </div>
-            <Button>Start Chat</Button>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Phone className="mr-2 h-5 w-5" />
-              Call Support
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarImage src="" />
-                <AvatarFallback className="bg-warehouse-primary/10 text-warehouse-primary">
-                  SP
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="font-medium">Support Team</p>
-                <p className="text-sm text-muted-foreground">
-                  Available Monday-Friday, 9am-5pm
-                </p>
-              </div>
-            </div>
-            <Button className="w-full" variant="outline">
-              +1 (555) 123-4567
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button className="bg-warehouse-primary hover:bg-warehouse-primary/90">
+            Create Support Ticket
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 };

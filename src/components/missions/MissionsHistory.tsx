@@ -1,9 +1,7 @@
-
 import React from "react";
 import { Card } from "@/components/ui/card";
 import StatusBadge from "@/components/StatusBadge";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -27,14 +25,6 @@ const MissionsHistory = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div className="space-x-2">
-          <Button className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90">
-            <Plus className="mr-1 h-4 w-4" /> New Mission
-          </Button>
-        </div>
-      </div>
-      
       <Card className="p-6">
         <h3 className="text-lg font-medium mb-4">Active Missions</h3>
         <Table>
