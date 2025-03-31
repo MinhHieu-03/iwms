@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type TemplateType = {
   id: string;
@@ -47,6 +49,7 @@ type TemplateType = {
 
 const MissionsTemplates = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [templates, setTemplates] = useState<TemplateType[]>([
     {
       id: "t-001",
@@ -117,8 +120,8 @@ const MissionsTemplates = () => {
     navigate(`/missions/templates/${id}`);
     
     // Show success toast
-    toast("Template created", {
-      description: `"${newTemplate.name}" has been created successfully.`,
+    toast(t('template_created'), {
+      description: `"${newTemplate.name}" ${t('template_created_description')}`,
       icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
     });
   };
@@ -137,8 +140,8 @@ const MissionsTemplates = () => {
       setTemplateToDelete(null);
       
       // Show success toast
-      toast("Template deleted", {
-        description: `"${templateName}" has been deleted.`,
+      toast(t('template_deleted'), {
+        description: `"${templateName}" ${t('template_deleted_description')}`,
       });
     }
   };
@@ -156,12 +159,12 @@ const MissionsTemplates = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Mission Templates</h2>
+        <h2 className="text-2xl font-bold">{t('mission_templates')}</h2>
         <Button 
           className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90"
           onClick={handleCreateNewEmptyTemplate}
         >
-          <Plus className="mr-1 h-4 w-4" /> New Template
+          <Plus className="mr-1 h-4 w-4" /> {t('new_template')}
         </Button>
       </div>
 
@@ -169,7 +172,7 @@ const MissionsTemplates = () => {
         <div className="relative w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search templates..."
+            placeholder={t('search_templates')}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -178,21 +181,21 @@ const MissionsTemplates = () => {
         <div className="flex space-x-2">
           <Button variant="outline" size="sm">
             <Filter className="mr-1 h-4 w-4" />
-            Filter
+            {t('filter')}
           </Button>
           <Button variant="outline" size="sm">
             <CalendarDays className="mr-1 h-4 w-4" />
-            Date
+            {t('date')}
           </Button>
         </div>
       </div>
 
       {filteredTemplates.length === 0 ? (
-        <div className="text-center py-10 border rounded-lg bg-gray-50">
+        <div className="text-center py-10 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
           <FileText className="mx-auto h-10 w-10 text-gray-400 mb-2" />
-          <h3 className="text-lg font-medium mb-1">No templates found</h3>
-          <p className="text-sm text-gray-500">
-            {searchQuery ? "Try a different search term" : "Create your first template to get started"}
+          <h3 className="text-lg font-medium mb-1">{t('no_templates_found')}</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {searchQuery ? t('try_different_search') : t('create_first_template')}
           </p>
           {searchQuery && (
             <Button
@@ -200,14 +203,14 @@ const MissionsTemplates = () => {
               className="mt-4"
               onClick={() => setSearchQuery("")}
             >
-              Clear search
+              {t('clear_search')}
             </Button>
           )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredTemplates.map((template) => (
-            <Card key={template.id} className="h-full hover:shadow-md transition-shadow">
+            <Card key={template.id} className="h-full hover:shadow-md transition-shadow dark:border-gray-700">
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
                   <CardTitle className="flex items-center text-lg">
@@ -218,19 +221,19 @@ const MissionsTemplates = () => {
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                         <MoreVertical className="h-4 w-4" />
-                        <span className="sr-only">Actions</span>
+                        <span className="sr-only">{t('actions')}</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuItem asChild>
                         <Link to={`/missions/templates/${template.id}`}>
                           <FileEdit className="mr-2 h-4 w-4" />
-                          <span>Edit</span>
+                          <span>{t('edit')}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <Copy className="mr-2 h-4 w-4" />
-                        <span>Duplicate</span>
+                        <span>{t('duplicate')}</span>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem 
@@ -238,7 +241,7 @@ const MissionsTemplates = () => {
                         onClick={() => confirmDelete(template.id)}
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
-                        <span>Delete</span>
+                        <span>{t('delete')}</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -260,10 +263,10 @@ const MissionsTemplates = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600 mb-4">{template.description}</p>
-                <div className="flex justify-between text-sm text-gray-500">
-                  <span>{template.steps} steps</span>
-                  <span>Modified: {new Date(template.lastModified).toLocaleDateString()}</span>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{template.description}</p>
+                <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
+                  <span>{template.steps} {t('steps')}</span>
+                  <span>{t('modified')} {new Date(template.lastModified).toLocaleDateString()}</span>
                 </div>
                 <div className="mt-4 flex justify-end">
                   <Button
@@ -273,7 +276,7 @@ const MissionsTemplates = () => {
                     asChild
                   >
                     <Link to={`/missions/templates/${template.id}`}>
-                      Edit <ArrowRight className="ml-1 h-4 w-4" />
+                      {t('edit')} <ArrowRight className="ml-1 h-4 w-4" />
                     </Link>
                   </Button>
                 </div>
@@ -286,18 +289,18 @@ const MissionsTemplates = () => {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Template</DialogTitle>
+            <DialogTitle>{t('delete_template')}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this template? This action cannot be undone.
+              {t('delete_template_confirm')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button variant="destructive" onClick={handleDeleteTemplate}>
               <Trash2 className="mr-2 h-4 w-4" />
-              Delete
+              {t('delete')}
             </Button>
           </DialogFooter>
         </DialogContent>

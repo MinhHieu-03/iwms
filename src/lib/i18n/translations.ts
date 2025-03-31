@@ -56,6 +56,26 @@ export type TranslationKey =
   | 'pause'
   | 'cancel_mission'
   | 'new_mission'
+  | 'mission_templates'
+  | 'new_template'
+  | 'search_templates'
+  | 'filter'
+  | 'date'
+  | 'no_templates_found'
+  | 'try_different_search'
+  | 'create_first_template'
+  | 'clear_search'
+  | 'edit'
+  | 'duplicate'
+  | 'delete'
+  | 'steps'
+  | 'modified'
+  | 'delete_template'
+  | 'delete_template_confirm'
+  | 'template_created'
+  | 'template_created_description'
+  | 'template_deleted'
+  | 'template_deleted_description'
   
   // Operator Interface
   | 'select_dock'
@@ -67,9 +87,79 @@ export type TranslationKey =
   | 'outbound'
   | 'history'
   | 'dock_history'
-  | 'date'
   | 'dock'
-  | 'activity';
+  | 'activity'
+  | 'scan_barcode'
+  | 'enter_barcode'
+  | 'recent_activity'
+  | 'processing'
+  | 'completed'
+  | 'failed'
+  
+  // Warehouse Layout
+  | 'warehouse_overview'
+  | 'warehouse_zones'
+  | 'manage_zones'
+  | 'size'
+  | 'occupancy'
+  | '2d_layout'
+  | '3d_visualization'
+  | 'rack_configurations'
+  | 'configure_racks'
+  | 'overview'
+  | 'zones'
+  | 'racks'
+  | 'to_be_implemented'
+  
+  // System Settings
+  | 'database_configuration'
+  | 'database_url'
+  | 'connection_pool'
+  | 'query_timeout'
+  | 'server_settings'
+  | 'server_port'
+  | 'environment'
+  | 'log_level'
+  | 'storage_configuration'
+  | 'storage_path'
+  | 'automatic_backups'
+  | 'backup_frequency'
+  | 'api_configuration'
+  | 'api_key'
+  | 'regenerate'
+  | 'rate_limit'
+  | 'development'
+  | 'staging'
+  | 'production'
+  | 'debug'
+  | 'info'
+  | 'warning'
+  | 'error'
+  | 'enabled'
+  | 'disabled'
+  | 'hourly'
+  | 'daily'
+  | 'weekly'
+  | 'monthly'
+  | 'reset'
+  
+  // Warehouse Settings & Team Management
+  | 'team_settings'
+  | 'warehouse_configuration'
+  | 'reset_to_defaults'
+  
+  // Help Center
+  | 'guides'
+  | 'faqs'
+  | 'contact_support'
+  | 'popular_guides'
+  | 'quick_answers'
+  
+  // Notifications
+  | 'mark_all_read'
+  | 'clear_all'
+  | 'no_notifications'
+  | 'notification_time';
 
 export const translations: Record<SupportedLanguages, Record<TranslationKey, string>> = {
   en: {
@@ -127,6 +217,26 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     pause: 'Pause',
     cancel_mission: 'Cancel',
     new_mission: 'New Mission',
+    mission_templates: 'Mission Templates',
+    new_template: 'New Template',
+    search_templates: 'Search templates...',
+    filter: 'Filter',
+    date: 'Date',
+    no_templates_found: 'No templates found',
+    try_different_search: 'Try a different search term',
+    create_first_template: 'Create your first template to get started',
+    clear_search: 'Clear search',
+    edit: 'Edit',
+    duplicate: 'Duplicate',
+    delete: 'Delete',
+    steps: 'steps',
+    modified: 'Modified:',
+    delete_template: 'Delete Template',
+    delete_template_confirm: 'Are you sure you want to delete this template? This action cannot be undone.',
+    template_created: 'Template created',
+    template_created_description: 'has been created successfully.',
+    template_deleted: 'Template deleted',
+    template_deleted_description: 'has been deleted.',
     
     // Operator Interface
     select_dock: 'Select Dock',
@@ -138,9 +248,79 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     outbound: 'Outbound',
     history: 'History',
     dock_history: 'Dock History',
-    date: 'Date',
     dock: 'Dock',
-    activity: 'Activity'
+    activity: 'Activity',
+    scan_barcode: 'Scan Barcode',
+    enter_barcode: 'Enter Barcode',
+    recent_activity: 'Recent Activity',
+    processing: 'Processing',
+    completed: 'Completed',
+    failed: 'Failed',
+    
+    // Warehouse Layout
+    warehouse_overview: 'Warehouse Overview',
+    warehouse_zones: 'Warehouse Zones',
+    manage_zones: 'Manage warehouse zones and their configurations.',
+    size: 'Size',
+    occupancy: 'Occupancy',
+    '2d_layout': '2D Layout',
+    '3d_visualization': '3D Visualization',
+    rack_configurations: 'Rack Configurations',
+    configure_racks: 'Configure storage racks and shelving units.',
+    overview: 'Overview',
+    zones: 'Zones',
+    racks: 'Racks',
+    to_be_implemented: 'Rack configuration functionality to be implemented.',
+    
+    // System Settings
+    database_configuration: 'Database Configuration',
+    database_url: 'Database URL',
+    connection_pool: 'Connection Pool Size',
+    query_timeout: 'Query Timeout (seconds)',
+    server_settings: 'Server Settings',
+    server_port: 'Server Port',
+    environment: 'Environment',
+    log_level: 'Log Level',
+    storage_configuration: 'Storage Configuration',
+    storage_path: 'Storage Path',
+    automatic_backups: 'Automatic Backups',
+    backup_frequency: 'Backup Frequency',
+    api_configuration: 'API Configuration',
+    api_key: 'API Key',
+    regenerate: 'Regenerate',
+    rate_limit: 'Rate Limit (requests per minute)',
+    development: 'Development',
+    staging: 'Staging',
+    production: 'Production',
+    debug: 'Debug',
+    info: 'Info',
+    warning: 'Warning',
+    error: 'Error',
+    enabled: 'Enabled',
+    disabled: 'Disabled',
+    hourly: 'Hourly',
+    daily: 'Daily',
+    weekly: 'Weekly',
+    monthly: 'Monthly',
+    reset: 'Reset',
+    
+    // Warehouse Settings & Team Management
+    team_settings: 'Team Settings',
+    warehouse_configuration: 'Warehouse Configuration',
+    reset_to_defaults: 'Reset to defaults',
+    
+    // Help Center
+    guides: 'Guides',
+    faqs: 'FAQs',
+    contact_support: 'Contact Support',
+    popular_guides: 'Popular Guides',
+    quick_answers: 'Quick Answers',
+    
+    // Notifications
+    mark_all_read: 'Mark all as read',
+    clear_all: 'Clear all',
+    no_notifications: 'No notifications',
+    notification_time: 'ago'
   },
   vi: {
     // Common
@@ -197,6 +377,26 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     pause: 'Tạm dừng',
     cancel_mission: 'Hủy',
     new_mission: 'Nhiệm vụ mới',
+    mission_templates: 'Mẫu nhiệm vụ',
+    new_template: 'Mẫu mới',
+    search_templates: 'Tìm kiếm mẫu...',
+    filter: 'Lọc',
+    date: 'Ngày',
+    no_templates_found: 'Không tìm thấy mẫu',
+    try_different_search: 'Thử từ khóa tìm kiếm khác',
+    create_first_template: 'Tạo mẫu đầu tiên để bắt đầu',
+    clear_search: 'Xóa tìm kiếm',
+    edit: 'Chỉnh sửa',
+    duplicate: 'Nhân bản',
+    delete: 'Xóa',
+    steps: 'bước',
+    modified: 'Đã sửa:',
+    delete_template: 'Xóa mẫu',
+    delete_template_confirm: 'Bạn có chắc chắn muốn xóa mẫu này? Hành động này không thể hoàn tác.',
+    template_created: 'Đã tạo mẫu',
+    template_created_description: 'đã được tạo thành công.',
+    template_deleted: 'Đã xóa mẫu',
+    template_deleted_description: 'đã được xóa.',
     
     // Operator Interface
     select_dock: 'Chọn khu vực',
@@ -208,8 +408,78 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     outbound: 'Xuất kho',
     history: 'Lịch sử',
     dock_history: 'Lịch sử khu vực',
-    date: 'Ngày',
     dock: 'Khu vực',
-    activity: 'Hoạt động'
+    activity: 'Hoạt động',
+    scan_barcode: 'Quét mã vạch',
+    enter_barcode: 'Nhập mã vạch',
+    recent_activity: 'Hoạt động gần đây',
+    processing: 'Đang xử lý',
+    completed: 'Hoàn thành',
+    failed: 'Thất bại',
+    
+    // Warehouse Layout
+    warehouse_overview: 'Tổng quan kho',
+    warehouse_zones: 'Khu vực kho',
+    manage_zones: 'Quản lý các khu vực kho và cấu hình của chúng.',
+    size: 'Kích thước',
+    occupancy: 'Tỷ lệ lấp đầy',
+    '2d_layout': 'Bố trí 2D',
+    '3d_visualization': 'Hình ảnh 3D',
+    rack_configurations: 'Cấu hình kệ',
+    configure_racks: 'Cấu hình kệ lưu trữ và đơn vị kệ.',
+    overview: 'Tổng quan',
+    zones: 'Khu vực',
+    racks: 'Kệ',
+    to_be_implemented: 'Chức năng cấu hình kệ sẽ được triển khai sau.',
+    
+    // System Settings
+    database_configuration: 'Cấu hình cơ sở dữ liệu',
+    database_url: 'URL cơ sở dữ liệu',
+    connection_pool: 'Kích thước nhóm kết nối',
+    query_timeout: 'Thời gian chờ truy vấn (giây)',
+    server_settings: 'Cài đặt máy chủ',
+    server_port: 'Cổng máy chủ',
+    environment: 'Môi trường',
+    log_level: 'Mức độ ghi nhật ký',
+    storage_configuration: 'Cấu hình lưu trữ',
+    storage_path: 'Đường dẫn lưu trữ',
+    automatic_backups: 'Sao lưu tự động',
+    backup_frequency: 'Tần suất sao lưu',
+    api_configuration: 'Cấu hình API',
+    api_key: 'Khóa API',
+    regenerate: 'Tạo lại',
+    rate_limit: 'Giới hạn tốc độ (yêu cầu mỗi phút)',
+    development: 'Phát triển',
+    staging: 'Dàn dựng',
+    production: 'Sản xuất',
+    debug: 'Gỡ lỗi',
+    info: 'Thông tin',
+    warning: 'Cảnh báo',
+    error: 'Lỗi',
+    enabled: 'Bật',
+    disabled: 'Tắt',
+    hourly: 'Hàng giờ',
+    daily: 'Hàng ngày',
+    weekly: 'Hàng tuần',
+    monthly: 'Hàng tháng',
+    reset: 'Đặt lại',
+    
+    // Warehouse Settings & Team Management
+    team_settings: 'Cài đặt nhóm',
+    warehouse_configuration: 'Cấu hình kho',
+    reset_to_defaults: 'Đặt lại về mặc định',
+    
+    // Help Center
+    guides: 'Hướng dẫn',
+    faqs: 'Câu hỏi thường gặp',
+    contact_support: 'Liên hệ hỗ trợ',
+    popular_guides: 'Hướng dẫn phổ biến',
+    quick_answers: 'Câu trả lời nhanh',
+    
+    // Notifications
+    mark_all_read: 'Đánh dấu tất cả là đã đọc',
+    clear_all: 'Xóa tất cả',
+    no_notifications: 'Không có thông báo',
+    notification_time: 'trước'
   }
 };

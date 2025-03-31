@@ -16,16 +16,26 @@ const LanguageSelector = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="flex items-center gap-2 h-9 px-3">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="flex items-center gap-2 h-9 px-3 rounded-full border border-border hover:bg-accent"
+        >
           <Globe className="h-4 w-4" />
-          <span className="font-medium">{language.toUpperCase()}</span>
+          <span className="font-medium text-sm">{language.toUpperCase()}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setLanguage('en')}>
+      <DropdownMenuContent align="end" className="w-32">
+        <DropdownMenuItem 
+          onClick={() => setLanguage('en')} 
+          className={language === 'en' ? 'bg-accent' : ''}
+        >
           <span className={language === 'en' ? 'font-bold' : ''}>English</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setLanguage('vi')}>
+        <DropdownMenuItem 
+          onClick={() => setLanguage('vi')} 
+          className={language === 'vi' ? 'bg-accent' : ''}
+        >
           <span className={language === 'vi' ? 'font-bold' : ''}>Tiếng Việt</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

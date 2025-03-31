@@ -31,77 +31,81 @@ const MissionsHistory = () => {
     <div className="space-y-6">
       <Card className="p-6">
         <h3 className="text-lg font-medium mb-4">{t('active_missions')}</h3>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t('mission_id')}</TableHead>
-              <TableHead>{t('robot')}</TableHead>
-              <TableHead>{t('type')}</TableHead>
-              <TableHead>{t('status')}</TableHead>
-              <TableHead>{t('from')}</TableHead>
-              <TableHead>{t('to')}</TableHead>
-              <TableHead>{t('started')}</TableHead>
-              <TableHead>{t('actions')}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {activeMissions.map((mission) => (
-              <TableRow key={mission.id}>
-                <TableCell>{mission.id}</TableCell>
-                <TableCell>{mission.robot}</TableCell>
-                <TableCell>{mission.type}</TableCell>
-                <TableCell>
-                  <StatusBadge status={mission.status} />
-                </TableCell>
-                <TableCell>{mission.from}</TableCell>
-                <TableCell>{mission.to}</TableCell>
-                <TableCell>{new Date(mission.start).toLocaleString()}</TableCell>
-                <TableCell>
-                  <Button variant="ghost" className="text-yellow-600 hover:text-yellow-800 mr-2">
-                    {t('pause')}
-                  </Button>
-                  <Button variant="ghost" className="text-red-600 hover:text-red-800">
-                    {t('cancel_mission')}
-                  </Button>
-                </TableCell>
+        <div className="rounded-md border dark:border-gray-700">
+          <Table>
+            <TableHeader className="bg-muted/50 dark:bg-gray-800">
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="font-medium">{t('mission_id')}</TableHead>
+                <TableHead className="font-medium">{t('robot')}</TableHead>
+                <TableHead className="font-medium">{t('type')}</TableHead>
+                <TableHead className="font-medium">{t('status')}</TableHead>
+                <TableHead className="font-medium">{t('from')}</TableHead>
+                <TableHead className="font-medium">{t('to')}</TableHead>
+                <TableHead className="font-medium">{t('started')}</TableHead>
+                <TableHead className="font-medium">{t('actions')}</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {activeMissions.map((mission) => (
+                <TableRow key={mission.id}>
+                  <TableCell>{mission.id}</TableCell>
+                  <TableCell>{mission.robot}</TableCell>
+                  <TableCell>{mission.type}</TableCell>
+                  <TableCell>
+                    <StatusBadge status={mission.status} />
+                  </TableCell>
+                  <TableCell>{mission.from}</TableCell>
+                  <TableCell>{mission.to}</TableCell>
+                  <TableCell>{new Date(mission.start).toLocaleString()}</TableCell>
+                  <TableCell>
+                    <Button variant="ghost" className="text-yellow-600 hover:text-yellow-800 dark:text-yellow-500 dark:hover:text-yellow-400 mr-2">
+                      {t('pause')}
+                    </Button>
+                    <Button variant="ghost" className="text-red-600 hover:text-red-800 dark:text-red-500 dark:hover:text-red-400">
+                      {t('cancel_mission')}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
       
       <Card className="p-6">
         <h3 className="text-lg font-medium mb-4">{t('recent_missions')}</h3>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t('mission_id')}</TableHead>
-              <TableHead>{t('robot')}</TableHead>
-              <TableHead>{t('type')}</TableHead>
-              <TableHead>{t('status')}</TableHead>
-              <TableHead>{t('from')}</TableHead>
-              <TableHead>{t('to')}</TableHead>
-              <TableHead>{t('started')}</TableHead>
-              <TableHead>{t('finished')}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {recentMissions.map((mission) => (
-              <TableRow key={mission.id}>
-                <TableCell>{mission.id}</TableCell>
-                <TableCell>{mission.robot}</TableCell>
-                <TableCell>{mission.type}</TableCell>
-                <TableCell>
-                  <StatusBadge status={mission.status} />
-                </TableCell>
-                <TableCell>{mission.from}</TableCell>
-                <TableCell>{mission.to}</TableCell>
-                <TableCell>{new Date(mission.start).toLocaleString()}</TableCell>
-                <TableCell>{mission.end ? new Date(mission.end).toLocaleString() : '-'}</TableCell>
+        <div className="rounded-md border dark:border-gray-700">
+          <Table>
+            <TableHeader className="bg-muted/50 dark:bg-gray-800">
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="font-medium">{t('mission_id')}</TableHead>
+                <TableHead className="font-medium">{t('robot')}</TableHead>
+                <TableHead className="font-medium">{t('type')}</TableHead>
+                <TableHead className="font-medium">{t('status')}</TableHead>
+                <TableHead className="font-medium">{t('from')}</TableHead>
+                <TableHead className="font-medium">{t('to')}</TableHead>
+                <TableHead className="font-medium">{t('started')}</TableHead>
+                <TableHead className="font-medium">{t('finished')}</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {recentMissions.map((mission) => (
+                <TableRow key={mission.id}>
+                  <TableCell>{mission.id}</TableCell>
+                  <TableCell>{mission.robot}</TableCell>
+                  <TableCell>{mission.type}</TableCell>
+                  <TableCell>
+                    <StatusBadge status={mission.status} />
+                  </TableCell>
+                  <TableCell>{mission.from}</TableCell>
+                  <TableCell>{mission.to}</TableCell>
+                  <TableCell>{new Date(mission.start).toLocaleString()}</TableCell>
+                  <TableCell>{mission.end ? new Date(mission.end).toLocaleString() : '-'}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
     </div>
   );

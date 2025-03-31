@@ -24,7 +24,9 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     highContrast: false
   });
 
+  // Load saved settings on initial mount
   useEffect(() => {
+    // Load language from localStorage
     const savedLanguage = localStorage.getItem('language');
     if (savedLanguage === 'en' || savedLanguage === 'vi') {
       setLanguage(savedLanguage);
@@ -77,7 +79,11 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const t = (key: TranslationKey): string => {
-    return translations[language][key] || key;
+    if (!translations[language][key]) {
+      console.warn(`Translation missing for key: ${key} in language: ${language}`);
+      return key;
+    }
+    return translations[language][key];
   };
 
   return (
