@@ -27,6 +27,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import LanguageSelector from "./LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { TranslationKey } from "@/lib/i18n/translations";
 
 type NavSection = {
   title: string;
@@ -65,27 +66,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       items: [
         {
           path: "/",
-          name: "dashboard",
+          name: "dashboard" as TranslationKey,
           icon: <LayoutDashboard className="w-5 h-5" />,
         },
         {
           path: "/operator-interface",
-          name: "operator_interface",
+          name: "operator_interface" as TranslationKey,
           icon: <MonitorSmartphone className="w-5 h-5" />,
         },
         {
           path: "/inbound-outbound",
-          name: "inbound_outbound",
+          name: "inbound_outbound" as TranslationKey,
           icon: <Truck className="w-5 h-5" />,
         },
         {
           path: "/layout",
-          name: "warehouse_layout",
+          name: "warehouse_layout" as TranslationKey,
           icon: <LayoutList className="w-5 h-5" />,
         },
         {
           path: "/missions",
-          name: "robot_missions",
+          name: "robot_missions" as TranslationKey,
           icon: <Bot className="w-5 h-5" />,
         },
       ],
@@ -95,22 +96,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       items: [
         {
           path: "/team-settings",
-          name: "team_management",
+          name: "team_management" as TranslationKey,
           icon: <Users className="w-5 h-5" />,
         },
         {
           path: "/user-settings",
-          name: "user_settings",
+          name: "user_settings" as TranslationKey,
           icon: <User className="w-5 h-5" />,
         },
         {
           path: "/system-settings",
-          name: "system_settings",
+          name: "system_settings" as TranslationKey,
           icon: <Settings className="w-5 h-5" />,
         },
         {
           path: "/warehouse-settings",
-          name: "warehouse_settings",
+          name: "warehouse_settings" as TranslationKey,
           icon: <Warehouse className="w-5 h-5" />,
         },
       ],
@@ -120,21 +121,37 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       items: [
         {
           path: "/notifications",
-          name: "notifications",
+          name: "notifications" as TranslationKey,
           icon: <Bell className="w-5 h-5" />,
           badge: 3,
         },
         {
           path: "/help",
-          name: "help_center",
+          name: "help_center" as TranslationKey,
           icon: <HelpCircle className="w-5 h-5" />,
         },
       ],
     },
   ];
 
+  // Apply dark mode class to body instead of just the container
+  React.useEffect(() => {
+    const root = document.documentElement;
+    if (isDarkMode) {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+    
+    if (isHighContrast) {
+      root.classList.add("high-contrast");
+    } else {
+      root.classList.remove("high-contrast");
+    }
+  }, [isDarkMode, isHighContrast]);
+
   return (
-    <div className={`flex min-h-screen ${isDarkMode ? 'dark' : ''} ${isHighContrast ? 'high-contrast' : ''}`}>
+    <div className="flex min-h-screen">
       {/* Sidebar - enhanced with active state highlighting */}
       <div className="w-64 bg-background border-r border-border shadow-sm">
         <div className="p-4 flex items-center space-x-2 border-b border-border">
@@ -177,7 +194,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 className="flex items-center space-x-3 px-4 py-3 rounded-md w-full text-left text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
               >
                 <LogOut className="w-5 h-5" />
-                <span>{t('logout')}</span>
+                <span>{t("logout")}</span>
               </button>
             </div>
           )}
@@ -205,7 +222,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               {t(navSections.flatMap(s => s.items).find((item) => 
                 item.path === location.pathname || 
                 (item.path !== "/" && location.pathname.startsWith(item.path))
-              )?.name || "dashboard")}
+              )?.name || "dashboard" as TranslationKey)}
             </h1>
           </div>
 
@@ -240,25 +257,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <DropdownMenuItem asChild>
                     <Link to="/user-settings">
                       <User className="mr-2 h-4 w-4" />
-                      <span>{t('user_settings')}</span>
+                      <span>{t("user_settings" as TranslationKey)}</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/notifications">
                       <Bell className="mr-2 h-4 w-4" />
-                      <span>{t('notifications')}</span>
+                      <span>{t("notifications" as TranslationKey)}</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/help">
                       <HelpCircle className="mr-2 h-4 w-4" />
-                      <span>{t('help_center')}</span>
+                      <span>{t("help_center" as TranslationKey)}</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span className="text-red-500">{t('logout')}</span>
+                    <span className="text-red-500">{t("logout" as TranslationKey)}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

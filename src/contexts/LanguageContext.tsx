@@ -18,6 +18,22 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (savedLanguage === 'en' || savedLanguage === 'vi') {
       setLanguage(savedLanguage);
     }
+
+    // Apply theme settings from localStorage on initialization
+    const darkMode = localStorage.getItem("darkMode") === "true";
+    const highContrast = localStorage.getItem("highContrast") === "true";
+    
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    
+    if (highContrast) {
+      document.documentElement.classList.add("high-contrast");
+    } else {
+      document.documentElement.classList.remove("high-contrast");
+    }
   }, []);
 
   const handleSetLanguage = (lang: SupportedLanguages) => {

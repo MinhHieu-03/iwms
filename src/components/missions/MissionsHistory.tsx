@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card } from "@/components/ui/card";
 import StatusBadge from "@/components/StatusBadge";
@@ -10,8 +11,11 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const MissionsHistory = () => {
+  const { t } = useLanguage();
+  
   const activeMissions = [
     { id: "M-083", robot: "Robot-01", type: "Transfer", status: "In Progress", from: "A-12", to: "D-05", start: "2023-05-15T11:30:00" },
     { id: "M-084", robot: "Robot-03", type: "Pick", status: "In Progress", from: "B-08", to: "Loading", start: "2023-05-15T11:45:00" },
@@ -26,18 +30,18 @@ const MissionsHistory = () => {
   return (
     <div className="space-y-6">
       <Card className="p-6">
-        <h3 className="text-lg font-medium mb-4">Active Missions</h3>
+        <h3 className="text-lg font-medium mb-4">{t('active_missions')}</h3>
         <Table>
-          <TableHeader className="bg-gray-100">
+          <TableHeader>
             <TableRow>
-              <TableHead>Mission ID</TableHead>
-              <TableHead>Robot</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>From</TableHead>
-              <TableHead>To</TableHead>
-              <TableHead>Started</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>{t('mission_id')}</TableHead>
+              <TableHead>{t('robot')}</TableHead>
+              <TableHead>{t('type')}</TableHead>
+              <TableHead>{t('status')}</TableHead>
+              <TableHead>{t('from')}</TableHead>
+              <TableHead>{t('to')}</TableHead>
+              <TableHead>{t('started')}</TableHead>
+              <TableHead>{t('actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -54,10 +58,10 @@ const MissionsHistory = () => {
                 <TableCell>{new Date(mission.start).toLocaleString()}</TableCell>
                 <TableCell>
                   <Button variant="ghost" className="text-yellow-600 hover:text-yellow-800 mr-2">
-                    Pause
+                    {t('pause')}
                   </Button>
                   <Button variant="ghost" className="text-red-600 hover:text-red-800">
-                    Cancel
+                    {t('cancel_mission')}
                   </Button>
                 </TableCell>
               </TableRow>
@@ -67,18 +71,18 @@ const MissionsHistory = () => {
       </Card>
       
       <Card className="p-6">
-        <h3 className="text-lg font-medium mb-4">Recent Missions</h3>
+        <h3 className="text-lg font-medium mb-4">{t('recent_missions')}</h3>
         <Table>
-          <TableHeader className="bg-gray-100">
+          <TableHeader>
             <TableRow>
-              <TableHead>Mission ID</TableHead>
-              <TableHead>Robot</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>From</TableHead>
-              <TableHead>To</TableHead>
-              <TableHead>Started</TableHead>
-              <TableHead>Finished</TableHead>
+              <TableHead>{t('mission_id')}</TableHead>
+              <TableHead>{t('robot')}</TableHead>
+              <TableHead>{t('type')}</TableHead>
+              <TableHead>{t('status')}</TableHead>
+              <TableHead>{t('from')}</TableHead>
+              <TableHead>{t('to')}</TableHead>
+              <TableHead>{t('started')}</TableHead>
+              <TableHead>{t('finished')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

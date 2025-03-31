@@ -142,6 +142,36 @@
   .high-contrast a:focus {
     @apply ring-2 ring-white ring-offset-2 ring-offset-black;
   }
+  
+  /* Table specific dark mode and high contrast enhancements */
+  .dark .table-header,
+  .dark thead {
+    @apply bg-muted/30 text-foreground;
+  }
+  
+  .dark tbody tr {
+    @apply border-border;
+  }
+  
+  .dark th {
+    @apply text-foreground font-medium;
+  }
+  
+  .high-contrast table {
+    @apply border border-white/30;
+  }
+  
+  .high-contrast th {
+    @apply text-white bg-gray-800;
+  }
+  
+  .high-contrast tr {
+    @apply border-white/30;
+  }
+  
+  .high-contrast tbody tr:hover {
+    @apply bg-gray-900;
+  }
 }
 
 .warehouse-grid {
