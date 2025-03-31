@@ -82,6 +82,46 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+  
+  /* High contrast mode */
+  .high-contrast {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 80%;
+
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 40%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 100%;
+    
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 80%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 30%;
+    --sidebar-ring: 0 0% 100%;
+  }
 }
 
 @layer base {
@@ -91,6 +131,16 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+  
+  /* High contrast focus states */
+  .high-contrast :focus {
+    @apply outline-2 outline-offset-2 outline-white;
+  }
+  
+  .high-contrast button:focus,
+  .high-contrast a:focus {
+    @apply ring-2 ring-white ring-offset-2 ring-offset-black;
   }
 }
 

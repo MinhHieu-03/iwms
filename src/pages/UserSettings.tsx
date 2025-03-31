@@ -6,13 +6,25 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
-import { Bell, Moon, SunMedium, Eye, Lock } from "lucide-react";
+import { Bell, Moon, SunMedium, Eye, Lock, Languages } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const UserSettings = () => {
   const { toast } = useToast();
+  const { t, language, setLanguage } = useLanguage();
+  
   const [darkMode, setDarkMode] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [pushNotifications, setPushNotifications] = useState(false);
 
   // Apply dark mode
   useEffect(() => {
@@ -44,38 +56,48 @@ const UserSettings = () => {
   useEffect(() => {
     const savedDarkMode = localStorage.getItem("darkMode") === "true";
     const savedHighContrast = localStorage.getItem("highContrast") === "true";
+    const savedEmailNotif = localStorage.getItem("emailNotifications") === "true";
+    const savedPushNotif = localStorage.getItem("pushNotifications") === "true";
     
     setDarkMode(savedDarkMode);
     setHighContrast(savedHighContrast);
+    setEmailNotifications(savedEmailNotif !== null ? savedEmailNotif : true);
+    setPushNotifications(savedPushNotif !== null ? savedPushNotif : false);
   }, []);
+
+  // Save notification preferences
+  useEffect(() => {
+    localStorage.setItem("emailNotifications", emailNotifications.toString());
+    localStorage.setItem("pushNotifications", pushNotifications.toString());
+  }, [emailNotifications, pushNotifications]);
 
   const handleSaveChanges = () => {
     toast({
-      title: "Settings saved!",
-      description: "Your preferences have been updated.",
+      title: t('settings_saved'),
+      description: t('settings_saved'),
     });
   };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">User Settings</h2>
-        <Button onClick={handleSaveChanges}>Save Changes</Button>
+        <h2 className="text-2xl font-bold">{t('user_settings')}</h2>
+        <Button onClick={handleSaveChanges}>{t('save_changes')}</Button>
       </div>
 
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
             <Eye className="mr-2 h-5 w-5" />
-            Appearance
+            {t('appearance')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label>Dark Mode</Label>
+              <Label>{t('dark_mode')}</Label>
               <div className="text-sm text-muted-foreground">
-                Toggle between light and dark theme
+                {t('dark_mode_description')}
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -93,9 +115,9 @@ const UserSettings = () => {
 
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label>High Contrast</Label>
+              <Label>{t('high_contrast')}</Label>
               <div className="text-sm text-muted-foreground">
-                Increase contrast for better visibility
+                {t('high_contrast_description')}
               </div>
             </div>
             <Switch 
@@ -104,6 +126,26 @@ const UserSettings = () => {
               onCheckedChange={setHighContrast}
             />
           </div>
+          
+          <Separator />
+          
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>{t('language')}</Label>
+              <div className="text-sm text-muted-foreground">
+                {t('language_description')}
+              </div>
+            </div>
+            <Select value={language} onValueChange={(value: 'en' | 'vi') => setLanguage(value)}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="vi">Tiếng Việt</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 
@@ -111,30 +153,38 @@ const UserSettings = () => {
         <CardHeader>
           <CardTitle className="flex items-center">
             <Bell className="mr-2 h-5 w-5" />
-            Notification Preferences
+            {t('notification_preferences')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label>Email Notifications</Label>
+              <Label>{t('email_notifications')}</Label>
               <div className="text-sm text-muted-foreground">
-                Receive notifications via email
+                {t('email_notifications_description')}
               </div>
             </div>
-            <Switch id="email-notifications" defaultChecked />
+            <Switch 
+              id="email-notifications" 
+              checked={emailNotifications}
+              onCheckedChange={setEmailNotifications}
+            />
           </div>
 
           <Separator />
 
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label>Push Notifications</Label>
+              <Label>{t('push_notifications')}</Label>
               <div className="text-sm text-muted-foreground">
-                Receive push notifications in browser
+                {t('push_notifications_description')}
               </div>
             </div>
-            <Switch id="push-notifications" />
+            <Switch 
+              id="push-notifications" 
+              checked={pushNotifications}
+              onCheckedChange={setPushNotifications}
+            />
           </div>
         </CardContent>
       </Card>
@@ -143,27 +193,27 @@ const UserSettings = () => {
         <CardHeader>
           <CardTitle className="flex items-center">
             <Lock className="mr-2 h-5 w-5" />
-            Security
+            {t('security')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="current-password">Current Password</Label>
+            <Label htmlFor="current-password">{t('current_password')}</Label>
             <Input id="current-password" type="password" />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="new-password">New Password</Label>
+            <Label htmlFor="new-password">{t('new_password')}</Label>
             <Input id="new-password" type="password" />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirm-password">Confirm New Password</Label>
+            <Label htmlFor="confirm-password">{t('confirm_password')}</Label>
             <Input id="confirm-password" type="password" />
           </div>
 
           <Button variant="outline" className="mt-2">
-            Update Password
+            {t('update_password')}
           </Button>
         </CardContent>
       </Card>
