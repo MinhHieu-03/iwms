@@ -27,7 +27,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import LanguageSelector from "./LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { TranslationKey } from "@/lib/i18n/translations";
+import { SupportedLanguages, TranslationKey } from "@/lib/i18n/translations";
 
 type NavSection = {
   title: string;
@@ -219,10 +219,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               "bg-warehouse-highlight"
             }`}></div>
             <h1 className="text-xl font-bold">
-              {t(navSections.flatMap(s => s.items).find((item) => 
-                item.path === location.pathname || 
-                (item.path !== "/" && location.pathname.startsWith(item.path))
-              )?.name || "dashboard" as TranslationKey)}
+              {t(
+                navSections.flatMap(s => s.items)
+                  .find((item) => 
+                    item.path === location.pathname || 
+                    (item.path !== "/" && location.pathname.startsWith(item.path))
+                  )?.name || ("dashboard" as TranslationKey)
+              )}
             </h1>
           </div>
 
@@ -257,25 +260,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <DropdownMenuItem asChild>
                     <Link to="/user-settings">
                       <User className="mr-2 h-4 w-4" />
-                      <span>{t("user_settings" as TranslationKey)}</span>
+                      <span>{t("user_settings")}</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/notifications">
                       <Bell className="mr-2 h-4 w-4" />
-                      <span>{t("notifications" as TranslationKey)}</span>
+                      <span>{t("notifications")}</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/help">
                       <HelpCircle className="mr-2 h-4 w-4" />
-                      <span>{t("help_center" as TranslationKey)}</span>
+                      <span>{t("help_center")}</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span className="text-red-500">{t("logout" as TranslationKey)}</span>
+                    <span className="text-red-500">{t("logout")}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
