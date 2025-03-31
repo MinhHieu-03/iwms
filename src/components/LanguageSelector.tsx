@@ -16,9 +16,9 @@ const LanguageSelector = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="ghost" size="sm" className="flex items-center gap-2 h-9 px-3">
           <Globe className="h-4 w-4" />
-          <span className="ml-2 hidden md:inline">{language.toUpperCase()}</span>
+          <span className="font-medium">{language.toUpperCase()}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

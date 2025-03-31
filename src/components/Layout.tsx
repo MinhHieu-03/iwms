@@ -50,10 +50,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = React.useState(true); // For demo purposes, user is logged in
   const { t } = useLanguage();
   
-  // Get dark mode and high contrast preferences from localStorage
-  const isDarkMode = localStorage.getItem("darkMode") === "true";
-  const isHighContrast = localStorage.getItem("highContrast") === "true";
-  
   const user = {
     name: "John Doe",
     email: "john.doe@example.com",
@@ -134,25 +130,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     },
   ];
 
-  // Apply dark mode class to body instead of just the container
-  React.useEffect(() => {
-    const root = document.documentElement;
-    if (isDarkMode) {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-    
-    if (isHighContrast) {
-      root.classList.add("high-contrast");
-    } else {
-      root.classList.remove("high-contrast");
-    }
-  }, [isDarkMode, isHighContrast]);
-
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar - enhanced with active state highlighting */}
+      {/* Sidebar */}
       <div className="w-64 bg-background border-r border-border shadow-sm">
         <div className="p-4 flex items-center space-x-2 border-b border-border">
           <Box className="h-6 w-6 text-warehouse-primary" />
@@ -231,6 +211,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
           {/* User profile dropdown & Language selector */}
           <div className="flex items-center space-x-4">
+            {/* Language selector with improved positioning */}
             <LanguageSelector />
             
             <Link to="/notifications" className="relative p-2 rounded-full hover:bg-muted">

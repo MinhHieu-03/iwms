@@ -2,16 +2,27 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { SupportedLanguages, TranslationKey, translations } from '@/lib/i18n/translations';
 
+type ThemeSettings = {
+  darkMode: boolean;
+  highContrast: boolean;
+};
+
 type LanguageContextType = {
   language: SupportedLanguages;
   setLanguage: (lang: SupportedLanguages) => void;
   t: (key: TranslationKey) => string;
+  themeSettings: ThemeSettings;
+  updateThemeSetting: (setting: keyof ThemeSettings, value: boolean) => void;
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<SupportedLanguages>('en');
+  const [themeSettings, setThemeSettings] = useState<ThemeSettings>({
+    darkMode: false,
+    highContrast: false
+  });
 
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language');
@@ -19,22 +30,46 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setLanguage(savedLanguage);
     }
 
-    // Apply theme settings from localStorage on initialization
+    // Load theme settings from localStorage on initialization
     const darkMode = localStorage.getItem("darkMode") === "true";
     const highContrast = localStorage.getItem("highContrast") === "true";
     
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
+    setThemeSettings({
+      darkMode,
+      highContrast
+    });
+    
+    // Apply theme settings to document
+    applyThemeSettings({ darkMode, highContrast });
+  }, []);
+
+  // Apply theme settings to document root
+  const applyThemeSettings = (settings: ThemeSettings) => {
+    const root = document.documentElement;
+    
+    if (settings.darkMode) {
+      root.classList.add("dark");
     } else {
-      document.documentElement.classList.remove("dark");
+      root.classList.remove("dark");
     }
     
-    if (highContrast) {
-      document.documentElement.classList.add("high-contrast");
+    if (settings.highContrast) {
+      root.classList.add("high-contrast");
     } else {
-      document.documentElement.classList.remove("high-contrast");
+      root.classList.remove("high-contrast");
     }
-  }, []);
+  };
+
+  const updateThemeSetting = (setting: keyof ThemeSettings, value: boolean) => {
+    const newSettings = { ...themeSettings, [setting]: value };
+    setThemeSettings(newSettings);
+    
+    // Save to localStorage
+    localStorage.setItem(setting, value.toString());
+    
+    // Apply changes
+    applyThemeSettings(newSettings);
+  };
 
   const handleSetLanguage = (lang: SupportedLanguages) => {
     setLanguage(lang);
@@ -46,7 +81,13 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
+    <LanguageContext.Provider value={{ 
+      language, 
+      setLanguage: handleSetLanguage, 
+      t, 
+      themeSettings,
+      updateThemeSetting 
+    }}>
       {children}
     </LanguageContext.Provider>
   );

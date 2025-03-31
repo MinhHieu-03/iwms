@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -133,6 +134,27 @@
     @apply bg-background text-foreground;
   }
   
+  /* Improved table styles for dark mode and high contrast */
+  .dark thead tr,
+  .dark th {
+    @apply bg-muted/50 text-foreground;
+  }
+  
+  .dark tbody tr:hover {
+    @apply bg-muted/30;
+  }
+  
+  .dark .table-header,
+  .dark thead {
+    @apply bg-muted/50 text-foreground;
+    border-bottom: 1px solid hsl(var(--border));
+  }
+  
+  /* Table header styling */
+  th {
+    @apply bg-muted/40 text-foreground font-medium;
+  }
+  
   /* High contrast focus states */
   .high-contrast :focus {
     @apply outline-2 outline-offset-2 outline-white;
@@ -144,19 +166,6 @@
   }
   
   /* Table specific dark mode and high contrast enhancements */
-  .dark .table-header,
-  .dark thead {
-    @apply bg-muted/30 text-foreground;
-  }
-  
-  .dark tbody tr {
-    @apply border-border;
-  }
-  
-  .dark th {
-    @apply text-foreground font-medium;
-  }
-  
   .high-contrast table {
     @apply border border-white/30;
   }

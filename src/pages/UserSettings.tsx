@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,58 +19,8 @@ import {
 
 const UserSettings = () => {
   const { toast } = useToast();
-  const { t, language, setLanguage } = useLanguage();
+  const { t, language, setLanguage, themeSettings, updateThemeSetting } = useLanguage();
   
-  const [darkMode, setDarkMode] = useState(false);
-  const [highContrast, setHighContrast] = useState(false);
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const [pushNotifications, setPushNotifications] = useState(false);
-
-  // Apply dark mode
-  useEffect(() => {
-    const root = document.documentElement;
-    if (darkMode) {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-
-    // Save preference to localStorage
-    localStorage.setItem("darkMode", darkMode.toString());
-  }, [darkMode]);
-
-  // Apply high contrast
-  useEffect(() => {
-    const root = document.documentElement;
-    if (highContrast) {
-      root.classList.add("high-contrast");
-    } else {
-      root.classList.remove("high-contrast");
-    }
-    
-    // Save preference to localStorage
-    localStorage.setItem("highContrast", highContrast.toString());
-  }, [highContrast]);
-
-  // Load saved preferences on initial load
-  useEffect(() => {
-    const savedDarkMode = localStorage.getItem("darkMode") === "true";
-    const savedHighContrast = localStorage.getItem("highContrast") === "true";
-    const savedEmailNotif = localStorage.getItem("emailNotifications") === "true";
-    const savedPushNotif = localStorage.getItem("pushNotifications") === "true";
-    
-    setDarkMode(savedDarkMode);
-    setHighContrast(savedHighContrast);
-    setEmailNotifications(savedEmailNotif !== null ? savedEmailNotif : true);
-    setPushNotifications(savedPushNotif !== null ? savedPushNotif : false);
-  }, []);
-
-  // Save notification preferences
-  useEffect(() => {
-    localStorage.setItem("emailNotifications", emailNotifications.toString());
-    localStorage.setItem("pushNotifications", pushNotifications.toString());
-  }, [emailNotifications, pushNotifications]);
-
   const handleSaveChanges = () => {
     toast({
       title: t('settings_saved'),
@@ -104,8 +54,8 @@ const UserSettings = () => {
               <SunMedium className="h-4 w-4" />
               <Switch 
                 id="dark-mode" 
-                checked={darkMode}
-                onCheckedChange={setDarkMode}
+                checked={themeSettings.darkMode}
+                onCheckedChange={(value) => updateThemeSetting('darkMode', value)}
               />
               <Moon className="h-4 w-4" />
             </div>
@@ -122,8 +72,8 @@ const UserSettings = () => {
             </div>
             <Switch 
               id="high-contrast" 
-              checked={highContrast}
-              onCheckedChange={setHighContrast}
+              checked={themeSettings.highContrast}
+              onCheckedChange={(value) => updateThemeSetting('highContrast', value)}
             />
           </div>
           
@@ -166,8 +116,8 @@ const UserSettings = () => {
             </div>
             <Switch 
               id="email-notifications" 
-              checked={emailNotifications}
-              onCheckedChange={setEmailNotifications}
+              defaultChecked={localStorage.getItem("emailNotifications") === "true" || true}
+              onCheckedChange={(value) => localStorage.setItem("emailNotifications", value.toString())}
             />
           </div>
 
@@ -182,8 +132,8 @@ const UserSettings = () => {
             </div>
             <Switch 
               id="push-notifications" 
-              checked={pushNotifications}
-              onCheckedChange={setPushNotifications}
+              defaultChecked={localStorage.getItem("pushNotifications") === "true" || false}
+              onCheckedChange={(value) => localStorage.setItem("pushNotifications", value.toString())}
             />
           </div>
         </CardContent>
