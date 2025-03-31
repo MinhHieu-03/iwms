@@ -38,8 +38,7 @@ const Missions = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Robot Missions</h2>
+      <div className="flex justify-end items-center">
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
@@ -95,7 +94,6 @@ const Missions = () => {
             <TabsTrigger value="templates">Templates</TabsTrigger>
           </TabsList>
           {/* New Template button appears only in templates tab */}
-          {/* This button will be shown/hidden based on the active tab using JavaScript */}
           <div id="templateActions">
             <Button 
               variant="outline" 
