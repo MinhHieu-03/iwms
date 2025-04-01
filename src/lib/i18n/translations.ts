@@ -83,6 +83,8 @@ export type TranslationKey =
   | 'template_updated'
   | 'template_updated_description'
   | 'graph'
+  | 'visual_editor'
+  | 'settings'
   
   // Operator Interface
   | 'select_dock'
@@ -114,6 +116,8 @@ export type TranslationKey =
   | 'good'
   | 'average'
   | 'needs_improvement'
+  | 'process_inbound'
+  | 'process_outbound'
   
   // Warehouse Layout
   | 'warehouse_overview'
@@ -349,6 +353,8 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     template_updated: 'Template updated',
     template_updated_description: 'has been updated successfully.',
     graph: 'Graph',
+    visual_editor: 'Visual Editor',
+    settings: 'Settings',
     
     // Operator Interface
     select_dock: 'Select Dock',
@@ -380,6 +386,8 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     good: 'Good',
     average: 'Average',
     needs_improvement: 'Needs Improvement',
+    process_inbound: 'Process Inbound',
+    process_outbound: 'Process Outbound',
     
     // Warehouse Layout
     warehouse_overview: 'Warehouse Overview',
@@ -614,6 +622,8 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     template_updated: 'Cập nhật mẫu',
     template_updated_description: 'đã được cập nhật thành công.',
     graph: 'Biểu đồ',
+    visual_editor: 'Trình soạn thảo trực quan',
+    settings: 'Cài đặt',
     
     // Operator Interface
     select_dock: 'Chọn khu vực',
@@ -645,6 +655,8 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     good: 'Tốt',
     average: 'Trung bình',
     needs_improvement: 'Cần cải thiện',
+    process_inbound: 'Xử lý nhập kho',
+    process_outbound: 'Xử lý xuất kho',
     
     // Warehouse Layout
     warehouse_overview: 'Tổng quan kho',

@@ -59,14 +59,14 @@ const OperatorInterface = () => {
               <Link to="/operator-interface/inbound">
                 <Button variant="outline" className="w-full h-24 flex flex-col items-center justify-center gap-2">
                   <Package className="h-6 w-6 text-blue-500" />
-                  <span>{t('process_inbound')}</span>
+                  <span>{t('inbound')}</span>
                 </Button>
               </Link>
 
               <Link to="/operator-interface/outbound">
                 <Button variant="outline" className="w-full h-24 flex flex-col items-center justify-center gap-2">
                   <PackageCheck className="h-6 w-6 text-green-500" />
-                  <span>{t('process_outbound')}</span>
+                  <span>{t('outbound')}</span>
                 </Button>
               </Link>
 
