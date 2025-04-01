@@ -1,10 +1,7 @@
-
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -133,32 +130,8 @@ const TemplateEdit = () => {
       </div>
       
       <Card>
-        <CardHeader>
-          <CardTitle>{id ? t('edit_template') : t('new_template')}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="templateName">{t('template_name')}</Label>
-            <Input
-              id="templateName"
-              value={template.name}
-              onChange={(e) => setTemplate({ ...template, name: e.target.value })}
-              placeholder="Enter template name"
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="templateDescription">{t('template_description')}</Label>
-            <Textarea
-              id="templateDescription"
-              value={template.description}
-              onChange={(e) => setTemplate({ ...template, description: e.target.value })}
-              placeholder="Describe what this template does"
-              rows={3}
-            />
-          </div>
-
-          <Tabs defaultValue="editor" className="w-full mt-6">
+        <CardContent className="space-y-4 pt-6">
+          <Tabs defaultValue="editor" className="w-full">
             <TabsList>
               <TabsTrigger value="editor">{t('visual_editor')}</TabsTrigger>
               <TabsTrigger value="json">JSON</TabsTrigger>
@@ -173,7 +146,6 @@ const TemplateEdit = () => {
 
             <TabsContent value="json" className="mt-4">
               <div className="space-y-2">
-                <Label htmlFor="jsonEditor">JSON Configuration</Label>
                 <Textarea
                   id="jsonEditor"
                   value={jsonString}
@@ -187,7 +159,25 @@ const TemplateEdit = () => {
               <Card>
                 <CardContent className="pt-6 space-y-4">
                   <div className="grid gap-2">
-                    <Label className="text-sm font-medium">Category</Label>
+                    <label className="text-sm font-medium">Template Name</label>
+                    <input 
+                      type="text" 
+                      value={template.name}
+                      onChange={(e) => setTemplate({...template, name: e.target.value})}
+                      className="border rounded px-3 py-2"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium">Description</label>
+                    <Textarea 
+                      rows={3}
+                      value={template.description}
+                      onChange={(e) => setTemplate({...template, description: e.target.value})}
+                      className="border rounded px-3 py-2"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium">Category</label>
                     <select className="border rounded px-3 py-2">
                       <option>Pick and Place</option>
                       <option>Transport</option>
