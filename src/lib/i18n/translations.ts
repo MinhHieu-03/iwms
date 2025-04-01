@@ -28,6 +28,16 @@ export type TranslationKey =
   | 'language'
   | 'language_description'
   | 'settings_saved'
+  | 'notification_preferences'
+  | 'email_notifications'
+  | 'email_notifications_description'
+  | 'push_notifications'
+  | 'push_notifications_description'
+  | 'security'
+  | 'current_password'
+  | 'new_password'
+  | 'confirm_password'
+  | 'update_password'
   
   // Missions
   | 'active_missions'
@@ -284,6 +294,16 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     language: 'Language',
     language_description: 'Select your preferred language',
     settings_saved: 'Settings saved!',
+    notification_preferences: 'Notification Preferences',
+    email_notifications: 'Email Notifications',
+    email_notifications_description: 'Receive notifications via email',
+    push_notifications: 'Push Notifications',
+    push_notifications_description: 'Receive push notifications in browser',
+    security: 'Security',
+    current_password: 'Current Password',
+    new_password: 'New Password',
+    confirm_password: 'Confirm Password',
+    update_password: 'Update Password',
     
     // Missions
     active_missions: 'Active Missions',
@@ -539,6 +559,16 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     language: 'Ngôn ngữ',
     language_description: 'Chọn ngôn ngữ ưa thích của bạn',
     settings_saved: 'Đã lưu cài đặt!',
+    notification_preferences: 'Tùy chọn thông báo',
+    email_notifications: 'Thông báo qua email',
+    email_notifications_description: 'Nhận thông báo qua email',
+    push_notifications: 'Thông báo đẩy',
+    push_notifications_description: 'Nhận thông báo đẩy trong trình duyệt',
+    security: 'Bảo mật',
+    current_password: 'Mật khẩu hiện tại',
+    new_password: 'Mật khẩu mới',
+    confirm_password: 'Xác nhận mật khẩu',
+    update_password: 'Cập nhật mật khẩu',
     
     // Missions
     active_missions: 'Nhiệm vụ đang hoạt động',

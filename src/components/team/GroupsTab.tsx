@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
+import { TranslationKey } from "@/lib/i18n/translations";
 
 const GroupsTab = () => {
   const { t } = useLanguage();
@@ -29,7 +30,7 @@ const GroupsTab = () => {
         <div className="space-y-4">
           {groups.map((group) => (
             <div key={group.id} className="border rounded-lg p-4 dark:border-gray-700">
-              <h3 className="font-medium">{t(group.name)}</h3>
+              <h3 className="font-medium">{t(group.name as TranslationKey)}</h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {group.members} {t('members')}
               </p>

@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
+import { TranslationKey } from "@/lib/i18n/translations";
 
 const UsersTab = () => {
   const { t } = useLanguage();
@@ -26,7 +27,7 @@ const UsersTab = () => {
             <div key={user.id} className="border rounded-lg p-4 flex justify-between items-center dark:border-gray-700">
               <div>
                 <h3 className="font-medium">{user.name}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{t(user.role)}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{t(user.role as TranslationKey)}</p>
               </div>
               <div className="flex gap-2">
                 <Button 

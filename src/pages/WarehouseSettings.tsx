@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Warehouse, Save, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { SupportedLanguages, TranslationKey } from "@/lib/i18n/translations";
 
 const WarehouseSettings = () => {
   const { toast } = useToast();

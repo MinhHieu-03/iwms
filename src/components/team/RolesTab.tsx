@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
+import { TranslationKey } from "@/lib/i18n/translations";
 
 const RolesTab = () => {
   const { t } = useLanguage();
@@ -29,12 +30,12 @@ const RolesTab = () => {
         <div className="space-y-4">
           {roles.map((role) => (
             <div key={role.id} className="border rounded-lg p-4 dark:border-gray-700">
-              <h3 className="font-medium">{t(role.name)}</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{t(role.description)}</p>
+              <h3 className="font-medium">{t(role.name as TranslationKey)}</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t(role.description as TranslationKey)}</p>
               <div className="mt-2">
                 <Button 
                   variant="outline" 
-                  size="sm"
+                  size="sm" 
                   onClick={() => navigate(`/team-settings/roles/${role.id}`)}
                 >
                   {t('edit_permissions')}
