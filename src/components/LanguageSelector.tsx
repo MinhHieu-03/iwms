@@ -19,7 +19,7 @@ const LanguageSelector = () => {
         <Button 
           variant="ghost" 
           size="sm" 
-          className="flex items-center gap-1 h-8 px-2 rounded-md border border-input hover:bg-accent"
+          className="flex items-center gap-1.5 h-8 px-2 rounded-md border border-input hover:bg-accent"
         >
           <Globe className="h-3.5 w-3.5" />
           <span className="font-medium text-xs">{language.toUpperCase()}</span>

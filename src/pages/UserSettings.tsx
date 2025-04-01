@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -61,22 +60,6 @@ const UserSettings = () => {
             </div>
           </div>
 
-          <Separator />
-
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>{t('high_contrast')}</Label>
-              <div className="text-sm text-muted-foreground">
-                {t('high_contrast_description')}
-              </div>
-            </div>
-            <Switch 
-              id="high-contrast" 
-              checked={themeSettings.highContrast}
-              onCheckedChange={(value) => updateThemeSetting('highContrast', value)}
-            />
-          </div>
-          
           <Separator />
           
           <div className="flex items-center justify-between">

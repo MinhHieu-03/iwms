@@ -4,12 +4,14 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
-import { ScanBarcode, Package, PackageCheck, Clock } from "lucide-react";
+import { Package, PackageCheck, Clock } from "lucide-react";
 import OperatorPerformance from "@/components/OperatorPerformance";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const OperatorInterface = () => {
   const [shiftStarted, setShiftStarted] = useState(false);
+  const [selectedDock, setSelectedDock] = useState("3");
   const { t } = useLanguage();
 
   const toggleShift = () => {
@@ -18,101 +20,99 @@ const OperatorInterface = () => {
 
   return (
     <div className="space-y-6">
+      {/* Performance Metrics moved to top */}
+      <OperatorPerformance />
+
       <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">{t('operator_interface')}</h2>
           <p className="text-muted-foreground">
-            {t('current_location')}: {t('dock')} 3
+            {t('current_location')}: {t('dock')} {selectedDock}
           </p>
         </div>
-        <Button 
-          onClick={toggleShift} 
-          className={shiftStarted ? "bg-red-500 hover:bg-red-600" : "bg-green-600 hover:bg-green-700"}
-        >
-          {shiftStarted ? t('end_shift') : t('start_shift')}
-        </Button>
+        <div className="flex gap-3">
+          {/* Added dock select button */}
+          <Select value={selectedDock} onValueChange={setSelectedDock}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder={t('select_dock')} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1">{t('dock')} 1</SelectItem>
+              <SelectItem value="2">{t('dock')} 2</SelectItem>
+              <SelectItem value="3">{t('dock')} 3</SelectItem>
+              <SelectItem value="4">{t('dock')} 4</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button 
+            onClick={toggleShift} 
+            className={shiftStarted ? "bg-red-500 hover:bg-red-600" : "bg-green-600 hover:bg-green-700"}
+          >
+            {shiftStarted ? t('end_shift') : t('start_shift')}
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="col-span-1 md:col-span-2">
-          <CardHeader>
-            <CardTitle>{t('scan_barcode')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-center justify-center space-y-6 p-8 border-2 border-dashed rounded-lg">
-              <ScanBarcode size={64} className="text-muted-foreground" />
-              <div className="text-center">
-                <p className="text-lg font-medium">{t('scan_barcode')}</p>
-                <p className="text-sm text-muted-foreground">{t('enter_barcode')}</p>
-              </div>
-              <div className="w-full max-w-sm">
-                <input
-                  type="text"
-                  className="w-full p-3 border border-input rounded-md text-center text-lg"
-                  placeholder="SCAN-123456"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Tabs defaultValue="inbound" className="col-span-1">
-          <TabsList className="grid grid-cols-2 mb-4">
+        {/* Removed Scan Barcode section, expanded tabs to full width */}
+        <Tabs defaultValue="inbound" className="col-span-1 md:col-span-3">
+          <TabsList className="grid grid-cols-2 mb-4 w-full max-w-md">
             <TabsTrigger value="inbound">{t('inbound')}</TabsTrigger>
             <TabsTrigger value="outbound">{t('outbound')}</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="inbound">
-            <Card className="mb-4">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">{t('inbound')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Link to="/operator-interface/inbound">
-                  <Button className="w-full">
-                    <Package className="mr-2 h-4 w-4" />
-                    {t('process_operations')}
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="outbound">
-            <Card className="mb-4">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">{t('outbound')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Link to="/operator-interface/outbound">
-                  <Button className="w-full">
-                    <PackageCheck className="mr-2 h-4 w-4" />
-                    {t('process_operations')}
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <Card className="mb-4">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg flex items-center">
-                <Clock className="mr-2 h-4 w-4" />
-                {t('history')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Link to="/inbound-outbound/history">
-                <Button variant="outline" className="w-full">
-                  {t('dock_history')}
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <TabsContent value="inbound" className="col-span-1 md:col-span-2 lg:col-span-3 m-0">
+              <Card className="w-full">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-xl">{t('inbound')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-4">
+                    <Link to="/operator-interface/inbound" className="flex-grow">
+                      <Button className="w-full">
+                        <Package className="mr-2 h-4 w-4" />
+                        {t('process_operations')}
+                      </Button>
+                    </Link>
+
+                    <Link to="/inbound-outbound/history" className="flex-grow">
+                      <Button variant="outline" className="w-full">
+                        <Clock className="mr-2 h-4 w-4" />
+                        {t('dock_history')}
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="outbound" className="col-span-1 md:col-span-2 lg:col-span-3 m-0">
+              <Card className="w-full">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-xl">{t('outbound')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-4">
+                    <Link to="/operator-interface/outbound" className="flex-grow">
+                      <Button className="w-full">
+                        <PackageCheck className="mr-2 h-4 w-4" />
+                        {t('process_operations')}
+                      </Button>
+                    </Link>
+
+                    <Link to="/inbound-outbound/history" className="flex-grow">
+                      <Button variant="outline" className="w-full">
+                        <Clock className="mr-2 h-4 w-4" />
+                        {t('dock_history')}
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </div>
         </Tabs>
       </div>
-
-      <OperatorPerformance />
       
       <Card>
         <CardHeader>

@@ -25,6 +25,9 @@ import HelpFAQs from "./pages/HelpFAQs";
 import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 import TemplateEdit from "./pages/TemplateEdit";
+import UserEdit from "./pages/team/UserEdit";
+import RoleEdit from "./pages/team/RoleEdit";
+import GroupEdit from "./pages/team/GroupEdit";
 
 const queryClient = new QueryClient();
 
@@ -59,8 +62,13 @@ const App = () => (
             <Route path="/user-settings" element={<Layout><UserSettings /></Layout>} />
             <Route path="/system-settings" element={<Layout><SystemSettings /></Layout>} />
             <Route path="/warehouse-settings" element={<Layout><WarehouseSettings /></Layout>} />
+            
+            {/* Team Management routes */}
             <Route path="/team-settings" element={<Layout><TeamSettings /></Layout>} />
             <Route path="/team-settings/:section" element={<Layout><TeamSettings /></Layout>} />
+            <Route path="/team-settings/users/:id" element={<Layout><UserEdit /></Layout>} />
+            <Route path="/team-settings/roles/:id" element={<Layout><RoleEdit /></Layout>} />
+            <Route path="/team-settings/groups/:id" element={<Layout><GroupEdit /></Layout>} />
             
             {/* Support routes */}
             <Route path="/help" element={<Layout><Help /></Layout>} />

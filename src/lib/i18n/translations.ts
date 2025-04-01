@@ -70,6 +70,9 @@ export type TranslationKey =
   | 'add_step'
   | 'remove_step'
   | 'save_template'
+  | 'template_updated'
+  | 'template_updated_description'
+  | 'graph'
   
   // Operator Interface
   | 'select_dock'
@@ -215,6 +218,8 @@ export type TranslationKey =
   | 'management_team'
   | 'it_support'
   | 'members'
+  | 'create_role'
+  | 'create_group'
   
   // Help Center
   | 'guides'
@@ -307,7 +312,7 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     edit: 'Edit',
     duplicate: 'Duplicate',
     delete: 'Delete',
-    steps: 'steps',
+    steps: 'Steps',
     modified: 'Modified:',
     delete_template: 'Delete Template',
     delete_template_confirm: 'Are you sure you want to delete this template? This action cannot be undone.',
@@ -321,6 +326,9 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     add_step: 'Add Step',
     remove_step: 'Remove Step',
     save_template: 'Save Template',
+    template_updated: 'Template updated',
+    template_updated_description: 'has been updated successfully.',
+    graph: 'Graph',
     
     // Operator Interface
     select_dock: 'Select Dock',
@@ -447,7 +455,7 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     // Team Management
     user_management: 'User Management',
     create_user: 'Create User',
-    edit_user: 'Edit',
+    edit_user: 'Edit User',
     disable_user: 'Disable',
     administrator: 'Administrator',
     operator: 'Operator',
@@ -466,6 +474,8 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     management_team: 'Management Team',
     it_support: 'IT Support',
     members: 'members',
+    create_role: 'Create Role',
+    create_group: 'Create Group',
     
     // Help Center
     guides: 'Guides',
@@ -557,7 +567,7 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     edit: 'Chỉnh sửa',
     duplicate: 'Nhân bản',
     delete: 'Xóa',
-    steps: 'bước',
+    steps: 'Bước',
     modified: 'Đã sửa:',
     delete_template: 'Xóa mẫu',
     delete_template_confirm: 'Bạn có chắc chắn muốn xóa mẫu này? Hành động này không thể hoàn tác.',
@@ -571,6 +581,9 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     add_step: 'Thêm bước',
     remove_step: 'Xóa bước',
     save_template: 'Lưu mẫu',
+    template_updated: 'Cập nhật mẫu',
+    template_updated_description: 'đã được cập nhật thành công.',
+    graph: 'Biểu đồ',
     
     // Operator Interface
     select_dock: 'Chọn khu vực',
@@ -697,7 +710,7 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     // Team Management
     user_management: 'Quản lý người dùng',
     create_user: 'Tạo người dùng',
-    edit_user: 'Chỉnh sửa',
+    edit_user: 'Chỉnh sửa người dùng',
     disable_user: 'Vô hiệu hóa',
     administrator: 'Quản trị viên',
     operator: 'Người vận hành',
@@ -716,6 +729,8 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     management_team: 'Nhóm quản lý',
     it_support: 'Hỗ trợ IT',
     members: 'thành viên',
+    create_role: 'Tạo vai trò',
+    create_group: 'Tạo nhóm',
     
     // Help Center
     guides: 'Hướng dẫn',
