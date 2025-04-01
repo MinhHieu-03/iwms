@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TemplateGraph from "@/components/missions/TemplateGraph";
 
@@ -95,30 +95,6 @@ const TemplateEdit = () => {
   const [template, setTemplate] = useState(initialTemplate);
   const [jsonString, setJsonString] = useState(JSON.stringify(initialTemplate.json, null, 2));
   
-  const handleAddStep = () => {
-    setTemplate({
-      ...template,
-      steps: [...template.steps, ""]
-    });
-  };
-  
-  const handleStepChange = (index: number, value: string) => {
-    const newSteps = [...template.steps];
-    newSteps[index] = value;
-    setTemplate({
-      ...template,
-      steps: newSteps
-    });
-  };
-  
-  const handleRemoveStep = (index: number) => {
-    const newSteps = template.steps.filter((_, i) => i !== index);
-    setTemplate({
-      ...template,
-      steps: newSteps
-    });
-  };
-
   const handleJsonChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setJsonString(e.target.value);
     try {
@@ -182,48 +158,16 @@ const TemplateEdit = () => {
             />
           </div>
 
-          <Tabs defaultValue="steps" className="w-full mt-6">
+          <Tabs defaultValue="editor" className="w-full mt-6">
             <TabsList>
-              <TabsTrigger value="steps">{t('steps')}</TabsTrigger>
-              <TabsTrigger value="graph">{t('graph')}</TabsTrigger>
+              <TabsTrigger value="editor">{t('visual_editor')}</TabsTrigger>
               <TabsTrigger value="json">JSON</TabsTrigger>
+              <TabsTrigger value="settings">{t('settings')}</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="steps" className="space-y-4 mt-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium">{t('steps')}</h3>
-                <Button size="sm" onClick={handleAddStep} className="flex items-center gap-2">
-                  <Plus className="h-4 w-4" />
-                  {t('add_step')}
-                </Button>
-              </div>
-              
-              {template.steps.map((step, index) => (
-                <div key={index} className="flex gap-2 items-start">
-                  <div className="rounded-full bg-primary w-6 h-6 flex items-center justify-center text-primary-foreground flex-shrink-0 mt-2">
-                    {index + 1}
-                  </div>
-                  <Input
-                    value={step}
-                    onChange={(e) => handleStepChange(index, e.target.value)}
-                    placeholder={`Step ${index + 1}`}
-                    className="flex-grow"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleRemoveStep(index)}
-                    disabled={template.steps.length <= 1}
-                  >
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  </Button>
-                </div>
-              ))}
-            </TabsContent>
-
-            <TabsContent value="graph" className="mt-4">
-              <div className="border rounded-lg" style={{ height: '500px' }}>
-                {template.json && <TemplateGraph data={template.json} />}
+            <TabsContent value="editor" className="mt-4">
+              <div className="border rounded-lg" style={{ height: '600px' }}>
+                <TemplateGraph data={template.json} />
               </div>
             </TabsContent>
 
@@ -238,8 +182,27 @@ const TemplateEdit = () => {
                 />
               </div>
             </TabsContent>
+
+            <TabsContent value="settings" className="mt-4">
+              <Card>
+                <CardContent className="pt-6 space-y-4">
+                  <div className="grid gap-2">
+                    <Label className="text-sm font-medium">Category</Label>
+                    <select className="border rounded px-3 py-2">
+                      <option>Pick and Place</option>
+                      <option>Transport</option>
+                      <option>Inventory</option>
+                      <option>Custom</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center space-x-2 pt-2">
+                    <input type="checkbox" id="is-active" defaultChecked />
+                    <label htmlFor="is-active" className="text-sm">Active template (available for use)</label>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
           </Tabs>
-          
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button
