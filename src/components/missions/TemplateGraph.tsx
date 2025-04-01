@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -36,6 +36,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+
+// Define the type for graph data
+interface GraphData {
+  nodes: any[];
+  edges: any[];
+}
+
+// Define the props type for the component
+interface TemplateGraphProps {
+  data?: GraphData;
+}
 
 const initialNodes = [
   {
@@ -174,16 +185,16 @@ const emptyEdges = [
 
 const nodeTypes = {};
 
-const TemplateGraph = () => {
+const TemplateGraph: React.FC<TemplateGraphProps> = ({ data }) => {
   const { id } = useParams<{ id: string }>();
   const isNewTemplate = id?.startsWith('t-new');
   
   const [templateName, setTemplateName] = useState(isNewTemplate ? "New Template" : `Template ${id?.split('-')[1]}`);
   const [templateDescription, setTemplateDescription] = useState(isNewTemplate ? "" : "This template defines the workflow for robots to pick items from storage.");
   
-  // Use empty template if this is a new template
-  const startingNodes = isNewTemplate ? emptyNodes : initialNodes;
-  const startingEdges = isNewTemplate ? emptyEdges : initialEdges;
+  // Use provided data or fallback to empty/initial templates
+  const startingNodes = data ? data.nodes : (isNewTemplate ? emptyNodes : initialNodes);
+  const startingEdges = data ? data.edges : (isNewTemplate ? emptyEdges : initialEdges);
   
   const [nodes, setNodes, onNodesChange] = useNodesState(startingNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(startingEdges);
