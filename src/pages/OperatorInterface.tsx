@@ -19,16 +19,13 @@ const OperatorInterface = () => {
 
   return (
     <div className="space-y-6">
-      {/* Performance Metrics at top */}
-      <OperatorPerformance />
-
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">{t('operator_interface')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <p className="text-muted-foreground">
                   {t('current_location')}: {t('dock')} {selectedDock}
@@ -87,6 +84,9 @@ const OperatorInterface = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Performance Metrics below */}
+      <OperatorPerformance />
     </div>
   );
 };
