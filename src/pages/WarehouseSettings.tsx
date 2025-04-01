@@ -8,9 +8,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Warehouse, Save, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const WarehouseSettings = () => {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [zones, setZones] = useState([
     { id: "zone1", name: "Storage Zone A", rows: 10, columns: 15, shelfLevels: 4 },
     { id: "zone2", name: "Storage Zone B", rows: 8, columns: 12, shelfLevels: 5 },
@@ -51,8 +53,8 @@ const WarehouseSettings = () => {
         shelfLevels: 4
       });
       toast({
-        title: "Zone Added",
-        description: `${newZone.name} has been added to the warehouse.`,
+        title: t('zone_added'),
+        description: `${newZone.name} ${t('zone_added_description')}`,
       });
     }
   };
@@ -67,8 +69,8 @@ const WarehouseSettings = () => {
         status: "active"
       });
       toast({
-        title: "Dock Added",
-        description: `${newDock.name} has been added to the warehouse.`,
+        title: t('dock_added'),
+        description: `${newDock.name} ${t('dock_added_description')}`,
       });
     }
   };
@@ -76,23 +78,23 @@ const WarehouseSettings = () => {
   const handleDeleteZone = (id: string) => {
     setZones(zones.filter(zone => zone.id !== id));
     toast({
-      title: "Zone Deleted",
-      description: "The selected zone has been removed from the warehouse.",
+      title: t('zone_deleted'),
+      description: t('zone_deleted_description'),
     });
   };
 
   const handleDeleteDock = (id: string) => {
     setDocks(docks.filter(dock => dock.id !== id));
     toast({
-      title: "Dock Deleted",
-      description: "The selected dock has been removed from the warehouse.",
+      title: t('dock_deleted'),
+      description: t('dock_deleted_description'),
     });
   };
 
   const handleSaveStructure = () => {
     toast({
-      title: "Structure Saved",
-      description: "Your warehouse structure has been saved successfully.",
+      title: t('structure_saved'),
+      description: t('structure_saved_description'),
     });
     // In a real app, we would save to a database here
   };
@@ -100,17 +102,17 @@ const WarehouseSettings = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Warehouse Settings</h2>
+        <h2 className="text-2xl font-bold">{t('warehouse_settings')}</h2>
         <Button onClick={handleSaveStructure}>
           <Save className="mr-2 h-4 w-4" />
-          Save Structure
+          {t('save_structure')}
         </Button>
       </div>
 
       <Tabs defaultValue="zones">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="zones">Storage Zones</TabsTrigger>
-          <TabsTrigger value="docks">Loading Docks</TabsTrigger>
+          <TabsTrigger value="zones">{t('storage_zones')}</TabsTrigger>
+          <TabsTrigger value="docks">{t('loading_docks')}</TabsTrigger>
         </TabsList>
         
         <TabsContent value="zones" className="space-y-4 mt-4">
@@ -118,13 +120,13 @@ const WarehouseSettings = () => {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Warehouse className="mr-2 h-5 w-5" />
-                Add Storage Zone
+                {t('add_zone')}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="zoneName">Zone Name</Label>
+                  <Label htmlFor="zoneName">{t('zone_name')}</Label>
                   <Input 
                     id="zoneName" 
                     value={newZone.name}
@@ -133,7 +135,7 @@ const WarehouseSettings = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="zoneRows">Number of Rows</Label>
+                  <Label htmlFor="zoneRows">{t('number_of_rows')}</Label>
                   <Input 
                     id="zoneRows" 
                     type="number" 
@@ -142,7 +144,7 @@ const WarehouseSettings = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="zoneColumns">Number of Columns</Label>
+                  <Label htmlFor="zoneColumns">{t('number_of_columns')}</Label>
                   <Input 
                     id="zoneColumns" 
                     type="number" 
@@ -151,7 +153,7 @@ const WarehouseSettings = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="zoneShelfLevels">Shelf Levels</Label>
+                  <Label htmlFor="zoneShelfLevels">{t('shelf_levels')}</Label>
                   <Input 
                     id="zoneShelfLevels" 
                     type="number" 
@@ -162,14 +164,14 @@ const WarehouseSettings = () => {
               </div>
               <Button onClick={handleAddZone} className="mt-4">
                 <Plus className="mr-2 h-4 w-4" />
-                Add Zone
+                {t('add_zone')}
               </Button>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Configured Storage Zones</CardTitle>
+              <CardTitle>{t('configured_storage_zones')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -177,12 +179,12 @@ const WarehouseSettings = () => {
                   <div key={zone.id} className="border rounded-lg p-4 flex justify-between items-center">
                     <div>
                       <h3 className="font-medium">{zone.name}</h3>
-                      <p className="text-sm text-gray-500">
-                        {zone.rows} rows × {zone.columns} columns × {zone.shelfLevels} levels
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {zone.rows} {t('rows')} × {zone.columns} {t('columns')} × {zone.shelfLevels} {t('levels')}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm">Edit</Button>
+                      <Button variant="outline" size="sm">{t('edit')}</Button>
                       <Button 
                         variant="outline" 
                         size="sm" 
@@ -202,12 +204,12 @@ const WarehouseSettings = () => {
         <TabsContent value="docks" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Add Loading Dock</CardTitle>
+              <CardTitle>{t('add_loading_dock')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="dockName">Dock Name</Label>
+                  <Label htmlFor="dockName">{t('dock_name')}</Label>
                   <Input 
                     id="dockName" 
                     value={newDock.name}
@@ -216,7 +218,7 @@ const WarehouseSettings = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="dockType">Dock Type</Label>
+                  <Label htmlFor="dockType">{t('dock_type')}</Label>
                   <Select
                     value={newDock.type}
                     onValueChange={(value) => setNewDock({...newDock, type: value})}
@@ -225,14 +227,14 @@ const WarehouseSettings = () => {
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="inbound">Inbound</SelectItem>
-                      <SelectItem value="outbound">Outbound</SelectItem>
-                      <SelectItem value="both">Both</SelectItem>
+                      <SelectItem value="inbound">{t('inbound')}</SelectItem>
+                      <SelectItem value="outbound">{t('outbound')}</SelectItem>
+                      <SelectItem value="both">{t('both')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="dockStatus">Status</Label>
+                  <Label htmlFor="dockStatus">{t('status')}</Label>
                   <Select
                     value={newDock.status}
                     onValueChange={(value) => setNewDock({...newDock, status: value})}
@@ -241,23 +243,23 @@ const WarehouseSettings = () => {
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="maintenance">Maintenance</SelectItem>
-                      <SelectItem value="inactive">Inactive</SelectItem>
+                      <SelectItem value="active">{t('active')}</SelectItem>
+                      <SelectItem value="maintenance">{t('maintenance')}</SelectItem>
+                      <SelectItem value="inactive">{t('inactive')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
               <Button onClick={handleAddDock} className="mt-4">
                 <Plus className="mr-2 h-4 w-4" />
-                Add Dock
+                {t('add_dock')}
               </Button>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Configured Loading Docks</CardTitle>
+              <CardTitle>{t('configured_loading_docks')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -265,16 +267,16 @@ const WarehouseSettings = () => {
                   <div key={dock.id} className="border rounded-lg p-4 flex justify-between items-center">
                     <div>
                       <h3 className="font-medium">{dock.name}</h3>
-                      <p className="text-sm text-gray-500">
-                        Type: <span className="capitalize">{dock.type}</span> • 
-                        Status: <span className={`capitalize ${
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {t('type')}: <span className="capitalize">{t(dock.type as TranslationKey)}</span> • 
+                        {t('status')}: <span className={`capitalize ${
                           dock.status === 'active' ? 'text-green-500' : 
                           dock.status === 'maintenance' ? 'text-amber-500' : 'text-red-500'
-                        }`}>{dock.status}</span>
+                        }`}>{t(dock.status as TranslationKey)}</span>
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm">Edit</Button>
+                      <Button variant="outline" size="sm">{t('edit')}</Button>
                       <Button 
                         variant="outline" 
                         size="sm" 

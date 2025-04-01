@@ -4,6 +4,7 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Grid, Environment, Center, Text } from "@react-three/drei";
 import * as THREE from "three";
 import { WarehouseSection } from "@/lib/mock-data";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ShelfProps {
   position: [number, number, number];
@@ -36,9 +37,7 @@ const Shelf: React.FC<ShelfProps> = ({
 
   // Number of shelves in the rack (3 levels)
   const shelves = 3;
-  const shelfThickness = 0.1;
   const shelfSpacing = 0.8; // Spacing between shelves
-  const shelfHeight = size[1]; // Height of each individual shelf unit
 
   return (
     <group name={name} position={position}>
@@ -75,8 +74,8 @@ const Shelf: React.FC<ShelfProps> = ({
       {/* Individual shelves stacked vertically */}
       {[...Array(shelves)].map((_, i) => {
         const shelfY = i * shelfSpacing;
-        // Make middle shelf occupied if needed
-        const thisShelfOccupied = isOccupied && i === 1;
+        // Make shelves occupied if needed based on level
+        const thisShelfOccupied = isOccupied && (i < 2); // First two levels can be occupied
         
         return (
           <group key={`shelf-${i}`} position={[0, shelfY, 0]}>
@@ -94,17 +93,27 @@ const Shelf: React.FC<ShelfProps> = ({
               />
             </mesh>
             
-            {/* Add boxes on middle shelf if occupied */}
+            {/* Add boxes on shelf if occupied */}
             {thisShelfOccupied && (
               <group>
-                <mesh position={[-size[0]/4, 0.2, 0]} castShadow>
-                  <boxGeometry args={[size[0] * 0.3, 0.3, size[2] * 0.6]} />
-                  <meshStandardMaterial color="#9b87f5" />
-                </mesh>
-                <mesh position={[size[0]/4, 0.2, 0]} castShadow>
-                  <boxGeometry args={[size[0] * 0.3, 0.25, size[2] * 0.5]} />
-                  <meshStandardMaterial color="#1EAEDB" />
-                </mesh>
+                {i === 0 && (
+                  <mesh position={[0, 0.25, 0]} castShadow>
+                    <boxGeometry args={[size[0] * 0.7, 0.4, size[2] * 0.7]} />
+                    <meshStandardMaterial color="#9b87f5" />
+                  </mesh>
+                )}
+                {i === 1 && (
+                  <>
+                    <mesh position={[-size[0]/4, 0.15, 0]} castShadow>
+                      <boxGeometry args={[size[0] * 0.3, 0.25, size[2] * 0.5]} />
+                      <meshStandardMaterial color="#1EAEDB" />
+                    </mesh>
+                    <mesh position={[size[0]/4, 0.2, 0]} castShadow>
+                      <boxGeometry args={[size[0] * 0.3, 0.3, size[2] * 0.6]} />
+                      <meshStandardMaterial color="#E67E22" />
+                    </mesh>
+                  </>
+                )}
               </group>
             )}
           </group>
@@ -151,6 +160,7 @@ const WarehouseScene: React.FC<{
   highlightedShelf: string | null;
 }> = ({ sections, highlightedShelf }) => {
   const { camera } = useThree();
+  const { t } = useLanguage();
   
   useEffect(() => {
     // Position camera to show all shelves clearly
@@ -178,7 +188,7 @@ const WarehouseScene: React.FC<{
       <Center>
         {sections.map((section, sectionIndex) => {
           // Change name from Section to Shelf
-          const shelfName = `Shelf ${String.fromCharCode(65 + sectionIndex)}`;
+          const shelfName = `${t('shelf')} ${String.fromCharCode(65 + sectionIndex)}`;
           
           // Position sections in a row, adjusting X coordinate
           const sectionOffsetX = startX + sectionIndex * 8;

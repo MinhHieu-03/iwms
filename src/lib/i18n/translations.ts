@@ -25,18 +25,6 @@ export type TranslationKey =
   | 'appearance'
   | 'dark_mode'
   | 'dark_mode_description'
-  | 'high_contrast'
-  | 'high_contrast_description'
-  | 'notification_preferences'
-  | 'email_notifications'
-  | 'email_notifications_description'
-  | 'push_notifications'
-  | 'push_notifications_description'
-  | 'security'
-  | 'current_password'
-  | 'new_password'
-  | 'confirm_password'
-  | 'update_password'
   | 'language'
   | 'language_description'
   | 'settings_saved'
@@ -76,6 +64,12 @@ export type TranslationKey =
   | 'template_created_description'
   | 'template_deleted'
   | 'template_deleted_description'
+  | 'edit_template'
+  | 'template_name'
+  | 'template_description'
+  | 'add_step'
+  | 'remove_step'
+  | 'save_template'
   
   // Operator Interface
   | 'select_dock'
@@ -95,6 +89,18 @@ export type TranslationKey =
   | 'processing'
   | 'completed'
   | 'failed'
+  | 'performance_metrics'
+  | 'orders_processed'
+  | 'avg_completion_time'
+  | 'today'
+  | 'this_week'
+  | 'this_month'
+  | 'minutes_per_order'
+  | 'efficiency_rating'
+  | 'excellent'
+  | 'good'
+  | 'average'
+  | 'needs_improvement'
   
   // Warehouse Layout
   | 'warehouse_overview'
@@ -110,6 +116,14 @@ export type TranslationKey =
   | 'zones'
   | 'racks'
   | 'to_be_implemented'
+  | 'row'
+  | 'column'
+  | 'stored_items'
+  | 'no_items_stored'
+  | 'shelf'
+  | 'in_stock'
+  | 'low_stock'
+  | 'quantity'
   
   // System Settings
   | 'database_configuration'
@@ -147,6 +161,60 @@ export type TranslationKey =
   | 'team_settings'
   | 'warehouse_configuration'
   | 'reset_to_defaults'
+  | 'add_zone'
+  | 'zone_name'
+  | 'number_of_rows'
+  | 'number_of_columns'
+  | 'shelf_levels'
+  | 'configured_storage_zones'
+  | 'add_loading_dock'
+  | 'dock_name'
+  | 'dock_type'
+  | 'configured_loading_docks'
+  | 'add_dock'
+  | 'structure_saved'
+  | 'structure_saved_description'
+  | 'zone_added'
+  | 'zone_added_description'
+  | 'zone_deleted'
+  | 'zone_deleted_description'
+  | 'dock_added'
+  | 'dock_added_description'
+  | 'dock_deleted'
+  | 'dock_deleted_description'
+  | 'storage_zones'
+  | 'loading_docks'
+  | 'maintenance'
+  | 'inactive'
+  | 'active'
+  | 'both'
+  | 'rows'
+  | 'columns'
+  | 'levels'
+  | 'save_structure'
+  
+  // Team Management
+  | 'user_management'
+  | 'create_user'
+  | 'edit_user'
+  | 'disable_user'
+  | 'administrator'
+  | 'operator'
+  | 'manager'
+  | 'roles_permissions'
+  | 'edit_permissions'
+  | 'user_groups'
+  | 'manage_group'
+  | 'users'
+  | 'roles'
+  | 'groups'
+  | 'full_access'
+  | 'inventory_reports'
+  | 'process_operations'
+  | 'warehouse_staff'
+  | 'management_team'
+  | 'it_support'
+  | 'members'
   
   // Help Center
   | 'guides'
@@ -154,6 +222,28 @@ export type TranslationKey =
   | 'contact_support'
   | 'popular_guides'
   | 'quick_answers'
+  
+  // Dashboard
+  | 'inventory_overview'
+  | 'total_items'
+  | 'low_stock_items'
+  | 'out_of_stock'
+  | 'recent_activity_dashboard'
+  | 'system_status'
+  | 'online'
+  | 'robots_available'
+  | 'pending_orders'
+  | 'recent_alerts'
+  
+  // Inbound/Outbound
+  | 'inbound_orders'
+  | 'outbound_orders'
+  | 'new_inbound_order'
+  | 'new_outbound_order'
+  | 'order_id'
+  | 'supplier'
+  | 'customer'
+  | 'items'
   
   // Notifications
   | 'mark_all_read'
@@ -186,18 +276,6 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     appearance: 'Appearance',
     dark_mode: 'Dark Mode',
     dark_mode_description: 'Toggle between light and dark theme',
-    high_contrast: 'High Contrast',
-    high_contrast_description: 'Increase contrast for better visibility',
-    notification_preferences: 'Notification Preferences',
-    email_notifications: 'Email Notifications',
-    email_notifications_description: 'Receive notifications via email',
-    push_notifications: 'Push Notifications',
-    push_notifications_description: 'Receive push notifications in browser',
-    security: 'Security',
-    current_password: 'Current Password',
-    new_password: 'New Password',
-    confirm_password: 'Confirm New Password',
-    update_password: 'Update Password',
     language: 'Language',
     language_description: 'Select your preferred language',
     settings_saved: 'Settings saved!',
@@ -237,6 +315,12 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     template_created_description: 'has been created successfully.',
     template_deleted: 'Template deleted',
     template_deleted_description: 'has been deleted.',
+    edit_template: 'Edit Template',
+    template_name: 'Template Name',
+    template_description: 'Description',
+    add_step: 'Add Step',
+    remove_step: 'Remove Step',
+    save_template: 'Save Template',
     
     // Operator Interface
     select_dock: 'Select Dock',
@@ -256,6 +340,18 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     processing: 'Processing',
     completed: 'Completed',
     failed: 'Failed',
+    performance_metrics: 'Performance Metrics',
+    orders_processed: 'Orders Processed',
+    avg_completion_time: 'Avg. Completion Time',
+    today: 'Today',
+    this_week: 'This Week',
+    this_month: 'This Month',
+    minutes_per_order: 'min/order',
+    efficiency_rating: 'Efficiency Rating',
+    excellent: 'Excellent',
+    good: 'Good',
+    average: 'Average',
+    needs_improvement: 'Needs Improvement',
     
     // Warehouse Layout
     warehouse_overview: 'Warehouse Overview',
@@ -271,6 +367,14 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     zones: 'Zones',
     racks: 'Racks',
     to_be_implemented: 'Rack configuration functionality to be implemented.',
+    row: 'Row',
+    column: 'Column',
+    stored_items: 'Stored Items',
+    no_items_stored: 'No items stored in this location',
+    shelf: 'Shelf',
+    in_stock: 'In Stock',
+    low_stock: 'Low Stock',
+    quantity: 'Qty',
     
     // System Settings
     database_configuration: 'Database Configuration',
@@ -308,6 +412,60 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     team_settings: 'Team Settings',
     warehouse_configuration: 'Warehouse Configuration',
     reset_to_defaults: 'Reset to defaults',
+    add_zone: 'Add Zone',
+    zone_name: 'Zone Name',
+    number_of_rows: 'Number of Rows',
+    number_of_columns: 'Number of Columns',
+    shelf_levels: 'Shelf Levels',
+    configured_storage_zones: 'Configured Storage Zones',
+    add_loading_dock: 'Add Loading Dock',
+    dock_name: 'Dock Name',
+    dock_type: 'Dock Type',
+    configured_loading_docks: 'Configured Loading Docks',
+    add_dock: 'Add Dock',
+    structure_saved: 'Structure Saved',
+    structure_saved_description: 'Your warehouse structure has been saved successfully.',
+    zone_added: 'Zone Added',
+    zone_added_description: 'has been added to the warehouse.',
+    zone_deleted: 'Zone Deleted',
+    zone_deleted_description: 'The selected zone has been removed from the warehouse.',
+    dock_added: 'Dock Added',
+    dock_added_description: 'has been added to the warehouse.',
+    dock_deleted: 'Dock Deleted',
+    dock_deleted_description: 'The selected dock has been removed from the warehouse.',
+    storage_zones: 'Storage Zones',
+    loading_docks: 'Loading Docks',
+    maintenance: 'Maintenance',
+    inactive: 'Inactive',
+    active: 'Active',
+    both: 'Both',
+    rows: 'rows',
+    columns: 'columns',
+    levels: 'levels',
+    save_structure: 'Save Structure',
+    
+    // Team Management
+    user_management: 'User Management',
+    create_user: 'Create User',
+    edit_user: 'Edit',
+    disable_user: 'Disable',
+    administrator: 'Administrator',
+    operator: 'Operator',
+    manager: 'Manager',
+    roles_permissions: 'Roles & Permissions',
+    edit_permissions: 'Edit Permissions',
+    user_groups: 'User Groups',
+    manage_group: 'Manage Group',
+    users: 'Users',
+    roles: 'Roles & Permissions',
+    groups: 'Groups',
+    full_access: 'Full access to all system features',
+    inventory_reports: 'Can manage inventory and view reports',
+    process_operations: 'Limited to processing inbound/outbound operations',
+    warehouse_staff: 'Warehouse Staff',
+    management_team: 'Management Team',
+    it_support: 'IT Support',
+    members: 'members',
     
     // Help Center
     guides: 'Guides',
@@ -315,6 +473,28 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     contact_support: 'Contact Support',
     popular_guides: 'Popular Guides',
     quick_answers: 'Quick Answers',
+    
+    // Dashboard
+    inventory_overview: 'Inventory Overview',
+    total_items: 'Total Items',
+    low_stock_items: 'Low Stock Items',
+    out_of_stock: 'Out of Stock',
+    recent_activity_dashboard: 'Recent Activity',
+    system_status: 'System Status',
+    online: 'Online',
+    robots_available: 'Robots Available',
+    pending_orders: 'Pending Orders',
+    recent_alerts: 'Recent Alerts',
+    
+    // Inbound/Outbound
+    inbound_orders: 'Inbound Orders',
+    outbound_orders: 'Outbound Orders',
+    new_inbound_order: 'New Inbound Order',
+    new_outbound_order: 'New Outbound Order',
+    order_id: 'Order ID',
+    supplier: 'Supplier',
+    customer: 'Customer',
+    items: 'Items',
     
     // Notifications
     mark_all_read: 'Mark all as read',
@@ -346,18 +526,6 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     appearance: 'Giao diện',
     dark_mode: 'Chế độ tối',
     dark_mode_description: 'Chuyển đổi giữa chủ đề sáng và tối',
-    high_contrast: 'Độ tương phản cao',
-    high_contrast_description: 'Tăng độ tương phản để xem rõ hơn',
-    notification_preferences: 'Tùy chọn thông báo',
-    email_notifications: 'Thông báo qua email',
-    email_notifications_description: 'Nhận thông báo qua email',
-    push_notifications: 'Thông báo đẩy',
-    push_notifications_description: 'Nhận thông báo đẩy trong trình duyệt',
-    security: 'Bảo mật',
-    current_password: 'Mật khẩu hiện tại',
-    new_password: 'Mật khẩu mới',
-    confirm_password: 'Xác nhận mật khẩu mới',
-    update_password: 'Cập nhật mật khẩu',
     language: 'Ngôn ngữ',
     language_description: 'Chọn ngôn ngữ ưa thích của bạn',
     settings_saved: 'Đã lưu cài đặt!',
@@ -397,6 +565,12 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     template_created_description: 'đã được tạo thành công.',
     template_deleted: 'Đã xóa mẫu',
     template_deleted_description: 'đã được xóa.',
+    edit_template: 'Chỉnh sửa mẫu',
+    template_name: 'Tên mẫu',
+    template_description: 'Mô tả',
+    add_step: 'Thêm bước',
+    remove_step: 'Xóa bước',
+    save_template: 'Lưu mẫu',
     
     // Operator Interface
     select_dock: 'Chọn khu vực',
@@ -416,6 +590,18 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     processing: 'Đang xử lý',
     completed: 'Hoàn thành',
     failed: 'Thất bại',
+    performance_metrics: 'Chỉ số hiệu suất',
+    orders_processed: 'Đơn đã xử lý',
+    avg_completion_time: 'Thời gian hoàn thành trung bình',
+    today: 'Hôm nay',
+    this_week: 'Tuần này',
+    this_month: 'Tháng này',
+    minutes_per_order: 'phút/đơn hàng',
+    efficiency_rating: 'Đánh giá hiệu quả',
+    excellent: 'Xuất sắc',
+    good: 'Tốt',
+    average: 'Trung bình',
+    needs_improvement: 'Cần cải thiện',
     
     // Warehouse Layout
     warehouse_overview: 'Tổng quan kho',
@@ -431,6 +617,14 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     zones: 'Khu vực',
     racks: 'Kệ',
     to_be_implemented: 'Chức năng cấu hình kệ sẽ được triển khai sau.',
+    row: 'Hàng',
+    column: 'Cột',
+    stored_items: 'Các mặt hàng lưu trữ',
+    no_items_stored: 'Không có hàng hóa được lưu trữ ở vị trí này',
+    shelf: 'Kệ',
+    in_stock: 'Còn hàng',
+    low_stock: 'Sắp hết',
+    quantity: 'SL',
     
     // System Settings
     database_configuration: 'Cấu hình cơ sở dữ liệu',
@@ -468,6 +662,60 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     team_settings: 'Cài đặt nhóm',
     warehouse_configuration: 'Cấu hình kho',
     reset_to_defaults: 'Đặt lại về mặc định',
+    add_zone: 'Thêm khu vực',
+    zone_name: 'Tên khu vực',
+    number_of_rows: 'Số hàng',
+    number_of_columns: 'Số cột',
+    shelf_levels: 'Số tầng kệ',
+    configured_storage_zones: 'Khu vực lưu trữ đã cấu hình',
+    add_loading_dock: 'Thêm bến bốc dỡ',
+    dock_name: 'Tên bến',
+    dock_type: 'Loại bến',
+    configured_loading_docks: 'Bến bốc dỡ đã cấu hình',
+    add_dock: 'Thêm bến',
+    structure_saved: 'Đã lưu cấu trúc',
+    structure_saved_description: 'Cấu trúc kho của bạn đã được lưu thành công.',
+    zone_added: 'Đã thêm khu vực',
+    zone_added_description: 'đã được thêm vào kho.',
+    zone_deleted: 'Đã xóa khu vực',
+    zone_deleted_description: 'Khu vực đã chọn đã được xóa khỏi kho.',
+    dock_added: 'Đã thêm bến',
+    dock_added_description: 'đã được thêm vào kho.',
+    dock_deleted: 'Đã xóa bến',
+    dock_deleted_description: 'Bến đã chọn đã được xóa khỏi kho.',
+    storage_zones: 'Khu vực lưu trữ',
+    loading_docks: 'Bến bốc dỡ',
+    maintenance: 'Bảo trì',
+    inactive: 'Không hoạt động',
+    active: 'Hoạt động',
+    both: 'Cả hai',
+    rows: 'hàng',
+    columns: 'cột',
+    levels: 'tầng',
+    save_structure: 'Lưu cấu trúc',
+    
+    // Team Management
+    user_management: 'Quản lý người dùng',
+    create_user: 'Tạo người dùng',
+    edit_user: 'Chỉnh sửa',
+    disable_user: 'Vô hiệu hóa',
+    administrator: 'Quản trị viên',
+    operator: 'Người vận hành',
+    manager: 'Người quản lý',
+    roles_permissions: 'Vai trò & Quyền hạn',
+    edit_permissions: 'Chỉnh sửa quyền',
+    user_groups: 'Nhóm người dùng',
+    manage_group: 'Quản lý nhóm',
+    users: 'Người dùng',
+    roles: 'Vai trò & Quyền hạn',
+    groups: 'Nhóm',
+    full_access: 'Toàn quyền truy cập vào tất cả tính năng của hệ thống',
+    inventory_reports: 'Có thể quản lý kho và xem báo cáo',
+    process_operations: 'Chỉ giới hạn ở xử lý hoạt động nhập/xuất kho',
+    warehouse_staff: 'Nhân viên kho',
+    management_team: 'Nhóm quản lý',
+    it_support: 'Hỗ trợ IT',
+    members: 'thành viên',
     
     // Help Center
     guides: 'Hướng dẫn',
@@ -475,6 +723,28 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     contact_support: 'Liên hệ hỗ trợ',
     popular_guides: 'Hướng dẫn phổ biến',
     quick_answers: 'Câu trả lời nhanh',
+    
+    // Dashboard
+    inventory_overview: 'Tổng quan kho',
+    total_items: 'Tổng số mặt hàng',
+    low_stock_items: 'Mặt hàng sắp hết',
+    out_of_stock: 'Hết hàng',
+    recent_activity_dashboard: 'Hoạt động gần đây',
+    system_status: 'Trạng thái hệ thống',
+    online: 'Trực tuyến',
+    robots_available: 'Robot khả dụng',
+    pending_orders: 'Đơn hàng đang chờ xử lý',
+    recent_alerts: 'Cảnh báo gần đây',
+    
+    // Inbound/Outbound
+    inbound_orders: 'Đơn nhập kho',
+    outbound_orders: 'Đơn xuất kho',
+    new_inbound_order: 'Đơn nhập kho mới',
+    new_outbound_order: 'Đơn xuất kho mới',
+    order_id: 'ID đơn hàng',
+    supplier: 'Nhà cung cấp',
+    customer: 'Khách hàng',
+    items: 'Mặt hàng',
     
     // Notifications
     mark_all_read: 'Đánh dấu tất cả là đã đọc',

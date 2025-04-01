@@ -19,10 +19,10 @@ const LanguageSelector = () => {
         <Button 
           variant="ghost" 
           size="sm" 
-          className="flex items-center gap-2 h-9 px-3 rounded-full border border-border hover:bg-accent"
+          className="flex items-center gap-1 h-8 px-2 rounded-md border border-input hover:bg-accent"
         >
-          <Globe className="h-4 w-4" />
-          <span className="font-medium text-sm">{language.toUpperCase()}</span>
+          <Globe className="h-3.5 w-3.5" />
+          <span className="font-medium text-xs">{language.toUpperCase()}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-32">

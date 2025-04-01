@@ -24,6 +24,7 @@ import HelpGuides from "./pages/HelpGuides";
 import HelpFAQs from "./pages/HelpFAQs";
 import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
+import TemplateEdit from "./pages/TemplateEdit";
 
 const queryClient = new QueryClient();
 
@@ -51,7 +52,8 @@ const App = () => (
             {/* Missions routes */}
             <Route path="/missions" element={<Layout><Missions /></Layout>} />
             <Route path="/missions/templates" element={<Layout><Missions /></Layout>} />
-            <Route path="/missions/templates/:id" element={<Layout><Missions /></Layout>} />
+            <Route path="/missions/templates/new" element={<Layout><TemplateEdit /></Layout>} />
+            <Route path="/missions/templates/:id" element={<Layout><TemplateEdit /></Layout>} />
             
             {/* Settings routes */}
             <Route path="/user-settings" element={<Layout><UserSettings /></Layout>} />
