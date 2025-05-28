@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Grid, Environment, Center, Text } from "@react-three/drei";
@@ -200,7 +199,6 @@ const WarehouseScene: React.FC<{
                 fontSize={0.5}
                 color="#333"
                 anchorY="top"
-                fontWeight="bold"
               >
                 {shelfName}
               </Text>
