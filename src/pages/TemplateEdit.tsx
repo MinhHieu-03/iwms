@@ -130,6 +130,30 @@ const TemplateEdit = () => {
       </div>
       
       <Card>
+        <CardHeader>
+          <CardTitle>
+            <div className="space-y-4">
+              <div className="grid gap-2">
+                <label className="text-sm font-medium">Template Name</label>
+                <input 
+                  type="text" 
+                  value={template.name}
+                  onChange={(e) => setTemplate({...template, name: e.target.value})}
+                  className="border rounded px-3 py-2"
+                />
+              </div>
+              <div className="grid gap-2">
+                <label className="text-sm font-medium">Description</label>
+                <Textarea 
+                  rows={3}
+                  value={template.description}
+                  onChange={(e) => setTemplate({...template, description: e.target.value})}
+                  className="border rounded px-3 py-2"
+                />
+              </div>
+            </div>
+          </CardTitle>
+        </CardHeader>
         <CardContent className="space-y-4 pt-6">
           <Tabs defaultValue="editor" className="w-full">
             <TabsList>
@@ -140,7 +164,7 @@ const TemplateEdit = () => {
 
             <TabsContent value="editor" className="mt-4">
               <div className="border rounded-lg" style={{ height: '600px' }}>
-                <TemplateGraph data={template.json} />
+                <TemplateGraph data={template.json} view="editor" />
               </div>
             </TabsContent>
 
@@ -156,41 +180,7 @@ const TemplateEdit = () => {
             </TabsContent>
 
             <TabsContent value="settings" className="mt-4">
-              <Card>
-                <CardContent className="pt-6 space-y-4">
-                  <div className="grid gap-2">
-                    <label className="text-sm font-medium">Template Name</label>
-                    <input 
-                      type="text" 
-                      value={template.name}
-                      onChange={(e) => setTemplate({...template, name: e.target.value})}
-                      className="border rounded px-3 py-2"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <label className="text-sm font-medium">Description</label>
-                    <Textarea 
-                      rows={3}
-                      value={template.description}
-                      onChange={(e) => setTemplate({...template, description: e.target.value})}
-                      className="border rounded px-3 py-2"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <label className="text-sm font-medium">Category</label>
-                    <select className="border rounded px-3 py-2">
-                      <option>Pick and Place</option>
-                      <option>Transport</option>
-                      <option>Inventory</option>
-                      <option>Custom</option>
-                    </select>
-                  </div>
-                  <div className="flex items-center space-x-2 pt-2">
-                    <input type="checkbox" id="is-active" defaultChecked />
-                    <label htmlFor="is-active" className="text-sm">Active template (available for use)</label>
-                  </div>
-                </CardContent>
-              </Card>
+              <TemplateGraph view="settings" />
             </TabsContent>
           </Tabs>
         </CardContent>

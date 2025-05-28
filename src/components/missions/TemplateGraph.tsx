@@ -3,8 +3,6 @@ import React, { useState, useCallback } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
-  ArrowLeftIcon, 
-  Save, 
   PlusCircle, 
   Trash2,
   ChevronDown,
@@ -12,7 +10,6 @@ import {
   Share2,
   Copy
 } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
 import {
   ReactFlow,
   MiniMap,
@@ -28,14 +25,12 @@ import {
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { toast } from "sonner";
 
 // Define the type for graph data
 interface GraphData {
@@ -46,6 +41,7 @@ interface GraphData {
 // Define the props type for the component
 interface TemplateGraphProps {
   data?: GraphData;
+  view?: 'editor' | 'json' | 'settings';
 }
 
 const initialNodes = [
@@ -185,20 +181,15 @@ const emptyEdges = [
 
 const nodeTypes = {};
 
-const TemplateGraph: React.FC<TemplateGraphProps> = ({ data }) => {
-  const { id } = useParams<{ id: string }>();
-  const isNewTemplate = id?.startsWith('t-new');
-  
-  const [templateName, setTemplateName] = useState(isNewTemplate ? "New Template" : `Template ${id?.split('-')[1]}`);
-  const [templateDescription, setTemplateDescription] = useState(isNewTemplate ? "" : "This template defines the workflow for robots to pick items from storage.");
-  
-  // Use provided data or fallback to empty/initial templates
-  const startingNodes = data ? data.nodes : (isNewTemplate ? emptyNodes : initialNodes);
-  const startingEdges = data ? data.edges : (isNewTemplate ? emptyEdges : initialEdges);
+const TemplateGraph: React.FC<TemplateGraphProps> = ({ data, view = 'editor' }) => {
+  const [selectedNode, setSelectedNode] = useState(null);
+
+  // Use provided data or fallback to initial templates
+  const startingNodes = data ? data.nodes : initialNodes;
+  const startingEdges = data ? data.edges : initialEdges;
   
   const [nodes, setNodes, onNodesChange] = useNodesState(startingNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(startingEdges);
-  const [selectedNode, setSelectedNode] = useState(null);
 
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
@@ -221,29 +212,51 @@ const TemplateGraph: React.FC<TemplateGraphProps> = ({ data }) => {
     };
     setNodes((nds) => [...nds, newNode]);
   };
-  
-  const handleSaveTemplate = () => {
-    // In a real app, we would save the template to the database
-    toast.success("Template saved successfully");
-  };
 
+  // Show different content based on view prop
+  if (view === 'json') {
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <pre className="bg-gray-100 p-4 rounded-md overflow-auto h-[500px] text-sm">
+            {JSON.stringify({ nodes, edges }, null, 2)}
+          </pre>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (view === 'settings') {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Template Settings</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="grid gap-2">
+              <label className="text-sm font-medium">Category</label>
+              <select className="border rounded px-3 py-2">
+                <option>Pick and Place</option>
+                <option>Transport</option>
+                <option>Inventory</option>
+                <option>Custom</option>
+              </select>
+            </div>
+            <div className="flex items-center space-x-2 pt-2">
+              <input type="checkbox" id="is-active" defaultChecked />
+              <label htmlFor="is-active" className="text-sm">Active template (available for use)</label>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Default to editor view
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <Button 
-            variant="outline" 
-            size="sm"
-            asChild
-          >
-            <Link to="/missions/templates">
-              <ArrowLeftIcon className="mr-1 h-4 w-4" /> Back
-            </Link>
-          </Button>
-          <h2 className="text-2xl font-bold">
-            {isNewTemplate ? 'Create New Template' : `Edit Template: ${id}`}
-          </h2>
-        </div>
         <div className="space-x-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -281,143 +294,73 @@ const TemplateGraph: React.FC<TemplateGraphProps> = ({ data }) => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          
-          <Button 
-            className="bg-warehouse-primary text-white hover:bg-warehouse-primary/90"
-            onClick={handleSaveTemplate}
-          >
-            <Save className="mr-1 h-4 w-4" /> Save Template
-          </Button>
         </div>
       </div>
 
-      <Tabs defaultValue="editor">
-        <TabsList className="mb-4">
-          <TabsTrigger value="editor">Visual Editor</TabsTrigger>
-          <TabsTrigger value="json">JSON</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="editor" className="space-y-4">
-          <div className="h-[600px] border rounded-md">
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              onNodeClick={onNodeClick}
-              fitView
-              nodeTypes={nodeTypes}
-            >
-              <Controls />
-              <MiniMap />
-              <Background gap={16} size={1} />
-              <Panel position="top-right">
-                <div className="bg-white border p-2 rounded-md shadow-sm text-xs">
-                  Click on nodes and edges to select them
-                </div>
-              </Panel>
-            </ReactFlow>
-          </div>
-          
-          {selectedNode && (
-            <Card>
-              <CardHeader className="py-3">
-                <CardTitle className="text-sm">Node Properties</CardTitle>
-              </CardHeader>
-              <CardContent className="py-2">
-                <div className="space-y-2">
-                  <div>
-                    <label className="text-xs font-medium">ID:</label>
-                    <input 
-                      type="text" 
-                      value={selectedNode.id} 
-                      readOnly
-                      className="ml-2 text-xs border rounded px-2 py-1 bg-gray-50" 
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium">Label:</label>
-                    <input 
-                      type="text" 
-                      defaultValue={selectedNode.data?.label} 
-                      className="ml-2 text-xs border rounded px-2 py-1" 
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium">Type:</label>
-                    <select className="ml-2 text-xs border rounded px-2 py-1">
-                      <option value="default">Default</option>
-                      <option value="input">Start</option>
-                      <option value="output">End</option>
-                      <option value="decision">Decision</option>
-                    </select>
-                  </div>
-                  <div className="pt-2">
-                    <Button size="sm" variant="destructive" className="text-xs h-7">
-                      <Trash2 className="mr-1 h-3 w-3" /> Delete Node
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-        
-        <TabsContent value="json">
-          <Card>
-            <CardContent className="pt-6">
-              <pre className="bg-gray-100 p-4 rounded-md overflow-auto h-[500px] text-sm">
-                {JSON.stringify({ nodes, edges }, null, 2)}
-              </pre>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="settings">
-          <Card>
-            <CardHeader>
-              <CardTitle>Template Settings</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">Template Name</label>
-                  <input 
-                    type="text" 
-                    value={templateName}
-                    onChange={(e) => setTemplateName(e.target.value)}
-                    className="border rounded px-3 py-2"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">Description</label>
-                  <textarea 
-                    rows={3}
-                    value={templateDescription}
-                    onChange={(e) => setTemplateDescription(e.target.value)}
-                    className="border rounded px-3 py-2"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">Category</label>
-                  <select className="border rounded px-3 py-2">
-                    <option>Pick and Place</option>
-                    <option>Transport</option>
-                    <option>Inventory</option>
-                    <option>Custom</option>
-                  </select>
-                </div>
-                <div className="flex items-center space-x-2 pt-2">
-                  <input type="checkbox" id="is-active" />
-                  <label htmlFor="is-active" className="text-sm">Active template (available for use)</label>
-                </div>
+      <div className="h-[600px] border rounded-md">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onNodeClick={onNodeClick}
+          fitView
+          nodeTypes={nodeTypes}
+        >
+          <Controls />
+          <MiniMap />
+          <Background gap={16} size={1} />
+          <Panel position="top-right">
+            <div className="bg-white border p-2 rounded-md shadow-sm text-xs">
+              Click on nodes and edges to select them
+            </div>
+          </Panel>
+        </ReactFlow>
+      </div>
+      
+      {selectedNode && (
+        <Card>
+          <CardHeader className="py-3">
+            <CardTitle className="text-sm">Node Properties</CardTitle>
+          </CardHeader>
+          <CardContent className="py-2">
+            <div className="space-y-2">
+              <div>
+                <label className="text-xs font-medium">ID:</label>
+                <input 
+                  type="text" 
+                  value={selectedNode.id} 
+                  readOnly
+                  className="ml-2 text-xs border rounded px-2 py-1 bg-gray-50" 
+                />
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+              <div>
+                <label className="text-xs font-medium">Label:</label>
+                <input 
+                  type="text" 
+                  defaultValue={selectedNode.data?.label} 
+                  className="ml-2 text-xs border rounded px-2 py-1" 
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium">Type:</label>
+                <select className="ml-2 text-xs border rounded px-2 py-1">
+                  <option value="default">Default</option>
+                  <option value="input">Start</option>
+                  <option value="output">End</option>
+                  <option value="decision">Decision</option>
+                </select>
+              </div>
+              <div className="pt-2">
+                <Button size="sm" variant="destructive" className="text-xs h-7">
+                  <Trash2 className="mr-1 h-3 w-3" /> Delete Node
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
