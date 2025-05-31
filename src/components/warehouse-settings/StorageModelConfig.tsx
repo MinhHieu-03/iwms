@@ -61,7 +61,7 @@ const StorageModelConfig = () => {
   // Handle double click to edit node name
   const onNodeDoubleClick = useCallback((event: React.MouseEvent, node: Node) => {
     setEditingNode(node.id);
-    setEditingNodeName(node.data.label);
+    setEditingNodeName((node.data as { label: string }).label);
   }, []);
 
   // Add new node

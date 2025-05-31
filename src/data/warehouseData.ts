@@ -411,7 +411,9 @@ export const masterData: MasterDataItem[] = Array.from({ length: 100 }, (_, i) =
 });
 
 // ReactFlow node and edge data for Storage Hierarchy Visualization
-export const storageHierarchyNodes = [
+import { Node, Edge, MarkerType } from '@xyflow/react';
+
+export const storageHierarchyNodes: Node[] = [
   {
     id: 'plastic-bin',
     type: 'default',
@@ -505,14 +507,14 @@ export const storageHierarchyNodes = [
   }
 ];
 
-export const storageHierarchyEdges = [
+export const storageHierarchyEdges: Edge[] = [
   {
     id: 'e-plastic-carton',
     source: 'plastic-bin',
     target: 'carton-1',
     animated: true,
     style: { stroke: '#1976d2', strokeWidth: 2 },
-    markerEnd: { type: 'arrowclosed', color: '#1976d2' }
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
   },
   {
     id: 'e-plastic-box',
@@ -520,7 +522,7 @@ export const storageHierarchyEdges = [
     target: 'box-1',
     animated: true,
     style: { stroke: '#1976d2', strokeWidth: 2 },
-    markerEnd: { type: 'arrowclosed', color: '#1976d2' }
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
   },
   {
     id: 'e-plastic-kit',
@@ -528,7 +530,7 @@ export const storageHierarchyEdges = [
     target: 'kit-1',
     animated: true,
     style: { stroke: '#1976d2', strokeWidth: 2 },
-    markerEnd: { type: 'arrowclosed', color: '#1976d2' }
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
   },
   {
     id: 'e-carton-box',
@@ -536,7 +538,7 @@ export const storageHierarchyEdges = [
     target: 'box-2',
     animated: true,
     style: { stroke: '#7b1fa2', strokeWidth: 2 },
-    markerEnd: { type: 'arrowclosed', color: '#7b1fa2' }
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#7b1fa2' }
   },
   {
     id: 'e-carton-kit',
@@ -544,7 +546,7 @@ export const storageHierarchyEdges = [
     target: 'kit-2',
     animated: true,
     style: { stroke: '#7b1fa2', strokeWidth: 2 },
-    markerEnd: { type: 'arrowclosed', color: '#7b1fa2' }
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#7b1fa2' }
   },
   {
     id: 'e-box-kit',
@@ -552,6 +554,6 @@ export const storageHierarchyEdges = [
     target: 'kit-3',
     animated: true,
     style: { stroke: '#388e3c', strokeWidth: 2 },
-    markerEnd: { type: 'arrowclosed', color: '#388e3c' }
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#388e3c' }
   }
 ];
