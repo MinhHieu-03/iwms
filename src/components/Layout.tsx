@@ -93,21 +93,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       title: "Management",
       items: [
         {
-          path: "/team-settings",
-          name: "team_management" as TranslationKey,
-          icon: <Users className="w-5 h-5" />,
-        },
-        {
-          path: "/user-settings",
-          name: "user_settings" as TranslationKey,
-          icon: <User className="w-5 h-5" />,
-        },
-        {
-          path: "/system-settings",
-          name: "system_settings" as TranslationKey,
-          icon: <Settings className="w-5 h-5" />,
-        },
-        {
           path: "/warehouse-settings",
           name: "warehouse_settings" as TranslationKey,
           icon: <Warehouse className="w-5 h-5" />,
@@ -123,6 +108,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               icon: <Box className="w-4 h-4" />,
             }
           ]
+        },
+        {
+          path: "/team-settings",
+          name: "team_management" as TranslationKey,
+          icon: <Users className="w-5 h-5" />,
+        },
+        {
+          path: "/user-settings",
+          name: "user_settings" as TranslationKey,
+          icon: <User className="w-5 h-5" />,
+        },
+        {
+          path: "/system-settings",
+          name: "system_settings" as TranslationKey,
+          icon: <Settings className="w-5 h-5" />,
         },
       ],
     },
