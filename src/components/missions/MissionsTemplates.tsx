@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -32,6 +31,7 @@ import {
   PlusCircle,
   XCircle,
 } from "lucide-react";
+import { getAllTemplates } from "@/data/missionTemplatesData";
 
 const MissionsTemplates = () => {
   const { toast } = useToast();
@@ -40,25 +40,8 @@ const MissionsTemplates = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
 
-  // Mock data
-  const templates = [
-    {
-      id: "template1",
-      name: "Inventory Transfer",
-      description: "Move items from one location to another",
-      steps: ["Go to location A", "Pick items", "Go to location B", "Place items"],
-      created: "2023-05-01T10:00:00",
-      modified: "2023-05-05T14:30:00"
-    },
-    {
-      id: "template2",
-      name: "Stock Replenishment",
-      description: "Refill items from warehouse to shelf",
-      steps: ["Get list", "Go to storage", "Collect items", "Go to shelf", "Place items"],
-      created: "2023-05-02T11:20:00",
-      modified: "2023-05-04T09:15:00"
-    },
-  ];
+  // Use data from the new data source
+  const templates = getAllTemplates();
 
   const filteredTemplates = templates.filter((template) =>
     template.name.toLowerCase().includes(searchQuery.toLowerCase())
