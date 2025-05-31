@@ -14,7 +14,8 @@ import {
   HelpCircle,
   LogOut,
   MonitorSmartphone,
-  Warehouse
+  Warehouse,
+  ChevronDown
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -39,6 +40,7 @@ type NavItem = {
   name: TranslationKey;
   icon: React.ReactNode;
   badge?: number;
+  children?: NavItem[];
 };
 
 interface LayoutProps {
@@ -47,13 +49,13 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
-  const [isLoggedIn, setIsLoggedIn] = React.useState(true); // For demo purposes, user is logged in
+  const [isLoggedIn, setIsLoggedIn] = React.useState(true);
   const { t } = useLanguage();
   
   const user = {
     name: "John Doe",
     email: "john.doe@example.com",
-    avatar: "", // Empty for fallback to show
+    avatar: "",
   };
   
   const navSections = [
@@ -109,6 +111,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           path: "/warehouse-settings",
           name: "warehouse_settings" as TranslationKey,
           icon: <Warehouse className="w-5 h-5" />,
+          children: [
+            {
+              path: "/warehouse-settings/layout",
+              name: "layout_configuration" as TranslationKey,
+              icon: <LayoutList className="w-4 h-4" />,
+            },
+            {
+              path: "/warehouse-settings/storage",
+              name: "storage_model_configuration" as TranslationKey,
+              icon: <Box className="w-4 h-4" />,
+            }
+          ]
         },
       ],
     },
@@ -130,6 +144,66 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     },
   ];
 
+  const renderNavItem = (item: NavItem) => {
+    const isActive = location.pathname === item.path || 
+                     (item.path !== "/" && location.pathname.startsWith(item.path));
+
+    if (item.children) {
+      return (
+        <DropdownMenu key={item.path}>
+          <DropdownMenuTrigger asChild>
+            <button
+              className={`flex items-center justify-between px-4 py-3 rounded-md mb-1 transition-all duration-200 w-full text-left ${
+                isActive
+                  ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                  : "text-foreground hover:bg-muted"
+              }`}
+            >
+              <div className="flex items-center space-x-3">
+                {item.icon}
+                <span>{t(item.name)}</span>
+              </div>
+              <ChevronDown className="h-4 w-4" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            {item.children.map((child) => (
+              <DropdownMenuItem key={child.path} asChild>
+                <Link
+                  to={child.path}
+                  className="flex items-center space-x-2 cursor-pointer"
+                >
+                  {child.icon}
+                  <span>{t(child.name)}</span>
+                </Link>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    }
+
+    return (
+      <Link
+        key={item.path}
+        to={item.path}
+        className={`flex items-center justify-between px-4 py-3 rounded-md mb-1 transition-all duration-200 ${
+          isActive
+            ? "bg-primary text-primary-foreground font-medium shadow-sm"
+            : "text-foreground hover:bg-muted"
+        }`}
+      >
+        <div className="flex items-center space-x-3">
+          {item.icon}
+          <span>{t(item.name)}</span>
+        </div>
+        {item.badge && (
+          <Badge variant="destructive" className="text-xs">{item.badge}</Badge>
+        )}
+      </Link>
+    );
+  };
+
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
@@ -144,26 +218,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <h2 className="mb-2 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 {section.title}
               </h2>
-              {section.items.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center justify-between px-4 py-3 rounded-md mb-1 transition-all duration-200 ${
-                    (location.pathname === item.path || 
-                     (item.path !== "/" && location.pathname.startsWith(item.path)))
-                      ? "bg-primary text-primary-foreground font-medium shadow-sm"
-                      : "text-foreground hover:bg-muted"
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    {item.icon}
-                    <span>{t(item.name)}</span>
-                  </div>
-                  {item.badge && (
-                    <Badge variant="destructive" className="text-xs">{item.badge}</Badge>
-                  )}
-                </Link>
-              ))}
+              {section.items.map(renderNavItem)}
             </div>
           ))}
           
@@ -196,22 +251,28 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               location.pathname === "/notifications" ? "bg-amber-500" :
               location.pathname === "/operator-interface" ? "bg-cyan-500" :
               location.pathname === "/help" ? "bg-green-500" :
+              location.pathname.startsWith("/warehouse-settings") ? "bg-orange-500" :
               "bg-warehouse-highlight"
             }`}></div>
             <h1 className="text-xl font-bold">
-              {t(
-                navSections.flatMap(s => s.items)
-                  .find((item) => 
-                    item.path === location.pathname || 
-                    (item.path !== "/" && location.pathname.startsWith(item.path))
-                  )?.name || ("dashboard" as TranslationKey)
-              )}
+              {location.pathname.startsWith("/warehouse-settings") 
+                ? location.pathname === "/warehouse-settings/layout" 
+                  ? "Layout Configuration"
+                  : location.pathname === "/warehouse-settings/storage"
+                  ? "Storage Model Configuration"
+                  : t("warehouse_settings")
+                : t(
+                  navSections.flatMap(s => s.items)
+                    .find((item) => 
+                      item.path === location.pathname || 
+                      (item.path !== "/" && location.pathname.startsWith(item.path))
+                    )?.name || ("dashboard" as TranslationKey)
+                )}
             </h1>
           </div>
 
           {/* User profile dropdown & Language selector */}
           <div className="flex items-center space-x-4">
-            {/* Language selector with improved positioning */}
             <LanguageSelector />
             
             <Link to="/notifications" className="relative p-2 rounded-full hover:bg-muted">
