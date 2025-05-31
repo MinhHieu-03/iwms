@@ -221,7 +221,7 @@ const WarehouseLayoutConfig = () => {
                         {editingWarehouse ? "Edit Warehouse" : "Create New Warehouse"}
                       </DialogTitle>
                     </DialogHeader>
-                    <form action={handleSaveWarehouse} className="space-y-4">
+                    <form onSubmit={(e) => { e.preventDefault(); handleSaveWarehouse(new FormData(e.currentTarget)); }} className="space-y-4">
                       <div>
                         <Label htmlFor="name">Name</Label>
                         <Input 
@@ -356,7 +356,7 @@ const WarehouseLayoutConfig = () => {
                         {editingArea ? "Edit Area" : "Create New Area"}
                       </DialogTitle>
                     </DialogHeader>
-                    <form action={handleSaveArea} className="space-y-4">
+                    <form onSubmit={(e) => { e.preventDefault(); handleSaveArea(new FormData(e.currentTarget)); }} className="space-y-4">
                       <div>
                         <Label htmlFor="warehouseId">Warehouse</Label>
                         <Select name="warehouseId" defaultValue={editingArea?.warehouseId || (warehousesData[0]?.id || "")}>
@@ -515,7 +515,7 @@ const WarehouseLayoutConfig = () => {
                         {editingRack ? "Edit Rack" : "Create New Rack"}
                       </DialogTitle>
                     </DialogHeader>
-                    <form action={handleSaveRack} className="space-y-4">
+                    <form onSubmit={(e) => { e.preventDefault(); handleSaveRack(new FormData(e.currentTarget)); }} className="space-y-4">
                       <div>
                         <Label htmlFor="areaId">Area</Label>
                         <Select name="areaId" defaultValue={editingRack?.areaId || (areasData[0]?.id || "")}>
@@ -735,7 +735,7 @@ const WarehouseLayoutConfig = () => {
                         {editingPricing ? "Edit Pricing Rule" : "Create New Pricing Rule"}
                       </DialogTitle>
                     </DialogHeader>
-                    <form action={handleSavePricing} className="space-y-4">
+                    <form onSubmit={(e) => { e.preventDefault(); handleSavePricing(new FormData(e.currentTarget)); }} className="space-y-4">
                       <div>
                         <Label htmlFor="name">Name</Label>
                         <Input 

@@ -6,6 +6,7 @@ export type TranslationKey =
   | 'cancel'
   | 'submit'
   | 'logout'
+  | 'login'
   
   // Navigation & Sidebar
   | 'dashboard'
@@ -278,6 +279,7 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     cancel: 'Cancel',
     submit: 'Submit',
     logout: 'Log out',
+    login: 'Login',
     
     // Navigation & Sidebar
     dashboard: 'Dashboard',
@@ -549,6 +551,7 @@ export const translations: Record<SupportedLanguages, Record<TranslationKey, str
     cancel: 'Hủy',
     submit: 'Gửi',
     logout: 'Đăng xuất',
+    login: 'Đăng nhập',
     
     // Navigation & Sidebar
     dashboard: 'Bảng điều khiển',
