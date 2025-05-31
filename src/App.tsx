@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/Navbar";
@@ -25,29 +25,31 @@ import GroupsTab from "@/components/team/GroupsTab";
 function App() {
   return (
     <LanguageProvider>
-      <Navbar>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/operator-interface" element={<OperatorInterface />} />
-          <Route path="/inbound-outbound" element={<InboundOutbound />} />
-          <Route path="/layout" element={<WarehouseLayout />} />
-          <Route path="/missions" element={<Missions />} />
-          <Route path="/team-settings" element={<TeamSettings />} />
-            <Route path="/team-settings/:section" element={<TeamSettings />} />
-            <Route path="/team-settings/users" element={<UsersTab />} />
-            <Route path="/team-settings/roles" element={<RolesTab />} />
-            <Route path="/team-settings/groups" element={<GroupsTab />} />
-          <Route path="/user-settings" element={<UserSettings />} />
-          <Route path="/system-settings" element={<SystemSettings />} />
-          <Route path="/notifications" element={<Notifications />} />
-          <Route path="/help" element={<Help />} />
-          <Route path="/warehouse-settings" element={<WarehouseSettings />} />
-            <Route path="/warehouse-settings/layout" element={<LayoutConfig />} />
-            <Route path="/warehouse-settings/storage" element={<StorageModelConfig />} />
-          <Route path="/warehouse-storage-config" element={<WarehouseStorageConfig />} />
-        </Routes>
-        <Toaster />
-      </Navbar>
+      <BrowserRouter>
+        <Navbar>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/operator-interface" element={<OperatorInterface />} />
+            <Route path="/inbound-outbound" element={<InboundOutbound />} />
+            <Route path="/layout" element={<WarehouseLayout />} />
+            <Route path="/missions" element={<Missions />} />
+            <Route path="/team-settings" element={<TeamSettings />} />
+              <Route path="/team-settings/:section" element={<TeamSettings />} />
+              <Route path="/team-settings/users" element={<UsersTab />} />
+              <Route path="/team-settings/roles" element={<RolesTab />} />
+              <Route path="/team-settings/groups" element={<GroupsTab />} />
+            <Route path="/user-settings" element={<UserSettings />} />
+            <Route path="/system-settings" element={<SystemSettings />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/help" element={<Help />} />
+            <Route path="/warehouse-settings" element={<WarehouseSettings />} />
+              <Route path="/warehouse-settings/layout" element={<LayoutConfig />} />
+              <Route path="/warehouse-settings/storage" element={<StorageModelConfig />} />
+            <Route path="/warehouse-storage-config" element={<WarehouseStorageConfig />} />
+          </Routes>
+          <Toaster />
+        </Navbar>
+      </BrowserRouter>
     </LanguageProvider>
   );
 }
