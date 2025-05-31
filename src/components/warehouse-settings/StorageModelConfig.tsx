@@ -1,156 +1,200 @@
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Edit, Trash2, Download, Upload } from "lucide-react";
+import { Plus, Edit, Trash2, Download, Upload, Workflow } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-
-interface StorageHierarchy {
-  id: string;
-  name: string;
-  level: number;
-  parent?: string;
-  children?: StorageHierarchy[];
-}
-
-interface MasterDataItem {
-  id: string;
-  sku: string;
-  productName: string;
-  storageModel: string;
-  cartonQuantity: number;
-  boxQuantity: number;
-  kitQuantity: number;
-  action: string;
-}
+import {
+  ReactFlow,
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  Connection,
+  MarkerType,
+  Panel
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { 
+  storageHierarchy, 
+  storageFlows, 
+  masterData,
+  type StorageHierarchy,
+  type StorageFlow,
+  type MasterDataItem
+} from "@/data/warehouseData";
 
 const StorageModelConfig = () => {
   const { toast } = useToast();
   
-  const [storageHierarchy] = useState<StorageHierarchy[]>([
-    {
-      id: "1",
-      name: "thùng nhựa",
-      level: 0,
-      children: [
-        {
-          id: "2",
-          name: "carton",
-          level: 1,
-          parent: "1",
-          children: [
-            { id: "5", name: "box", level: 2, parent: "2" },
-            { id: "6", name: "kit", level: 2, parent: "2" }
-          ]
-        },
-        {
-          id: "3",
-          name: "box",
-          level: 1,
-          parent: "1",
-          children: [
-            { id: "7", name: "kit", level: 2, parent: "3" }
-          ]
-        },
-        {
-          id: "4",
-          name: "kit",
-          level: 1,
-          parent: "1"
-        }
-      ]
-    }
-  ]);
+  const [hierarchyData, setHierarchyData] = useState<StorageHierarchy[]>(storageHierarchy);
+  const [flowsData, setFlowsData] = useState<StorageFlow[]>(storageFlows);
+  const [masterDataItems, setMasterDataItems] = useState<MasterDataItem[]>(masterData);
 
-  const [masterData] = useState<MasterDataItem[]>([
+  // ReactFlow state for hierarchy visualization
+  const initialNodes = [
     {
-      id: "1",
-      sku: "09922316",
-      productName: "vt-d45",
-      storageModel: "thùng nhựa",
-      cartonQuantity: 20,
-      boxQuantity: 100,
-      kitQuantity: 300,
-      action: "Can bổ vào thùng nhựa"
+      id: 'plastic-bin',
+      type: 'default',
+      data: { label: 'Plastic Bin' },
+      position: { x: 400, y: 50 },
+      style: { 
+        background: '#e3f2fd', 
+        border: '2px solid #1976d2',
+        borderRadius: '12px',
+        padding: '10px',
+        minWidth: '120px'
+      }
     },
     {
-      id: "2",
-      sku: "09922410",
-      productName: "vt-d45",
-      storageModel: "thùng nhựa",
-      cartonQuantity: 20,
-      boxQuantity: 100,
-      kitQuantity: 300,
-      action: "Can bổ vào thùng nhựa"
+      id: 'carton-1',
+      type: 'default', 
+      data: { label: 'Carton' },
+      position: { x: 200, y: 200 },
+      style: { 
+        background: '#f3e5f5', 
+        border: '2px solid #7b1fa2',
+        borderRadius: '12px',
+        padding: '10px',
+        minWidth: '100px'
+      }
     },
     {
-      id: "3",
-      sku: "09923344",
-      productName: "vt-d45",
-      storageModel: "thùng nhựa",
-      cartonQuantity: 20,
-      boxQuantity: 100,
-      kitQuantity: 300,
-      action: "Can bổ vào thùng nhựa"
+      id: 'box-1',
+      type: 'default',
+      data: { label: 'Box' },
+      position: { x: 400, y: 200 },
+      style: { 
+        background: '#e8f5e8', 
+        border: '2px solid #388e3c',
+        borderRadius: '12px',
+        padding: '10px',
+        minWidth: '100px'
+      }
     },
     {
-      id: "4",
-      sku: "09922426",
-      productName: "vt-d45",
-      storageModel: "thùng nhựa",
-      cartonQuantity: 2123,
-      boxQuantity: 100,
-      kitQuantity: 300,
-      action: "Can bổ vào thùng nhựa"
+      id: 'kit-1',
+      type: 'default',
+      data: { label: 'Kit' },
+      position: { x: 600, y: 200 },
+      style: { 
+        background: '#fff3e0', 
+        border: '2px solid #f57c00',
+        borderRadius: '12px',
+        padding: '10px',
+        minWidth: '100px'
+      }
     },
     {
-      id: "5",
-      sku: "09921797",
-      productName: "vt-d23",
-      storageModel: "thùng nhựa",
-      cartonQuantity: 20,
-      boxQuantity: 100,
-      kitQuantity: 300,
-      action: "Can bổ vào thùng nhựa"
+      id: 'box-2',
+      type: 'default',
+      data: { label: 'Box' },
+      position: { x: 150, y: 350 },
+      style: { 
+        background: '#e8f5e8', 
+        border: '2px solid #388e3c',
+        borderRadius: '12px',
+        padding: '10px',
+        minWidth: '100px'
+      }
+    },
+    {
+      id: 'kit-2',
+      type: 'default',
+      data: { label: 'Kit' },
+      position: { x: 250, y: 350 },
+      style: { 
+        background: '#fff3e0', 
+        border: '2px solid #f57c00',
+        borderRadius: '12px',
+        padding: '10px',
+        minWidth: '100px'
+      }
+    },
+    {
+      id: 'kit-3',
+      type: 'default',
+      data: { label: 'Kit' },
+      position: { x: 400, y: 350 },
+      style: { 
+        background: '#fff3e0', 
+        border: '2px solid #f57c00',
+        borderRadius: '12px',
+        padding: '10px',
+        minWidth: '100px'
+      }
     }
-  ]);
+  ];
 
-  const [selectedTags, setSelectedTags] = useState<string[]>(["thùng nhựa", "carton"]);
+  const initialEdges = [
+    {
+      id: 'e-plastic-carton',
+      source: 'plastic-bin',
+      target: 'carton-1',
+      animated: true,
+      style: { stroke: '#1976d2', strokeWidth: 2 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
+    },
+    {
+      id: 'e-plastic-box',
+      source: 'plastic-bin',
+      target: 'box-1',
+      animated: true,
+      style: { stroke: '#1976d2', strokeWidth: 2 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
+    },
+    {
+      id: 'e-plastic-kit',
+      source: 'plastic-bin',
+      target: 'kit-1',
+      animated: true,
+      style: { stroke: '#1976d2', strokeWidth: 2 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
+    },
+    {
+      id: 'e-carton-box',
+      source: 'carton-1',
+      target: 'box-2',
+      animated: true,
+      style: { stroke: '#7b1fa2', strokeWidth: 2 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#7b1fa2' }
+    },
+    {
+      id: 'e-carton-kit',
+      source: 'carton-1',
+      target: 'kit-2',
+      animated: true,
+      style: { stroke: '#7b1fa2', strokeWidth: 2 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#7b1fa2' }
+    },
+    {
+      id: 'e-box-kit',
+      source: 'box-1',
+      target: 'kit-3',
+      animated: true,
+      style: { stroke: '#388e3c', strokeWidth: 2 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#388e3c' }
+    }
+  ];
+
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const onConnect = useCallback(
+    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
+    [setEdges]
+  );
+
+  const [selectedTags, setSelectedTags] = useState<string[]>(["Plastic Bin", "Carton"]);
 
   const removeTag = (tag: string) => {
     setSelectedTags(selectedTags.filter(t => t !== tag));
-  };
-
-  const renderHierarchyTree = (items: StorageHierarchy[], level = 0) => {
-    return (
-      <div className={`ml-${level * 4} space-y-2`}>
-        {items.map((item) => (
-          <div key={item.id} className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
-            <div className="flex items-center space-x-2">
-              <span className="font-medium">{item.name}</span>
-              <Button variant="outline" size="sm">
-                <Edit className="h-3 w-3" />
-              </Button>
-              <Button variant="outline" size="sm" className="text-red-500">
-                <Trash2 className="h-3 w-3" />
-              </Button>
-            </div>
-            <Button variant="outline" size="sm">
-              <Plus className="h-3 w-3" />
-            </Button>
-            {item.children && (
-              <div className="mt-2 w-full">
-                {renderHierarchyTree(item.children, level + 1)}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    );
   };
 
   return (
@@ -165,7 +209,10 @@ const StorageModelConfig = () => {
         <Card>
           <CardHeader>
             <div className="flex justify-between items-center">
-              <CardTitle>Storage Level</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Workflow className="h-5 w-5" />
+                Storage Hierarchy Visualization
+              </CardTitle>
               <div className="flex items-center gap-2">
                 <Button variant="outline">Reload</Button>
                 <Button>Save</Button>
@@ -186,16 +233,46 @@ const StorageModelConfig = () => {
                     </button>
                   </Badge>
                 ))}
-                <Button variant="outline" size="sm">+ Add New</Button>
+                <Button variant="outline" size="sm">+ Add New Level</Button>
               </div>
               
-              <div className="border rounded-lg p-4">
-                <div className="mb-4">
-                  <h3 className="font-medium mb-2">Storage Hierarchy</h3>
-                  <Button variant="outline" size="sm">Create Storage Hierarchy</Button>
-                </div>
-                
-                {renderHierarchyTree(storageHierarchy)}
+              <div className="border rounded-lg bg-gray-50" style={{ height: '500px' }}>
+                <ReactFlow
+                  nodes={nodes}
+                  edges={edges}
+                  onNodesChange={onNodesChange}
+                  onEdgesChange={onEdgesChange}
+                  onConnect={onConnect}
+                  fitView
+                  attributionPosition="bottom-left"
+                >
+                  <Controls />
+                  <MiniMap />
+                  <Background gap={16} size={1} />
+                  <Panel position="top-right">
+                    <div className="bg-white border p-3 rounded-md shadow-sm text-sm">
+                      <h4 className="font-medium mb-2">Storage Hierarchy</h4>
+                      <p className="text-xs text-gray-600">
+                        Drag to rearrange • Click edges to edit connections
+                      </p>
+                    </div>
+                  </Panel>
+                </ReactFlow>
+              </div>
+
+              <div className="flex gap-2 pt-4">
+                <Button variant="outline" size="sm">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Node
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit Selected
+                </Button>
+                <Button variant="outline" size="sm" className="text-red-500">
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Selected
+                </Button>
               </div>
             </div>
           </CardContent>
@@ -205,7 +282,13 @@ const StorageModelConfig = () => {
       <TabsContent value="storage-flow" className="space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle>Storage Method</CardTitle>
+            <div className="flex justify-between items-center">
+              <CardTitle>Storage Flow Management</CardTitle>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Create New Flow
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -223,7 +306,52 @@ const StorageModelConfig = () => {
                 ))}
               </div>
               
-              <Button className="w-24">Save</Button>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Flow Name</TableHead>
+                    <TableHead>Source Level</TableHead>
+                    <TableHead>Target Level</TableHead>
+                    <TableHead>Max Capacity</TableHead>
+                    <TableHead>Priority</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {flowsData.map((flow) => (
+                    <TableRow key={flow.id}>
+                      <TableCell className="font-medium">{flow.name}</TableCell>
+                      <TableCell>{flow.sourceLevel}</TableCell>
+                      <TableCell>{flow.targetLevel}</TableCell>
+                      <TableCell>{flow.rules.maxCapacity}</TableCell>
+                      <TableCell>
+                        <Badge variant={flow.rules.priority === 'high' ? 'destructive' : 
+                                      flow.rules.priority === 'medium' ? 'default' : 'secondary'}>
+                          {flow.rules.priority}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={flow.status === 'active' ? 'default' : 'secondary'}>
+                          {flow.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Button variant="outline" size="sm">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="outline" size="sm" className="text-red-500">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+              <Button className="w-24 mt-4">Save</Button>
             </div>
           </CardContent>
         </Card>
@@ -233,7 +361,7 @@ const StorageModelConfig = () => {
         <Card>
           <CardHeader>
             <div className="flex justify-between items-center">
-              <CardTitle>Master Data</CardTitle>
+              <CardTitle>Master Data Management</CardTitle>
               <div className="flex items-center gap-2">
                 <Button variant="outline">
                   <Plus className="mr-2 h-4 w-4" />
@@ -257,24 +385,37 @@ const StorageModelConfig = () => {
                   <TableHead>STT</TableHead>
                   <TableHead>SKU</TableHead>
                   <TableHead>Product Name</TableHead>
+                  <TableHead>Category</TableHead>
                   <TableHead>Storage Model</TableHead>
-                  <TableHead>Carton Quantity</TableHead>
-                  <TableHead>Box Quantity</TableHead>
-                  <TableHead>Kit Quantity</TableHead>
+                  <TableHead>Carton Qty</TableHead>
+                  <TableHead>Box Qty</TableHead>
+                  <TableHead>Kit Qty</TableHead>
                   <TableHead>Action Required</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {masterData.map((item, index) => (
+                {masterDataItems.slice(0, 10).map((item, index) => (
                   <TableRow key={item.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell className="font-medium">{item.sku}</TableCell>
                     <TableCell>{item.productName}</TableCell>
+                    <TableCell>{item.category}</TableCell>
                     <TableCell>{item.storageModel}</TableCell>
                     <TableCell>{item.cartonQuantity}</TableCell>
                     <TableCell>{item.boxQuantity}</TableCell>
                     <TableCell>{item.kitQuantity}</TableCell>
                     <TableCell>{item.action}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm" className="text-red-500">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
