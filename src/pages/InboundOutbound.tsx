@@ -2,6 +2,15 @@
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import StatusBadge from "@/components/StatusBadge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { 
@@ -21,53 +30,249 @@ const InboundOutbound = () => {
   const itemsPerPage = 10;
 
   const inboundOrders = [
-    { id: "IN-291", supplier: "Tech Supplies Inc.", items: 24, status: "Pending", date: "2023-05-15T10:30:00" },
-    { id: "IN-290", supplier: "Office Solutions", items: 12, status: "Processing", date: "2023-05-14T14:45:00" },
-    { id: "IN-289", supplier: "Global Parts Ltd.", items: 36, status: "Completed", date: "2023-05-13T09:15:00" },
-    { id: "IN-288", supplier: "Industrial Equipment Co.", items: 8, status: "Completed", date: "2023-05-12T15:20:00" },
-    { id: "IN-287", supplier: "Tech Warehouse", items: 19, status: "Processing", date: "2023-05-12T11:10:00" },
-    { id: "IN-286", supplier: "Smart Solutions", items: 42, status: "Pending", date: "2023-05-11T09:30:00" },
-    { id: "IN-285", supplier: "Factory Direct", items: 15, status: "Completed", date: "2023-05-10T14:45:00" },
-    { id: "IN-284", supplier: "Distribution Central", items: 28, status: "Processing", date: "2023-05-09T16:20:00" },
-    { id: "IN-283", supplier: "Supply Chain Inc.", items: 13, status: "Pending", date: "2023-05-09T10:15:00" },
-    { id: "IN-282", supplier: "Bulk Goods Ltd.", items: 31, status: "Completed", date: "2023-05-08T13:40:00" },
-    { id: "IN-281", supplier: "Quick Ship Co.", items: 7, status: "Processing", date: "2023-05-07T11:25:00" },
-    { id: "IN-280", supplier: "Global Imports", items: 22, status: "Completed", date: "2023-05-06T15:10:00" },
-    { id: "IN-279", supplier: "Direct Supply", items: 16, status: "Pending", date: "2023-05-05T09:45:00" },
-    { id: "IN-278", supplier: "Central Depot", items: 29, status: "Processing", date: "2023-05-04T14:30:00" },
-    { id: "IN-277", supplier: "Quality Parts Inc.", items: 11, status: "Completed", date: "2023-05-03T10:20:00" },
-    { id: "IN-276", supplier: "Wholesale Direct", items: 34, status: "Processing", date: "2023-05-02T16:15:00" },
-    { id: "IN-275", supplier: "Component Supply Co.", items: 18, status: "Pending", date: "2023-05-01T11:05:00" },
-    { id: "IN-274", supplier: "Rapid Logistics", items: 26, status: "Completed", date: "2023-04-30T13:50:00" },
-    { id: "IN-273", supplier: "Premium Materials", items: 9, status: "Processing", date: "2023-04-29T09:30:00" },
-    { id: "IN-272", supplier: "Tech Components", items: 21, status: "Completed", date: "2023-04-28T14:20:00" },
-    { id: "IN-271", supplier: "Industrial Supply Co.", items: 14, status: "Pending", date: "2023-04-27T10:15:00" },
-    { id: "IN-270", supplier: "Warehouse Supplies", items: 38, status: "Processing", date: "2023-04-26T15:40:00" }
+    { 
+      id: "IN-291", 
+      taskId: "TSK-001", 
+      robotCode: "R001", 
+      pickupLocation: "A-01-01", 
+      dropoffLocation: "B-02-03", 
+      status: "Pending", 
+      missionId: "M001", 
+      partner: "Tech Supplies Inc.", 
+      category: "Electronics", 
+      registrationTime: "2023-05-15T10:30:00" 
+    },
+    { 
+      id: "IN-290", 
+      taskId: "TSK-002", 
+      robotCode: "R002", 
+      pickupLocation: "A-02-01", 
+      dropoffLocation: "C-01-02", 
+      status: "Processing", 
+      missionId: "M002", 
+      partner: "Office Solutions", 
+      category: "Office Supplies", 
+      registrationTime: "2023-05-14T14:45:00" 
+    },
+    { 
+      id: "IN-289", 
+      taskId: "TSK-003", 
+      robotCode: "R003", 
+      pickupLocation: "B-01-01", 
+      dropoffLocation: "A-03-01", 
+      status: "Completed", 
+      missionId: "M003", 
+      partner: "Global Parts Ltd.", 
+      category: "Industrial", 
+      registrationTime: "2023-05-13T09:15:00" 
+    },
+    { 
+      id: "IN-288", 
+      taskId: "TSK-004", 
+      robotCode: "R001", 
+      pickupLocation: "C-01-01", 
+      dropoffLocation: "B-01-02", 
+      status: "Completed", 
+      missionId: "M004", 
+      partner: "Industrial Equipment Co.", 
+      category: "Machinery", 
+      registrationTime: "2023-05-12T15:20:00" 
+    },
+    { 
+      id: "IN-287", 
+      taskId: "TSK-005", 
+      robotCode: "R002", 
+      pickupLocation: "A-01-02", 
+      dropoffLocation: "C-02-01", 
+      status: "Processing", 
+      missionId: "M005", 
+      partner: "Tech Warehouse", 
+      category: "Electronics", 
+      registrationTime: "2023-05-12T11:10:00" 
+    },
+    { 
+      id: "IN-286", 
+      taskId: "TSK-006", 
+      robotCode: "R003", 
+      pickupLocation: "B-02-01", 
+      dropoffLocation: "A-02-02", 
+      status: "Pending", 
+      missionId: "M006", 
+      partner: "Smart Solutions", 
+      category: "Smart Devices", 
+      registrationTime: "2023-05-11T09:30:00" 
+    },
+    { 
+      id: "IN-285", 
+      taskId: "TSK-007", 
+      robotCode: "R001", 
+      pickupLocation: "C-02-02", 
+      dropoffLocation: "B-03-01", 
+      status: "Completed", 
+      missionId: "M007", 
+      partner: "Factory Direct", 
+      category: "Manufacturing", 
+      registrationTime: "2023-05-10T14:45:00" 
+    },
+    { 
+      id: "IN-284", 
+      taskId: "TSK-008", 
+      robotCode: "R002", 
+      pickupLocation: "A-03-02", 
+      dropoffLocation: "C-01-03", 
+      status: "Processing", 
+      missionId: "M008", 
+      partner: "Distribution Central", 
+      category: "Logistics", 
+      registrationTime: "2023-05-09T16:20:00" 
+    },
+    { 
+      id: "IN-283", 
+      taskId: "TSK-009", 
+      robotCode: "R003", 
+      pickupLocation: "B-01-03", 
+      dropoffLocation: "A-01-03", 
+      status: "Pending", 
+      missionId: "M009", 
+      partner: "Supply Chain Inc.", 
+      category: "Supply Chain", 
+      registrationTime: "2023-05-09T10:15:00" 
+    },
+    { 
+      id: "IN-282", 
+      taskId: "TSK-010", 
+      robotCode: "R001", 
+      pickupLocation: "C-03-01", 
+      dropoffLocation: "B-02-02", 
+      status: "Completed", 
+      missionId: "M010", 
+      partner: "Bulk Goods Ltd.", 
+      category: "Bulk Items", 
+      registrationTime: "2023-05-08T13:40:00" 
+    }
   ];
 
   const outboundOrders = [
-    { id: "OUT-187", customer: "City Electronics", items: 8, status: "Completed", date: "2023-05-15T16:20:00" },
-    { id: "OUT-186", customer: "Retail Group", items: 15, status: "Processing", date: "2023-05-15T11:10:00" },
-    { id: "OUT-185", customer: "Online Shop", items: 5, status: "Pending", date: "2023-05-14T12:30:00" },
-    { id: "OUT-184", customer: "Department Store", items: 12, status: "Completed", date: "2023-05-13T15:45:00" },
-    { id: "OUT-183", customer: "Office Depot", items: 20, status: "Processing", date: "2023-05-12T10:15:00" },
-    { id: "OUT-182", customer: "Tech Mart", items: 7, status: "Pending", date: "2023-05-11T14:30:00" },
-    { id: "OUT-181", customer: "Home Goods", items: 18, status: "Completed", date: "2023-05-10T09:20:00" },
-    { id: "OUT-180", customer: "Furniture Plus", items: 4, status: "Processing", date: "2023-05-09T16:40:00" },
-    { id: "OUT-179", customer: "Kitchen Supplies", items: 22, status: "Completed", date: "2023-05-08T13:10:00" },
-    { id: "OUT-178", customer: "Electronic World", items: 9, status: "Pending", date: "2023-05-07T11:05:00" },
-    { id: "OUT-177", customer: "Hardware Store", items: 14, status: "Processing", date: "2023-05-06T15:30:00" },
-    { id: "OUT-176", customer: "Fashion Outlet", items: 32, status: "Completed", date: "2023-05-05T10:25:00" },
-    { id: "OUT-175", customer: "Sports Gear", items: 17, status: "Pending", date: "2023-05-04T14:50:00" },
-    { id: "OUT-174", customer: "Toy Kingdom", items: 25, status: "Processing", date: "2023-05-03T09:15:00" },
-    { id: "OUT-173", customer: "BookStore Online", items: 11, status: "Completed", date: "2023-05-02T16:35:00" },
-    { id: "OUT-172", customer: "Garden Center", items: 8, status: "Pending", date: "2023-05-01T11:40:00" },
-    { id: "OUT-171", customer: "Auto Parts", items: 19, status: "Processing", date: "2023-04-30T13:20:00" },
-    { id: "OUT-170", customer: "Beauty Supply", items: 13, status: "Completed", date: "2023-04-29T09:45:00" },
-    { id: "OUT-169", customer: "Pet Shop", items: 6, status: "Pending", date: "2023-04-28T15:10:00" },
-    { id: "OUT-168", customer: "Health Store", items: 21, status: "Processing", date: "2023-04-27T10:30:00" },
-    { id: "OUT-167", customer: "Office Supply Co", items: 16, status: "Completed", date: "2023-04-26T14:15:00" },
-    { id: "OUT-166", customer: "Discount Warehouse", items: 29, status: "Processing", date: "2023-04-25T11:50:00" }
+    { 
+      id: "OUT-187", 
+      taskId: "TSK-101", 
+      robotCode: "R004", 
+      pickupLocation: "B-01-01", 
+      dropoffLocation: "DOCK-A", 
+      status: "Completed", 
+      missionId: "M101", 
+      partner: "City Electronics", 
+      category: "Electronics", 
+      registrationTime: "2023-05-15T16:20:00" 
+    },
+    { 
+      id: "OUT-186", 
+      taskId: "TSK-102", 
+      robotCode: "R005", 
+      pickupLocation: "A-02-01", 
+      dropoffLocation: "DOCK-B", 
+      status: "Processing", 
+      missionId: "M102", 
+      partner: "Retail Group", 
+      category: "Retail", 
+      registrationTime: "2023-05-15T11:10:00" 
+    },
+    { 
+      id: "OUT-185", 
+      taskId: "TSK-103", 
+      robotCode: "R006", 
+      pickupLocation: "C-01-02", 
+      dropoffLocation: "DOCK-C", 
+      status: "Pending", 
+      missionId: "M103", 
+      partner: "Online Shop", 
+      category: "E-commerce", 
+      registrationTime: "2023-05-14T12:30:00" 
+    },
+    { 
+      id: "OUT-184", 
+      taskId: "TSK-104", 
+      robotCode: "R004", 
+      pickupLocation: "B-03-01", 
+      dropoffLocation: "DOCK-A", 
+      status: "Completed", 
+      missionId: "M104", 
+      partner: "Department Store", 
+      category: "Retail", 
+      registrationTime: "2023-05-13T15:45:00" 
+    },
+    { 
+      id: "OUT-183", 
+      taskId: "TSK-105", 
+      robotCode: "R005", 
+      pickupLocation: "A-01-03", 
+      dropoffLocation: "DOCK-B", 
+      status: "Processing", 
+      missionId: "M105", 
+      partner: "Office Depot", 
+      category: "Office Supplies", 
+      registrationTime: "2023-05-12T10:15:00" 
+    },
+    { 
+      id: "OUT-182", 
+      taskId: "TSK-106", 
+      robotCode: "R006", 
+      pickupLocation: "C-02-01", 
+      dropoffLocation: "DOCK-C", 
+      status: "Pending", 
+      missionId: "M106", 
+      partner: "Tech Mart", 
+      category: "Electronics", 
+      registrationTime: "2023-05-11T14:30:00" 
+    },
+    { 
+      id: "OUT-181", 
+      taskId: "TSK-107", 
+      robotCode: "R004", 
+      pickupLocation: "B-02-03", 
+      dropoffLocation: "DOCK-A", 
+      status: "Completed", 
+      missionId: "M107", 
+      partner: "Home Goods", 
+      category: "Home & Garden", 
+      registrationTime: "2023-05-10T09:20:00" 
+    },
+    { 
+      id: "OUT-180", 
+      taskId: "TSK-108", 
+      robotCode: "R005", 
+      pickupLocation: "A-03-01", 
+      dropoffLocation: "DOCK-B", 
+      status: "Processing", 
+      missionId: "M108", 
+      partner: "Furniture Plus", 
+      category: "Furniture", 
+      registrationTime: "2023-05-09T16:40:00" 
+    },
+    { 
+      id: "OUT-179", 
+      taskId: "TSK-109", 
+      robotCode: "R006", 
+      pickupLocation: "C-01-03", 
+      dropoffLocation: "DOCK-C", 
+      status: "Completed", 
+      missionId: "M109", 
+      partner: "Kitchen Supplies", 
+      category: "Kitchen", 
+      registrationTime: "2023-05-08T13:10:00" 
+    },
+    { 
+      id: "OUT-178", 
+      taskId: "TSK-110", 
+      robotCode: "R004", 
+      pickupLocation: "B-01-02", 
+      dropoffLocation: "DOCK-A", 
+      status: "Pending", 
+      missionId: "M110", 
+      partner: "Electronic World", 
+      category: "Electronics", 
+      registrationTime: "2023-05-07T11:05:00" 
+    }
   ];
 
   // Get current orders based on page and tab
@@ -163,43 +368,50 @@ const InboundOutbound = () => {
           <Card className="p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">{t('inbound_orders')}</h2>
-              <button className="bg-warehouse-primary text-white px-4 py-2 rounded-md hover:bg-warehouse-dark transition-colors">
-                {t('new_inbound_order')}
-              </button>
+              <div className="flex gap-2">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                  {t('inbound')}
+                </Button>
+                <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
+                  {t('outbound')}
+                </Button>
+              </div>
             </div>
             
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-100 dark:bg-gray-800">
-                  <tr>
-                    <th className="px-4 py-2 text-left">{t('order_id')}</th>
-                    <th className="px-4 py-2 text-left">{t('supplier')}</th>
-                    <th className="px-4 py-2 text-left">{t('items')}</th>
-                    <th className="px-4 py-2 text-left">{t('status')}</th>
-                    <th className="px-4 py-2 text-left">{t('date')}</th>
-                    <th className="px-4 py-2 text-left">{t('actions')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentOrders.map((order) => (
-                    <tr key={order.id} className="border-b dark:border-gray-700">
-                      <td className="px-4 py-3">{order.id}</td>
-                      <td className="px-4 py-3">{order.supplier}</td>
-                      <td className="px-4 py-3">{order.items}</td>
-                      <td className="px-4 py-3">
-                        <StatusBadge status={order.status} />
-                      </td>
-                      <td className="px-4 py-3">{new Date(order.date).toLocaleString()}</td>
-                      <td className="px-4 py-3">
-                        <button className="text-blue-600 hover:text-blue-800 mr-2 dark:text-blue-400 dark:hover:text-blue-300">
-                          {t('actions')}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>STT</TableHead>
+                  <TableHead>Task ID</TableHead>
+                  <TableHead>Robot Code</TableHead>
+                  <TableHead>Pickup Location</TableHead>
+                  <TableHead>Dropoff Location</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Mission ID</TableHead>
+                  <TableHead>Partner</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Registration Time</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {currentOrders.map((order, index) => (
+                  <TableRow key={order.id}>
+                    <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
+                    <TableCell className="font-medium">{order.taskId}</TableCell>
+                    <TableCell>{order.robotCode}</TableCell>
+                    <TableCell>{order.pickupLocation}</TableCell>
+                    <TableCell>{order.dropoffLocation}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={order.status} />
+                    </TableCell>
+                    <TableCell>{order.missionId}</TableCell>
+                    <TableCell>{order.partner}</TableCell>
+                    <TableCell>{order.category}</TableCell>
+                    <TableCell>{new Date(order.registrationTime).toLocaleString()}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </Card>
         </TabsContent>
         
@@ -207,43 +419,50 @@ const InboundOutbound = () => {
           <Card className="p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">{t('outbound_orders')}</h2>
-              <button className="bg-warehouse-primary text-white px-4 py-2 rounded-md hover:bg-warehouse-dark transition-colors">
-                {t('new_outbound_order')}
-              </button>
+              <div className="flex gap-2">
+                <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+                  {t('inbound')}
+                </Button>
+                <Button className="bg-green-600 hover:bg-green-700 text-white">
+                  {t('outbound')}
+                </Button>
+              </div>
             </div>
             
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-100 dark:bg-gray-800">
-                  <tr>
-                    <th className="px-4 py-2 text-left">{t('order_id')}</th>
-                    <th className="px-4 py-2 text-left">{t('customer')}</th>
-                    <th className="px-4 py-2 text-left">{t('items')}</th>
-                    <th className="px-4 py-2 text-left">{t('status')}</th>
-                    <th className="px-4 py-2 text-left">{t('date')}</th>
-                    <th className="px-4 py-2 text-left">{t('actions')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentOrders.map((order) => (
-                    <tr key={order.id} className="border-b dark:border-gray-700">
-                      <td className="px-4 py-3">{order.id}</td>
-                      <td className="px-4 py-3">{order.customer}</td>
-                      <td className="px-4 py-3">{order.items}</td>
-                      <td className="px-4 py-3">
-                        <StatusBadge status={order.status} />
-                      </td>
-                      <td className="px-4 py-3">{new Date(order.date).toLocaleString()}</td>
-                      <td className="px-4 py-3">
-                        <button className="text-blue-600 hover:text-blue-800 mr-2 dark:text-blue-400 dark:hover:text-blue-300">
-                          {t('actions')}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>STT</TableHead>
+                  <TableHead>Task ID</TableHead>
+                  <TableHead>Robot Code</TableHead>
+                  <TableHead>Pickup Location</TableHead>
+                  <TableHead>Dropoff Location</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Mission ID</TableHead>
+                  <TableHead>Partner</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Registration Time</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {currentOrders.map((order, index) => (
+                  <TableRow key={order.id}>
+                    <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
+                    <TableCell className="font-medium">{order.taskId}</TableCell>
+                    <TableCell>{order.robotCode}</TableCell>
+                    <TableCell>{order.pickupLocation}</TableCell>
+                    <TableCell>{order.dropoffLocation}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={order.status} />
+                    </TableCell>
+                    <TableCell>{order.missionId}</TableCell>
+                    <TableCell>{order.partner}</TableCell>
+                    <TableCell>{order.category}</TableCell>
+                    <TableCell>{new Date(order.registrationTime).toLocaleString()}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </Card>
         </TabsContent>
       </Tabs>
