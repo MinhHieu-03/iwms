@@ -368,14 +368,6 @@ const InboundOutbound = () => {
           <Card className="p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">{t('inbound_orders')}</h2>
-              <div className="flex gap-2">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                  {t('inbound')}
-                </Button>
-                <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
-                  {t('outbound')}
-                </Button>
-              </div>
             </div>
             
             <Table>
@@ -419,14 +411,6 @@ const InboundOutbound = () => {
           <Card className="p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">{t('outbound_orders')}</h2>
-              <div className="flex gap-2">
-                <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
-                  {t('inbound')}
-                </Button>
-                <Button className="bg-green-600 hover:bg-green-700 text-white">
-                  {t('outbound')}
-                </Button>
-              </div>
             </div>
             
             <Table>
