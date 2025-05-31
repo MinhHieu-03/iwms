@@ -92,11 +92,19 @@ const OrderDetails = () => {
       picking: "default",
       picked: "default",
       packing: "default",
-      packed: "success"
+      packed: "secondary"
     } as const;
 
+    const colors = {
+      pending: "bg-gray-100 text-gray-800",
+      picking: "bg-blue-100 text-blue-800", 
+      picked: "bg-green-100 text-green-800",
+      packing: "bg-orange-100 text-orange-800",
+      packed: "bg-green-100 text-green-800"
+    };
+
     return (
-      <Badge variant={variants[status] || "secondary"}>
+      <Badge variant={variants[status] || "secondary"} className={colors[status]}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
     );

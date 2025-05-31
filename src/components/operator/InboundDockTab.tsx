@@ -72,12 +72,19 @@ const InboundDockTab: React.FC<InboundDockTabProps> = ({ selectedDock, setSelect
     const variants = {
       pending: "secondary",
       "in-progress": "default",
-      completed: "success",
+      completed: "secondary",
       cancelled: "destructive"
     } as const;
 
+    const colors = {
+      pending: "bg-gray-100 text-gray-800",
+      "in-progress": "bg-blue-100 text-blue-800",
+      completed: "bg-green-100 text-green-800",
+      cancelled: ""
+    };
+
     return (
-      <Badge variant={variants[status] || "secondary"}>
+      <Badge variant={variants[status] || "secondary"} className={colors[status]}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
     );

@@ -103,12 +103,20 @@ const OrdersTab: React.FC = () => {
       pending: "secondary",
       picking: "default",
       packing: "default", 
-      ready: "success",
-      shipped: "success"
+      ready: "secondary",
+      shipped: "secondary"
     } as const;
 
+    const colors = {
+      pending: "bg-gray-100 text-gray-800",
+      picking: "bg-blue-100 text-blue-800",
+      packing: "bg-orange-100 text-orange-800",
+      ready: "bg-green-100 text-green-800",
+      shipped: "bg-green-100 text-green-800"
+    };
+
     return (
-      <Badge variant={variants[status] || "secondary"}>
+      <Badge variant={variants[status] || "secondary"} className={colors[status]}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
     );
