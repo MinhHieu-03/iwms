@@ -221,21 +221,6 @@ const StorageModelConfig = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4">
-                {selectedTags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="px-3 py-1">
-                    {tag}
-                    <button
-                      onClick={() => removeTag(tag)}
-                      className="ml-2 text-sm hover:text-red-500"
-                    >
-                      ×
-                    </button>
-                  </Badge>
-                ))}
-                <Button variant="outline" size="sm">+ Add New Level</Button>
-              </div>
-              
               <div className="border rounded-lg bg-gray-50" style={{ height: '500px' }}>
                 <ReactFlow
                   nodes={nodes}
@@ -258,21 +243,6 @@ const StorageModelConfig = () => {
                     </div>
                   </Panel>
                 </ReactFlow>
-              </div>
-
-              <div className="flex gap-2 pt-4">
-                <Button variant="outline" size="sm">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Node
-                </Button>
-                <Button variant="outline" size="sm">
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit Selected
-                </Button>
-                <Button variant="outline" size="sm" className="text-red-500">
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete Selected
-                </Button>
               </div>
             </div>
           </CardContent>
