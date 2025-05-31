@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,13 +22,6 @@ import {
   type PricingRule
 } from "@/data/warehouseData";
 
-interface WarehouseArea {
-  id: string;
-  name: string;
-  description: string;
-  status: "empty" | "occupied" | "maintenance";
-}
-
 interface RackLocation {
   id: string;
   locationCode: string;
@@ -43,7 +35,7 @@ interface RackLocation {
 const LayoutConfig = () => {
   const { toast } = useToast();
 
-  const [warehouseAreas] = useState<WarehouseArea[]>([
+  const [localWarehouseAreas] = useState<{ id: string; name: string; description: string; status: "empty" | "occupied" | "maintenance" }[]>([
     { id: "1", name: "Inbound Area", description: "for test", status: "empty" },
     { id: "2", name: "Outbound Area", description: "for test", status: "empty" },
     { id: "3", name: "Storage Area", description: "ts", status: "empty" },
@@ -129,7 +121,7 @@ const LayoutConfig = () => {
       name: formData.get("name") as string,
       description: formData.get("description") as string,
       type: formData.get("type") as WarehouseArea["type"],
-      status: formData.get("status") as "active" | "inactive" | "maintenance",
+      status: formData.get("status") as WarehouseArea["status"],
       capacity: parseInt(formData.get("capacity") as string) || 0,
       currentUtilization: parseInt(formData.get("currentUtilization") as string) || 0,
       createdAt: editingArea?.createdAt || new Date().toISOString()
@@ -220,7 +212,7 @@ const LayoutConfig = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {warehouseAreas.map((area, index) => (
+                {localWarehouseAreas.map((area, index) => (
                   <TableRow key={area.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell className="font-medium">{area.name}</TableCell>
