@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -15,7 +15,8 @@ import {
   LogOut,
   MonitorSmartphone,
   Warehouse,
-  ChevronDown
+  ChevronDown,
+  ChevronRight
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -43,13 +44,14 @@ type NavItem = {
   children?: NavItem[];
 };
 
-interface LayoutProps {
+interface NavbarProps {
   children: React.ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Navbar: React.FC<NavbarProps> = ({ children }) => {
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = React.useState(true);
+  const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
   const { t } = useLanguage();
   
   const user = {
@@ -144,42 +146,56 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     },
   ];
 
+  const toggleSubmenu = (path: string) => {
+    setExpandedMenus(prev => 
+      prev.includes(path) 
+        ? prev.filter(p => p !== path)
+        : [...prev, path]
+    );
+  };
+
   const renderNavItem = (item: NavItem) => {
     const isActive = location.pathname === item.path || 
                      (item.path !== "/" && location.pathname.startsWith(item.path));
+    const isExpanded = expandedMenus.includes(item.path);
 
     if (item.children) {
       return (
-        <DropdownMenu key={item.path}>
-          <DropdownMenuTrigger asChild>
-            <button
-              className={`flex items-center justify-between px-4 py-3 rounded-md mb-1 transition-all duration-200 w-full text-left ${
-                isActive
-                  ? "bg-primary text-primary-foreground font-medium shadow-sm"
-                  : "text-foreground hover:bg-muted"
-              }`}
-            >
-              <div className="flex items-center space-x-3">
-                {item.icon}
-                <span>{t(item.name)}</span>
-              </div>
-              <ChevronDown className="h-4 w-4" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            {item.children.map((child) => (
-              <DropdownMenuItem key={child.path} asChild>
+        <div key={item.path} className="space-y-1">
+          <button
+            onClick={() => toggleSubmenu(item.path)}
+            className={`flex items-center justify-between px-4 py-3 rounded-md transition-all duration-200 w-full text-left ${
+              isActive
+                ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                : "text-foreground hover:bg-muted"
+            }`}
+          >
+            <div className="flex items-center space-x-3">
+              {item.icon}
+              <span>{t(item.name)}</span>
+            </div>
+            {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          </button>
+          
+          {isExpanded && (
+            <div className="ml-4 space-y-1">
+              {item.children.map((child) => (
                 <Link
+                  key={child.path}
                   to={child.path}
-                  className="flex items-center space-x-2 cursor-pointer"
+                  className={`flex items-center space-x-3 px-4 py-2 rounded-md transition-all duration-200 ${
+                    location.pathname === child.path
+                      ? "bg-primary/20 text-primary font-medium"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
                 >
                   {child.icon}
-                  <span>{t(child.name)}</span>
+                  <span className="text-sm">{t(child.name)}</span>
                 </Link>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+              ))}
+            </div>
+          )}
+        </div>
       );
     }
 
@@ -204,10 +220,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     );
   };
 
+  React.useEffect(() => {
+    // Auto-expand warehouse settings if we're on a child page
+    if (location.pathname.startsWith("/warehouse-settings")) {
+      setExpandedMenus(prev => 
+        prev.includes("/warehouse-settings") 
+          ? prev 
+          : [...prev, "/warehouse-settings"]
+      );
+    }
+  }, [location.pathname]);
+
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <div className="w-64 bg-background border-r border-border shadow-sm">
+    <div className="flex min-h-screen w-full">
+      {/* Fixed Sidebar */}
+      <div className="fixed left-0 top-0 h-full w-64 bg-background border-r border-border shadow-sm z-50 overflow-y-auto">
         <div className="p-4 flex items-center space-x-2 border-b border-border">
           <Box className="h-6 w-6 text-warehouse-primary" />
           <h1 className="text-lg font-bold text-warehouse-primary">SmartWareHub</h1>
@@ -236,9 +263,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </nav>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col bg-background text-foreground">
-        <header className="bg-background shadow-sm h-16 flex items-center justify-between px-6 border-b border-border">
+      {/* Main Content Area */}
+      <div className="flex-1 ml-64 flex flex-col bg-background text-foreground min-h-screen">
+        {/* Top Header */}
+        <header className="bg-background shadow-sm h-16 flex items-center justify-between px-6 border-b border-border sticky top-0 z-40">
           <div className="flex items-center">
             <div className={`h-8 w-1 rounded-full mr-2 ${
               location.pathname === "/" ? "bg-warehouse-primary" :
@@ -334,7 +362,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             )}
           </div>
         </header>
-        <main className="flex-1 p-6 overflow-y-auto">
+
+        {/* Scrollable Main Content */}
+        <main className="flex-1 p-6 overflow-auto">
           {children}
         </main>
       </div>
@@ -342,4 +372,4 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 };
 
-export default Layout;
+export default Navbar;
