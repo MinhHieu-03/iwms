@@ -1,3 +1,4 @@
+
 export type SupportedLanguages = 'en' | 'vi' | 'zh' | 'ja' | 'ko';
 
 export type TranslationKey = 
@@ -266,6 +267,7 @@ export type TranslationKey =
   | 'supplier'
   | 'customer'
   | 'items'
+  | 'orders'
   
   // Notifications
   | 'mark_all_read'
