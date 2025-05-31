@@ -35,26 +35,27 @@ const WarehouseLayout = () => {
         <h1 className="text-3xl font-bold">Warehouse Layout</h1>
       </div>
 
-      <div className="h-[700px] w-full">
-        <ResizablePanelGroup direction="horizontal">
-          <ResizablePanel defaultSize={50} minSize={30}>
-            <div className="h-full rounded-l-md overflow-hidden border-r">
-              <div className="bg-warehouse-primary text-white p-2 font-medium flex items-center">
-                <Layers3Icon className="h-4 w-4 mr-2" />
-                {t('2d_layout')}
-              </div>
-              <div className="h-[660px] overflow-auto">
-                <Tabs value={activeAreaId} onValueChange={setActiveAreaId} className="w-full h-full">
-                  <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${areasWithRacks.length}, 1fr)` }}>
-                    {areasWithRacks.map((area) => (
-                      <TabsTrigger key={area.id} value={area.id} className="text-xs">
-                        {area.name}
-                      </TabsTrigger>
-                    ))}
-                  </TabsList>
-                  
+      {/* Area Navigation */}
+      <Tabs value={activeAreaId} onValueChange={setActiveAreaId} className="w-full">
+        <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${areasWithRacks.length}, 1fr)` }}>
+          {areasWithRacks.map((area) => (
+            <TabsTrigger key={area.id} value={area.id} className="text-sm">
+              {area.name}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        <div className="h-[700px] w-full mt-4">
+          <ResizablePanelGroup direction="horizontal">
+            <ResizablePanel defaultSize={50} minSize={30}>
+              <div className="h-full rounded-l-md overflow-hidden border-r">
+                <div className="bg-warehouse-primary text-white p-2 font-medium flex items-center">
+                  <Layers3Icon className="h-4 w-4 mr-2" />
+                  {t('2d_layout')}
+                </div>
+                <div className="h-[660px] overflow-auto">
                   {areasWithRacks.map((area) => (
-                    <TabsContent key={area.id} value={area.id} className="h-full mt-2">
+                    <TabsContent key={area.id} value={area.id} className="h-full mt-0 p-4">
                       <Warehouse2DView
                         area={area}
                         racks={racks.filter(rack => rack.areaId === area.id)}
@@ -65,33 +66,34 @@ const WarehouseLayout = () => {
                       />
                     </TabsContent>
                   ))}
-                </Tabs>
+                </div>
               </div>
-            </div>
-          </ResizablePanel>
+            </ResizablePanel>
 
-          <ResizableHandle withHandle />
+            <ResizableHandle withHandle />
 
-          <ResizablePanel defaultSize={50} minSize={30}>
-            <div className="h-full rounded-r-md overflow-hidden border-l">
-              <div className="bg-warehouse-primary text-white p-2 font-medium flex items-center">
-                <ViewIcon className="h-4 w-4 mr-2" />
-                {t('3d_visualization')}
+            <ResizablePanel defaultSize={50} minSize={30}>
+              <div className="h-full rounded-r-md overflow-hidden border-l">
+                <div className="bg-warehouse-primary text-white p-2 font-medium flex items-center">
+                  <ViewIcon className="h-4 w-4 mr-2" />
+                  {t('3d_visualization')}
+                </div>
+                <div className="h-[660px]">
+                  <Warehouse3DView
+                    areas={areasWithRacks}
+                    racks={racks}
+                    highlightedRack={highlightedRack}
+                    hoveredRack={hoveredRack}
+                    activeAreaId={activeAreaId}
+                    onRackClick={handleRackClick}
+                    onRackHover={handleRackHover}
+                  />
+                </div>
               </div>
-              <div className="h-[660px]">
-                <Warehouse3DView
-                  areas={areasWithRacks}
-                  racks={racks}
-                  highlightedRack={highlightedRack}
-                  hoveredRack={hoveredRack}
-                  activeAreaId={activeAreaId}
-                  onRackClick={handleRackClick}
-                />
-              </div>
-            </div>
-          </ResizablePanel>
-        </ResizablePanelGroup>
-      </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
+      </Tabs>
     </div>
   );
 };

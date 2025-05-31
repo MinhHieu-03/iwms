@@ -13,6 +13,7 @@ interface RackMeshProps {
   isHighlighted: boolean;
   isHovered: boolean;
   onClick: (rackId: string) => void;
+  onHover: (rackId: string | null) => void;
 }
 
 const RackMesh: React.FC<RackMeshProps> = ({ 
@@ -21,7 +22,8 @@ const RackMesh: React.FC<RackMeshProps> = ({
   size, 
   isHighlighted, 
   isHovered,
-  onClick
+  onClick,
+  onHover
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   
@@ -45,9 +47,10 @@ const RackMesh: React.FC<RackMeshProps> = ({
 
   const highlightColor = isHighlighted ? "#FF6B6B" : isHovered ? "#FF9B9B" : getRackColor(rack.status);
 
-  // Number of shelves in the rack (3 levels)
-  const shelves = 3;
-  const shelfSpacing = 0.8;
+  // Calculate number of levels based on rack capacity and current load
+  const maxLevels = Math.max(3, Math.ceil(rack.capacity / 50)); // At least 3 levels
+  const occupiedLevels = Math.ceil((rack.currentLoad / rack.capacity) * maxLevels);
+  const levelHeight = 0.6;
 
   return (
     <group 
@@ -56,24 +59,26 @@ const RackMesh: React.FC<RackMeshProps> = ({
       onClick={() => onClick(rack.id)}
       onPointerOver={(e) => {
         e.stopPropagation();
+        onHover(rack.id);
         document.body.style.cursor = 'pointer';
       }}
       onPointerOut={(e) => {
         e.stopPropagation();
+        onHover(null);
         document.body.style.cursor = 'default';
       }}
     >
-      {/* Base frame */}
-      <mesh ref={meshRef} castShadow receiveShadow>
-        <boxGeometry args={[size[0], 0.05, size[2]]} />
+      {/* Base platform */}
+      <mesh position={[0, -0.05, 0]} castShadow receiveShadow>
+        <boxGeometry args={[size[0], 0.1, size[2]]} />
         <meshPhysicalMaterial 
-          color={highlightColor}
+          color="#888888"
           metalness={0.5}
           roughness={0.5}
         />
       </mesh>
 
-      {/* Vertical supports */}
+      {/* Vertical supports at corners */}
       {[
         [-size[0]/2 + 0.05, 0, -size[2]/2 + 0.05],
         [size[0]/2 - 0.05, 0, -size[2]/2 + 0.05],
@@ -82,52 +87,37 @@ const RackMesh: React.FC<RackMeshProps> = ({
       ].map((pos, i) => (
         <mesh 
           key={`support-${i}`} 
-          position={[pos[0], (shelves * shelfSpacing) / 2, pos[2]]}
+          position={[pos[0], (maxLevels * levelHeight) / 2, pos[2]]}
           castShadow
         >
-          <boxGeometry args={[0.08, shelves * shelfSpacing, 0.08]} />
-          <meshStandardMaterial color={isHighlighted || isHovered ? "#FF9B9B" : "#888888"} />
+          <boxGeometry args={[0.08, maxLevels * levelHeight, 0.08]} />
+          <meshStandardMaterial color={isHighlighted || isHovered ? "#FF9B9B" : "#666666"} />
         </mesh>
       ))}
       
-      {/* Individual shelves */}
-      {[...Array(shelves)].map((_, i) => {
-        const shelfY = i * shelfSpacing;
-        const thisShelfOccupied = rack.status === 'occupied' && (i < Math.ceil(rack.currentLoad / rack.capacity * shelves));
+      {/* Storage levels/blocks stacked in Z axis */}
+      {[...Array(maxLevels)].map((_, i) => {
+        const levelY = i * levelHeight;
+        const isOccupied = i < occupiedLevels;
         
         return (
-          <group key={`shelf-${i}`} position={[0, shelfY, 0]}>
+          <group key={`level-${i}`} position={[0, levelY, 0]}>
+            {/* Level platform */}
             <mesh position={[0, 0, 0]} castShadow receiveShadow>
               <boxGeometry args={[size[0] - 0.1, 0.05, size[2] - 0.1]} />
               <meshStandardMaterial 
-                color={thisShelfOccupied ? "#E5DEFF" : "#C8C8C9"} 
+                color={isOccupied ? "#E5DEFF" : "#C8C8C9"} 
                 metalness={0.2}
                 roughness={0.8}
               />
             </mesh>
             
-            {/* Add items on shelf if occupied */}
-            {thisShelfOccupied && (
-              <group>
-                {i === 0 && (
-                  <mesh position={[0, 0.25, 0]} castShadow>
-                    <boxGeometry args={[size[0] * 0.7, 0.4, size[2] * 0.7]} />
-                    <meshStandardMaterial color="#9b87f5" />
-                  </mesh>
-                )}
-                {i === 1 && rack.currentLoad > rack.capacity * 0.5 && (
-                  <>
-                    <mesh position={[-size[0]/4, 0.15, 0]} castShadow>
-                      <boxGeometry args={[size[0] * 0.3, 0.25, size[2] * 0.5]} />
-                      <meshStandardMaterial color="#1EAEDB" />
-                    </mesh>
-                    <mesh position={[size[0]/4, 0.2, 0]} castShadow>
-                      <boxGeometry args={[size[0] * 0.3, 0.3, size[2] * 0.6]} />
-                      <meshStandardMaterial color="#E67E22" />
-                    </mesh>
-                  </>
-                )}
-              </group>
+            {/* Storage blocks on occupied levels */}
+            {isOccupied && (
+              <mesh position={[0, 0.25, 0]} castShadow>
+                <boxGeometry args={[size[0] * 0.8, 0.4, size[2] * 0.8]} />
+                <meshStandardMaterial color={highlightColor} />
+              </mesh>
             )}
           </group>
         );
@@ -149,19 +139,19 @@ const RackMesh: React.FC<RackMeshProps> = ({
 const Floor: React.FC = () => {
   return (
     <>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
-        <planeGeometry args={[100, 100]} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.2, 0]} receiveShadow>
+        <planeGeometry args={[200, 200]} />
         <meshStandardMaterial color="#f7fafc" roughness={0.8} metalness={0.2} />
       </mesh>
       <Grid 
         infiniteGrid
-        cellSize={1}
+        cellSize={2}
         cellThickness={0.5}
         cellColor="#6E59A5"
-        sectionSize={3}
+        sectionSize={6}
         sectionThickness={1}
         sectionColor="#9b87f5"
-        fadeDistance={50}
+        fadeDistance={100}
         fadeStrength={1.5}
       />
     </>
@@ -175,74 +165,85 @@ const WarehouseScene: React.FC<{
   hoveredRack: string | null;
   activeAreaId: string;
   onRackClick: (rackId: string) => void;
-}> = ({ areas, racks, highlightedRack, hoveredRack, activeAreaId, onRackClick }) => {
+  onRackHover: (rackId: string | null) => void;
+}> = ({ areas, racks, highlightedRack, hoveredRack, activeAreaId, onRackClick, onRackHover }) => {
   const { camera } = useThree();
   const { t } = useLanguage();
   
   useEffect(() => {
-    camera.position.set(15, 15, 20);
+    camera.position.set(20, 20, 25);
     camera.lookAt(0, 0, 0);
   }, [camera]);
 
-  // Filter racks for active area or show all if no specific area
-  const visibleRacks = useMemo(() => {
-    return activeAreaId ? racks.filter(rack => rack.areaId === activeAreaId) : racks;
-  }, [racks, activeAreaId]);
-
-  // Calculate layout for racks
+  // Show all racks in 3D view, but group them by area
   const rackLayout = useMemo(() => {
     const layout = new Map<string, [number, number, number]>();
+    const areaPositions = new Map<string, { x: number, z: number }>();
     
-    if (visibleRacks.length === 0) return layout;
-
-    // Group racks by row and column for better positioning
-    const maxRow = Math.max(...visibleRacks.map(r => r.row));
-    const maxCol = Math.max(...visibleRacks.map(r => r.column));
+    // Position areas in the warehouse
+    areas.forEach((area, areaIndex) => {
+      const areaX = (areaIndex % 3) * 15 - 15; // 3 areas per row
+      const areaZ = Math.floor(areaIndex / 3) * 15 - 15;
+      areaPositions.set(area.id, { x: areaX, z: areaZ });
+    });
     
-    visibleRacks.forEach(rack => {
-      const x = (rack.column - 1) * 2.5 - (maxCol - 1) * 1.25;
-      const z = (rack.row - 1) * 2.5 - (maxRow - 1) * 1.25;
+    racks.forEach(rack => {
+      const areaPos = areaPositions.get(rack.areaId) || { x: 0, z: 0 };
+      
+      // Position racks within their area
+      const x = areaPos.x + (rack.column - 1) * 2.5 - 5;
+      const z = areaPos.z + (rack.row - 1) * 2.5 - 5;
       const y = 0;
       
       layout.set(rack.id, [x, y, z]);
     });
     
     return layout;
-  }, [visibleRacks]);
-
-  const activeArea = areas.find(area => area.id === activeAreaId);
+  }, [areas, racks]);
 
   return (
     <>
       <Environment preset="city" />
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={0.4} />
       <directionalLight
-        position={[10, 20, 15]}
+        position={[15, 25, 20]}
         intensity={1}
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
-        shadow-camera-far={50}
-        shadow-camera-left={-25}
-        shadow-camera-right={25}
-        shadow-camera-top={25}
-        shadow-camera-bottom={-25}
+        shadow-camera-far={100}
+        shadow-camera-left={-50}
+        shadow-camera-right={50}
+        shadow-camera-top={50}
+        shadow-camera-bottom={-50}
       />
       <Floor />
       
       <Center>
-        {activeArea && (
-          <Text
-            position={[0, 4, -8]}
-            fontSize={1}
-            color="#333"
-            anchorY="top"
-          >
-            {activeArea.name}
-          </Text>
-        )}
+        {/* Area labels */}
+        {areas.map((area) => {
+          const areaRacks = racks.filter(r => r.areaId === area.id);
+          if (areaRacks.length === 0) return null;
+          
+          const areaIndex = areas.indexOf(area);
+          const areaX = (areaIndex % 3) * 15 - 15;
+          const areaZ = Math.floor(areaIndex / 3) * 15 - 15;
+          
+          return (
+            <Text
+              key={area.id}
+              position={[areaX, 3, areaZ - 8]}
+              fontSize={0.8}
+              color={activeAreaId === area.id ? "#9b87f5" : "#666"}
+              anchorY="top"
+            >
+              {area.name}
+            </Text>
+          );
+        })}
 
-        {visibleRacks.map((rack) => {
+        {/* Render all racks */}
+        {racks.map((rack) => {
           const position = rackLayout.get(rack.id) || [0, 0, 0];
           
           return (
@@ -254,6 +255,7 @@ const WarehouseScene: React.FC<{
               isHighlighted={highlightedRack === rack.id}
               isHovered={hoveredRack === rack.id}
               onClick={onRackClick}
+              onHover={onRackHover}
             />
           );
         })}
@@ -265,8 +267,8 @@ const WarehouseScene: React.FC<{
         enableRotate={true}
         minPolarAngle={0}
         maxPolarAngle={Math.PI / 2}
-        minDistance={8}
-        maxDistance={50}
+        minDistance={10}
+        maxDistance={80}
       />
     </>
   );
@@ -279,6 +281,7 @@ interface Warehouse3DViewProps {
   hoveredRack: string | null;
   activeAreaId: string;
   onRackClick: (rackId: string) => void;
+  onRackHover: (rackId: string | null) => void;
 }
 
 const Warehouse3DView: React.FC<Warehouse3DViewProps> = ({ 
@@ -287,14 +290,15 @@ const Warehouse3DView: React.FC<Warehouse3DViewProps> = ({
   highlightedRack, 
   hoveredRack, 
   activeAreaId, 
-  onRackClick 
+  onRackClick,
+  onRackHover
 }) => {
   return (
     <div className="h-full w-full">
       <Canvas 
         shadows 
         gl={{ antialias: true }}
-        camera={{ position: [15, 15, 20], fov: 50 }}
+        camera={{ position: [20, 20, 25], fov: 50 }}
       >
         <WarehouseScene 
           areas={areas}
@@ -303,6 +307,7 @@ const Warehouse3DView: React.FC<Warehouse3DViewProps> = ({
           hoveredRack={hoveredRack}
           activeAreaId={activeAreaId}
           onRackClick={onRackClick}
+          onRackHover={onRackHover}
         />
       </Canvas>
     </div>
