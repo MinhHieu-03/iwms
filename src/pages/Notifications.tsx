@@ -107,7 +107,7 @@ const Notifications = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      {/* <div className="flex justify-between items-center">
         <div className="flex items-center">
           <h2 className="text-2xl font-bold">Notifications</h2>
           <Badge className="ml-2 bg-warehouse-primary">{notifications.filter(n => !n.read).length}</Badge>
@@ -122,7 +122,7 @@ const Notifications = () => {
             Clear All
           </Button>
         </div>
-      </div>
+      </div> */}
 
       <Card>
         <CardHeader className="pb-3">

@@ -30,10 +30,10 @@ const UserSettings = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      {/* <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">{t('user_settings')}</h2>
         <Button onClick={handleSaveChanges}>{t('save_changes')}</Button>
-      </div>
+      </div> */}
 
       <Card>
         <CardHeader>

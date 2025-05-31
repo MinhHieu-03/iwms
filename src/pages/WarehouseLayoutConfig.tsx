@@ -10,10 +10,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Edit, Trash2, Filter, Building2, MapPin } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { 
-  warehouses, 
-  warehouseAreas, 
-  racks, 
+import {
+  warehouses,
+  warehouseAreas,
+  racks,
   pricingRules,
   type Warehouse,
   type WarehouseArea,
@@ -23,12 +23,12 @@ import {
 
 const WarehouseLayoutConfig = () => {
   const { toast } = useToast();
-  
+
   const [warehousesData, setWarehousesData] = useState<Warehouse[]>(warehouses);
   const [areasData, setAreasData] = useState<WarehouseArea[]>(warehouseAreas);
   const [racksData, setRacksData] = useState<Rack[]>(racks);
   const [pricingData, setPricingData] = useState<PricingRule[]>(pricingRules);
-  
+
   const [editingWarehouse, setEditingWarehouse] = useState<Warehouse | null>(null);
   const [editingArea, setEditingArea] = useState<WarehouseArea | null>(null);
   const [editingRack, setEditingRack] = useState<Rack | null>(null);
@@ -42,13 +42,13 @@ const WarehouseLayoutConfig = () => {
   const getStatusBadge = (status: string) => {
     const variants = {
       empty: "secondary",
-      occupied: "default", 
+      occupied: "default",
       maintenance: "destructive",
       reserved: "outline",
       active: "default",
       inactive: "secondary"
     } as const;
-    
+
     return (
       <Badge variant={variants[status as keyof typeof variants] || "secondary"}>
         {status}
@@ -74,7 +74,7 @@ const WarehouseLayoutConfig = () => {
       setWarehousesData(prev => [...prev, warehouse]);
       toast({ title: "Warehouse created successfully" });
     }
-    
+
     setWarehouseDialogOpen(false);
     setEditingWarehouse(null);
   };
@@ -104,7 +104,7 @@ const WarehouseLayoutConfig = () => {
       setAreasData(prev => [...prev, area]);
       toast({ title: "Area created successfully" });
     }
-    
+
     setAreaDialogOpen(false);
     setEditingArea(null);
   };
@@ -142,7 +142,7 @@ const WarehouseLayoutConfig = () => {
       setRacksData(prev => [...prev, rack]);
       toast({ title: "Rack created successfully" });
     }
-    
+
     setRackDialogOpen(false);
     setEditingRack(null);
   };
@@ -178,7 +178,7 @@ const WarehouseLayoutConfig = () => {
       setPricingData(prev => [...prev, pricing]);
       toast({ title: "Pricing rule created successfully" });
     }
-    
+
     setPricingDialogOpen(false);
     setEditingPricing(null);
   };
@@ -190,17 +190,16 @@ const WarehouseLayoutConfig = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-4">
+      {/* <div className="flex items-center space-x-4">
         <Building2 className="h-8 w-8 text-primary" />
         <h1 className="text-3xl font-bold">Layout Configuration</h1>
-      </div>
+      </div> */}
 
       <Tabs defaultValue="warehouses" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="warehouses">Warehouses</TabsTrigger>
-          <TabsTrigger value="areas">Areas</TabsTrigger>
-          <TabsTrigger value="racks">Rack Structure</TabsTrigger>
-          <TabsTrigger value="pricing">Pricing Structure</TabsTrigger>
+        <TabsList className="inline-flex gap-1 min-w-0 w-full">
+          <TabsTrigger value="warehouses" className="flex-1 min-w-0">Warehouses</TabsTrigger>
+          <TabsTrigger value="areas" className="flex-1 min-w-0">Areas</TabsTrigger>
+          <TabsTrigger value="racks" className="flex-1 min-w-0">Rack Structure</TabsTrigger>
         </TabsList>
 
         <TabsContent value="warehouses" className="space-y-4">
@@ -224,28 +223,28 @@ const WarehouseLayoutConfig = () => {
                     <form onSubmit={(e) => { e.preventDefault(); handleSaveWarehouse(new FormData(e.currentTarget)); }} className="space-y-4">
                       <div>
                         <Label htmlFor="name">Name</Label>
-                        <Input 
-                          id="name" 
-                          name="name" 
-                          defaultValue={editingWarehouse?.name || ""} 
-                          required 
+                        <Input
+                          id="name"
+                          name="name"
+                          defaultValue={editingWarehouse?.name || ""}
+                          required
                         />
                       </div>
                       <div>
                         <Label htmlFor="description">Description</Label>
-                        <Input 
-                          id="description" 
-                          name="description" 
-                          defaultValue={editingWarehouse?.description || ""} 
+                        <Input
+                          id="description"
+                          name="description"
+                          defaultValue={editingWarehouse?.description || ""}
                         />
                       </div>
                       <div>
                         <Label htmlFor="location">Location</Label>
-                        <Input 
-                          id="location" 
-                          name="location" 
-                          defaultValue={editingWarehouse?.location || ""} 
-                          required 
+                        <Input
+                          id="location"
+                          name="location"
+                          defaultValue={editingWarehouse?.location || ""}
+                          required
                         />
                       </div>
                       <div>
@@ -264,20 +263,20 @@ const WarehouseLayoutConfig = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor="totalAreas">Total Areas</Label>
-                          <Input 
-                            id="totalAreas" 
-                            name="totalAreas" 
-                            type="number" 
-                            defaultValue={editingWarehouse?.totalAreas || 0} 
+                          <Input
+                            id="totalAreas"
+                            name="totalAreas"
+                            type="number"
+                            defaultValue={editingWarehouse?.totalAreas || 0}
                           />
                         </div>
                         <div>
                           <Label htmlFor="totalRacks">Total Racks</Label>
-                          <Input 
-                            id="totalRacks" 
-                            name="totalRacks" 
-                            type="number" 
-                            defaultValue={editingWarehouse?.totalRacks || 0} 
+                          <Input
+                            id="totalRacks"
+                            name="totalRacks"
+                            type="number"
+                            defaultValue={editingWarehouse?.totalRacks || 0}
                           />
                         </div>
                       </div>
@@ -313,16 +312,16 @@ const WarehouseLayoutConfig = () => {
                       <TableCell>{warehouse.totalRacks}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Button 
-                            variant="outline" 
+                          <Button
+                            variant="outline"
                             size="sm"
                             onClick={() => { setEditingWarehouse(warehouse); setWarehouseDialogOpen(true); }}
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            variant="outline"
+                            size="sm"
                             className="text-red-500"
                             onClick={() => handleDeleteWarehouse(warehouse.id)}
                           >
@@ -372,19 +371,19 @@ const WarehouseLayoutConfig = () => {
                       </div>
                       <div>
                         <Label htmlFor="name">Name</Label>
-                        <Input 
-                          id="name" 
-                          name="name" 
-                          defaultValue={editingArea?.name || ""} 
-                          required 
+                        <Input
+                          id="name"
+                          name="name"
+                          defaultValue={editingArea?.name || ""}
+                          required
                         />
                       </div>
                       <div>
                         <Label htmlFor="description">Description</Label>
-                        <Input 
-                          id="description" 
-                          name="description" 
-                          defaultValue={editingArea?.description || ""} 
+                        <Input
+                          id="description"
+                          name="description"
+                          defaultValue={editingArea?.description || ""}
                         />
                       </div>
                       <div>
@@ -418,20 +417,20 @@ const WarehouseLayoutConfig = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor="capacity">Capacity</Label>
-                          <Input 
-                            id="capacity" 
-                            name="capacity" 
-                            type="number" 
-                            defaultValue={editingArea?.capacity || 0} 
+                          <Input
+                            id="capacity"
+                            name="capacity"
+                            type="number"
+                            defaultValue={editingArea?.capacity || 0}
                           />
                         </div>
                         <div>
                           <Label htmlFor="currentUtilization">Current Utilization</Label>
-                          <Input 
-                            id="currentUtilization" 
-                            name="currentUtilization" 
-                            type="number" 
-                            defaultValue={editingArea?.currentUtilization || 0} 
+                          <Input
+                            id="currentUtilization"
+                            name="currentUtilization"
+                            type="number"
+                            defaultValue={editingArea?.currentUtilization || 0}
                           />
                         </div>
                       </div>
@@ -471,16 +470,16 @@ const WarehouseLayoutConfig = () => {
                         <TableCell>{area.currentUtilization}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <Button 
-                              variant="outline" 
+                            <Button
+                              variant="outline"
                               size="sm"
                               onClick={() => { setEditingArea(area); setAreaDialogOpen(true); }}
                             >
                               <Edit className="h-4 w-4" />
                             </Button>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
+                            <Button
+                              variant="outline"
+                              size="sm"
                               className="text-red-500"
                               onClick={() => handleDeleteArea(area.id)}
                             >
@@ -531,42 +530,42 @@ const WarehouseLayoutConfig = () => {
                       </div>
                       <div>
                         <Label htmlFor="locationCode">Location Code</Label>
-                        <Input 
-                          id="locationCode" 
-                          name="locationCode" 
-                          defaultValue={editingRack?.locationCode || ""} 
-                          required 
+                        <Input
+                          id="locationCode"
+                          name="locationCode"
+                          defaultValue={editingRack?.locationCode || ""}
+                          required
                         />
                       </div>
                       <div className="grid grid-cols-3 gap-4">
                         <div>
                           <Label htmlFor="row">Row</Label>
-                          <Input 
-                            id="row" 
-                            name="row" 
-                            type="number" 
-                            defaultValue={editingRack?.row || 0} 
-                            required 
+                          <Input
+                            id="row"
+                            name="row"
+                            type="number"
+                            defaultValue={editingRack?.row || 0}
+                            required
                           />
                         </div>
                         <div>
                           <Label htmlFor="column">Column</Label>
-                          <Input 
-                            id="column" 
-                            name="column" 
-                            type="number" 
-                            defaultValue={editingRack?.column || 0} 
-                            required 
+                          <Input
+                            id="column"
+                            name="column"
+                            type="number"
+                            defaultValue={editingRack?.column || 0}
+                            required
                           />
                         </div>
                         <div>
                           <Label htmlFor="level">Level</Label>
-                          <Input 
-                            id="level" 
-                            name="level" 
-                            type="number" 
-                            defaultValue={editingRack?.level || 0} 
-                            required 
+                          <Input
+                            id="level"
+                            name="level"
+                            type="number"
+                            defaultValue={editingRack?.level || 0}
+                            required
                           />
                         </div>
                       </div>
@@ -586,71 +585,71 @@ const WarehouseLayoutConfig = () => {
                       </div>
                       <div>
                         <Label htmlFor="warehouse">Warehouse</Label>
-                        <Input 
-                          id="warehouse" 
-                          name="warehouse" 
-                          defaultValue={editingRack?.warehouse || ""} 
-                          required 
+                        <Input
+                          id="warehouse"
+                          name="warehouse"
+                          defaultValue={editingRack?.warehouse || ""}
+                          required
                         />
                       </div>
                       <div>
                         <Label htmlFor="area">Area</Label>
-                        <Input 
-                          id="area" 
-                          name="area" 
-                          defaultValue={editingRack?.area || ""} 
-                          required 
+                        <Input
+                          id="area"
+                          name="area"
+                          defaultValue={editingRack?.area || ""}
+                          required
                         />
                       </div>
                       <div className="grid grid-cols-3 gap-4">
                         <div>
                           <Label htmlFor="capacity">Capacity</Label>
-                          <Input 
-                            id="capacity" 
-                            name="capacity" 
-                            type="number" 
-                            defaultValue={editingRack?.capacity || 0} 
+                          <Input
+                            id="capacity"
+                            name="capacity"
+                            type="number"
+                            defaultValue={editingRack?.capacity || 0}
                           />
                         </div>
                         <div>
                           <Label htmlFor="currentLoad">Current Load</Label>
-                          <Input 
-                            id="currentLoad" 
-                            name="currentLoad" 
-                            type="number" 
-                            defaultValue={editingRack?.currentLoad || 0} 
+                          <Input
+                            id="currentLoad"
+                            name="currentLoad"
+                            type="number"
+                            defaultValue={editingRack?.currentLoad || 0}
                           />
                         </div>
                       </div>
                       <div className="grid grid-cols-3 gap-4">
                         <div>
                           <Label htmlFor="width">Width (m)</Label>
-                          <Input 
-                            id="width" 
-                            name="width" 
-                            type="number" 
+                          <Input
+                            id="width"
+                            name="width"
+                            type="number"
                             step="0.01"
-                            defaultValue={editingRack?.dimensions?.width || 0} 
+                            defaultValue={editingRack?.dimensions?.width || 0}
                           />
                         </div>
                         <div>
                           <Label htmlFor="height">Height (m)</Label>
-                          <Input 
-                            id="height" 
-                            name="height" 
-                            type="number" 
+                          <Input
+                            id="height"
+                            name="height"
+                            type="number"
                             step="0.01"
-                            defaultValue={editingRack?.dimensions?.height || 0} 
+                            defaultValue={editingRack?.dimensions?.height || 0}
                           />
                         </div>
                         <div>
                           <Label htmlFor="depth">Depth (m)</Label>
-                          <Input 
-                            id="depth" 
-                            name="depth" 
-                            type="number" 
+                          <Input
+                            id="depth"
+                            name="depth"
+                            type="number"
                             step="0.01"
-                            defaultValue={editingRack?.dimensions?.depth || 0} 
+                            defaultValue={editingRack?.dimensions?.depth || 0}
                           />
                         </div>
                       </div>
@@ -692,16 +691,16 @@ const WarehouseLayoutConfig = () => {
                       <TableCell>{rack.currentLoad}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Button 
-                            variant="outline" 
+                          <Button
+                            variant="outline"
                             size="sm"
                             onClick={() => { setEditingRack(rack); setRackDialogOpen(true); }}
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            variant="outline"
+                            size="sm"
                             className="text-red-500"
                             onClick={() => handleDeleteRack(rack.id)}
                           >
@@ -717,215 +716,6 @@ const WarehouseLayoutConfig = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="pricing" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>Pricing Configuration</CardTitle>
-                <Dialog open={pricingDialogOpen} onOpenChange={setPricingDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button onClick={() => { setEditingPricing(null); setPricingDialogOpen(true); }}>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Create New Pricing Rule
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>
-                        {editingPricing ? "Edit Pricing Rule" : "Create New Pricing Rule"}
-                      </DialogTitle>
-                    </DialogHeader>
-                    <form onSubmit={(e) => { e.preventDefault(); handleSavePricing(new FormData(e.currentTarget)); }} className="space-y-4">
-                      <div>
-                        <Label htmlFor="name">Name</Label>
-                        <Input 
-                          id="name" 
-                          name="name" 
-                          defaultValue={editingPricing?.name || ""} 
-                          required 
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="description">Description</Label>
-                        <Input 
-                          id="description" 
-                          name="description" 
-                          defaultValue={editingPricing?.description || ""} 
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="type">Type</Label>
-                        <Select name="type" defaultValue={editingPricing?.type || "storage"}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="storage">Storage</SelectItem>
-                            <SelectItem value="handling">Handling</SelectItem>
-                            <SelectItem value="transport">Transport</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor="unitType">Unit Type</Label>
-                        <Select name="unitType" defaultValue={editingPricing?.unitType || "per_item"}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="per_item">Per Item</SelectItem>
-                            <SelectItem value="per_hour">Per Hour</SelectItem>
-                            <SelectItem value="per_day">Per Day</SelectItem>
-                            <SelectItem value="per_month">Per Month</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor="basePrice">Base Price</Label>
-                        <Input 
-                          id="basePrice" 
-                          name="basePrice" 
-                          type="number" 
-                          step="0.01"
-                          defaultValue={editingPricing?.basePrice || 0} 
-                          required 
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="currency">Currency</Label>
-                        <Input 
-                          id="currency" 
-                          name="currency" 
-                          defaultValue={editingPricing?.currency || "USD"} 
-                          required 
-                        />
-                      </div>
-                      <div className="grid grid-cols-3 gap-4">
-                        <div>
-                          <Label htmlFor="minVolume">Min Volume</Label>
-                          <Input 
-                            id="minVolume" 
-                            name="minVolume" 
-                            type="number" 
-                            step="0.01"
-                            defaultValue={editingPricing?.conditions.minVolume || ""} 
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="maxVolume">Max Volume</Label>
-                          <Input 
-                            id="maxVolume" 
-                            name="maxVolume" 
-                            type="number" 
-                            step="0.01"
-                            defaultValue={editingPricing?.conditions.maxVolume || ""} 
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="itemType">Item Type</Label>
-                          <Input 
-                            id="itemType" 
-                            name="itemType" 
-                            defaultValue={editingPricing?.conditions.itemType || ""} 
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <Label htmlFor="priority">Priority</Label>
-                        <Select name="priority" defaultValue={editingPricing?.conditions.priority || "medium"}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="low">Low</SelectItem>
-                            <SelectItem value="medium">Medium</SelectItem>
-                            <SelectItem value="high">High</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor="status">Status</Label>
-                        <Select name="status" defaultValue={editingPricing?.status || "active"}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="active">Active</SelectItem>
-                            <SelectItem value="inactive">Inactive</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <Button type="submit" className="w-full">
-                        {editingPricing ? "Update" : "Create"} Pricing Rule
-                      </Button>
-                    </form>
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Unit Type</TableHead>
-                    <TableHead>Base Price</TableHead>
-                    <TableHead>Currency</TableHead>
-                    <TableHead>Min Volume</TableHead>
-                    <TableHead>Max Volume</TableHead>
-                    <TableHead>Item Type</TableHead>
-                    <TableHead>Priority</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {pricingData.map((pricing) => (
-                    <TableRow key={pricing.id}>
-                      <TableCell className="font-medium">{pricing.name}</TableCell>
-                      <TableCell>{pricing.description}</TableCell>
-                      <TableCell>{pricing.type}</TableCell>
-                      <TableCell>{pricing.unitType}</TableCell>
-                      <TableCell>{pricing.basePrice.toFixed(2)}</TableCell>
-                      <TableCell>{pricing.currency}</TableCell>
-                      <TableCell>{pricing.conditions.minVolume ?? "-"}</TableCell>
-                      <TableCell>{pricing.conditions.maxVolume ?? "-"}</TableCell>
-                      <TableCell>{pricing.conditions.itemType || "-"}</TableCell>
-                      <TableCell>
-                        <Badge variant={pricing.conditions.priority === 'high' ? 'destructive' : 
-                                      pricing.conditions.priority === 'medium' ? 'default' : 'secondary'}>
-                          {pricing.conditions.priority || "-"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{getStatusBadge(pricing.status)}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => { setEditingPricing(pricing); setPricingDialogOpen(true); }}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="text-red-500"
-                            onClick={() => handleDeletePricing(pricing.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
       </Tabs>
     </div>
   );

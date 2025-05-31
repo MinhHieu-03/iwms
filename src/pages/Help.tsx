@@ -102,9 +102,9 @@ const Help = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      {/* <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Help Center</h2>
-      </div>
+      </div> */}
       
       <div className="relative">
         <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />

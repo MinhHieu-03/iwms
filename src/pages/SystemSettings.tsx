@@ -14,13 +14,13 @@ const SystemSettings = () => {
   
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      {/* <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">{t('system_settings')}</h2>
         <div className="space-x-2">
           <Button variant="outline">{t('reset')}</Button>
           <Button>{t('save_changes')}</Button>
         </div>
-      </div>
+      </div> */}
 
       <Card>
         <CardHeader>

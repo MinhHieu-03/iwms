@@ -16,10 +16,10 @@ const TeamSettings = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      {/* <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">{t('team_management')}</h2>
         <Button onClick={() => navigate("/team-settings/users/new")}>{t('create_user')}</Button>
-      </div>
+      </div> */}
 
       <Tabs value={section} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
