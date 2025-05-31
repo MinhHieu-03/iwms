@@ -213,10 +213,6 @@ const StorageModelConfig = () => {
                 <Workflow className="h-5 w-5" />
                 Storage Hierarchy Visualization
               </CardTitle>
-              <div className="flex items-center gap-2">
-                <Button variant="outline">Reload</Button>
-                <Button>Save</Button>
-              </div>
             </div>
           </CardHeader>
           <CardContent>
