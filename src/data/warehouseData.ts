@@ -1,4 +1,3 @@
-
 export interface Warehouse {
   id: string;
   name: string;
@@ -410,3 +409,149 @@ export const masterData: MasterDataItem[] = Array.from({ length: 100 }, (_, i) =
     lastUpdated: new Date(2024, 0, 1 + (i % 30)).toISOString()
   };
 });
+
+// ReactFlow node and edge data for Storage Hierarchy Visualization
+export const storageHierarchyNodes = [
+  {
+    id: 'plastic-bin',
+    type: 'default',
+    data: { label: 'Plastic Bin' },
+    position: { x: 400, y: 50 },
+    style: { 
+      background: '#e3f2fd', 
+      border: '2px solid #1976d2',
+      borderRadius: '12px',
+      padding: '10px',
+      minWidth: '120px'
+    }
+  },
+  {
+    id: 'carton-1',
+    type: 'default', 
+    data: { label: 'Carton' },
+    position: { x: 200, y: 200 },
+    style: { 
+      background: '#f3e5f5', 
+      border: '2px solid #7b1fa2',
+      borderRadius: '12px',
+      padding: '10px',
+      minWidth: '100px'
+    }
+  },
+  {
+    id: 'box-1',
+    type: 'default',
+    data: { label: 'Box' },
+    position: { x: 400, y: 200 },
+    style: { 
+      background: '#e8f5e8', 
+      border: '2px solid #388e3c',
+      borderRadius: '12px',
+      padding: '10px',
+      minWidth: '100px'
+    }
+  },
+  {
+    id: 'kit-1',
+    type: 'default',
+    data: { label: 'Kit' },
+    position: { x: 600, y: 200 },
+    style: { 
+      background: '#fff3e0', 
+      border: '2px solid #f57c00',
+      borderRadius: '12px',
+      padding: '10px',
+      minWidth: '100px'
+    }
+  },
+  {
+    id: 'box-2',
+    type: 'default',
+    data: { label: 'Box' },
+    position: { x: 150, y: 350 },
+    style: { 
+      background: '#e8f5e8', 
+      border: '2px solid #388e3c',
+      borderRadius: '12px',
+      padding: '10px',
+      minWidth: '100px'
+    }
+  },
+  {
+    id: 'kit-2',
+    type: 'default',
+    data: { label: 'Kit' },
+    position: { x: 250, y: 350 },
+    style: { 
+      background: '#fff3e0', 
+      border: '2px solid #f57c00',
+      borderRadius: '12px',
+      padding: '10px',
+      minWidth: '100px'
+    }
+  },
+  {
+    id: 'kit-3',
+    type: 'default',
+    data: { label: 'Kit' },
+    position: { x: 400, y: 350 },
+    style: { 
+      background: '#fff3e0', 
+      border: '2px solid #f57c00',
+      borderRadius: '12px',
+      padding: '10px',
+      minWidth: '100px'
+    }
+  }
+];
+
+export const storageHierarchyEdges = [
+  {
+    id: 'e-plastic-carton',
+    source: 'plastic-bin',
+    target: 'carton-1',
+    animated: true,
+    style: { stroke: '#1976d2', strokeWidth: 2 },
+    markerEnd: { type: 'arrowclosed', color: '#1976d2' }
+  },
+  {
+    id: 'e-plastic-box',
+    source: 'plastic-bin',
+    target: 'box-1',
+    animated: true,
+    style: { stroke: '#1976d2', strokeWidth: 2 },
+    markerEnd: { type: 'arrowclosed', color: '#1976d2' }
+  },
+  {
+    id: 'e-plastic-kit',
+    source: 'plastic-bin',
+    target: 'kit-1',
+    animated: true,
+    style: { stroke: '#1976d2', strokeWidth: 2 },
+    markerEnd: { type: 'arrowclosed', color: '#1976d2' }
+  },
+  {
+    id: 'e-carton-box',
+    source: 'carton-1',
+    target: 'box-2',
+    animated: true,
+    style: { stroke: '#7b1fa2', strokeWidth: 2 },
+    markerEnd: { type: 'arrowclosed', color: '#7b1fa2' }
+  },
+  {
+    id: 'e-carton-kit',
+    source: 'carton-1',
+    target: 'kit-2',
+    animated: true,
+    style: { stroke: '#7b1fa2', strokeWidth: 2 },
+    markerEnd: { type: 'arrowclosed', color: '#7b1fa2' }
+  },
+  {
+    id: 'e-box-kit',
+    source: 'box-1',
+    target: 'kit-3',
+    animated: true,
+    style: { stroke: '#388e3c', strokeWidth: 2 },
+    markerEnd: { type: 'arrowclosed', color: '#388e3c' }
+  }
+];

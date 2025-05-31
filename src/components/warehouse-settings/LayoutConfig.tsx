@@ -22,38 +22,10 @@ import {
   type PricingRule
 } from "@/data/warehouseData";
 
-interface RackLocation {
-  id: string;
-  locationCode: string;
-  row: number;
-  column: number;
-  status: "empty" | "occupied" | "maintenance";
-  warehouse: string;
-  area: string;
-}
-
 const LayoutConfig = () => {
   const { toast } = useToast();
 
-  const [localWarehouseAreas] = useState<{ id: string; name: string; description: string; status: "empty" | "occupied" | "maintenance" }[]>([
-    { id: "1", name: "Inbound Area", description: "for test", status: "empty" },
-    { id: "2", name: "Outbound Area", description: "for test", status: "empty" },
-    { id: "3", name: "Storage Area", description: "ts", status: "empty" },
-  ]);
-
-  const [rackLocations] = useState<RackLocation[]>([
-    { id: "1", locationCode: "quan_man", row: 1, column: 1, status: "empty", warehouse: "Main", area: "A" },
-    { id: "2", locationCode: "PK10", row: 6, column: 4, status: "empty", warehouse: "Main", area: "A" },
-    { id: "3", locationCode: "PK09", row: 2, column: 6, status: "empty", warehouse: "Main", area: "A" },
-    { id: "4", locationCode: "PK08", row: 6, column: 4, status: "empty", warehouse: "Main", area: "A" },
-    { id: "5", locationCode: "PK07", row: 6, column: 4, status: "empty", warehouse: "Main", area: "A" },
-    { id: "6", locationCode: "PK06", row: 9, column: 3, status: "empty", warehouse: "Main", area: "A" },
-    { id: "7", locationCode: "PK05", row: 9, column: 5, status: "empty", warehouse: "Main", area: "A" },
-    { id: "8", locationCode: "PK04", row: 9, column: 3, status: "empty", warehouse: "Main", area: "A" },
-    { id: "9", locationCode: "PK03", row: 22, column: 3, status: "empty", warehouse: "Main", area: "A" },
-    { id: "10", locationCode: "PK02", row: 20, column: 5, status: "empty", warehouse: "Main", area: "A" },
-  ]);
-
+  // Use data from warehouseData.ts instead of mock data
   const [warehousesData, setWarehousesData] = useState<Warehouse[]>(warehouses);
   const [areasData, setAreasData] = useState<WarehouseArea[]>(warehouseAreas);
   const [racksData, setRacksData] = useState<Rack[]>(racks);
@@ -194,11 +166,106 @@ const LayoutConfig = () => {
         <Card>
           <CardHeader>
             <div className="flex justify-between items-center">
-              <CardTitle>Area Management</CardTitle>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Create New
-              </Button>
+              <CardTitle>Warehouse Area Management</CardTitle>
+              <Dialog open={areaDialogOpen} onOpenChange={setAreaDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button onClick={() => { setEditingArea(null); setAreaDialogOpen(true); }}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create New Area
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      {editingArea ? "Edit Area" : "Create New Area"}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={(e) => { e.preventDefault(); handleSaveArea(new FormData(e.currentTarget)); }} className="space-y-4">
+                    <div>
+                      <Label htmlFor="warehouseId">Warehouse</Label>
+                      <Select name="warehouseId" defaultValue={editingArea?.warehouseId || (warehousesData[0]?.id || "")}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {warehousesData.map(w => (
+                            <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="name">Area Name</Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        defaultValue={editingArea?.name || ""}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="description">Description</Label>
+                      <Input
+                        id="description"
+                        name="description"
+                        defaultValue={editingArea?.description || ""}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="type">Type</Label>
+                      <Select name="type" defaultValue={editingArea?.type || "storage"}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="storage">Storage</SelectItem>
+                          <SelectItem value="inbound">Inbound</SelectItem>
+                          <SelectItem value="outbound">Outbound</SelectItem>
+                          <SelectItem value="processing">Processing</SelectItem>
+                          <SelectItem value="quality_control">Quality Control</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="status">Status</Label>
+                      <Select name="status" defaultValue={editingArea?.status || "active"}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                          <SelectItem value="maintenance">Maintenance</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="capacity">Capacity</Label>
+                        <Input
+                          id="capacity"
+                          name="capacity"
+                          type="number"
+                          defaultValue={editingArea?.capacity || 0}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="currentUtilization">Current Utilization</Label>
+                        <Input
+                          id="currentUtilization"
+                          name="currentUtilization"
+                          type="number"
+                          defaultValue={editingArea?.currentUtilization || 0}
+                        />
+                      </div>
+                    </div>
+                    <Button type="submit" className="w-full">
+                      {editingArea ? "Update" : "Create"} Area
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </div>
           </CardHeader>
           <CardContent>
@@ -208,21 +275,38 @@ const LayoutConfig = () => {
                   <TableHead>STT</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Description</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Capacity</TableHead>
+                  <TableHead>Utilization</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {localWarehouseAreas.map((area, index) => (
+                {areasData.map((area, index) => (
                   <TableRow key={area.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell className="font-medium">{area.name}</TableCell>
                     <TableCell>{area.description}</TableCell>
+                    <TableCell>{area.type}</TableCell>
+                    <TableCell>{getStatusBadge(area.status)}</TableCell>
+                    <TableCell>{area.capacity}</TableCell>
+                    <TableCell>{area.currentUtilization}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => { setEditingArea(area); setAreaDialogOpen(true); }}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="outline" size="sm" className="text-red-500">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-red-500"
+                          onClick={() => handleDeleteArea(area.id)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -239,7 +323,7 @@ const LayoutConfig = () => {
         <Card>
           <CardHeader>
             <div className="flex justify-between items-center">
-              <CardTitle>Rack Configuration</CardTitle>
+              <CardTitle>Area Structure Configuration</CardTitle>
               <div className="flex items-center gap-2">
                 <Button variant="outline">
                   <Filter className="mr-2 h-4 w-4" />
@@ -257,37 +341,40 @@ const LayoutConfig = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>STT</TableHead>
-                  <TableHead>Location Code</TableHead>
-                  <TableHead>Row</TableHead>
-                  <TableHead>Column</TableHead>
-                  <TableHead>Status</TableHead>
                   <TableHead>Warehouse</TableHead>
-                  <TableHead>Area</TableHead>
+                  <TableHead>Area Name</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Capacity</TableHead>
+                  <TableHead>Utilization</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {rackLocations.map((location, index) => (
-                  <TableRow key={location.id}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell className="font-medium">{location.locationCode}</TableCell>
-                    <TableCell>{location.row}</TableCell>
-                    <TableCell>{location.column}</TableCell>
-                    <TableCell>{getStatusBadge(location.status)}</TableCell>
-                    <TableCell>{location.warehouse}</TableCell>
-                    <TableCell>{location.area}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button variant="outline" size="sm" className="text-red-500">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {areasData.map((area, index) => {
+                  const warehouse = warehousesData.find(w => w.id === area.warehouseId);
+                  return (
+                    <TableRow key={area.id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell className="font-medium">{warehouse?.name || 'Unknown'}</TableCell>
+                      <TableCell>{area.name}</TableCell>
+                      <TableCell>{area.type}</TableCell>
+                      <TableCell>{getStatusBadge(area.status)}</TableCell>
+                      <TableCell>{area.capacity}</TableCell>
+                      <TableCell>{area.currentUtilization}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Button variant="outline" size="sm">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="outline" size="sm" className="text-red-500">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </CardContent>

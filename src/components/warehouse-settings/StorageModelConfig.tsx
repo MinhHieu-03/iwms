@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,13 +18,17 @@ import {
   addEdge,
   Connection,
   MarkerType,
-  Panel
+  Panel,
+  Node,
+  Edge
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { 
   storageHierarchy, 
   storageFlows, 
   masterData,
+  storageHierarchyNodes,
+  storageHierarchyEdges,
   type StorageHierarchy,
   type StorageFlow,
   type MasterDataItem
@@ -37,159 +41,99 @@ const StorageModelConfig = () => {
   const [flowsData, setFlowsData] = useState<StorageFlow[]>(storageFlows);
   const [masterDataItems, setMasterDataItems] = useState<MasterDataItem[]>(masterData);
 
-  // ReactFlow state for hierarchy visualization
-  const initialNodes = [
-    {
-      id: 'plastic-bin',
-      type: 'default',
-      data: { label: 'Plastic Bin' },
-      position: { x: 400, y: 50 },
-      style: { 
-        background: '#e3f2fd', 
-        border: '2px solid #1976d2',
-        borderRadius: '12px',
-        padding: '10px',
-        minWidth: '120px'
-      }
-    },
-    {
-      id: 'carton-1',
-      type: 'default', 
-      data: { label: 'Carton' },
-      position: { x: 200, y: 200 },
-      style: { 
-        background: '#f3e5f5', 
-        border: '2px solid #7b1fa2',
-        borderRadius: '12px',
-        padding: '10px',
-        minWidth: '100px'
-      }
-    },
-    {
-      id: 'box-1',
-      type: 'default',
-      data: { label: 'Box' },
-      position: { x: 400, y: 200 },
-      style: { 
-        background: '#e8f5e8', 
-        border: '2px solid #388e3c',
-        borderRadius: '12px',
-        padding: '10px',
-        minWidth: '100px'
-      }
-    },
-    {
-      id: 'kit-1',
-      type: 'default',
-      data: { label: 'Kit' },
-      position: { x: 600, y: 200 },
-      style: { 
-        background: '#fff3e0', 
-        border: '2px solid #f57c00',
-        borderRadius: '12px',
-        padding: '10px',
-        minWidth: '100px'
-      }
-    },
-    {
-      id: 'box-2',
-      type: 'default',
-      data: { label: 'Box' },
-      position: { x: 150, y: 350 },
-      style: { 
-        background: '#e8f5e8', 
-        border: '2px solid #388e3c',
-        borderRadius: '12px',
-        padding: '10px',
-        minWidth: '100px'
-      }
-    },
-    {
-      id: 'kit-2',
-      type: 'default',
-      data: { label: 'Kit' },
-      position: { x: 250, y: 350 },
-      style: { 
-        background: '#fff3e0', 
-        border: '2px solid #f57c00',
-        borderRadius: '12px',
-        padding: '10px',
-        minWidth: '100px'
-      }
-    },
-    {
-      id: 'kit-3',
-      type: 'default',
-      data: { label: 'Kit' },
-      position: { x: 400, y: 350 },
-      style: { 
-        background: '#fff3e0', 
-        border: '2px solid #f57c00',
-        borderRadius: '12px',
-        padding: '10px',
-        minWidth: '100px'
-      }
-    }
-  ];
-
-  const initialEdges = [
-    {
-      id: 'e-plastic-carton',
-      source: 'plastic-bin',
-      target: 'carton-1',
-      animated: true,
-      style: { stroke: '#1976d2', strokeWidth: 2 },
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
-    },
-    {
-      id: 'e-plastic-box',
-      source: 'plastic-bin',
-      target: 'box-1',
-      animated: true,
-      style: { stroke: '#1976d2', strokeWidth: 2 },
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
-    },
-    {
-      id: 'e-plastic-kit',
-      source: 'plastic-bin',
-      target: 'kit-1',
-      animated: true,
-      style: { stroke: '#1976d2', strokeWidth: 2 },
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
-    },
-    {
-      id: 'e-carton-box',
-      source: 'carton-1',
-      target: 'box-2',
-      animated: true,
-      style: { stroke: '#7b1fa2', strokeWidth: 2 },
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#7b1fa2' }
-    },
-    {
-      id: 'e-carton-kit',
-      source: 'carton-1',
-      target: 'kit-2',
-      animated: true,
-      style: { stroke: '#7b1fa2', strokeWidth: 2 },
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#7b1fa2' }
-    },
-    {
-      id: 'e-box-kit',
-      source: 'box-1',
-      target: 'kit-3',
-      animated: true,
-      style: { stroke: '#388e3c', strokeWidth: 2 },
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#388e3c' }
-    }
-  ];
-
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  // ReactFlow state using data from warehouse file
+  const [nodes, setNodes, onNodesChange] = useNodesState(storageHierarchyNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(storageHierarchyEdges);
+  const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
+  const [editingNode, setEditingNode] = useState<string | null>(null);
+  const [editingNodeName, setEditingNodeName] = useState<string>("");
 
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges]
   );
+
+  // Handle node selection
+  const onSelectionChange = useCallback((params: any) => {
+    setSelectedNodes(params.nodes.map((node: Node) => node.id));
+  }, []);
+
+  // Handle double click to edit node name
+  const onNodeDoubleClick = useCallback((event: React.MouseEvent, node: Node) => {
+    setEditingNode(node.id);
+    setEditingNodeName(node.data.label);
+  }, []);
+
+  // Add new node
+  const addNewNode = useCallback(() => {
+    const newNodeId = `node-${Date.now()}`;
+    const newNode: Node = {
+      id: newNodeId,
+      type: 'default',
+      data: { label: 'New Node' },
+      position: { x: 300, y: 300 },
+      style: { 
+        background: '#f0f0f0', 
+        border: '2px solid #666',
+        borderRadius: '12px',
+        padding: '10px',
+        minWidth: '100px'
+      }
+    };
+    
+    setNodes((nds) => [...nds, newNode]);
+    toast({ title: "New node added successfully" });
+  }, [setNodes, toast]);
+
+  // Delete selected nodes
+  const deleteSelectedNodes = useCallback(() => {
+    if (selectedNodes.length === 0) return;
+    
+    setNodes((nds) => nds.filter((node) => !selectedNodes.includes(node.id)));
+    setEdges((eds) => eds.filter((edge) => 
+      !selectedNodes.includes(edge.source) && !selectedNodes.includes(edge.target)
+    ));
+    setSelectedNodes([]);
+    toast({ title: `${selectedNodes.length} node(s) deleted successfully` });
+  }, [selectedNodes, setNodes, setEdges, toast]);
+
+  // Save node name edit
+  const saveNodeEdit = useCallback(() => {
+    if (!editingNode) return;
+    
+    setNodes((nds) => nds.map((node) => 
+      node.id === editingNode 
+        ? { ...node, data: { ...node.data, label: editingNodeName } }
+        : node
+    ));
+    setEditingNode(null);
+    setEditingNodeName("");
+    toast({ title: "Node name updated successfully" });
+  }, [editingNode, editingNodeName, setNodes, toast]);
+
+  // Cancel node edit
+  const cancelNodeEdit = useCallback(() => {
+    setEditingNode(null);
+    setEditingNodeName("");
+  }, []);
+
+  // Handle keyboard events
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Delete' && selectedNodes.length > 0) {
+        deleteSelectedNodes();
+      }
+      if (event.key === 'Escape' && editingNode) {
+        cancelNodeEdit();
+      }
+      if (event.key === 'Enter' && editingNode) {
+        saveNodeEdit();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedNodes, editingNode, deleteSelectedNodes, cancelNodeEdit, saveNodeEdit]);
 
   const [selectedTags, setSelectedTags] = useState<string[]>(["Plastic Bin", "Carton"]);
 
@@ -213,6 +157,18 @@ const StorageModelConfig = () => {
                 <Workflow className="h-5 w-5" />
                 Storage Hierarchy Visualization
               </CardTitle>
+              <div className="flex items-center gap-2">
+                <Button onClick={addNewNode} size="sm">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Node
+                </Button>
+                {selectedNodes.length > 0 && (
+                  <Button onClick={deleteSelectedNodes} variant="destructive" size="sm">
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete ({selectedNodes.length})
+                  </Button>
+                )}
+              </div>
             </div>
           </CardHeader>
           <CardContent>
@@ -224,8 +180,12 @@ const StorageModelConfig = () => {
                   onNodesChange={onNodesChange}
                   onEdgesChange={onEdgesChange}
                   onConnect={onConnect}
+                  onSelectionChange={onSelectionChange}
+                  onNodeDoubleClick={onNodeDoubleClick}
                   fitView
                   attributionPosition="bottom-left"
+                  multiSelectionKeyCode="shift"
+                  selectNodesOnDrag={false}
                 >
                   <Controls />
                   <MiniMap />
@@ -233,13 +193,32 @@ const StorageModelConfig = () => {
                   <Panel position="top-right">
                     <div className="bg-white border p-3 rounded-md shadow-sm text-sm">
                       <h4 className="font-medium mb-2">Storage Hierarchy</h4>
-                      <p className="text-xs text-gray-600">
-                        Drag to rearrange • Click edges to edit connections
+                      <p className="text-xs text-gray-600 mb-2">
+                        Double-click to edit • Delete key to remove • Drag to rearrange
                       </p>
+                      {selectedNodes.length > 0 && (
+                        <p className="text-xs text-blue-600">
+                          {selectedNodes.length} node(s) selected
+                        </p>
+                      )}
                     </div>
                   </Panel>
                 </ReactFlow>
               </div>
+              
+              {editingNode && (
+                <div className="flex items-center gap-2 p-3 border rounded-md bg-blue-50">
+                  <span className="text-sm font-medium">Edit node name:</span>
+                  <Input
+                    value={editingNodeName}
+                    onChange={(e) => setEditingNodeName(e.target.value)}
+                    className="flex-1"
+                    autoFocus
+                  />
+                  <Button onClick={saveNodeEdit} size="sm">Save</Button>
+                  <Button onClick={cancelNodeEdit} variant="outline" size="sm">Cancel</Button>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
