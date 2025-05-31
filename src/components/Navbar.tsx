@@ -237,7 +237,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
       <div className="fixed left-0 top-0 h-full w-64 bg-background border-r border-border shadow-sm z-50 overflow-y-auto">
         <div className="p-4 flex items-center space-x-2 border-b border-border">
           <Box className="h-6 w-6 text-warehouse-primary" />
-          <h1 className="text-lg font-bold text-warehouse-primary">SmartWareHub</h1>
+          <h1 className="text-lg font-bold text-warehouse-primary">iWMS System</h1>
         </div>
         <nav className="p-2 space-y-6">
           {navSections.map((section, index) => (
