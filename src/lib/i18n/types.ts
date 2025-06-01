@@ -1,4 +1,3 @@
-
 export type SupportedLanguages = 'en' | 'vi' | 'zh' | 'ja' | 'ko';
 
 export type TranslationKey = 
@@ -89,6 +88,7 @@ export type TranslationKey =
   | 'graph'
   | 'visual_editor'
   | 'settings'
+  | 'mission_created'
   
   // Operator Interface
   | 'select_dock'
