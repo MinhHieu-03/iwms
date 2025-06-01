@@ -4,9 +4,10 @@ import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Map, Thermometer, Eye, Grid3X3, Building } from "lucide-react";
+import { Map, Thermometer, Eye, Grid3X3, Building, Box } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Warehouse2DView from "@/components/WarehouseVisualization/Warehouse2DView";
+import Warehouse3DView from "@/components/WarehouseVisualization/Warehouse3DView";
 import { WarehouseHeatmap } from "@/components/WarehouseVisualization/WarehouseHeatmap";
 
 const WarehouseLayout = () => {
@@ -15,19 +16,33 @@ const WarehouseLayout = () => {
   const [highlightedRack, setHighlightedRack] = useState<string | null>(null);
   const [hoveredRack, setHoveredRack] = useState<string | null>(null);
 
-  // Mock data for warehouse area and racks with all required properties
-  const mockArea = {
-    id: "area-1",
-    warehouseId: "warehouse-1",
-    name: "Main Storage Area",
-    type: "storage" as const,
-    status: "active" as const,
-    description: "Primary storage area for incoming and outgoing inventory",
-    capacity: 1000,
-    currentUtilization: 750,
-    dimensions: { length: 100, width: 50, height: 8 },
-    createdAt: new Date().toISOString()
-  };
+  // Mock data for warehouse areas and racks with all required properties
+  const mockAreas = [
+    {
+      id: "area-1",
+      warehouseId: "warehouse-1",
+      name: "Main Storage Area",
+      type: "storage" as const,
+      status: "active" as const,
+      description: "Primary storage area for incoming and outgoing inventory",
+      capacity: 1000,
+      currentUtilization: 750,
+      dimensions: { length: 100, width: 50, height: 8 },
+      createdAt: new Date().toISOString()
+    },
+    {
+      id: "area-2",
+      warehouseId: "warehouse-1",
+      name: "Receiving Area",
+      type: "receiving" as const,
+      status: "active" as const,
+      description: "Area for receiving incoming shipments",
+      capacity: 500,
+      currentUtilization: 200,
+      dimensions: { length: 50, width: 30, height: 6 },
+      createdAt: new Date().toISOString()
+    }
+  ];
 
   const mockRacks = [
     {
@@ -56,6 +71,53 @@ const WarehouseLayout = () => {
           packingCode: "PK0001",
           partner: "Tech Supplies Inc.",
           inboundOrderId: "IN-001",
+          status: "stored" as const,
+          storedAt: new Date().toISOString()
+        }
+      ]
+    },
+    {
+      id: "rack-2",
+      locationCode: "A01-02",
+      areaId: "area-1",
+      row: 1,
+      column: 2,
+      level: 1,
+      status: "empty" as const,
+      warehouse: "Main Warehouse",
+      area: "Storage Area A",
+      capacity: 100,
+      currentLoad: 0,
+      dimensions: { width: 2.5, height: 3.0, depth: 1.2 },
+      createdAt: new Date().toISOString(),
+      storedItems: []
+    },
+    {
+      id: "rack-3",
+      locationCode: "B01-01",
+      areaId: "area-2",
+      row: 1,
+      column: 1,
+      level: 1,
+      status: "occupied" as const,
+      warehouse: "Main Warehouse",
+      area: "Receiving Area",
+      capacity: 80,
+      currentLoad: 45,
+      dimensions: { width: 2.0, height: 2.5, depth: 1.0 },
+      createdAt: new Date().toISOString(),
+      storedItems: [
+        {
+          id: "item-2",
+          sku: "SKU-002",
+          productName: "Component B",
+          quantity: 15,
+          storeMethod: "Pallet" as const,
+          storeCode: "B001",
+          packingMethod: "Box" as const,
+          packingCode: "PK0002",
+          partner: "Industrial Supplies Co.",
+          inboundOrderId: "IN-002",
           status: "stored" as const,
           storedAt: new Date().toISOString()
         }
@@ -104,10 +166,14 @@ const WarehouseLayout = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-muted/50">
+        <TabsList className="grid w-full grid-cols-4 bg-muted/50">
           <TabsTrigger value="2d" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
             <Map className="h-4 w-4 mr-2" />
             2D Layout
+          </TabsTrigger>
+          <TabsTrigger value="3d" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <Box className="h-4 w-4 mr-2" />
+            3D View
           </TabsTrigger>
           <TabsTrigger value="heatmap" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
             <Thermometer className="h-4 w-4 mr-2" />
@@ -129,13 +195,37 @@ const WarehouseLayout = () => {
             </CardHeader>
             <CardContent>
               <Warehouse2DView 
-                area={mockArea}
+                area={mockAreas[0]}
                 racks={mockRacks}
                 highlightedRack={highlightedRack}
                 hoveredRack={hoveredRack}
                 onRackClick={handleRackClick}
                 onRackHover={handleRackHover}
               />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="3d" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Box className="h-5 w-5" />
+                3D Warehouse View
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[600px] w-full">
+                <Warehouse3DView 
+                  areas={mockAreas}
+                  racks={mockRacks}
+                  highlightedRack={highlightedRack}
+                  hoveredRack={hoveredRack}
+                  activeAreaId="area-1"
+                  onRackClick={handleRackClick}
+                  onRackHover={handleRackHover}
+                />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
