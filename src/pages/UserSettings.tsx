@@ -1,40 +1,38 @@
 
 import React, { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
-import { Bell, Moon, SunMedium, User, Lock, Languages, Warehouse, Monitor } from "lucide-react";
+import { Bell, Lock, User, Monitor, Edit, Save, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const UserSettings = () => {
   const { toast } = useToast();
   const { t, language, setLanguage, themeSettings, updateThemeSetting } = useLanguage();
+  const [isEditing, setIsEditing] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: "John Doe",
     email: "john.doe@warehouse.com",
     jobTitle: "Warehouse Manager",
-    department: "Operations",
-    shift: "day",
-    defaultDock: "Dock-A"
+    department: "Operations"
   });
   
-  const handleSaveChanges = () => {
+  const handleSave = () => {
+    setIsEditing(false);
     toast({
       title: t('settings_saved'),
-      description: t('settings_saved'),
+      description: "Your profile has been updated successfully.",
     });
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    // Reset form data here if needed
   };
 
   const handleProfileChange = (field: string, value: string) => {
@@ -62,158 +60,120 @@ const UserSettings = () => {
               <p className="text-sm text-muted-foreground">{userProfile.email}</p>
             </div>
           </div>
-          <Button onClick={handleSaveChanges} className="bg-teal-500 hover:bg-teal-600">
-            {t('save_changes')}
-          </Button>
+          <div className="flex gap-2">
+            {isEditing ? (
+              <>
+                <Button onClick={handleCancel} variant="outline">
+                  <X className="h-4 w-4 mr-2" />
+                  Cancel
+                </Button>
+                <Button onClick={handleSave} className="bg-teal-500 hover:bg-teal-600">
+                  <Save className="h-4 w-4 mr-2" />
+                  {t('save_changes')}
+                </Button>
+              </>
+            ) : (
+              <Button onClick={() => setIsEditing(true)} className="bg-teal-500 hover:bg-teal-600">
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Profile
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Profile Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <User className="mr-2 h-5 w-5" />
-              Profile Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input 
-                id="fullName" 
-                value={userProfile.name} 
-                onChange={(e) => handleProfileChange("name", e.target.value)}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input 
-                id="email" 
-                type="email" 
-                value={userProfile.email} 
-                onChange={(e) => handleProfileChange("email", e.target.value)}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="jobTitle">Job Title</Label>
-              <Input 
-                id="jobTitle" 
-                value={userProfile.jobTitle} 
-                onChange={(e) => handleProfileChange("jobTitle", e.target.value)}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="department">Department</Label>
-              <Select value={userProfile.department} onValueChange={(value) => handleProfileChange("department", value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Operations">Operations</SelectItem>
-                  <SelectItem value="Logistics">Logistics</SelectItem>
-                  <SelectItem value="Management">Management</SelectItem>
-                  <SelectItem value="IT Support">IT Support</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
+      <Tabs defaultValue="profile" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="profile" className="flex items-center">
+            <User className="h-4 w-4 mr-2" />
+            Profile
+          </TabsTrigger>
+          <TabsTrigger value="appearance" className="flex items-center">
+            <Monitor className="h-4 w-4 mr-2" />
+            {t('appearance')}
+          </TabsTrigger>
+          <TabsTrigger value="notifications" className="flex items-center">
+            <Bell className="h-4 w-4 mr-2" />
+            Notifications
+          </TabsTrigger>
+          <TabsTrigger value="security" className="flex items-center">
+            <Lock className="h-4 w-4 mr-2" />
+            {t('security')}
+          </TabsTrigger>
+        </TabsList>
 
-        {/* Warehouse Preferences */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Warehouse className="mr-2 h-5 w-5" />
-              Warehouse Preferences
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="defaultShift">Default Shift</Label>
-              <Select value={userProfile.shift} onValueChange={(value) => handleProfileChange("shift", value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="day">Day Shift (06:00 - 14:00)</SelectItem>
-                  <SelectItem value="evening">Evening Shift (14:00 - 22:00)</SelectItem>
-                  <SelectItem value="night">Night Shift (22:00 - 06:00)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="defaultDock">Default Dock Assignment</Label>
-              <Select value={userProfile.defaultDock} onValueChange={(value) => handleProfileChange("defaultDock", value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Dock-A">Dock A - Inbound</SelectItem>
-                  <SelectItem value="Dock-B">Dock B - Outbound</SelectItem>
-                  <SelectItem value="Dock-C">Dock C - Mixed</SelectItem>
-                  <SelectItem value="Dock-D">Dock D - Express</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <Separator />
-            
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Auto-assign to available dock</Label>
-                <div className="text-sm text-muted-foreground">
-                  Automatically assign to the next available dock when starting shift
-                </div>
+        <TabsContent value="profile" className="mt-6">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="fullName">Full Name</Label>
+                <Input 
+                  id="fullName" 
+                  value={userProfile.name} 
+                  onChange={(e) => handleProfileChange("name", e.target.value)}
+                  disabled={!isEditing}
+                />
               </div>
-              <Switch defaultChecked />
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Show efficiency metrics</Label>
-                <div className="text-sm text-muted-foreground">
-                  Display real-time performance metrics on operator interface
-                </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <Input 
+                  id="email" 
+                  type="email" 
+                  value={userProfile.email} 
+                  onChange={(e) => handleProfileChange("email", e.target.value)}
+                  disabled={!isEditing}
+                />
               </div>
-              <Switch defaultChecked />
+              
+              <div className="space-y-2">
+                <Label htmlFor="jobTitle">Job Title</Label>
+                <Input 
+                  id="jobTitle" 
+                  value={userProfile.jobTitle} 
+                  onChange={(e) => handleProfileChange("jobTitle", e.target.value)}
+                  disabled={!isEditing}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="department">Department</Label>
+                <Select 
+                  value={userProfile.department} 
+                  onValueChange={(value) => handleProfileChange("department", value)}
+                  disabled={!isEditing}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Operations">Operations</SelectItem>
+                    <SelectItem value="Logistics">Logistics</SelectItem>
+                    <SelectItem value="Management">Management</SelectItem>
+                    <SelectItem value="IT Support">IT Support</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </TabsContent>
 
-        {/* Appearance & Display */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Monitor className="mr-2 h-5 w-5" />
-              {t('appearance')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
+        <TabsContent value="appearance" className="mt-6">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="space-y-0.5">
                 <Label>{t('dark_mode')}</Label>
                 <div className="text-sm text-muted-foreground">
                   {t('dark_mode_description')}
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <SunMedium className="h-4 w-4" />
-                <Switch 
-                  checked={themeSettings.darkMode}
-                  onCheckedChange={(value) => updateThemeSetting('darkMode', value)}
-                />
-                <Moon className="h-4 w-4" />
-              </div>
+              <Switch 
+                checked={themeSettings.darkMode}
+                onCheckedChange={(value) => updateThemeSetting('darkMode', value)}
+              />
             </div>
-
-            <Separator />
             
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="space-y-0.5">
                 <Label>{t('language')}</Label>
                 <div className="text-sm text-muted-foreground">
@@ -230,19 +190,12 @@ const UserSettings = () => {
                 </SelectContent>
               </Select>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </TabsContent>
 
-        {/* Notification Preferences */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Bell className="mr-2 h-5 w-5" />
-              {t('notification_preferences')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
+        <TabsContent value="notifications" className="mt-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="space-y-0.5">
                 <Label>Inventory alerts</Label>
                 <div className="text-sm text-muted-foreground">
@@ -252,7 +205,7 @@ const UserSettings = () => {
               <Switch defaultChecked />
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="space-y-0.5">
                 <Label>Mission updates</Label>
                 <div className="text-sm text-muted-foreground">
@@ -262,7 +215,7 @@ const UserSettings = () => {
               <Switch defaultChecked />
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="space-y-0.5">
                 <Label>Shift reminders</Label>
                 <div className="text-sm text-muted-foreground">
@@ -272,7 +225,7 @@ const UserSettings = () => {
               <Switch defaultChecked />
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="space-y-0.5">
                 <Label>System maintenance</Label>
                 <div className="text-sm text-muted-foreground">
@@ -281,18 +234,11 @@ const UserSettings = () => {
               </div>
               <Switch />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </TabsContent>
 
-        {/* Security Settings */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Lock className="mr-2 h-5 w-5" />
-              {t('security')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <TabsContent value="security" className="mt-6">
+          <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="current-password">{t('current_password')}</Label>
@@ -310,14 +256,14 @@ const UserSettings = () => {
               </div>
             </div>
 
-            <div className="mt-4 flex justify-end">
+            <div className="flex justify-end">
               <Button variant="outline">
                 {t('update_password')}
               </Button>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Shield, Edit, Trash2, Plus, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { TranslationKey } from "@/lib/i18n/translations";
 import RoleCreateDialog from "./RoleCreateDialog";
 import DeleteConfirmDialog from "./DeleteConfirmDialog";
@@ -19,6 +20,7 @@ interface Role {
 
 const RolesTab = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const [roles, setRoles] = useState<Role[]>([
     { 
       id: 1, 
@@ -47,6 +49,10 @@ const RolesTab = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
+  const handleEditRole = (role: Role) => {
+    navigate(`/team-settings/roles/${role.id}/edit`);
+  };
+
   const handleDeleteRole = (role: Role) => {
     setSelectedRole(role);
     setDeleteDialogOpen(true);
@@ -57,6 +63,10 @@ const RolesTab = () => {
       setRoles(roles.filter(r => r.id !== selectedRole.id));
       setSelectedRole(null);
     }
+  };
+
+  const handleCreateRole = () => {
+    navigate("/team-settings/roles/new");
   };
 
   const getRoleColor = (roleName: string) => {
@@ -74,7 +84,7 @@ const RolesTab = () => {
         <CardHeader>
           <CardTitle className="flex justify-between items-center">
             <span>{t('roles_permissions')}</span>
-            <Button onClick={() => setCreateDialogOpen(true)} className="bg-warehouse-primary hover:bg-warehouse-primary/90">
+            <Button onClick={handleCreateRole} className="bg-warehouse-primary hover:bg-warehouse-primary/90">
               <Plus className="h-4 w-4 mr-2" />
               {t('create_role')}
             </Button>
@@ -113,7 +123,7 @@ const RolesTab = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => handleEditRole(role)}>
                       <Edit className="h-4 w-4 mr-1" />
                       Edit
                     </Button>

@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Settings, Edit, Trash2, Plus, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { TranslationKey } from "@/lib/i18n/translations";
+import GroupCreateDialog from "./GroupCreateDialog";
 import DeleteConfirmDialog from "./DeleteConfirmDialog";
 
 interface Group {
@@ -18,14 +20,20 @@ interface Group {
 
 const GroupsTab = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([
     { id: 1, name: "warehouse_staff", description: "Front-line warehouse operations team", memberCount: 12, department: "Operations" },
     { id: 2, name: "management_team", description: "Warehouse management and supervisors", memberCount: 4, department: "Management" },
     { id: 3, name: "it_support", description: "Technical support and system maintenance", memberCount: 2, department: "IT Support" }
   ]);
 
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
+
+  const handleEditGroup = (group: Group) => {
+    navigate(`/team-settings/groups/${group.id}/edit`);
+  };
 
   const handleDeleteGroup = (group: Group) => {
     setSelectedGroup(group);
@@ -37,6 +45,10 @@ const GroupsTab = () => {
       setGroups(groups.filter(g => g.id !== selectedGroup.id));
       setSelectedGroup(null);
     }
+  };
+
+  const handleCreateGroup = () => {
+    navigate("/team-settings/groups/new");
   };
 
   const getDepartmentColor = (department: string) => {
@@ -54,7 +66,7 @@ const GroupsTab = () => {
         <CardHeader>
           <CardTitle className="flex justify-between items-center">
             <span>{t('user_groups')}</span>
-            <Button className="bg-warehouse-primary hover:bg-warehouse-primary/90">
+            <Button onClick={handleCreateGroup} className="bg-warehouse-primary hover:bg-warehouse-primary/90">
               <Plus className="h-4 w-4 mr-2" />
               {t('create_group')}
             </Button>
@@ -86,9 +98,9 @@ const GroupsTab = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => handleEditGroup(group)}>
                       <Edit className="h-4 w-4 mr-1" />
-                      {t('manage_group')}
+                      Edit
                     </Button>
                     <Button 
                       variant="outline" 
@@ -107,6 +119,11 @@ const GroupsTab = () => {
         </CardContent>
       </Card>
 
+      <GroupCreateDialog 
+        open={createDialogOpen} 
+        onOpenChange={setCreateDialogOpen} 
+      />
+      
       <DeleteConfirmDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
