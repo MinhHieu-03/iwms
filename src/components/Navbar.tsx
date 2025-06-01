@@ -128,21 +128,19 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
         },
       ],
     },
+  ];
+
+  const supportItems = [
     {
-      title: "Support",
-      items: [
-        {
-          path: "/notifications",
-          name: "notifications" as TranslationKey,
-          icon: <Bell className="w-5 h-5" />,
-          badge: 3,
-        },
-        {
-          path: "/help",
-          name: "help_center" as TranslationKey,
-          icon: <HelpCircle className="w-5 h-5" />,
-        },
-      ],
+      path: "/notifications",
+      name: "notifications" as TranslationKey,
+      icon: <Bell className="w-5 h-5" />,
+      badge: 3,
+    },
+    {
+      path: "/help",
+      name: "help_center" as TranslationKey,
+      icon: <HelpCircle className="w-5 h-5" />,
     },
   ];
 
@@ -239,28 +237,41 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           <Box className="h-6 w-6 text-warehouse-primary" />
           <h1 className="text-lg font-bold text-warehouse-primary">iWMS System</h1>
         </div>
-        <nav className="p-2 space-y-6">
-          {navSections.map((section, index) => (
-            <div key={index} className="space-y-1">
+        
+        <div className="flex flex-col h-full">
+          <nav className="p-2 space-y-6 flex-1">
+            {navSections.map((section, index) => (
+              <div key={index} className="space-y-1">
+                <h2 className="mb-2 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  {section.title}
+                </h2>
+                {section.items.map(renderNavItem)}
+              </div>
+            ))}
+          </nav>
+
+          {/* Support Section and Logout at Bottom */}
+          <div className="border-t border-border p-2">
+            <div className="space-y-1 mb-4">
               <h2 className="mb-2 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                {section.title}
+                Support
               </h2>
-              {section.items.map(renderNavItem)}
+              {supportItems.map(renderNavItem)}
             </div>
-          ))}
-          
-          {isLoggedIn && (
-            <div className="mt-auto pt-4 border-t border-border px-4 py-2">
-              <button
-                onClick={() => setIsLoggedIn(false)}
-                className="flex items-center space-x-3 px-4 py-3 rounded-md w-full text-left text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-              >
-                <LogOut className="w-5 h-5" />
-                <span>{t("logout")}</span>
-              </button>
-            </div>
-          )}
-        </nav>
+            
+            {isLoggedIn && (
+              <div className="px-2">
+                <button
+                  onClick={() => setIsLoggedIn(false)}
+                  className="flex items-center space-x-3 px-4 py-3 rounded-md w-full text-left text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span>{t("logout")}</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Main Content Area */}
@@ -273,7 +284,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
               location.pathname === "/inbound-outbound" ? "bg-warehouse-accent1" :
               location.pathname === "/layout" ? "bg-warehouse-secondary" :
               location.pathname === "/missions" ? "bg-warehouse-accent2" :
-              location.pathname === "/team-settings" ? "bg-indigo-500" :
+              location.pathname.startsWith("/team-settings") ? "bg-indigo-500" :
               location.pathname === "/user-settings" ? "bg-teal-500" :
               location.pathname === "/system-settings" ? "bg-purple-500" :
               location.pathname === "/notifications" ? "bg-amber-500" :
@@ -289,8 +300,11 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
                   : location.pathname === "/warehouse-settings/storage"
                   ? "Storage Model Configuration"
                   : t("warehouse_settings")
+                : location.pathname.startsWith("/team-settings")
+                ? t("team_management")
                 : t(
                   navSections.flatMap(s => s.items)
+                    .concat(supportItems)
                     .find((item) => 
                       item.path === location.pathname || 
                       (item.path !== "/" && location.pathname.startsWith(item.path))

@@ -48,6 +48,7 @@ function App() {
               <Route path="/missions/templates/:id" element={<TemplateEdit />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/team-settings" element={<TeamSettings />} />
+              <Route path="/team-settings/:section" element={<TeamSettings />} />
               <Route path="/team-settings/users/:id" element={<UserEdit />} />
               <Route path="/team-settings/roles/:id" element={<RoleEdit />} />
               <Route path="/team-settings/groups/:id" element={<GroupEdit />} />
