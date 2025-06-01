@@ -1,4 +1,3 @@
-
 import { TranslationKey } from '../types';
 
 export const vi: Record<TranslationKey, string> = {
@@ -89,6 +88,7 @@ export const vi: Record<TranslationKey, string> = {
   graph: 'Biểu đồ',
   visual_editor: 'Trình soạn thảo trực quan',
   settings: 'Cài đặt',
+  mission_created: 'Đã tạo nhiệm vụ',
   
   // Operator Interface
   select_dock: 'Chọn khu vực',

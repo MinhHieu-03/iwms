@@ -1,4 +1,3 @@
-
 import { TranslationKey } from '../types';
 
 export const en: Record<TranslationKey, string> = {
@@ -89,6 +88,7 @@ export const en: Record<TranslationKey, string> = {
   graph: 'Graph',
   visual_editor: 'Visual Editor',
   settings: 'Settings',
+  mission_created: 'Mission Created',
   
   // Operator Interface
   select_dock: 'Select Dock',
