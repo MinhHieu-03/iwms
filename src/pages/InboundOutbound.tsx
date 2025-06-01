@@ -1,338 +1,263 @@
-
 import React, { useState } from "react";
-import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import StatusBadge from "@/components/StatusBadge";
-import OrderForm from "@/components/OrderForm";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ArrowDown, ArrowUp, Package, Truck, Clock, CheckCircle, AlertCircle, Plus } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { 
-  Pagination, 
-  PaginationContent, 
-  PaginationItem, 
-  PaginationLink, 
-  PaginationNext, 
-  PaginationPrevious 
-} from "@/components/ui/pagination";
-import { inboundOutboundOrders, InboundOutboundOrder } from "@/data/inboundOutboundData";
-import { Plus, Edit, Trash2 } from "lucide-react";
 
 const InboundOutbound = () => {
-  const [orders, setOrders] = useState<InboundOutboundOrder[]>(inboundOutboundOrders);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [categoryFilter, setCategoryFilter] = useState<'All' | 'Inbound' | 'Outbound'>('All');
-  const [statusFilter, setStatusFilter] = useState<'All' | 'Pending' | 'Processing' | 'Completed'>('All');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingOrder, setEditingOrder] = useState<InboundOutboundOrder | null>(null);
-  const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
   const { t } = useLanguage();
-  
-  const itemsPerPage = 10;
+  const [activeTab, setActiveTab] = useState("inbound");
 
-  // Filter orders based on filters and search
-  const filteredOrders = orders.filter(order => {
-    const matchesCategory = categoryFilter === 'All' || order.category === categoryFilter;
-    const matchesStatus = statusFilter === 'All' || order.status === statusFilter;
-    const matchesSearch = searchTerm === '' || 
-      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.taskId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.partner.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return matchesCategory && matchesStatus && matchesSearch;
-  });
+  const inboundData = [
+    {
+      id: "IB001",
+      supplier: "TechCorp Inc.",
+      expectedDate: "2024-01-15",
+      status: "pending",
+      items: 25,
+      priority: "high",
+      dock: "Dock A"
+    },
+    {
+      id: "IB002",
+      supplier: "Global Supply Co.",
+      expectedDate: "2024-01-15",
+      status: "in_progress",
+      items: 150,
+      priority: "medium",
+      dock: "Dock B"
+    },
+    {
+      id: "IB003",
+      supplier: "Quick Parts Ltd.",
+      expectedDate: "2024-01-16",
+      status: "completed",
+      items: 75,
+      priority: "low",
+      dock: "Dock C"
+    }
+  ];
 
-  // Get current orders for pagination
-  const currentOrders = filteredOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+  const outboundData = [
+    {
+      id: "OB001",
+      customer: "Retail Chain A",
+      scheduledDate: "2024-01-15",
+      status: "pending",
+      items: 45,
+      priority: "high",
+      dock: "Dock D"
+    },
+    {
+      id: "OB002",
+      customer: "E-commerce Hub",
+      scheduledDate: "2024-01-15",
+      status: "in_progress",
+      items: 89,
+      priority: "medium",
+      dock: "Dock E"
+    },
+    {
+      id: "OB003",
+      customer: "Distribution Center",
+      scheduledDate: "2024-01-16",
+      status: "ready",
+      items: 120,
+      priority: "high",
+      dock: "Dock F"
+    }
+  ];
 
-  // Handle page change
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  // Handle create order
-  const handleCreateOrder = (formData: Omit<InboundOutboundOrder, 'id' | 'registrationTime'>) => {
-    const newOrder: InboundOutboundOrder = {
-      ...formData,
-      id: `${formData.category.toUpperCase()}-${String(orders.length + 1).padStart(3, '0')}`,
-      registrationTime: new Date().toISOString(),
-    };
-    setOrders([newOrder, ...orders]);
-  };
-
-  // Handle edit order
-  const handleEditOrder = (formData: Omit<InboundOutboundOrder, 'id' | 'registrationTime'>) => {
-    if (editingOrder) {
-      setOrders(orders.map(order => 
-        order.id === editingOrder.id 
-          ? { ...formData, id: editingOrder.id, registrationTime: editingOrder.registrationTime }
-          : order
-      ));
-      setEditingOrder(null);
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <Badge variant="outline"><Clock className="w-3 h-3 mr-1" />{status}</Badge>;
+      case "in_progress":
+        return <Badge variant="secondary"><ArrowUp className="w-3 h-3 mr-1" />{status}</Badge>;
+      case "completed":
+        return <Badge variant="default"><CheckCircle className="w-3 h-3 mr-1" />{status}</Badge>;
+      case "ready":
+        return <Badge variant="secondary"><Package className="w-3 h-3 mr-1" />{status}</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
     }
   };
 
-  // Handle delete order
-  const handleDeleteOrder = (orderId: string) => {
-    setOrders(orders.filter(order => order.id !== orderId));
-  };
-
-  // Open create form
-  const openCreateForm = () => {
-    setFormMode('create');
-    setEditingOrder(null);
-    setIsFormOpen(true);
-  };
-
-  // Open edit form
-  const openEditForm = (order: InboundOutboundOrder) => {
-    setFormMode('edit');
-    setEditingOrder(order);
-    setIsFormOpen(true);
-  };
-
-  // Generate pagination items
-  const generatePaginationItems = () => {
-    const items = [];
-    
-    // Always show first page
-    items.push(
-      <PaginationItem key="first">
-        <PaginationLink 
-          isActive={currentPage === 1} 
-          onClick={() => handlePageChange(1)}
-        >
-          1
-        </PaginationLink>
-      </PaginationItem>
-    );
-    
-    // Add ellipsis if needed
-    if (currentPage > 3) {
-      items.push(
-        <PaginationItem key="ellipsis1">
-          <span className="px-2">...</span>
-        </PaginationItem>
-      );
+  const getPriorityBadge = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return <Badge variant="destructive">{priority}</Badge>;
+      case "medium":
+        return <Badge variant="default">{priority}</Badge>;
+      case "low":
+        return <Badge variant="secondary">{priority}</Badge>;
+      default:
+        return <Badge variant="outline">{priority}</Badge>;
     }
-    
-    // Add pages around current page
-    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-      items.push(
-        <PaginationItem key={i}>
-          <PaginationLink 
-            isActive={currentPage === i} 
-            onClick={() => handlePageChange(i)}
-          >
-            {i}
-          </PaginationLink>
-        </PaginationItem>
-      );
-    }
-    
-    // Add ellipsis if needed
-    if (currentPage < totalPages - 2) {
-      items.push(
-        <PaginationItem key="ellipsis2">
-          <span className="px-2">...</span>
-        </PaginationItem>
-      );
-    }
-    
-    // Always show last page if more than 1 page
-    if (totalPages > 1) {
-      items.push(
-        <PaginationItem key="last">
-          <PaginationLink 
-            isActive={currentPage === totalPages} 
-            onClick={() => handlePageChange(totalPages)}
-          >
-            {totalPages}
-          </PaginationLink>
-        </PaginationItem>
-      );
-    }
-    
-    return items;
   };
 
   return (
     <div className="space-y-6">
-      <Card className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">Orders Management</h2>
-          <Button onClick={openCreateForm} className="flex items-center gap-2">
-            <Plus size={16} />
-            Create Order
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-warehouse-primary/10 to-warehouse-secondary/10 rounded-lg p-6 border">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="bg-warehouse-primary/20 p-3 rounded-lg">
+              <Truck className="h-8 w-8 text-warehouse-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">{t('inbound_outbound')}</h1>
+              <p className="text-muted-foreground">Manage incoming and outgoing shipments with real-time tracking</p>
+            </div>
+          </div>
+          <Button className="bg-warehouse-primary hover:bg-warehouse-primary/90">
+            <Plus className="h-4 w-4 mr-2" />
+            New Shipment
           </Button>
         </div>
-        
-        {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div>
-            <label className="block text-sm font-medium mb-2">Search</label>
-            <Input 
-              placeholder="Search by ID, Task, SKU, Partner..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Category</label>
-            <Select value={categoryFilter} onValueChange={(value: 'All' | 'Inbound' | 'Outbound') => setCategoryFilter(value)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">All Categories</SelectItem>
-                <SelectItem value="Inbound">Inbound</SelectItem>
-                <SelectItem value="Outbound">Outbound</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Status</label>
-            <Select value={statusFilter} onValueChange={(value: 'All' | 'Pending' | 'Processing' | 'Completed') => setStatusFilter(value)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">All Status</SelectItem>
-                <SelectItem value="Pending">Pending</SelectItem>
-                <SelectItem value="Processing">Processing</SelectItem>
-                <SelectItem value="Completed">Completed</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex items-end">
-            <span className="text-sm text-muted-foreground">
-              Showing {currentOrders.length} of {filteredOrders.length} orders
-            </span>
-          </div>
-        </div>
-        
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>STT</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Task ID</TableHead>
-              <TableHead>SKU</TableHead>
-              <TableHead>Robot Code</TableHead>
-              <TableHead>Pickup Location</TableHead>
-              <TableHead>Dropoff Location</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Store Method</TableHead>
-              <TableHead>Store Code</TableHead>
-              <TableHead>Packing Method</TableHead>
-              <TableHead>Packing Code</TableHead>
-              <TableHead>Partner</TableHead>
-              <TableHead>Registration Time</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {currentOrders.map((order, index) => (
-              <TableRow key={order.id}>
-                <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
-                <TableCell>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    order.category === 'Inbound' 
-                      ? 'bg-blue-100 text-blue-800' 
-                      : 'bg-green-100 text-green-800'
-                  }`}>
-                    {order.category}
-                  </span>
-                </TableCell>
-                <TableCell className="font-medium">{order.taskId}</TableCell>
-                <TableCell>{order.sku}</TableCell>
-                <TableCell>{order.robotCode}</TableCell>
-                <TableCell>{order.pickupLocation}</TableCell>
-                <TableCell>{order.dropoffLocation}</TableCell>
-                <TableCell>
-                  <StatusBadge status={order.status} />
-                </TableCell>
-                <TableCell>{order.storeMethod}</TableCell>
-                <TableCell>{order.storeCode}</TableCell>
-                <TableCell>{order.packingMethod}</TableCell>
-                <TableCell>{order.packingCode}</TableCell>
-                <TableCell>{order.partner}</TableCell>
-                <TableCell>{new Date(order.registrationTime).toLocaleString()}</TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => openEditForm(order)}
-                    >
-                      <Edit size={14} />
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => handleDeleteOrder(order.id)}
-                    >
-                      <Trash2 size={14} />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Card>
-
-      {/* Fixed pagination at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 flex justify-center">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious 
-                onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)} 
-                className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
-            
-            {generatePaginationItems()}
-            
-            <PaginationItem>
-              <PaginationNext 
-                onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)} 
-                className={currentPage >= totalPages ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
       </div>
-      
-      {/* Add padding at the bottom to prevent content being hidden by the fixed pagination */}
-      <div className="h-16"></div>
 
-      {/* Order Form Dialog */}
-      <OrderForm
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        onSubmit={formMode === 'create' ? handleCreateOrder : handleEditOrder}
-        initialData={editingOrder || undefined}
-        mode={formMode}
-      />
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-3 bg-muted/50">
+          <TabsTrigger value="inbound" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <ArrowDown className="h-4 w-4 mr-2" />
+            {t('inbound')}
+          </TabsTrigger>
+          <TabsTrigger value="outbound" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <ArrowUp className="h-4 w-4 mr-2" />
+            {t('outbound')}
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <Package className="h-4 w-4 mr-2" />
+            Analytics
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="inbound" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ArrowDown className="h-5 w-5" />
+                {t('inbound_shipments')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Shipment ID</TableHead>
+                    <TableHead>Supplier</TableHead>
+                    <TableHead>Expected Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Items</TableHead>
+                    <TableHead>Priority</TableHead>
+                    <TableHead>Dock</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {inboundData.map((shipment) => (
+                    <TableRow key={shipment.id}>
+                      <TableCell className="font-medium">{shipment.id}</TableCell>
+                      <TableCell>{shipment.supplier}</TableCell>
+                      <TableCell>{shipment.expectedDate}</TableCell>
+                      <TableCell>{getStatusBadge(shipment.status)}</TableCell>
+                      <TableCell>{shipment.items}</TableCell>
+                      <TableCell>{getPriorityBadge(shipment.priority)}</TableCell>
+                      <TableCell>{shipment.dock}</TableCell>
+                      <TableCell>
+                        <Button variant="outline" size="sm">
+                          View Details
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="outbound" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ArrowUp className="h-5 w-5" />
+                {t('outbound_shipments')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Shipment ID</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Scheduled Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Items</TableHead>
+                    <TableHead>Priority</TableHead>
+                    <TableHead>Dock</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {outboundData.map((shipment) => (
+                    <TableRow key={shipment.id}>
+                      <TableCell className="font-medium">{shipment.id}</TableCell>
+                      <TableCell>{shipment.customer}</TableCell>
+                      <TableCell>{shipment.scheduledDate}</TableCell>
+                      <TableCell>{getStatusBadge(shipment.status)}</TableCell>
+                      <TableCell>{shipment.items}</TableCell>
+                      <TableCell>{getPriorityBadge(shipment.priority)}</TableCell>
+                      <TableCell>{shipment.dock}</TableCell>
+                      <TableCell>
+                        <Button variant="outline" size="sm">
+                          View Details
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Daily Throughput</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">1,247</div>
+                <p className="text-sm text-muted-foreground">Items processed today</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Dock Utilization</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">85%</div>
+                <p className="text-sm text-muted-foreground">Average dock usage</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Processing Time</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">2.4h</div>
+                <p className="text-sm text-muted-foreground">Average processing time</p>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

@@ -1,188 +1,165 @@
 
-import React from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import React, { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Bell, 
-  Trash2, 
-  CheckCircle2, 
-  AlertCircle, 
-  Info, 
-  Clock, 
-  CheckCheck 
-} from "lucide-react";
-
-type NotificationType = {
-  id: string;
-  title: string;
-  message: string;
-  time: string;
-  type: "info" | "warning" | "error" | "success";
-  read: boolean;
-};
+import { Bell, AlertTriangle, CheckCircle, Info, Clock, Trash2, MarkAsUnread } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Notifications = () => {
-  const notifications: NotificationType[] = [
+  const { t } = useLanguage();
+  const [activeTab, setActiveTab] = useState("all");
+
+  const notifications = [
     {
-      id: "n1",
-      title: "Low Battery Warning",
-      message: "Robot-03 battery level is below 15%. Please dock for charging.",
-      time: "10 minutes ago",
+      id: 1,
       type: "warning",
+      title: "Low Stock Alert",
+      message: "SKU-12345 inventory below threshold",
+      time: "2 minutes ago",
       read: false,
+      category: "inventory"
     },
     {
-      id: "n2",
-      title: "Mission Completed",
-      message: "Pickup and Delivery mission #M-7842 has been completed successfully.",
-      time: "30 minutes ago",
+      id: 2,
       type: "success",
+      title: "Mission Completed",
+      message: "Robot R-07 completed pick & place mission",
+      time: "5 minutes ago",
       read: false,
+      category: "missions"
     },
     {
-      id: "n3",
-      title: "System Update Available",
-      message: "A new system update (v2.3.4) is available. Please schedule installation.",
-      time: "2 hours ago",
-      type: "info",
-      read: true,
-    },
-    {
-      id: "n4",
-      title: "Zone Access Error",
-      message: "Robot-01 unable to access Zone B due to obstruction. Manual intervention required.",
-      time: "3 hours ago",
+      id: 3,
       type: "error",
+      title: "Robot Offline",
+      message: "Robot R-03 connection lost",
+      time: "12 minutes ago",
       read: true,
+      category: "system"
     },
     {
-      id: "n5",
-      title: "Inventory Alert",
-      message: "Low stock detected for SKU-45678 in Zone C. Current quantity: 5 units.",
-      time: "5 hours ago",
-      type: "warning",
-      read: true,
-    },
-    {
-      id: "n6",
-      title: "New Team Member",
-      message: "Sarah Johnson has joined the team as an Operator. Welcome!",
-      time: "Yesterday",
+      id: 4,
       type: "info",
+      title: "Shift Change",
+      message: "Evening shift starts in 30 minutes",
+      time: "1 hour ago",
       read: true,
-    },
-    {
-      id: "n7",
-      title: "Maintenance Scheduled",
-      message: "Routine maintenance scheduled for Robot-02 on Friday at 10:00 AM.",
-      time: "Yesterday",
-      type: "info",
-      read: true,
-    },
-    {
-      id: "n8",
-      title: "High Traffic Alert",
-      message: "Unusual traffic detected in Zone D. Consider rerouting missions.",
-      time: "2 days ago",
-      type: "warning",
-      read: true,
-    },
+      category: "general"
+    }
   ];
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
+      case "warning":
+        return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
+      case "success":
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
+      case "error":
+        return <AlertTriangle className="h-5 w-5 text-red-500" />;
       case "info":
         return <Info className="h-5 w-5 text-blue-500" />;
-      case "warning":
-        return <AlertCircle className="h-5 w-5 text-amber-500" />;
-      case "error":
-        return <AlertCircle className="h-5 w-5 text-red-500" />;
-      case "success":
-        return <CheckCircle2 className="h-5 w-5 text-green-500" />;
       default:
-        return <Info className="h-5 w-5 text-blue-500" />;
+        return <Bell className="h-5 w-5" />;
     }
   };
 
+  const filteredNotifications = activeTab === "unread" 
+    ? notifications.filter(n => !n.read)
+    : activeTab === "all" 
+    ? notifications 
+    : notifications.filter(n => n.category === activeTab);
+
   return (
     <div className="space-y-6">
-      {/* <div className="flex justify-between items-center">
-        <div className="flex items-center">
-          <h2 className="text-2xl font-bold">Notifications</h2>
-          <Badge className="ml-2 bg-warehouse-primary">{notifications.filter(n => !n.read).length}</Badge>
-        </div>
-        <div className="space-x-2">
-          <Button variant="outline" className="flex items-center">
-            <CheckCheck className="mr-2 h-4 w-4" />
-            Mark All Read
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-warehouse-primary/10 to-warehouse-secondary/10 rounded-lg p-6 border">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="bg-warehouse-primary/20 p-3 rounded-lg">
+              <Bell className="h-8 w-8 text-warehouse-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">{t('notifications')}</h1>
+              <p className="text-muted-foreground">Stay updated with system alerts and important warehouse events</p>
+            </div>
+          </div>
+          <Button className="bg-warehouse-primary hover:bg-warehouse-primary/90">
+            <MarkAsUnread className="h-4 w-4 mr-2" />
+            Mark All as Read
           </Button>
-          <Button variant="outline" className="flex items-center text-muted-foreground">
-            <Trash2 className="mr-2 h-4 w-4" />
-            Clear All
-          </Button>
         </div>
-      </div> */}
+      </div>
 
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center">
-            <Bell className="mr-2 h-5 w-5" />
-            Recent Notifications
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-1">
-            {notifications.map((notification) => (
-              <div
-                key={notification.id}
-                className={`p-4 border rounded-lg mb-2 ${
-                  notification.read ? "" : "bg-muted/30 border-warehouse-primary/30"
-                }`}
-              >
-                <div className="flex items-start">
-                  <div className="mr-3 mt-0.5">
-                    {getNotificationIcon(notification.type)}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-medium">{notification.title}</h4>
-                      {!notification.read && (
-                        <Badge variant="outline" className="text-xs bg-warehouse-primary text-white">
-                          New
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">{notification.message}</p>
-                    <div className="flex justify-between items-center mt-2">
-                      <div className="flex items-center text-xs text-muted-foreground">
-                        <Clock className="mr-1 h-3 w-3" />
-                        {notification.time}
-                      </div>
-                      <div className="flex space-x-2">
-                        {!notification.read && (
-                          <Button size="sm" variant="ghost" className="h-8 px-2 text-xs">
-                            Mark as read
-                          </Button>
-                        )}
-                        <Button size="sm" variant="ghost" className="h-8 px-2 text-xs text-muted-foreground">
-                          Dismiss
-                        </Button>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-5 bg-muted/50">
+          <TabsTrigger value="all" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <Bell className="h-4 w-4 mr-2" />
+            All
+          </TabsTrigger>
+          <TabsTrigger value="unread" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <Clock className="h-4 w-4 mr-2" />
+            Unread
+          </TabsTrigger>
+          <TabsTrigger value="inventory" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <AlertTriangle className="h-4 w-4 mr-2" />
+            Inventory
+          </TabsTrigger>
+          <TabsTrigger value="missions" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Missions
+          </TabsTrigger>
+          <TabsTrigger value="system" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <Info className="h-4 w-4 mr-2" />
+            System
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value={activeTab} className="mt-6">
+          <div className="space-y-4">
+            {filteredNotifications.map((notification) => (
+              <Card key={notification.id} className={`${!notification.read ? 'border-l-4 border-l-warehouse-primary' : ''}`}>
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start space-x-3">
+                      {getNotificationIcon(notification.type)}
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <h3 className="font-medium">{notification.title}</h3>
+                          {!notification.read && (
+                            <Badge variant="secondary" className="text-xs">New</Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">{notification.message}</p>
+                        <p className="text-xs text-muted-foreground mt-2">{notification.time}</p>
                       </div>
                     </div>
+                    <div className="flex items-center space-x-2">
+                      <Button variant="ghost" size="sm">
+                        <MarkAsUnread className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm" className="text-red-500">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
-          </div>
 
-          <div className="mt-4 text-center">
-            <Button variant="link" className="text-muted-foreground">
-              View All Notifications
-            </Button>
+            {filteredNotifications.length === 0 && (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Bell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-medium mb-2">No notifications</h3>
+                  <p className="text-muted-foreground">You're all caught up! No new notifications to display.</p>
+                </CardContent>
+              </Card>
+            )}
           </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

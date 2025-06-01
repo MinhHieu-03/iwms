@@ -1,288 +1,236 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { 
-  BarChart, Bar, PieChart, Pie, Cell, 
-  LineChart, Line, XAxis, YAxis, CartesianGrid, 
-  Tooltip, Legend, ResponsiveContainer,
-  AreaChart, Area
-} from "recharts";
-import { inventoryAnalytics, orderAnalytics, warehouseSections } from "@/lib/mock-data";
-import { WarehouseHeatmap } from "@/components/WarehouseVisualization/WarehouseHeatmap";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
+import { TrendingUp, Package, Users, Activity, AlertTriangle, CheckCircle, Clock, BarChart3, TrendingDown, Eye } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Dashboard = () => {
-  // Calculate category percentage
-  const totalItems = inventoryAnalytics.categories.reduce((acc, cat) => acc + cat.count, 0);
-  
-  const categoryData = inventoryAnalytics.categories.map(cat => ({
-    name: cat.name,
-    value: cat.count,
-    percentage: Math.round((cat.count / totalItems) * 100)
-  }));
-  
-  // Color palette for charts
-  const COLORS = ['#4361EE', '#3CCFCF', '#FF6B6B', '#FFA62B', '#7209B7', '#06D6A0'];
-  
-  // Most active zones data
-  const mostActiveZones = [
-    { name: "Shelf A", activity: 85 },
-    { name: "Shelf C", activity: 72 },
-    { name: "Shelf B", activity: 58 },
-    { name: "Shelf D", activity: 47 },
+  const { t } = useLanguage();
+
+  const userData = [
+    { name: "John Doe", visits: 1200, orders: 800 },
+    { name: "Jane Smith", visits: 1100, orders: 950 },
+    { name: "Mike Johnson", visits: 1000, orders: 700 },
+    { name: "Emily Brown", visits: 900, orders: 850 },
+    { name: "David Wilson", visits: 1150, orders: 900 },
+    { name: "Sarah Lee", visits: 1300, orders: 1000 },
   ];
-  
+
+  const productData = [
+    { name: "Product A", sold: 1500 },
+    { name: "Product B", sold: 1300 },
+    { name: "Product C", sold: 1100 },
+    { name: "Product D", sold: 900 },
+    { name: "Product E", sold: 1000 },
+  ];
+
+  const performanceData = [
+    { name: "Jan", efficiency: 85, throughput: 1200 },
+    { name: "Feb", efficiency: 88, throughput: 1350 },
+    { name: "Mar", efficiency: 92, throughput: 1450 },
+    { name: "Apr", efficiency: 87, throughput: 1320 },
+    { name: "May", efficiency: 94, throughput: 1580 },
+    { name: "Jun", efficiency: 96, throughput: 1650 },
+  ];
+
+  const inventoryData = [
+    { name: "Electronics", value: 35, color: "#8884d8" },
+    { name: "Clothing", value: 25, color: "#82ca9d" },
+    { name: "Books", value: 20, color: "#ffc658" },
+    { name: "Home & Garden", value: 20, color: "#ff7300" },
+  ];
+
+  const todayStats = [
+    { title: "Orders Processed", value: "147", change: "+12%", icon: Package, trend: "up" },
+    { title: "Active Robots", value: "23/25", change: "92%", icon: Activity, trend: "stable" },
+    { title: "Efficiency Rate", value: "94%", change: "+3%", icon: TrendingUp, trend: "up" },
+    { title: "Pending Tasks", value: "8", change: "-15%", icon: Clock, trend: "down" },
+  ];
+
+  const recentAlerts = [
+    { id: 1, type: "warning", message: "Low stock alert: SKU-12345", time: "2 min ago" },
+    { id: 2, type: "success", message: "Mission completed successfully", time: "5 min ago" },
+    { id: 3, type: "error", message: "Robot R-07 offline", time: "12 min ago" },
+  ];
+
   return (
     <div className="space-y-6">
-      {/* Summary Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="bg-gradient-to-br from-warehouse-primary to-warehouse-primary/80 text-white">
-          <CardContent className="p-6">
-            <div className="flex flex-col">
-              <span className="text-xs font-medium uppercase opacity-80">Total Inventory</span>
-              <span className="text-3xl font-bold mt-2">{inventoryAnalytics.totalItems}</span>
-              <div className="mt-4 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>In Stock:</span>
-                  <span className="font-medium">{inventoryAnalytics.itemsInStock}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Low Stock:</span>
-                  <span className="font-medium">{inventoryAnalytics.lowStockItems}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Out of Stock:</span>
-                  <span className="font-medium">{inventoryAnalytics.outOfStockItems}</span>
-                </div>
-              </div>
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-warehouse-primary/10 to-warehouse-secondary/10 rounded-lg p-6 border">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="bg-warehouse-primary/20 p-3 rounded-lg">
+              <BarChart3 className="h-8 w-8 text-warehouse-primary" />
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex flex-col">
-              <span className="text-xs font-medium text-muted-foreground uppercase">Warehouse Utilization</span>
-              <span className="text-3xl font-bold mt-2">{inventoryAnalytics.capacityUsed}%</span>
-              <div className="mt-4">
-                <div className="w-full bg-muted rounded-full h-2.5">
-                  <div 
-                    className="bg-warehouse-secondary h-2.5 rounded-full" 
-                    style={{ width: `${inventoryAnalytics.capacityUsed}%` }}
-                  ></div>
-                </div>
-                <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-                  <span>0%</span>
-                  <span>50%</span>
-                  <span>100%</span>
-                </div>
-              </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">{t('dashboard')}</h1>
+              <p className="text-muted-foreground">Real-time warehouse operations overview and performance metrics</p>
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex flex-col">
-              <span className="text-xs font-medium text-muted-foreground uppercase">Total Orders</span>
-              <span className="text-3xl font-bold mt-2">{orderAnalytics.totalOrders}</span>
-              <div className="mt-4 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Inbound:</span>
-                  <span className="font-medium text-warehouse-primary">{orderAnalytics.inbound}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Outbound:</span>
-                  <span className="font-medium text-warehouse-accent1">{orderAnalytics.outbound}</span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          <Button className="bg-warehouse-primary hover:bg-warehouse-primary/90">
+            <Eye className="h-4 w-4 mr-2" />
+            View Details
+          </Button>
+        </div>
       </div>
 
-      {/* Detailed Analytics */}
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid grid-cols-2 md:w-[300px]">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="inventory">Inventory</TabsTrigger>
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="grid w-full grid-cols-4 bg-muted/50">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <BarChart3 className="h-4 w-4 mr-2" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="performance" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Performance
+          </TabsTrigger>
+          <TabsTrigger value="inventory" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <Package className="h-4 w-4 mr-2" />
+            Inventory
+          </TabsTrigger>
+          <TabsTrigger value="alerts" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <AlertTriangle className="h-4 w-4 mr-2" />
+            Alerts
+          </TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="overview" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            {/* Monthly Orders Chart */}
+
+        <TabsContent value="overview" className="mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            {todayStats.map((stat, index) => (
+              <Card key={index}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                  <stat.icon className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stat.value}</div>
+                  <p className={`text-xs ${stat.trend === 'up' ? 'text-green-600' : stat.trend === 'down' ? 'text-red-600' : 'text-muted-foreground'}`}>
+                    {stat.change} from yesterday
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg font-medium">Monthly Orders</CardTitle>
+                <CardTitle>Daily Performance</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
-                      data={orderAnalytics.monthlyOrders}
-                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Area 
-                        type="monotone" 
-                        dataKey="inbound" 
-                        stackId="1"
-                        stroke="#4361EE" 
-                        fill="#4361EE" 
-                      />
-                      <Area 
-                        type="monotone" 
-                        dataKey="outbound" 
-                        stackId="1"
-                        stroke="#FFA62B" 
-                        fill="#FFA62B" 
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={performanceData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="efficiency" stroke="#8884d8" strokeWidth={2} />
+                    <Line type="monotone" dataKey="throughput" stroke="#82ca9d" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
 
-            {/* Category Distribution */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg font-medium">Inventory by Category</CardTitle>
+                <CardTitle>Recent Alerts</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-80 flex items-center justify-center">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={categoryData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({name, percentage}) => `${name}: ${percentage}%`}
-                      >
-                        {categoryData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip formatter={(value, name) => [`${value} items`, name]} />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
+                <div className="space-y-4">
+                  {recentAlerts.map((alert) => (
+                    <div key={alert.id} className="flex items-center space-x-2">
+                      {alert.type === 'warning' && <AlertTriangle className="h-4 w-4 text-yellow-500" />}
+                      {alert.type === 'success' && <CheckCircle className="h-4 w-4 text-green-500" />}
+                      {alert.type === 'error' && <AlertTriangle className="h-4 w-4 text-red-500" />}
+                      <div className="flex-1">
+                        <p className="text-sm">{alert.message}</p>
+                        <p className="text-xs text-muted-foreground">{alert.time}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
           </div>
-          
-          {/* Recent Activity */}
+        </TabsContent>
+
+        <TabsContent value="performance" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg font-medium">Recent Activity</CardTitle>
+              <CardTitle>Performance Analytics</CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                <div className="border-l-4 border-warehouse-primary pl-3">
-                  <p className="text-sm text-gray-500">Today, 10:23 AM</p>
-                  <p className="font-medium">Inbound order #IN-291 received</p>
-                </div>
-                <div className="border-l-4 border-warehouse-secondary pl-3">
-                  <p className="text-sm text-gray-500">Today, 09:45 AM</p>
-                  <p className="font-medium">Restock completed in Shelf B</p>
-                </div>
-                <div className="border-l-4 border-warehouse-accent1 pl-3">
-                  <p className="text-sm text-gray-500">Yesterday, 04:12 PM</p>
-                  <p className="font-medium">Outbound order #OUT-187 shipped</p>
-                </div>
-                <div className="border-l-4 border-warehouse-accent2 pl-3">
-                  <p className="text-sm text-gray-500">Yesterday, 02:30 PM</p>
-                  <p className="font-medium">Inventory audit completed</p>
-                </div>
-                <div className="border-l-4 border-warehouse-success pl-3">
-                  <p className="text-sm text-gray-500">Yesterday, 09:15 AM</p>
-                  <p className="font-medium">Restocking of Shelf A completed</p>
-                </div>
-              </div>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={performanceData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="efficiency" fill="#8884d8" />
+                  <Bar dataKey="throughput" fill="#82ca9d" />
+                </BarChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
         </TabsContent>
-        
-        <TabsContent value="inventory" className="space-y-6">
-          <div className="grid gap-6">
-            {/* Warehouse Heatmap */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-medium">Warehouse Occupancy Heatmap</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-80">
-                  <WarehouseHeatmap sections={warehouseSections} />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <div className="grid gap-6 md:grid-cols-2">
-              {/* Most Active Zones */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg font-medium">Most Active Zones</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={mostActiveZones}
-                        layout="vertical"
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis type="number" />
-                        <YAxis dataKey="name" type="category" />
-                        <Tooltip />
-                        <Bar dataKey="activity" fill="#3CCFCF">
-                          {mostActiveZones.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
+
+        <TabsContent value="inventory" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Inventory Distribution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={400}>
+                <PieChart>
+                  <Pie
+                    data={inventoryData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {inventoryData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="alerts" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>System Alerts</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {recentAlerts.map((alert) => (
+                  <div key={alert.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      {alert.type === 'warning' && <AlertTriangle className="h-5 w-5 text-yellow-500" />}
+                      {alert.type === 'success' && <CheckCircle className="h-5 w-5 text-green-500" />}
+                      {alert.type === 'error' && <AlertTriangle className="h-5 w-5 text-red-500" />}
+                      <div>
+                        <p className="font-medium">{alert.message}</p>
+                        <p className="text-sm text-muted-foreground">{alert.time}</p>
+                      </div>
+                    </div>
+                    <Badge variant={alert.type === 'error' ? 'destructive' : 'default'}>
+                      {alert.type}
+                    </Badge>
                   </div>
-                </CardContent>
-              </Card>
-              
-              {/* Item Turnover */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg font-medium">Item Turnover Rate</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-64 flex items-center justify-center">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={[
-                          { name: 'Electronics', rate: 0.82 },
-                          { name: 'Furniture', rate: 0.45 },
-                          { name: 'Appliances', rate: 0.63 }
-                        ]}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis domain={[0, 1]} tickFormatter={(tick) => `${tick * 100}%`} />
-                        <Tooltip formatter={(value) => [`${(Number(value) * 100).toFixed(0)}%`, 'Turnover Rate']} />
-                        <Bar dataKey="rate" fill="#7209B7" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

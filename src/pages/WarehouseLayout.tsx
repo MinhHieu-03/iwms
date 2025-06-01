@@ -1,98 +1,151 @@
 
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
-import Warehouse2DView from "@/components/WarehouseVisualization/Warehouse2DView";
-import Warehouse3DView from "@/components/WarehouseVisualization/Warehouse3DView";
-import { ViewIcon, Layers3Icon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Map, Thermometer, Eye, Grid3X3, Building } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { warehouseAreas, racks, warehouses } from "@/data/warehouseData";
+import Warehouse2DView from "@/components/WarehouseVisualization/Warehouse2DView";
+import WarehouseHeatmap from "@/components/WarehouseVisualization/WarehouseHeatmap";
 
 const WarehouseLayout = () => {
-  const [highlightedRack, setHighlightedRack] = useState<string | null>(null);
-  const [hoveredRack, setHoveredRack] = useState<string | null>(null);
-  const [activeAreaId, setActiveAreaId] = useState<string>(warehouseAreas[0]?.id || "");
   const { t } = useLanguage();
-
-  const handleRackClick = (rackId: string) => {
-    setHighlightedRack(rackId);
-  };
-
-  const handleRackHover = (rackId: string | null) => {
-    setHoveredRack(rackId);
-  };
-
-  // Get active areas with at least one rack
-  const areasWithRacks = warehouseAreas.filter(area => 
-    racks.some(rack => rack.areaId === area.id)
-  );
+  const [activeTab, setActiveTab] = useState("2d");
 
   return (
     <div className="space-y-6">
-      {/* <div className="flex items-center space-x-4">
-        <Layers3Icon className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold">Warehouse Layout</h1>
-      </div> */}
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-warehouse-primary/10 to-warehouse-secondary/10 rounded-lg p-6 border">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="bg-warehouse-primary/20 p-3 rounded-lg">
+              <Building className="h-8 w-8 text-warehouse-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">{t('warehouse_layout')}</h1>
+              <p className="text-muted-foreground">Interactive warehouse floor plan with real-time robot tracking and analytics</p>
+            </div>
+          </div>
+          <Button className="bg-warehouse-primary hover:bg-warehouse-primary/90">
+            <Eye className="h-4 w-4 mr-2" />
+            Full Screen View
+          </Button>
+        </div>
+      </div>
 
-      {/* Area Navigation */}
-      <Tabs value={activeAreaId} onValueChange={setActiveAreaId} className="w-full">
-        <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${areasWithRacks.length}, 1fr)` }}>
-          {areasWithRacks.map((area) => (
-            <TabsTrigger key={area.id} value={area.id} className="text-sm">
-              {area.name}
-            </TabsTrigger>
-          ))}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-3 bg-muted/50">
+          <TabsTrigger value="2d" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <Map className="h-4 w-4 mr-2" />
+            2D Layout
+          </TabsTrigger>
+          <TabsTrigger value="heatmap" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <Thermometer className="h-4 w-4 mr-2" />
+            Activity Heatmap
+          </TabsTrigger>
+          <TabsTrigger value="zones" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
+            <Grid3X3 className="h-4 w-4 mr-2" />
+            Zone Management
+          </TabsTrigger>
         </TabsList>
 
-        <div className="h-[700px] w-full mt-4">
-          <ResizablePanelGroup direction="horizontal">
-            <ResizablePanel defaultSize={50} minSize={30}>
-              <div className="h-full rounded-l-md overflow-hidden border-r">
-                <div className="bg-warehouse-primary text-white p-2 font-medium flex items-center">
-                  <Layers3Icon className="h-4 w-4 mr-2" />
-                  {t('2d_layout')}
-                </div>
-                <div className="h-[660px] overflow-auto">
-                  {areasWithRacks.map((area) => (
-                    <TabsContent key={area.id} value={area.id} className="h-full mt-0 p-4">
-                      <Warehouse2DView
-                        area={area}
-                        racks={racks.filter(rack => rack.areaId === area.id)}
-                        highlightedRack={highlightedRack}
-                        hoveredRack={hoveredRack}
-                        onRackClick={handleRackClick}
-                        onRackHover={handleRackHover}
-                      />
-                    </TabsContent>
-                  ))}
-                </div>
-              </div>
-            </ResizablePanel>
+        <TabsContent value="2d" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Map className="h-5 w-5" />
+                2D Warehouse View
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Warehouse2DView />
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-            <ResizableHandle withHandle />
+        <TabsContent value="heatmap" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Thermometer className="h-5 w-5" />
+                Activity Heatmap
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <WarehouseHeatmap />
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-            <ResizablePanel defaultSize={50} minSize={30}>
-              <div className="h-full rounded-r-md overflow-hidden border-l">
-                <div className="bg-warehouse-primary text-white p-2 font-medium flex items-center">
-                  <ViewIcon className="h-4 w-4 mr-2" />
-                  {t('3d_visualization')}
+        <TabsContent value="zones" className="mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Zone A - Receiving</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Capacity:</span>
+                    <span>85%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Active Robots:</span>
+                    <span>3</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Status:</span>
+                    <span className="text-green-600">Active</span>
+                  </div>
                 </div>
-                <div className="h-[660px]">
-                  <Warehouse3DView
-                    areas={areasWithRacks}
-                    racks={racks}
-                    highlightedRack={highlightedRack}
-                    hoveredRack={hoveredRack}
-                    activeAreaId={activeAreaId}
-                    onRackClick={handleRackClick}
-                    onRackHover={handleRackHover}
-                  />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Zone B - Storage</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Capacity:</span>
+                    <span>92%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Active Robots:</span>
+                    <span>5</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Status:</span>
+                    <span className="text-green-600">Active</span>
+                  </div>
                 </div>
-              </div>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Zone C - Shipping</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Capacity:</span>
+                    <span>67%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Active Robots:</span>
+                    <span>2</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Status:</span>
+                    <span className="text-green-600">Active</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
       </Tabs>
     </div>
   );
