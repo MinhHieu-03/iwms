@@ -13,23 +13,59 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlusCircle } from "lucide-react";
 import MissionsHistory from "@/components/missions/MissionsHistory";
 import MissionsTemplates from "@/components/missions/MissionsTemplates";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getAllTemplates } from "@/data/robotMissionsData";
 
 const Missions = () => {
   const navigate = useNavigate();
-  const [missionName, setMissionName] = useState("");
-  const [missionType, setMissionType] = useState("");
+  const { toast } = useToast();
+  const { t } = useLanguage();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [missionData, setMissionData] = useState({
+    name: "",
+    robotCode: "",
+    templateId: "",
+    priority: "medium",
+    pickupLocation: "",
+    dropoffLocation: "",
+    quantity: "1"
+  });
+
+  const templates = getAllTemplates();
+  const robots = ["R001", "R002", "R003", "R004", "R005", "R006"];
 
   const handleCreateMission = () => {
-    // Here you'd handle mission creation logic
-    console.log("Creating new mission:", { missionName, missionType });
+    if (!missionData.name || !missionData.robotCode || !missionData.templateId) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    console.log("Creating new mission:", missionData);
+    toast({
+      title: t('mission_created') || "Mission Created",
+      description: `Mission "${missionData.name}" has been created and assigned to ${missionData.robotCode}`,
+    });
+    
     setIsDialogOpen(false);
-    setMissionName("");
-    setMissionType("");
+    setMissionData({
+      name: "",
+      robotCode: "",
+      templateId: "",
+      priority: "medium",
+      pickupLocation: "",
+      dropoffLocation: "",
+      quantity: "1"
+    });
   };
 
   const handleNewTemplate = () => {
@@ -37,8 +73,13 @@ const Missions = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-end items-center">
+    <div className="space-y-6 p-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">Robot Missions</h1>
+          <p className="text-muted-foreground">Manage robot missions and templates for warehouse automation</p>
+        </div>
+        
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
@@ -46,34 +87,115 @@ const Missions = () => {
               New Mission
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-              <DialogTitle>Create New Mission</DialogTitle>
+              <DialogTitle>Create New Robot Mission</DialogTitle>
               <DialogDescription>
-                Define the parameters for your new robot mission.
+                Configure and deploy a new mission for warehouse automation.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="mission-name" className="text-right">
-                  Name
+                  Mission Name *
                 </Label>
                 <Input
                   id="mission-name"
-                  value={missionName}
-                  onChange={(e) => setMissionName(e.target.value)}
+                  value={missionData.name}
+                  onChange={(e) => setMissionData({...missionData, name: e.target.value})}
                   className="col-span-3"
+                  placeholder="e.g., Inbound Storage Task"
                 />
               </div>
+              
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="mission-type" className="text-right">
-                  Type
+                <Label htmlFor="robot-select" className="text-right">
+                  Robot *
+                </Label>
+                <Select value={missionData.robotCode} onValueChange={(value) => setMissionData({...missionData, robotCode: value})}>
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select a robot" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {robots.map((robot) => (
+                      <SelectItem key={robot} value={robot}>{robot}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="template-select" className="text-right">
+                  Template *
+                </Label>
+                <Select value={missionData.templateId} onValueChange={(value) => setMissionData({...missionData, templateId: value})}>
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select a mission template" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {templates.map((template) => (
+                      <SelectItem key={template.id} value={template.id}>
+                        {template.name} ({template.category})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="priority-select" className="text-right">
+                  Priority
+                </Label>
+                <Select value={missionData.priority} onValueChange={(value) => setMissionData({...missionData, priority: value})}>
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="urgent">Urgent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="pickup-location" className="text-right">
+                  Pickup Location
                 </Label>
                 <Input
-                  id="mission-type"
-                  value={missionType}
-                  onChange={(e) => setMissionType(e.target.value)}
+                  id="pickup-location"
+                  value={missionData.pickupLocation}
+                  onChange={(e) => setMissionData({...missionData, pickupLocation: e.target.value})}
                   className="col-span-3"
+                  placeholder="e.g., Dock-A or A01-01"
+                />
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="dropoff-location" className="text-right">
+                  Dropoff Location
+                </Label>
+                <Input
+                  id="dropoff-location"
+                  value={missionData.dropoffLocation}
+                  onChange={(e) => setMissionData({...missionData, dropoffLocation: e.target.value})}
+                  className="col-span-3"
+                  placeholder="e.g., B02-03 or Dock-B"
+                />
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="quantity" className="text-right">
+                  Quantity
+                </Label>
+                <Input
+                  id="quantity"
+                  type="number"
+                  value={missionData.quantity}
+                  onChange={(e) => setMissionData({...missionData, quantity: e.target.value})}
+                  className="col-span-3"
+                  min="1"
                 />
               </div>
             </div>
@@ -81,64 +203,38 @@ const Missions = () => {
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleCreateMission}>Create</Button>
+              <Button onClick={handleCreateMission}>Create Mission</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
 
-      <Tabs defaultValue="history">
+      <Tabs defaultValue="history" className="w-full">
         <div className="flex justify-between items-center mb-4">
           <TabsList>
-            <TabsTrigger value="history">History</TabsTrigger>
-            <TabsTrigger value="templates">Templates</TabsTrigger>
+            <TabsTrigger value="history">Mission History</TabsTrigger>
+            <TabsTrigger value="templates">Mission Templates</TabsTrigger>
           </TabsList>
-          {/* New Template button appears only in templates tab */}
-          <div id="templateActions">
+          <div className="flex items-center space-x-2">
             <Button 
               variant="outline" 
               onClick={handleNewTemplate}
-              className="hidden data-[state=visible]:inline-flex"
-              data-tab-target="templates"
+              className="flex items-center gap-2"
             >
-              <PlusCircle className="mr-2 h-4 w-4" />
+              <PlusCircle className="h-4 w-4" />
               New Template
             </Button>
           </div>
         </div>
-        <TabsContent value="history">
+        
+        <TabsContent value="history" className="space-y-4">
           <MissionsHistory />
         </TabsContent>
-        <TabsContent value="templates">
+        
+        <TabsContent value="templates" className="space-y-4">
           <MissionsTemplates />
         </TabsContent>
       </Tabs>
-
-      {/* Add script to toggle New Template button visibility */}
-      <script dangerouslySetInnerHTML={{
-        __html: `
-          document.addEventListener('DOMContentLoaded', function() {
-            const tabsList = document.querySelector('[role="tablist"]');
-            const templateButton = document.querySelector('[data-tab-target="templates"]');
-            
-            if (tabsList && templateButton) {
-              // Initial state
-              if (tabsList.querySelector('[aria-selected="true"]').getAttribute('value') === 'templates') {
-                templateButton.dataset.state = 'visible';
-              }
-              
-              // Listen for tab changes
-              tabsList.addEventListener('click', function(e) {
-                const triggerEl = e.target.closest('[role="tab"]');
-                if (triggerEl) {
-                  const value = triggerEl.getAttribute('value');
-                  templateButton.dataset.state = value === 'templates' ? 'visible' : '';
-                }
-              });
-            }
-          });
-        `
-      }} />
     </div>
   );
 };
