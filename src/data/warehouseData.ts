@@ -38,6 +38,24 @@ export interface Rack {
     depth: number;
   };
   createdAt: string;
+  // Link to stored items from inbound/outbound operations
+  storedItems?: StoredItem[];
+}
+
+export interface StoredItem {
+  id: string;
+  sku: string;
+  productName: string;
+  quantity: number;
+  storeMethod: 'Bin' | 'Carton';
+  storeCode: string;
+  packingMethod: 'Carton' | 'Bag' | 'Kit';
+  packingCode: string;
+  partner: string;
+  inboundOrderId?: string;
+  outboundOrderId?: string;
+  status: 'stored' | 'picked' | 'reserved';
+  storedAt: string;
 }
 
 export interface PricingRule {
@@ -117,7 +135,7 @@ export const warehouses: Warehouse[] = [
     location: "Zone A",
     status: "active",
     totalAreas: 8,
-    totalRacks: 120
+    totalRacks: 200
   },
   {
     id: "wh-002", 
@@ -126,7 +144,7 @@ export const warehouses: Warehouse[] = [
     location: "Zone B",
     status: "active",
     totalAreas: 5,
-    totalRacks: 80
+    totalRacks: 150
   },
   {
     id: "wh-003",
@@ -135,7 +153,7 @@ export const warehouses: Warehouse[] = [
     location: "Zone C", 
     status: "maintenance",
     totalAreas: 3,
-    totalRacks: 30
+    totalRacks: 80
   }
 ];
 
@@ -148,8 +166,8 @@ export const warehouseAreas: WarehouseArea[] = [
     description: "Primary receiving dock",
     type: "inbound",
     status: "active",
-    capacity: 1000,
-    currentUtilization: 650,
+    capacity: 2000,
+    currentUtilization: 1650,
     createdAt: "2024-01-15T08:00:00Z"
   },
   {
@@ -159,8 +177,8 @@ export const warehouseAreas: WarehouseArea[] = [
     description: "High-density storage area",
     type: "storage",
     status: "active",
-    capacity: 5000,
-    currentUtilization: 3200,
+    capacity: 8000,
+    currentUtilization: 6800,
     createdAt: "2024-01-15T08:00:00Z"
   },
   {
@@ -170,8 +188,8 @@ export const warehouseAreas: WarehouseArea[] = [
     description: "Shipping and dispatch zone",
     type: "outbound",
     status: "active",
-    capacity: 800,
-    currentUtilization: 420,
+    capacity: 1500,
+    currentUtilization: 1200,
     createdAt: "2024-01-15T08:00:00Z"
   },
   {
@@ -181,8 +199,8 @@ export const warehouseAreas: WarehouseArea[] = [
     description: "Order picking and packing",
     type: "processing", 
     status: "active",
-    capacity: 1200,
-    currentUtilization: 890,
+    capacity: 2500,
+    currentUtilization: 2100,
     createdAt: "2024-01-15T08:00:00Z"
   },
   {
@@ -192,39 +210,105 @@ export const warehouseAreas: WarehouseArea[] = [
     description: "Overflow storage",
     type: "storage",
     status: "active", 
-    capacity: 3000,
-    currentUtilization: 1800,
+    capacity: 5000,
+    currentUtilization: 3800,
     createdAt: "2024-01-20T08:00:00Z"
   }
 ];
 
-// Generate racks data (100 entries)
-export const racks: Rack[] = Array.from({ length: 100 }, (_, i) => {
+// Generate stored items based on inbound/outbound data structure
+export const storedItems: StoredItem[] = Array.from({ length: 300 }, (_, i) => {
+  const partners = [
+    'Tech Supplies Inc.', 'Office Solutions', 'Global Parts Ltd.',
+    'Industrial Equipment Co.', 'Tech Warehouse', 'Smart Solutions',
+    'Factory Direct', 'Distribution Central', 'Supply Chain Inc.',
+    'Bulk Goods Ltd.', 'City Electronics', 'Retail Group'
+  ];
+  
+  const categories = ['Electronics', 'Clothing', 'Home & Garden', 'Sports', 'Books', 'Tools'];
+  
+  return {
+    id: `stored-${(i + 1).toString().padStart(3, '0')}`,
+    sku: `SKU${(12345678 + i).toString().slice(-8)}`,
+    productName: `${categories[i % categories.length]} Product ${String.fromCharCode(65 + (i % 26))}${i + 1}`,
+    quantity: Math.floor(Math.random() * 50) + 1,
+    storeMethod: (['Bin', 'Carton'] as const)[i % 2],
+    storeCode: `${String.fromCharCode(65 + (i % 3))}${String(i + 1).padStart(3, '0')}`,
+    packingMethod: (['Carton', 'Bag', 'Kit'] as const)[i % 3],
+    packingCode: `PK${String(i + 1).padStart(4, '0')}`,
+    partner: partners[i % partners.length],
+    inboundOrderId: i < 200 ? `IN-${String(Math.floor(i / 4) + 1).padStart(3, '0')}` : undefined,
+    outboundOrderId: i >= 100 ? `OUT-${String(Math.floor((i - 100) / 3) + 1).padStart(3, '0')}` : undefined,
+    status: (['stored', 'picked', 'reserved'] as const)[i % 3],
+    storedAt: new Date(2024, 0, 15 + (i % 30), 8 + (i % 12)).toISOString()
+  };
+});
+
+// Generate racks with 7 rows and 6-8 columns, denser occupation
+export const racks: Rack[] = (() => {
+  const racks: Rack[] = [];
   const areaIds = ["area-001", "area-002", "area-003", "area-004", "area-005"];
   const statuses = ["empty", "occupied", "maintenance", "reserved"] as const;
   const warehouses = ["Main", "Secondary", "QC Center"];
-  const areas = ["A", "B", "C", "D"];
+  const areas = ["A", "B", "C", "D", "E"];
+  const columnOptions = [6, 8];
   
-  return {
-    id: `rack-${(i + 1).toString().padStart(3, "0")}`,
-    areaId: areaIds[i % areaIds.length],
-    locationCode: `${areas[i % areas.length]}${(i % 20 + 1).toString().padStart(2, "0")}`,
-    row: Math.floor(i / 10) + 1,
-    column: (i % 10) + 1,
-    level: Math.floor(i / 25) + 1,
-    status: statuses[i % statuses.length],
-    warehouse: warehouses[i % warehouses.length],
-    area: areas[i % areas.length],
-    capacity: 100 + (i % 400),
-    currentLoad: Math.floor(Math.random() * 500),
-    dimensions: {
-      width: 1.2 + (i % 3) * 0.3,
-      height: 2.0 + (i % 4) * 0.5,
-      depth: 0.8 + (i % 2) * 0.4
-    },
-    createdAt: new Date(2024, 0, 15 + (i % 30)).toISOString()
-  };
-});
+  let rackIndex = 0;
+  
+  areaIds.forEach((areaId, areaIdx) => {
+    const rackGroupsPerArea = areaIdx < 3 ? 4 : 3; // More rack groups for main areas
+    
+    for (let groupIdx = 0; groupIdx < rackGroupsPerArea; groupIdx++) {
+      const columns = columnOptions[groupIdx % columnOptions.length];
+      const rackLetter = String.fromCharCode(65 + (groupIdx % 5)); // A, B, C, D, E
+      
+      for (let row = 1; row <= 7; row++) {
+        for (let col = 1; col <= columns; col++) {
+          const occupationRate = areaIdx < 2 ? 0.85 : 0.65; // Higher occupation for main areas
+          const isOccupied = Math.random() < occupationRate;
+          const status = isOccupied ? 'occupied' : 
+                        Math.random() < 0.05 ? 'maintenance' :
+                        Math.random() < 0.1 ? 'reserved' : 'empty';
+          
+          const capacity = 100 + (rackIndex % 200);
+          const currentLoad = status === 'occupied' ? 
+            Math.floor(capacity * (0.6 + Math.random() * 0.4)) : 
+            status === 'reserved' ? Math.floor(capacity * 0.2) : 0;
+          
+          // Assign stored items to occupied racks
+          const rackStoredItems = status === 'occupied' ? 
+            storedItems.filter(item => item.storeCode === `${rackLetter}${String(rackIndex + 1).padStart(3, '0')}`).slice(0, 3) :
+            [];
+          
+          racks.push({
+            id: `rack-${(rackIndex + 1).toString().padStart(3, '0')}`,
+            areaId: areaId,
+            locationCode: `${rackLetter}${String(row).padStart(2, '0')}-${String(col).padStart(2, '0')}`,
+            row: row,
+            column: col,
+            level: Math.floor(rackIndex / 25) + 1,
+            status: status,
+            warehouse: warehouses[areaIdx % warehouses.length],
+            area: areas[areaIdx % areas.length],
+            capacity: capacity,
+            currentLoad: currentLoad,
+            dimensions: {
+              width: 1.2 + (rackIndex % 3) * 0.3,
+              height: 2.0 + (rackIndex % 4) * 0.5,
+              depth: 0.8 + (rackIndex % 2) * 0.4
+            },
+            createdAt: new Date(2024, 0, 15 + (rackIndex % 30)).toISOString(),
+            storedItems: rackStoredItems
+          });
+          
+          rackIndex++;
+        }
+      }
+    }
+  });
+  
+  return racks;
+})();
 
 // Generate pricing rules
 export const pricingRules: PricingRule[] = [

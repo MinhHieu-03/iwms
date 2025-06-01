@@ -15,27 +15,12 @@ interface Warehouse2DViewProps {
   onRackHover: (rackId: string | null) => void;
 }
 
-// Mock item data for hover display
-const getRandomItems = (rack: Rack) => {
-  if (rack.status === 'empty') return [];
-  
-  const itemTypes = ["Electronics", "Furniture", "Clothing", "Tools", "Food", "Books"];
-  const count = Math.floor(Math.random() * 3) + 1;
-  
-  return Array.from({ length: count }).map((_, i) => ({
-    id: `item-${rack.id}-${i}`,
-    name: `${itemTypes[Math.floor(Math.random() * itemTypes.length)]} Item ${i+1}`,
-    quantity: Math.floor(Math.random() * 10) + 1,
-    status: Math.random() > 0.2 ? "In Stock" : "Low Stock"
-  }));
-};
-
 // Group racks by their rack identifier (first part of locationCode)
 const groupRacksByIdentifier = (racks: Rack[]) => {
   const groups = new Map<string, Rack[]>();
   
   racks.forEach(rack => {
-    // Extract rack identifier from locationCode (e.g., "A01" -> "A")
+    // Extract rack identifier from locationCode (e.g., "A01-01" -> "A")
     const identifier = rack.locationCode.charAt(0);
     if (!groups.has(identifier)) {
       groups.set(identifier, []);
@@ -111,7 +96,7 @@ const RackGrid: React.FC<{
 
                     const isHighlighted = highlightedRack === rack.id;
                     const isHovered = hoveredRack === rack.id;
-                    const storedItems = getRandomItems(rack);
+                    const storedItems = rack.storedItems || [];
                     
                     return (
                       <HoverCard key={rack.id}>
@@ -131,7 +116,7 @@ const RackGrid: React.FC<{
                             <span className="z-10">{col}</span>
                           </button>
                         </HoverCardTrigger>
-                        <HoverCardContent className="w-64 p-0">
+                        <HoverCardContent className="w-80 p-0">
                           <div className="bg-warehouse-primary text-white px-3 py-2 text-sm font-medium rounded-t-md">
                             {rack.locationCode} - Level {rack.level}
                           </div>
@@ -156,7 +141,7 @@ const RackGrid: React.FC<{
                                 <span>{Math.round((rack.currentLoad / rack.capacity) * 100)}%</span>
                               </div>
                               <div className="text-xs text-gray-500">
-                                Dimensions: {rack.dimensions.width}×{rack.dimensions.height}×{rack.dimensions.depth}m
+                                Dimensions: {rack.dimensions.width.toFixed(1)}×{rack.dimensions.height.toFixed(1)}×{rack.dimensions.depth.toFixed(1)}m
                               </div>
                             </div>
                             
@@ -167,15 +152,23 @@ const RackGrid: React.FC<{
                                 <div className="space-y-1">
                                   {storedItems.slice(0, 3).map(item => (
                                     <div key={item.id} className="flex justify-between text-xs border-b pb-1">
-                                      <span>{item.name}</span>
-                                      <div className="flex gap-2">
+                                      <div className="flex flex-col">
+                                        <span className="font-medium">{item.sku}</span>
+                                        <span className="text-gray-500 dark:text-gray-400">{item.productName}</span>
+                                      </div>
+                                      <div className="flex flex-col items-end">
                                         <span className="text-gray-500 dark:text-gray-400">Qty: {item.quantity}</span>
-                                        <span className={item.status === "In Stock" ? "text-green-500" : "text-amber-500"}>
+                                        <span className={item.status === "stored" ? "text-green-500" : item.status === "picked" ? "text-orange-500" : "text-blue-500"}>
                                           {item.status}
                                         </span>
                                       </div>
                                     </div>
                                   ))}
+                                  {storedItems.length > 3 && (
+                                    <div className="text-xs text-gray-500 text-center pt-1">
+                                      +{storedItems.length - 3} more items
+                                    </div>
+                                  )}
                                 </div>
                               </>
                             )}
