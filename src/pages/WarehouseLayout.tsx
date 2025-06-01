@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -13,16 +14,18 @@ const WarehouseLayout = () => {
   const [highlightedRack, setHighlightedRack] = useState<string | null>(null);
   const [hoveredRack, setHoveredRack] = useState<string | null>(null);
 
-  // Mock data for warehouse area and racks
+  // Mock data for warehouse area and racks with all required properties
   const mockArea = {
     id: "area-1",
+    warehouseId: "warehouse-1",
     name: "Main Storage Area",
     type: "storage" as const,
     status: "active" as const,
     description: "Primary storage area for incoming and outgoing inventory",
     capacity: 1000,
     currentUtilization: 750,
-    dimensions: { length: 100, width: 50, height: 8 }
+    dimensions: { length: 100, width: 50, height: 8 },
+    createdAt: new Date().toISOString()
   };
 
   const mockRacks = [
@@ -34,9 +37,12 @@ const WarehouseLayout = () => {
       column: 1,
       level: 1,
       status: "occupied" as const,
+      warehouse: "Main Warehouse",
+      area: "Storage Area A",
       capacity: 100,
       currentLoad: 75,
       dimensions: { width: 2.5, height: 3.0, depth: 1.2 },
+      createdAt: new Date().toISOString(),
       storedItems: [
         {
           id: "item-1",

@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Bell, AlertTriangle, CheckCircle, Info, Clock, Trash2, Mail } from "lucide-react";
+import { Bell, AlertTriangle, CheckCircle, Info, Clock, Trash2, Mail, Eye } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Notifications = () => {
@@ -137,7 +137,7 @@ const Notifications = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Button variant="ghost" size="sm">
-                        <MarkAsUnread className="h-4 w-4" />
+                        <Eye className="h-4 w-4" />
                       </Button>
                       <Button variant="ghost" size="sm" className="text-red-500">
                         <Trash2 className="h-4 w-4" />
