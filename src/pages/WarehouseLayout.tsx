@@ -1,5 +1,4 @@
 
-
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -27,19 +26,17 @@ const WarehouseLayout = () => {
       description: "Primary storage area for incoming and outgoing inventory",
       capacity: 1000,
       currentUtilization: 750,
-      dimensions: { length: 100, width: 50, height: 8 },
       createdAt: new Date().toISOString()
     },
     {
       id: "area-2",
       warehouseId: "warehouse-1",
       name: "Receiving Area",
-      type: "receiving" as const,
+      type: "inbound" as const,
       status: "active" as const,
       description: "Area for receiving incoming shipments",
       capacity: 500,
       currentUtilization: 200,
-      dimensions: { length: 50, width: 30, height: 6 },
       createdAt: new Date().toISOString()
     }
   ];
@@ -112,7 +109,7 @@ const WarehouseLayout = () => {
           sku: "SKU-002",
           productName: "Component B",
           quantity: 15,
-          storeMethod: "Pallet" as const,
+          storeMethod: "Carton" as const,
           storeCode: "B001",
           packingMethod: "Box" as const,
           packingCode: "PK0002",
@@ -319,4 +316,3 @@ const WarehouseLayout = () => {
 };
 
 export default WarehouseLayout;
-
