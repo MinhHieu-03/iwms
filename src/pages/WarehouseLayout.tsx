@@ -30,10 +30,10 @@ const WarehouseLayout = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-4">
+      {/* <div className="flex items-center space-x-4">
         <Layers3Icon className="h-8 w-8 text-primary" />
         <h1 className="text-3xl font-bold">Warehouse Layout</h1>
-      </div>
+      </div> */}
 
       {/* Area Navigation */}
       <Tabs value={activeAreaId} onValueChange={setActiveAreaId} className="w-full">
