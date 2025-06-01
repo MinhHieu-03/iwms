@@ -8,127 +8,41 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import Warehouse2DView from "@/components/WarehouseVisualization/Warehouse2DView";
 import Warehouse3DView from "@/components/WarehouseVisualization/Warehouse3DView";
 import { WarehouseHeatmap } from "@/components/WarehouseVisualization/WarehouseHeatmap";
+import { warehouseAreas, racks } from "@/data/warehouseData";
 
 const WarehouseLayout = () => {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("2d");
+  const [selectedAreaId, setSelectedAreaId] = useState(warehouseAreas[0]?.id || "area-001");
   const [highlightedRack, setHighlightedRack] = useState<string | null>(null);
   const [hoveredRack, setHoveredRack] = useState<string | null>(null);
 
-  // Mock data for warehouse areas and racks with all required properties
-  const mockAreas = [
-    {
-      id: "area-1",
-      warehouseId: "warehouse-1",
-      name: "Main Storage Area",
-      type: "storage" as const,
-      status: "active" as const,
-      description: "Primary storage area for incoming and outgoing inventory",
-      capacity: 1000,
-      currentUtilization: 750,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: "area-2",
-      warehouseId: "warehouse-1",
-      name: "Receiving Area",
-      type: "inbound" as const,
-      status: "active" as const,
-      description: "Area for receiving incoming shipments",
-      capacity: 500,
-      currentUtilization: 200,
-      createdAt: new Date().toISOString()
-    }
-  ];
+  // Get racks for the selected area
+  const selectedArea = warehouseAreas.find(area => area.id === selectedAreaId) || warehouseAreas[0];
+  const areaRacks = racks.filter(rack => rack.areaId === selectedAreaId);
 
-  const mockRacks = [
-    {
-      id: "rack-1",
-      locationCode: "A01-01",
-      areaId: "area-1",
-      row: 1,
-      column: 1,
-      level: 1,
-      status: "occupied" as const,
-      warehouse: "Main Warehouse",
-      area: "Storage Area A",
-      capacity: 100,
-      currentLoad: 75,
-      dimensions: { width: 2.5, height: 3.0, depth: 1.2 },
-      createdAt: new Date().toISOString(),
-      storedItems: [
-        {
-          id: "item-1",
-          sku: "SKU-001",
-          productName: "Widget A",
-          quantity: 25,
-          storeMethod: "Bin" as const,
-          storeCode: "A001",
-          packingMethod: "Carton" as const,
-          packingCode: "PK0001",
-          partner: "Tech Supplies Inc.",
-          inboundOrderId: "IN-001",
-          status: "stored" as const,
-          storedAt: new Date().toISOString()
-        }
-      ]
-    },
-    {
-      id: "rack-2",
-      locationCode: "A01-02",
-      areaId: "area-1",
-      row: 1,
-      column: 2,
-      level: 1,
-      status: "empty" as const,
-      warehouse: "Main Warehouse",
-      area: "Storage Area A",
-      capacity: 100,
-      currentLoad: 0,
-      dimensions: { width: 2.5, height: 3.0, depth: 1.2 },
-      createdAt: new Date().toISOString(),
-      storedItems: []
-    },
-    {
-      id: "rack-3",
-      locationCode: "B01-01",
-      areaId: "area-2",
-      row: 1,
-      column: 1,
-      level: 1,
-      status: "occupied" as const,
-      warehouse: "Main Warehouse",
-      area: "Receiving Area",
-      capacity: 80,
-      currentLoad: 45,
-      dimensions: { width: 2.0, height: 2.5, depth: 1.0 },
-      createdAt: new Date().toISOString(),
-      storedItems: [
-        {
-          id: "item-2",
-          sku: "SKU-002",
-          productName: "Component B",
-          quantity: 15,
-          storeMethod: "Carton" as const,
-          storeCode: "B001",
-          packingMethod: "Box" as const,
-          packingCode: "PK0002",
-          partner: "Industrial Supplies Co.",
-          inboundOrderId: "IN-002",
-          status: "stored" as const,
-          storedAt: new Date().toISOString()
-        }
-      ]
-    }
-  ];
-
+  // Mock sections for heatmap
   const mockSections = [
     {
       id: "section-1",
       name: "Section A",
-      rows: 5,
+      rows: 7,
       columns: 8,
-      occupancy: 75
+      occupancy: 85
+    },
+    {
+      id: "section-2", 
+      name: "Section B",
+      rows: 7,
+      columns: 6,
+      occupancy: 72
+    },
+    {
+      id: "section-3",
+      name: "Section C", 
+      rows: 7,
+      columns: 8,
+      occupancy: 91
     }
   ];
 
@@ -141,6 +55,25 @@ const WarehouseLayout = () => {
     setHoveredRack(rackId);
   };
 
+  const getAreaStats = () => {
+    const totalRacks = areaRacks.length;
+    const occupiedRacks = areaRacks.filter(rack => rack.status === 'occupied').length;
+    const emptyRacks = areaRacks.filter(rack => rack.status === 'empty').length;
+    const maintenanceRacks = areaRacks.filter(rack => rack.status === 'maintenance').length;
+    const reservedRacks = areaRacks.filter(rack => rack.status === 'reserved').length;
+    
+    return {
+      total: totalRacks,
+      occupied: occupiedRacks,
+      empty: emptyRacks,
+      maintenance: maintenanceRacks,
+      reserved: reservedRacks,
+      occupancyRate: totalRacks > 0 ? Math.round((occupiedRacks / totalRacks) * 100) : 0
+    };
+  };
+
+  const stats = getAreaStats();
+
   return (
     <div className="space-y-6">
       {/* Header Section */}
@@ -152,7 +85,7 @@ const WarehouseLayout = () => {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-foreground">{t('warehouse_layout')}</h1>
-              <p className="text-muted-foreground">Interactive warehouse floor plan with real-time robot tracking and analytics</p>
+              <p className="text-muted-foreground">Interactive warehouse floor plan with real-time tracking and analytics</p>
             </div>
           </div>
           <Button className="bg-warehouse-primary hover:bg-warehouse-primary/90">
@@ -161,6 +94,56 @@ const WarehouseLayout = () => {
           </Button>
         </div>
       </div>
+
+      {/* Area Selection Tabs */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Warehouse Areas</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={selectedAreaId} onValueChange={setSelectedAreaId} className="w-full">
+            <TabsList className="grid w-full grid-cols-5 bg-muted/50">
+              {warehouseAreas.map((area) => (
+                <TabsTrigger 
+                  key={area.id} 
+                  value={area.id}
+                  className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white text-xs"
+                >
+                  {area.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+          
+          {/* Area Statistics */}
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-6 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
+              <div className="text-xs text-muted-foreground">Total Racks</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">{stats.occupied}</div>
+              <div className="text-xs text-muted-foreground">Occupied</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-600">{stats.empty}</div>
+              <div className="text-xs text-muted-foreground">Empty</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-red-600">{stats.maintenance}</div>
+              <div className="text-xs text-muted-foreground">Maintenance</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-yellow-600">{stats.reserved}</div>
+              <div className="text-xs text-muted-foreground">Reserved</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-warehouse-primary">{stats.occupancyRate}%</div>
+              <div className="text-xs text-muted-foreground">Occupancy</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-4 bg-muted/50">
@@ -187,13 +170,13 @@ const WarehouseLayout = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Map className="h-5 w-5" />
-                2D Warehouse View
+                2D Warehouse View - {selectedArea.name}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <Warehouse2DView 
-                area={mockAreas[0]}
-                racks={mockRacks}
+                area={selectedArea}
+                racks={areaRacks}
                 highlightedRack={highlightedRack}
                 hoveredRack={hoveredRack}
                 onRackClick={handleRackClick}
@@ -208,17 +191,17 @@ const WarehouseLayout = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Box className="h-5 w-5" />
-                3D Warehouse View
+                3D Warehouse View - All Areas
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[600px] w-full">
                 <Warehouse3DView 
-                  areas={mockAreas}
-                  racks={mockRacks}
+                  areas={warehouseAreas}
+                  racks={racks}
                   highlightedRack={highlightedRack}
                   hoveredRack={hoveredRack}
-                  activeAreaId="area-1"
+                  activeAreaId={selectedAreaId}
                   onRackClick={handleRackClick}
                   onRackHover={handleRackHover}
                 />
@@ -243,71 +226,45 @@ const WarehouseLayout = () => {
 
         <TabsContent value="zones" className="mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Zone A - Receiving</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Capacity:</span>
-                    <span>85%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Active Robots:</span>
-                    <span>3</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Status:</span>
-                    <span className="text-green-600">Active</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Zone B - Storage</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Capacity:</span>
-                    <span>92%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Active Robots:</span>
-                    <span>5</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Status:</span>
-                    <span className="text-green-600">Active</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Zone C - Shipping</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Capacity:</span>
-                    <span>67%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Active Robots:</span>
-                    <span>2</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Status:</span>
-                    <span className="text-green-600">Active</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            {warehouseAreas.map((area) => {
+              const areaRacksCount = racks.filter(r => r.areaId === area.id);
+              const occupiedCount = areaRacksCount.filter(r => r.status === 'occupied').length;
+              const utilizationPercent = Math.round((area.currentUtilization / area.capacity) * 100);
+              
+              return (
+                <Card key={area.id}>
+                  <CardHeader>
+                    <CardTitle>{area.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span>Type:</span>
+                        <span className="capitalize">{area.type}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Capacity:</span>
+                        <span>{utilizationPercent}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Total Racks:</span>
+                        <span>{areaRacksCount.length}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Occupied Racks:</span>
+                        <span>{occupiedCount}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Status:</span>
+                        <span className={area.status === 'active' ? "text-green-600" : "text-red-600"}>
+                          {area.status}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </TabsContent>
       </Tabs>
