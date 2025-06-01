@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Bell, AlertTriangle, CheckCircle, Info, Clock, Trash2, MarkAsUnread } from "lucide-react";
+import { Bell, AlertTriangle, CheckCircle, Info, Clock, Trash2, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Notifications = () => {
@@ -86,7 +86,7 @@ const Notifications = () => {
             </div>
           </div>
           <Button className="bg-warehouse-primary hover:bg-warehouse-primary/90">
-            <MarkAsUnread className="h-4 w-4 mr-2" />
+            <Mail className="h-4 w-4 mr-2" />
             Mark All as Read
           </Button>
         </div>

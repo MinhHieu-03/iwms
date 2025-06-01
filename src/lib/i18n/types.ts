@@ -1,3 +1,4 @@
+
 export type SupportedLanguages = 'en' | 'vi' | 'zh' | 'ja' | 'ko';
 
 export type TranslationKey = 
@@ -58,6 +59,8 @@ export type TranslationKey =
   | 'cancel_mission'
   | 'new_mission'
   | 'mission_templates'
+  | 'mission_history'
+  | 'templates'
   | 'new_template'
   | 'search_templates'
   | 'filter'
@@ -213,6 +216,8 @@ export type TranslationKey =
   | 'columns'
   | 'levels'
   | 'save_structure'
+  | 'layout_config'
+  | 'storage_model'
   
   // Team Management
   | 'user_management'
@@ -261,6 +266,8 @@ export type TranslationKey =
   // Inbound/Outbound
   | 'inbound_orders'
   | 'outbound_orders'
+  | 'inbound_shipments'
+  | 'outbound_shipments'
   | 'new_inbound_order'
   | 'new_outbound_order'
   | 'order_id'

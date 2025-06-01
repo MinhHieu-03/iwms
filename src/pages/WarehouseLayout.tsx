@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -6,11 +5,68 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Map, Thermometer, Eye, Grid3X3, Building } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Warehouse2DView from "@/components/WarehouseVisualization/Warehouse2DView";
-import WarehouseHeatmap from "@/components/WarehouseVisualization/WarehouseHeatmap";
+import { WarehouseHeatmap } from "@/components/WarehouseVisualization/WarehouseHeatmap";
 
 const WarehouseLayout = () => {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("2d");
+  const [highlightedRack, setHighlightedRack] = useState<string | null>(null);
+  const [hoveredRack, setHoveredRack] = useState<string | null>(null);
+
+  // Mock data for warehouse area and racks
+  const mockArea = {
+    id: "area-1",
+    name: "Main Storage Area",
+    type: "storage" as const,
+    status: "active" as const,
+    description: "Primary storage area for incoming and outgoing inventory",
+    capacity: 1000,
+    currentUtilization: 750,
+    dimensions: { length: 100, width: 50, height: 8 }
+  };
+
+  const mockRacks = [
+    {
+      id: "rack-1",
+      locationCode: "A01-01",
+      areaId: "area-1",
+      row: 1,
+      column: 1,
+      level: 1,
+      status: "occupied" as const,
+      capacity: 100,
+      currentLoad: 75,
+      dimensions: { width: 2.5, height: 3.0, depth: 1.2 },
+      storedItems: [
+        {
+          id: "item-1",
+          sku: "SKU-001",
+          productName: "Widget A",
+          quantity: 25,
+          status: "stored" as const
+        }
+      ]
+    }
+  ];
+
+  const mockSections = [
+    {
+      id: "section-1",
+      name: "Section A",
+      rows: 5,
+      columns: 8,
+      occupancy: 75
+    }
+  ];
+
+  const handleRackClick = (rackId: string) => {
+    setHighlightedRack(rackId);
+    console.log(`Clicked rack: ${rackId}`);
+  };
+
+  const handleRackHover = (rackId: string | null) => {
+    setHoveredRack(rackId);
+  };
 
   return (
     <div className="space-y-6">
@@ -58,7 +114,14 @@ const WarehouseLayout = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Warehouse2DView />
+              <Warehouse2DView 
+                area={mockArea}
+                racks={mockRacks}
+                highlightedRack={highlightedRack}
+                hoveredRack={hoveredRack}
+                onRackClick={handleRackClick}
+                onRackHover={handleRackHover}
+              />
             </CardContent>
           </Card>
         </TabsContent>
@@ -72,7 +135,7 @@ const WarehouseLayout = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <WarehouseHeatmap />
+              <WarehouseHeatmap sections={mockSections} />
             </CardContent>
           </Card>
         </TabsContent>

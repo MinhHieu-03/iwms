@@ -1,3 +1,4 @@
+
 import { TranslationKey } from '../types';
 
 export const en: Record<TranslationKey, string> = {
@@ -58,6 +59,8 @@ export const en: Record<TranslationKey, string> = {
   cancel_mission: 'Cancel',
   new_mission: 'New Mission',
   mission_templates: 'Mission Templates',
+  mission_history: 'Mission History',
+  templates: 'Templates',
   new_template: 'New Template',
   search_templates: 'Search templates...',
   filter: 'Filter',
@@ -213,6 +216,8 @@ export const en: Record<TranslationKey, string> = {
   columns: 'columns',
   levels: 'levels',
   save_structure: 'Save Structure',
+  layout_config: 'Layout Config',
+  storage_model: 'Storage Model',
   
   // Team Management
   user_management: 'User Management',
@@ -261,6 +266,8 @@ export const en: Record<TranslationKey, string> = {
   // Inbound/Outbound
   inbound_orders: 'Inbound Orders',
   outbound_orders: 'Outbound Orders',
+  inbound_shipments: 'Inbound Shipments',
+  outbound_shipments: 'Outbound Shipments',
   new_inbound_order: 'New Inbound Order',
   new_outbound_order: 'New Outbound Order',
   order_id: 'Order ID',

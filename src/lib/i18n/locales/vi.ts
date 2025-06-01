@@ -273,5 +273,13 @@ export const vi: Record<TranslationKey, string> = {
   mark_all_read: 'Đánh dấu tất cả là đã đọc',
   clear_all: 'Xóa tất cả',
   no_notifications: 'Không có thông báo',
-  notification_time: 'trước'
+  notification_time: 'trước',
+  
+  // Adding missing translations at the end
+  mission_history: 'Lịch sử nhiệm vụ',
+  templates: 'Mẫu',
+  layout_config: 'Cấu hình bố cục',
+  storage_model: 'Mô hình lưu trữ',
+  inbound_shipments: 'Lô hàng nhập kho',
+  outbound_shipments: 'Lô hàng xuất kho'
 };

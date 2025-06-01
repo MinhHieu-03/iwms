@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings as SettingsIcon, User, System, Users, Edit, Save, X } from "lucide-react";
+import { Settings as SettingsIcon, User, Cog, Users, Edit, Save, X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
@@ -37,7 +37,7 @@ const Settings = () => {
     {
       title: "System Settings",
       description: "System infrastructure and automation settings",
-      icon: System,
+      icon: Cog,
       link: "/system-settings",
       color: "purple"
     },
@@ -93,7 +93,7 @@ const Settings = () => {
             Overview
           </TabsTrigger>
           <TabsTrigger value="quick-access" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
-            <System className="h-4 w-4 mr-2" />
+            <Cog className="h-4 w-4 mr-2" />
             Quick Access
           </TabsTrigger>
         </TabsList>
