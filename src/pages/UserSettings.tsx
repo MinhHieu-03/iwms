@@ -48,16 +48,12 @@ const UserSettings = () => {
       <div className="bg-gradient-to-r from-teal-500/10 to-cyan-500/10 rounded-lg p-6 border">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <Avatar className="h-16 w-16 border-4 border-white shadow-lg">
-              <AvatarImage src="" alt={userProfile.name} />
-              <AvatarFallback className="bg-teal-500 text-white text-lg">
-                {userProfile.name.split(' ').map(name => name[0]).join('')}
-              </AvatarFallback>
-            </Avatar>
+            <div className="bg-teal-500/20 p-3 rounded-lg">
+              <User className="h-8 w-8 text-teal-500" />
+            </div>
             <div>
-              <h1 className="text-2xl font-bold text-foreground">{userProfile.name}</h1>
-              <p className="text-muted-foreground">{userProfile.jobTitle} • {userProfile.department}</p>
-              <p className="text-sm text-muted-foreground">{userProfile.email}</p>
+              <h1 className="text-2xl font-bold text-foreground">{t('user_settings')}</h1>
+              <p className="text-muted-foreground">Manage your personal account settings and preferences</p>
             </div>
           </div>
           <div className="flex gap-2">
@@ -82,21 +78,22 @@ const UserSettings = () => {
         </div>
       </div>
 
+      {/* Navigation and Content */}
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="profile" className="flex items-center">
+        <TabsList className="grid w-full grid-cols-4 bg-muted/50">
+          <TabsTrigger value="profile" className="data-[state=active]:bg-teal-500 data-[state=active]:text-white">
             <User className="h-4 w-4 mr-2" />
             Profile
           </TabsTrigger>
-          <TabsTrigger value="appearance" className="flex items-center">
+          <TabsTrigger value="appearance" className="data-[state=active]:bg-teal-500 data-[state=active]:text-white">
             <Monitor className="h-4 w-4 mr-2" />
             {t('appearance')}
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="flex items-center">
+          <TabsTrigger value="notifications" className="data-[state=active]:bg-teal-500 data-[state=active]:text-white">
             <Bell className="h-4 w-4 mr-2" />
             Notifications
           </TabsTrigger>
-          <TabsTrigger value="security" className="flex items-center">
+          <TabsTrigger value="security" className="data-[state=active]:bg-teal-500 data-[state=active]:text-white">
             <Lock className="h-4 w-4 mr-2" />
             {t('security')}
           </TabsTrigger>
@@ -104,6 +101,20 @@ const UserSettings = () => {
 
         <TabsContent value="profile" className="mt-6">
           <div className="space-y-6">
+            <div className="flex items-center space-x-4 p-6 bg-muted/20 rounded-lg border">
+              <Avatar className="h-16 w-16 border-4 border-white shadow-lg">
+                <AvatarImage src="" alt={userProfile.name} />
+                <AvatarFallback className="bg-teal-500 text-white text-lg">
+                  {userProfile.name.split(' ').map(name => name[0]).join('')}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h3 className="text-xl font-semibold text-foreground">{userProfile.name}</h3>
+                <p className="text-muted-foreground">{userProfile.jobTitle} • {userProfile.department}</p>
+                <p className="text-sm text-muted-foreground">{userProfile.email}</p>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="fullName">Full Name</Label>

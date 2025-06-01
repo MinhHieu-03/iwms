@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Database, Server, Globe, HardDrive, Bot, Shield, Activity, Warehouse, Edit, Save, X } from "lucide-react";
+import { Database, Server, Globe, HardDrive, Bot, Shield, Activity, Warehouse, Edit, Save, X, Settings } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -57,7 +56,7 @@ const SystemSettings = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="bg-purple-500/20 p-3 rounded-lg">
-              <Server className="h-8 w-8 text-purple-500" />
+              <Settings className="h-8 w-8 text-purple-500" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-foreground">{t('system_settings')}</h1>
@@ -129,27 +128,32 @@ const SystemSettings = () => {
         </div>
       </div>
 
+      {/* Navigation and Content */}
       <Tabs defaultValue="warehouse" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="warehouse" className="flex items-center">
+        <TabsList className="grid w-full grid-cols-6 bg-muted/50">
+          <TabsTrigger value="warehouse" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
             <Warehouse className="h-4 w-4 mr-2" />
             Warehouse
           </TabsTrigger>
-          <TabsTrigger value="database" className="flex items-center">
+          <TabsTrigger value="database" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
             <Database className="h-4 w-4 mr-2" />
             Database
           </TabsTrigger>
-          <TabsTrigger value="robots" className="flex items-center">
+          <TabsTrigger value="robots" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
             <Bot className="h-4 w-4 mr-2" />
             Robots
           </TabsTrigger>
-          <TabsTrigger value="server" className="flex items-center">
+          <TabsTrigger value="server" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
             <Server className="h-4 w-4 mr-2" />
             Server
           </TabsTrigger>
-          <TabsTrigger value="security" className="flex items-center">
+          <TabsTrigger value="security" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
             <Shield className="h-4 w-4 mr-2" />
             Security
+          </TabsTrigger>
+          <TabsTrigger value="preferences" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
+            <Activity className="h-4 w-4 mr-2" />
+            Preferences
           </TabsTrigger>
         </TabsList>
 
@@ -447,6 +451,79 @@ const SystemSettings = () => {
                   </div>
                   <Switch defaultChecked disabled={!isEditing} />
                 </div>
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="preferences" className="mt-6">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="defaultShift">Default Shift</Label>
+                <Select 
+                  value={warehouseSettings.shift} 
+                  onValueChange={(value) => handleWarehouseChange("shift", value)}
+                  disabled={!isEditing}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="day">Day Shift (06:00 - 14:00)</SelectItem>
+                    <SelectItem value="evening">Evening Shift (14:00 - 22:00)</SelectItem>
+                    <SelectItem value="night">Night Shift (22:00 - 06:00)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="defaultDock">Default Dock Assignment</Label>
+                <Select 
+                  value={warehouseSettings.defaultDock} 
+                  onValueChange={(value) => handleWarehouseChange("defaultDock", value)}
+                  disabled={!isEditing}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Dock-A">Dock A - Inbound</SelectItem>
+                    <SelectItem value="Dock-B">Dock B - Outbound</SelectItem>
+                    <SelectItem value="Dock-C">Dock C - Mixed</SelectItem>
+                    <SelectItem value="Dock-D">Dock D - Express</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="space-y-0.5">
+                  <Label>Auto-assign to available dock</Label>
+                  <div className="text-sm text-muted-foreground">
+                    Automatically assign to the next available dock when starting shift
+                  </div>
+                </div>
+                <Switch 
+                  checked={warehouseSettings.autoAssign}
+                  onCheckedChange={(value) => handleWarehouseChange("autoAssign", value)}
+                  disabled={!isEditing}
+                />
+              </div>
+              
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="space-y-0.5">
+                  <Label>Show efficiency metrics</Label>
+                  <div className="text-sm text-muted-foreground">
+                    Display real-time performance metrics on operator interface
+                  </div>
+                </div>
+                <Switch 
+                  checked={warehouseSettings.showMetrics}
+                  onCheckedChange={(value) => handleWarehouseChange("showMetrics", value)}
+                  disabled={!isEditing}
+                />
               </div>
             </div>
           </div>
