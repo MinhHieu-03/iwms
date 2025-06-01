@@ -1,4 +1,5 @@
 
+
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -49,7 +50,14 @@ const WarehouseLayout = () => {
           sku: "SKU-001",
           productName: "Widget A",
           quantity: 25,
-          status: "stored" as const
+          storeMethod: "Bin" as const,
+          storeCode: "A001",
+          packingMethod: "Carton" as const,
+          packingCode: "PK0001",
+          partner: "Tech Supplies Inc.",
+          inboundOrderId: "IN-001",
+          status: "stored" as const,
+          storedAt: new Date().toISOString()
         }
       ]
     }
@@ -221,3 +229,4 @@ const WarehouseLayout = () => {
 };
 
 export default WarehouseLayout;
+
