@@ -18,5 +18,11 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    dedupe: ['zod'],
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      mainFields: ['module', 'main'],
+    }
   },
 }));

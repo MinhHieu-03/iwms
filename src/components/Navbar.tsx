@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   LayoutList,
@@ -29,6 +28,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import LanguageSelector from "./LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { logout } from "@/store/authSlice";
 import { SupportedLanguages, TranslationKey } from "@/lib/i18n/translations";
 
 type NavSection = {
@@ -50,9 +51,17 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ children }) => {
   const location = useLocation();
-  const [isLoggedIn, setIsLoggedIn] = React.useState(true);
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
   const { t } = useLanguage();
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector(state => state.auth);
+  
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login');
+  };
   
   const user = {
     name: "John Doe",
@@ -242,7 +251,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           <nav className="p-2 space-y-6 flex-1">
             {navSections.map((section, index) => (
               <div key={index} className="space-y-1">
-                <h2 className="mb-2 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <h2 className="mb-2 px-4 text-xs font-bold text-black uppercase tracking-wider">
                   {section.title}
                 </h2>
                 {section.items.map(renderNavItem)}
@@ -253,16 +262,16 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           {/* Support Section and Logout at Bottom */}
           <div className="border-t border-border p-2">
             <div className="space-y-1 mb-4">
-              <h2 className="mb-2 px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <h2 className="mb-2 px-4 text-xs font-bold text-black uppercase tracking-wider">
                 Support
               </h2>
               {supportItems.map(renderNavItem)}
             </div>
             
-            {isLoggedIn && (
+            {isAuthenticated && (
               <div className="px-2">
                 <button
-                  onClick={() => setIsLoggedIn(false)}
+                  onClick={handleLogout}
                   className="flex items-center space-x-3 px-4 py-3 rounded-md w-full text-left text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
                 >
                   <LogOut className="w-5 h-5" />
@@ -322,7 +331,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </Link>
 
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center space-x-2 rounded-full hover:bg-muted p-1 transition-colors">
@@ -360,19 +369,16 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
+                  <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span className="text-red-500">{t("logout")}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <button 
-                onClick={() => setIsLoggedIn(true)}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
-              >
+              <Link to="/login" className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors">
                 Log in
-              </button>
+              </Link>
             )}
           </div>
         </header>

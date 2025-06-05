@@ -59,23 +59,6 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-warehouse-primary/10 to-warehouse-secondary/10 rounded-lg p-6 border">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="bg-warehouse-primary/20 p-3 rounded-lg">
-              <BarChart3 className="h-8 w-8 text-warehouse-primary" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">{t('dashboard')}</h1>
-              <p className="text-muted-foreground">Real-time warehouse operations overview and performance metrics</p>
-            </div>
-          </div>
-          <Button className="bg-warehouse-primary hover:bg-warehouse-primary/90">
-            <Eye className="h-4 w-4 mr-2" />
-            View Details
-          </Button>
-        </div>
-      </div>
 
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-4 bg-muted/50">
