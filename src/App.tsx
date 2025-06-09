@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
@@ -29,7 +28,7 @@ import OrderDetails from "./pages/OrderDetails";
 import Login from "./pages/Login";
 import MissionsTemplates from "./components/missions/MissionsTemplates";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { LanguageProvider } from "./contexts/LanguageContext";
+import { LanguageProvider } from "./contexts/LanguageProvider";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { Toaster } from "./components/ui/toaster";

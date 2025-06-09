@@ -4,13 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bot, History, FileText, Play, Pause, Square, RotateCcw } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import MissionsHistory from "@/components/missions/MissionsHistory";
 import MissionsTemplates from "@/components/missions/MissionsTemplates";
 
 const Missions = () => {
-  const { t } = useLanguage();
-  const [activeTab, setActiveTab] = useState("active");
+const { t } = useTranslation();  const [activeTab, setActiveTab] = useState("active");
 
   const [missionsHistory, setMissionsHistory] = useState([
     {

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { useToast } from "@/components/ui/use-toast";
 
 interface User {
@@ -23,8 +23,7 @@ interface UserEditDialogProps {
 }
 
 const UserEditDialog = ({ open, onOpenChange, user }: UserEditDialogProps) => {
-  const { t } = useLanguage();
-  const { toast } = useToast();
+const { t } = useTranslation();  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",

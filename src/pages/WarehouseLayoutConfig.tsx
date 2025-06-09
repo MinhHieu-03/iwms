@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Edit, Trash2, Filter, Building2, MapPin } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import WarehousesManagement from "@/components/warehouses_management";
 import {
   warehouses,
   warehouseAreas,
@@ -190,11 +191,6 @@ const WarehouseLayoutConfig = () => {
 
   return (
     <div className="space-y-6">
-      {/* <div className="flex items-center space-x-4">
-        <Building2 className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold">Layout Configuration</h1>
-      </div> */}
-
       <Tabs defaultValue="warehouses" className="w-full">
         <TabsList className="inline-flex gap-1 min-w-0 w-full">
           <TabsTrigger value="warehouses" className="flex-1 min-w-0">Warehouses</TabsTrigger>
@@ -203,138 +199,7 @@ const WarehouseLayoutConfig = () => {
         </TabsList>
 
         <TabsContent value="warehouses" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>Warehouse Management</CardTitle>
-                <Dialog open={warehouseDialogOpen} onOpenChange={setWarehouseDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button onClick={() => { setEditingWarehouse(null); setWarehouseDialogOpen(true); }}>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Create New Warehouse
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>
-                        {editingWarehouse ? "Edit Warehouse" : "Create New Warehouse"}
-                      </DialogTitle>
-                    </DialogHeader>
-                    <form onSubmit={(e) => { e.preventDefault(); handleSaveWarehouse(new FormData(e.currentTarget)); }} className="space-y-4">
-                      <div>
-                        <Label htmlFor="name">Name</Label>
-                        <Input
-                          id="name"
-                          name="name"
-                          defaultValue={editingWarehouse?.name || ""}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="description">Description</Label>
-                        <Input
-                          id="description"
-                          name="description"
-                          defaultValue={editingWarehouse?.description || ""}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="location">Location</Label>
-                        <Input
-                          id="location"
-                          name="location"
-                          defaultValue={editingWarehouse?.location || ""}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="status">Status</Label>
-                        <Select name="status" defaultValue={editingWarehouse?.status || "active"}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="active">Active</SelectItem>
-                            <SelectItem value="inactive">Inactive</SelectItem>
-                            <SelectItem value="maintenance">Maintenance</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="totalAreas">Total Areas</Label>
-                          <Input
-                            id="totalAreas"
-                            name="totalAreas"
-                            type="number"
-                            defaultValue={editingWarehouse?.totalAreas || 0}
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="totalRacks">Total Racks</Label>
-                          <Input
-                            id="totalRacks"
-                            name="totalRacks"
-                            type="number"
-                            defaultValue={editingWarehouse?.totalRacks || 0}
-                          />
-                        </div>
-                      </div>
-                      <Button type="submit" className="w-full">
-                        {editingWarehouse ? "Update" : "Create"} Warehouse
-                      </Button>
-                    </form>
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Areas</TableHead>
-                    <TableHead>Racks</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {warehousesData.map((warehouse) => (
-                    <TableRow key={warehouse.id}>
-                      <TableCell className="font-medium">{warehouse.name}</TableCell>
-                      <TableCell>{warehouse.description}</TableCell>
-                      <TableCell>{warehouse.location}</TableCell>
-                      <TableCell>{getStatusBadge(warehouse.status)}</TableCell>
-                      <TableCell>{warehouse.totalAreas}</TableCell>
-                      <TableCell>{warehouse.totalRacks}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => { setEditingWarehouse(warehouse); setWarehouseDialogOpen(true); }}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-red-500"
-                            onClick={() => handleDeleteWarehouse(warehouse.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+          <WarehousesManagement />
         </TabsContent>
 
         <TabsContent value="areas" className="space-y-4">

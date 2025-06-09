@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { useToast } from "@/components/ui/use-toast";
 
 interface RoleCreateDialogProps {
@@ -15,8 +15,7 @@ interface RoleCreateDialogProps {
 }
 
 const RoleCreateDialog = ({ open, onOpenChange }: RoleCreateDialogProps) => {
-  const { t } = useLanguage();
-  const { toast } = useToast();
+const { t } = useTranslation();  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     description: "",

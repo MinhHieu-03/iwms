@@ -2,7 +2,7 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { Users, Shield, Settings } from "lucide-react";
 import UsersTab from "@/components/team/UsersTab";
 import RolesTab from "@/components/team/RolesTab";
@@ -12,8 +12,7 @@ const TeamSettings = () => {
   const { section = "users" } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useLanguage();
-
+const { t } = useTranslation();
   // Extract the current tab from the URL
   const currentTab = location.pathname.split('/')[2] || 'users';
 

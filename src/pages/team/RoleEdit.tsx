@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
@@ -15,8 +15,7 @@ import { Separator } from "@/components/ui/separator";
 const RoleEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { t } = useLanguage();
-  const { toast } = useToast();
+const { t } = useTranslation();  const { toast } = useToast();
   const isNew = id === "new";
 
   // Mock role data

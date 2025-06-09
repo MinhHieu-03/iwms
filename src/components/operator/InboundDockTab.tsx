@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { Package, Plus } from "lucide-react";
 import { mockInboundRecords, type InboundRecord } from "@/data/operatorData";
 
@@ -35,8 +35,7 @@ interface InboundDockTabProps {
 
 const InboundDockTab: React.FC<InboundDockTabProps> = ({ selectedDock, setSelectedDock }) => {
   const { toast } = useToast();
-  const { t } = useLanguage();
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+const { t } = useTranslation();  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [inboundType, setInboundType] = useState("");
   const [supplier, setSupplier] = useState("");
   const [expectedItems, setExpectedItems] = useState("");

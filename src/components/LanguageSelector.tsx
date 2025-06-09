@@ -1,7 +1,5 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/contexts/LanguageContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,10 +7,17 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const LanguageSelector = () => {
-  const { language, setLanguage } = useLanguage();
+  // const { language, setLanguage } = useLanguage();
+  const { i18n } = useTranslation();
 
+  const handleLanguageChange = (lang: 'en' | 'vi') => {
+    // setLanguage(lang);
+    i18n.changeLanguage(lang);
+  };
+  const language = i18n.language; // This gets the current language
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -27,13 +32,13 @@ const LanguageSelector = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-32">
         <DropdownMenuItem 
-          onClick={() => setLanguage('en')} 
+          onClick={() => handleLanguageChange('en')} 
           className={language === 'en' ? 'bg-accent' : ''}
         >
           <span className={language === 'en' ? 'font-bold' : ''}>English</span>
         </DropdownMenuItem>
         <DropdownMenuItem 
-          onClick={() => setLanguage('vi')} 
+          onClick={() => handleLanguageChange('vi')} 
           className={language === 'vi' ? 'bg-accent' : ''}
         >
           <span className={language === 'vi' ? 'font-bold' : ''}>Tiếng Việt</span>

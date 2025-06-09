@@ -4,14 +4,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Warehouse, Layout, Database, Edit, Save, X, Settings } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { useToast } from "@/components/ui/use-toast";
 import LayoutConfig from "@/components/warehouse-settings/LayoutConfig";
 import StorageModelConfig from "@/components/warehouse-settings/StorageModelConfig";
 
 const WarehouseSettings = () => {
-  const { t } = useLanguage();
-  const { toast } = useToast();
+const { t } = useTranslation();  const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("layout");
 

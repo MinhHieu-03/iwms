@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useMemo } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Grid, Environment, Center, Text } from "@react-three/drei";
 import * as THREE from "three";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { WarehouseArea, Rack } from "@/data/warehouseData";
 
 interface RackMeshProps {
@@ -168,8 +168,7 @@ const WarehouseScene: React.FC<{
   onRackHover: (rackId: string | null) => void;
 }> = ({ areas, racks, highlightedRack, hoveredRack, activeAreaId, onRackClick, onRackHover }) => {
   const { camera } = useThree();
-  const { t } = useLanguage();
-  
+const { t } = useTranslation();  
   useEffect(() => {
     camera.position.set(20, 20, 25);
     camera.lookAt(0, 0, 0);

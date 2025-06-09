@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { Settings, Edit, Trash2, Plus, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { TranslationKey } from "@/lib/i18n/translations";
@@ -19,8 +19,7 @@ interface Group {
 }
 
 const GroupsTab = () => {
-  const { t } = useLanguage();
-  const navigate = useNavigate();
+const { t } = useTranslation();  const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([
     { id: 1, name: "warehouse_staff", description: "Front-line warehouse operations team", memberCount: 12, department: "Operations" },
     { id: 2, name: "management_team", description: "Warehouse management and supervisors", memberCount: 4, department: "Management" },

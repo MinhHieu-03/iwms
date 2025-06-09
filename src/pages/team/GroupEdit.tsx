@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Plus, X } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { useToast } from "@/components/ui/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -20,8 +20,7 @@ import {
 const GroupEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { t } = useLanguage();
-  const { toast } = useToast();
+const { t } = useTranslation();  const { toast } = useToast();
   const isNew = id === "new";
 
   // Mock group data

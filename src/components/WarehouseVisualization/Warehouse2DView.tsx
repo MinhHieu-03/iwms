@@ -3,7 +3,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { WarehouseArea, Rack } from "@/data/warehouseData";
 
 interface Warehouse2DViewProps {
@@ -39,8 +39,7 @@ const RackGrid: React.FC<{
   onRackClick: (rackId: string) => void;
   onRackHover: (rackId: string | null) => void;
 }> = ({ rackId, racks, highlightedRack, hoveredRack, onRackClick, onRackHover }) => {
-  const { t } = useLanguage();
-  
+const { t } = useTranslation();  
   // Get the maximum row and column for this rack group
   const maxRow = Math.max(...racks.map(r => r.row), 0);
   const maxCol = Math.max(...racks.map(r => r.column), 0);
@@ -195,8 +194,7 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
   onRackClick,
   onRackHover,
 }) => {
-  const { t } = useLanguage();
-  
+const { t } = useTranslation();  
   // Group racks by their identifier
   const rackGroups = groupRacksByIdentifier(racks);
 

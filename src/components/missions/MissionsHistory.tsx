@@ -21,13 +21,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { getAllMissions, getMissionsByStatus, type RobotMission } from "@/data/robotMissionsData";
 import { Search, Filter, Eye, Pause, Play, Square, AlertCircle } from "lucide-react";
 
 const MissionsHistory = () => {
-  const { t } = useLanguage();
-  const [searchQuery, setSearchQuery] = useState("");
+const { t } = useTranslation();  const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [robotFilter, setRobotFilter] = useState("all");

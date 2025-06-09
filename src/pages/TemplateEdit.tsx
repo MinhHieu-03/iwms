@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { ArrowLeft, Save, Play, Settings, Code, Eye, Plus, Trash2, Clock } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TemplateGraph from "@/components/missions/TemplateGraph";
@@ -18,8 +18,7 @@ const TemplateEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t } = useLanguage();
-  
+const { t } = useTranslation();  
   const existingTemplate = id ? getTemplateById(id) : null;
   
   const initialTemplate = existingTemplate || {

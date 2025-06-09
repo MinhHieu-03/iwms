@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { Line } from "recharts";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 
@@ -37,8 +37,7 @@ interface OperatorPerformanceProps {
 }
 
 const OperatorPerformance: React.FC<OperatorPerformanceProps> = ({ className = "" }) => {
-  const { t } = useLanguage();
-  const { inboundTotal, outboundTotal, total, avgTime } = getTotals();
+const { t } = useTranslation();  const { inboundTotal, outboundTotal, total, avgTime } = getTotals();
   const efficiency = getEfficiencyRating(avgTime);
 
   return (

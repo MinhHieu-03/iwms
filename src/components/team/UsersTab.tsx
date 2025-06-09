@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { UserPlus, Edit, Trash2, User, Mail, Building } from "lucide-react";
 import { TranslationKey } from "@/lib/i18n/translations";
 import UserCreateDialog from "./UserCreateDialog";
@@ -20,8 +20,7 @@ interface User {
 }
 
 const UsersTab = () => {
-  const { t } = useLanguage();
-  const [users, setUsers] = useState<User[]>([
+const { t } = useTranslation();  const [users, setUsers] = useState<User[]>([
     { id: 1, name: "John Doe", email: "john.doe@warehouse.com", role: "administrator", department: "Operations", status: "active" },
     { id: 2, name: "Jane Smith", email: "jane.smith@warehouse.com", role: "operator", department: "Logistics", status: "active" },
     { id: 3, name: "Robert Johnson", email: "robert.j@warehouse.com", role: "manager", department: "Management", status: "inactive" }

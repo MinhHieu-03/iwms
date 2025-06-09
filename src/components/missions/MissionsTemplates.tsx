@@ -18,7 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import {
   Search,
@@ -35,8 +35,7 @@ import { getAllTemplates } from "@/data/missionTemplatesData";
 
 const MissionsTemplates = () => {
   const { toast } = useToast();
-  const { t } = useLanguage();
-  const [searchQuery, setSearchQuery] = useState("");
+const { t } = useTranslation();  const [searchQuery, setSearchQuery] = useState("");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
 

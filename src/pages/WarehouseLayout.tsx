@@ -4,15 +4,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Map, Thermometer, Eye, Grid3X3, Building, Box } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import Warehouse2DView from "@/components/WarehouseVisualization/Warehouse2DView";
 import Warehouse3DView from "@/components/WarehouseVisualization/Warehouse3DView";
 import { WarehouseHeatmap } from "@/components/WarehouseVisualization/WarehouseHeatmap";
 import { warehouseAreas, racks } from "@/data/warehouseData";
 
 const WarehouseLayout = () => {
-  const { t } = useLanguage();
-  const [activeTab, setActiveTab] = useState("2d");
+const { t } = useTranslation();  const [activeTab, setActiveTab] = useState("2d");
   const [selectedAreaId, setSelectedAreaId] = useState(warehouseAreas[0]?.id || "area-001");
   const [highlightedRack, setHighlightedRack] = useState<string | null>(null);
   const [hoveredRack, setHoveredRack] = useState<string | null>(null);

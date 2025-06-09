@@ -27,7 +27,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import LanguageSelector from "./LanguageSelector";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { logout } from "@/store/authSlice";
 import { SupportedLanguages, TranslationKey } from "@/lib/i18n/translations";
@@ -52,7 +52,7 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ children }) => {
   const location = useLocation();
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useAppSelector(state => state.auth);
   

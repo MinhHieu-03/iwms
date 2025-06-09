@@ -5,11 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowDown, ArrowUp, Package, Truck, Clock, CheckCircle, AlertCircle, Plus } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const InboundOutbound = () => {
-  const { t } = useLanguage();
-  const [activeTab, setActiveTab] = useState("inbound");
+const { t } = useTranslation();  const [activeTab, setActiveTab] = useState("inbound");
 
   const inboundData = [
     {

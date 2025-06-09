@@ -1,21 +1,12 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SupportedLanguages, TranslationKey } from '@/lib/i18n/translations';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/lib/i18n/i18n';
+import { LanguageContext, LanguageContextType } from './LanguageContext';
 
 type ThemeSettings = {
   darkMode: boolean;
 };
-
-type LanguageContextType = {
-  language: SupportedLanguages;
-  setLanguage: (lang: SupportedLanguages) => void;
-  t: (key: TranslationKey) => string;
-  themeSettings: ThemeSettings;
-  updateThemeSetting: (setting: keyof ThemeSettings, value: boolean) => void;
-};
-
-export const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<SupportedLanguages>('en');
@@ -73,17 +64,19 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const t = (key: TranslationKey): string => {
-    return translate(key);
+    return translate(key as string);
+  };
+
+  const contextValue: LanguageContextType = {
+    language,
+    setLanguage: handleSetLanguage,
+    t,
+    themeSettings,
+    updateThemeSetting
   };
 
   return (
-    <LanguageContext.Provider value={{ 
-      language, 
-      setLanguage: handleSetLanguage, 
-      t, 
-      themeSettings,
-      updateThemeSetting 
-    }}>
+    <LanguageContext.Provider value={contextValue}>
       {children}
     </LanguageContext.Provider>
   );

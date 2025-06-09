@@ -3,14 +3,14 @@ import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import InboundDockTab from "@/components/operator/InboundDockTab";
 import OrdersTab from "@/components/operator/OrdersTab";
 
 const OperatorInterface = () => {
   const [shiftStarted, setShiftStarted] = useState(false);
   const [selectedDock, setSelectedDock] = useState("3");
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   const toggleShift = () => {
     setShiftStarted(!shiftStarted);

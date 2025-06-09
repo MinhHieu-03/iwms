@@ -7,12 +7,11 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Database, Server, Globe, HardDrive, Bot, Shield, Activity, Warehouse, Edit, Save, X, Settings } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { useToast } from "@/components/ui/use-toast";
 
 const SystemSettings = () => {
-  const { t } = useLanguage();
-  const { toast } = useToast();
+const { t } = useTranslation();  const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   
   const [systemStatus] = useState({

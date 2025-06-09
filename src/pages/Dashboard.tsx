@@ -5,11 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
 import { TrendingUp, Package, Users, Activity, AlertTriangle, CheckCircle, Clock, BarChart3, TrendingDown, Eye } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const Dashboard = () => {
-  const { t } = useLanguage();
-
+const { t } = useTranslation();
   const userData = [
     { name: "John Doe", visits: 1200, orders: 800 },
     { name: "Jane Smith", visits: 1100, orders: 950 },

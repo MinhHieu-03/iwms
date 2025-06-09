@@ -5,11 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Bell, AlertTriangle, CheckCircle, Info, Clock, Trash2, Mail, Eye } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const Notifications = () => {
-  const { t } = useLanguage();
-  const [activeTab, setActiveTab] = useState("all");
+const { t } = useTranslation();  const [activeTab, setActiveTab] = useState("all");
 
   const notifications = [
     {

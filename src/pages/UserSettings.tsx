@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -7,13 +6,14 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Bell, Lock, User, Monitor, Edit, Save, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useI18n } from "@/contexts/useI18n";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import TranslationExample from "@/components/TranslationExample";
 
 const UserSettings = () => {
   const { toast } = useToast();
-  const { t, language, setLanguage, themeSettings, updateThemeSetting } = useLanguage();
+  const { t, language, changeLanguage, themeSettings, updateThemeSetting } = useI18n();
   const [isEditing, setIsEditing] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: "John Doe",
@@ -191,7 +191,7 @@ const UserSettings = () => {
                   {t('language_description')}
                 </div>
               </div>
-              <Select value={language} onValueChange={(value: 'en' | 'vi') => setLanguage(value)}>
+              <Select value={language} onValueChange={(value: 'en' | 'vi') => changeLanguage(value)}>
                 <SelectTrigger className="w-40">
                   <SelectValue />
                 </SelectTrigger>
@@ -201,6 +201,9 @@ const UserSettings = () => {
                 </SelectContent>
               </Select>
             </div>
+            
+            {/* Translation Example Component */}
+            <TranslationExample />
           </div>
         </TabsContent>
 
