@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,11 +9,20 @@ import { Clock, CheckCircle, Search, Edit, Trash2, Plus } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/components/ui/use-toast";
 import { inboundOutboundOrders, InboundOutboundOrder } from "@/data/inboundOutboundData";
-import OrderForm from "@/components/OrderForm";
+import InboundOrderForm from "@/components/InboundOrderForm";
 
 interface InboundDockTabProps {
   selectedDock: string;
   setSelectedDock: (dock: string) => void;
+}
+
+interface InboundOrderFormData {
+  taskId: string;
+  sku: string;
+  storeMethod: string;
+  storeCode: string;
+  packingMethod: string;
+  packingCode: string;
 }
 
 const InboundDockTab = ({ selectedDock, setSelectedDock }: InboundDockTabProps) => {
@@ -48,7 +56,6 @@ const InboundDockTab = ({ selectedDock, setSelectedDock }: InboundDockTabProps) 
 
   const filteredOrders = getFilteredOrders();
 
-  // Pagination
   const getPaginatedOrders = () => {
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -56,12 +63,18 @@ const InboundDockTab = ({ selectedDock, setSelectedDock }: InboundDockTabProps) 
     return { totalPages, startIndex, paginatedOrders };
   };
 
-  const handleCreateOrder = (orderData: Omit<InboundOutboundOrder, 'id' | 'registrationTime'>) => {
+  const handleCreateOrder = (orderData: InboundOrderFormData) => {
     const newOrder: InboundOutboundOrder = {
       ...orderData,
       category: 'Inbound',
       id: `IN-${String(orders.length + 1).padStart(3, '0')}`,
-      registrationTime: new Date().toISOString()
+      registrationTime: new Date().toISOString(),
+      robotCode: 'AUTO-ASSIGNED',
+      pickupLocation: 'STAGING-AREA',
+      dropoffLocation: 'STORAGE-AREA',
+      status: 'Pending',
+      missionId: 'AUTO-GENERATED',
+      partner: 'INTERNAL'
     };
     
     setOrders(prev => [...prev, newOrder]);
@@ -336,12 +349,10 @@ const InboundDockTab = ({ selectedDock, setSelectedDock }: InboundDockTabProps) 
         </CardContent>
       </Card>
 
-      <OrderForm
+      <InboundOrderForm
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
-        onSubmit={editingOrder ? handleEditOrder : handleCreateOrder}
-        initialData={editingOrder}
-        mode={editingOrder ? 'edit' : 'create'}
+        onSubmit={handleCreateOrder}
       />
     </div>
   );
