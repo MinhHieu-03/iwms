@@ -158,7 +158,7 @@ const InboundDockTab = ({ selectedDock, setSelectedDock }: InboundDockTabProps) 
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Total Inbound</CardTitle>
@@ -191,7 +191,7 @@ const InboundDockTab = ({ selectedDock, setSelectedDock }: InboundDockTabProps) 
             <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
 
       {/* Orders Table */}
       <Card>

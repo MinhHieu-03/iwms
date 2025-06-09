@@ -20,7 +20,7 @@ const OperatorInterface = () => {
     <div className="space-y-6">
       <Card>
         <CardContent className="pt-6">
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+          {/* <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <p className="text-muted-foreground">
                 {t('current_location')}: {t('dock')} {selectedDock}
@@ -33,7 +33,7 @@ const OperatorInterface = () => {
                 {shiftStarted ? t('end_shift') : t('start_shift')}
               </Button>
             </div>
-          </div>
+          </div> */}
 
           <Tabs defaultValue="inbound" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
