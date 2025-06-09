@@ -18,7 +18,6 @@ const InboundOutbound = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("orders");
   const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -27,8 +26,8 @@ const InboundOutbound = () => {
   
   const itemsPerPage = 10;
 
-  // Filter and search logic
-  const filteredOrders = useMemo(() => {
+  // Filter and search logic for each tab
+  const getFilteredOrders = (category?: 'Inbound' | 'Outbound') => {
     return orders.filter(order => {
       const matchesSearch = 
         order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -37,17 +36,24 @@ const InboundOutbound = () => {
         order.partner.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.robotCode.toLowerCase().includes(searchTerm.toLowerCase());
       
-      const matchesCategory = categoryFilter === "all" || order.category === categoryFilter;
+      const matchesCategory = !category || order.category === category;
       const matchesStatus = statusFilter === "all" || order.status === statusFilter;
       
       return matchesSearch && matchesCategory && matchesStatus;
     });
-  }, [orders, searchTerm, categoryFilter, statusFilter]);
+  };
+
+  const allOrdersFiltered = getFilteredOrders();
+  const inboundOrdersFiltered = getFilteredOrders('Inbound');
+  const outboundOrdersFiltered = getFilteredOrders('Outbound');
 
   // Pagination
-  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedOrders = filteredOrders.slice(startIndex, startIndex + itemsPerPage);
+  const getPaginatedOrders = (filteredOrders: InboundOutboundOrder[]) => {
+    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedOrders = filteredOrders.slice(startIndex, startIndex + itemsPerPage);
+    return { totalPages, startIndex, paginatedOrders };
+  };
 
   const handleCreateOrder = (orderData: Omit<InboundOutboundOrder, 'id' | 'registrationTime'>) => {
     const newOrder: InboundOutboundOrder = {
@@ -120,28 +126,167 @@ const InboundOutbound = () => {
     );
   };
 
-  const getInboundStats = () => {
-    const inboundOrders = orders.filter(order => order.category === 'Inbound');
+  const getStats = (category?: 'Inbound' | 'Outbound') => {
+    const filteredOrders = category ? orders.filter(order => order.category === category) : orders;
     return {
-      total: inboundOrders.length,
-      pending: inboundOrders.filter(order => order.status === 'Pending').length,
-      processing: inboundOrders.filter(order => order.status === 'Processing').length,
-      completed: inboundOrders.filter(order => order.status === 'Completed').length,
+      total: filteredOrders.length,
+      pending: filteredOrders.filter(order => order.status === 'Pending').length,
+      processing: filteredOrders.filter(order => order.status === 'Processing').length,
+      completed: filteredOrders.filter(order => order.status === 'Completed').length,
     };
   };
 
-  const getOutboundStats = () => {
-    const outboundOrders = orders.filter(order => order.category === 'Outbound');
-    return {
-      total: outboundOrders.length,
-      pending: outboundOrders.filter(order => order.status === 'Pending').length,
-      processing: outboundOrders.filter(order => order.status === 'Processing').length,
-      completed: outboundOrders.filter(order => order.status === 'Completed').length,
-    };
+  const allStats = getStats();
+  const inboundStats = getStats('Inbound');
+  const outboundStats = getStats('Outbound');
+
+  // Component for rendering the detailed orders table
+  const OrdersTable = ({ filteredOrders, showCategory = false }: { filteredOrders: InboundOutboundOrder[], showCategory?: boolean }) => {
+    const { totalPages, startIndex, paginatedOrders } = getPaginatedOrders(filteredOrders);
+
+    return (
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search by ID, Task, SKU, Partner..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+          </div>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="All Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="Pending">Pending</SelectItem>
+              <SelectItem value="Processing">Processing</SelectItem>
+              <SelectItem value="Completed">Completed</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>STT</TableHead>
+                {showCategory && <TableHead>Category</TableHead>}
+                <TableHead>Task ID</TableHead>
+                <TableHead>SKU</TableHead>
+                <TableHead>Robot Code</TableHead>
+                <TableHead>Pickup Location</TableHead>
+                <TableHead>Dropoff Location</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Store Method</TableHead>
+                <TableHead>Store Code</TableHead>
+                <TableHead>Packing Method</TableHead>
+                <TableHead>Packing Code</TableHead>
+                <TableHead>Partner</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {paginatedOrders.map((order, index) => (
+                <TableRow key={order.id}>
+                  <TableCell>{startIndex + index + 1}</TableCell>
+                  {showCategory && <TableCell>{getCategoryBadge(order.category)}</TableCell>}
+                  <TableCell className="font-medium">{order.taskId}</TableCell>
+                  <TableCell>{order.sku}</TableCell>
+                  <TableCell>{order.robotCode}</TableCell>
+                  <TableCell>{order.pickupLocation}</TableCell>
+                  <TableCell>{order.dropoffLocation}</TableCell>
+                  <TableCell>{getStatusBadge(order.status)}</TableCell>
+                  <TableCell>{order.storeMethod}</TableCell>
+                  <TableCell>{order.storeCode}</TableCell>
+                  <TableCell>{order.packingMethod}</TableCell>
+                  <TableCell>{order.packingCode}</TableCell>
+                  <TableCell>{order.partner}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openEditForm(order)}
+                      >
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDeleteOrder(order.id)}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex items-center justify-between space-x-2 py-4">
+          <div className="text-sm text-muted-foreground">
+            Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredOrders.length)} of {filteredOrders.length} entries
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              const page = i + 1;
+              return (
+                <Button
+                  key={page}
+                  variant={currentPage === page ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </Button>
+              );
+            })}
+            {totalPages > 5 && <span className="px-2">...</span>}
+            {totalPages > 5 && (
+              <Button
+                variant={currentPage === totalPages ? "default" : "outline"}
+                size="sm"
+                onClick={() => setCurrentPage(totalPages)}
+              >
+                {totalPages}
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
-  const inboundStats = getInboundStats();
-  const outboundStats = getOutboundStats();
+  // Reset pagination when changing tabs
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="space-y-6">
@@ -164,7 +309,7 @@ const InboundOutbound = () => {
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-3 bg-muted/50">
           <TabsTrigger value="orders" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
             <Package className="h-4 w-4 mr-2" />
@@ -181,152 +326,47 @@ const InboundOutbound = () => {
         </TabsList>
 
         <TabsContent value="orders" className="mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{allStats.total}</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Pending</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-yellow-600">{allStats.pending}</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Processing</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-blue-600">{allStats.processing}</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Completed</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-green-600">{allStats.completed}</div>
+              </CardContent>
+            </Card>
+          </div>
+          
           <Card>
             <CardHeader>
               <CardTitle>All Orders</CardTitle>
-              <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                    <Input
-                      placeholder="Search by ID, Task, SKU, Partner..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-9"
-                    />
-                  </div>
-                </div>
-                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="All Categories" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    <SelectItem value="Inbound">Inbound</SelectItem>
-                    <SelectItem value="Outbound">Outbound</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="All Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="Pending">Pending</SelectItem>
-                    <SelectItem value="Processing">Processing</SelectItem>
-                    <SelectItem value="Completed">Completed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
             </CardHeader>
             <CardContent>
-              <div className="rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>STT</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Task ID</TableHead>
-                      <TableHead>SKU</TableHead>
-                      <TableHead>Robot Code</TableHead>
-                      <TableHead>Pickup Location</TableHead>
-                      <TableHead>Dropoff Location</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Store Method</TableHead>
-                      <TableHead>Store Code</TableHead>
-                      <TableHead>Packing Method</TableHead>
-                      <TableHead>Packing Code</TableHead>
-                      <TableHead>Partner</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {paginatedOrders.map((order, index) => (
-                      <TableRow key={order.id}>
-                        <TableCell>{startIndex + index + 1}</TableCell>
-                        <TableCell>{getCategoryBadge(order.category)}</TableCell>
-                        <TableCell className="font-medium">{order.taskId}</TableCell>
-                        <TableCell>{order.sku}</TableCell>
-                        <TableCell>{order.robotCode}</TableCell>
-                        <TableCell>{order.pickupLocation}</TableCell>
-                        <TableCell>{order.dropoffLocation}</TableCell>
-                        <TableCell>{getStatusBadge(order.status)}</TableCell>
-                        <TableCell>{order.storeMethod}</TableCell>
-                        <TableCell>{order.storeCode}</TableCell>
-                        <TableCell>{order.packingMethod}</TableCell>
-                        <TableCell>{order.packingCode}</TableCell>
-                        <TableCell>{order.partner}</TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => openEditForm(order)}
-                            >
-                              <Edit className="h-3 w-3" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleDeleteOrder(order.id)}
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-              
-              {/* Pagination */}
-              <div className="flex items-center justify-between space-x-2 py-4">
-                <div className="text-sm text-muted-foreground">
-                  Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredOrders.length)} of {filteredOrders.length} entries
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                  >
-                    Previous
-                  </Button>
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    const page = i + 1;
-                    return (
-                      <Button
-                        key={page}
-                        variant={currentPage === page ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setCurrentPage(page)}
-                      >
-                        {page}
-                      </Button>
-                    );
-                  })}
-                  {totalPages > 5 && <span className="px-2">...</span>}
-                  {totalPages > 5 && (
-                    <Button
-                      variant={currentPage === totalPages ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setCurrentPage(totalPages)}
-                    >
-                      {totalPages}
-                    </Button>
-                  )}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
-                  </Button>
-                </div>
-              </div>
+              <OrdersTable filteredOrders={allOrdersFiltered} showCategory={true} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -375,34 +415,7 @@ const InboundOutbound = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Order ID</TableHead>
-                    <TableHead>Task ID</TableHead>
-                    <TableHead>SKU</TableHead>
-                    <TableHead>Partner</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Robot Code</TableHead>
-                    <TableHead>Pickup Location</TableHead>
-                    <TableHead>Store Method</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {orders.filter(order => order.category === 'Inbound').slice(0, 10).map((order) => (
-                    <TableRow key={order.id}>
-                      <TableCell className="font-medium">{order.id}</TableCell>
-                      <TableCell>{order.taskId}</TableCell>
-                      <TableCell>{order.sku}</TableCell>
-                      <TableCell>{order.partner}</TableCell>
-                      <TableCell>{getStatusBadge(order.status)}</TableCell>
-                      <TableCell>{order.robotCode}</TableCell>
-                      <TableCell>{order.pickupLocation}</TableCell>
-                      <TableCell>{order.storeMethod}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <OrdersTable filteredOrders={inboundOrdersFiltered} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -451,34 +464,7 @@ const InboundOutbound = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Order ID</TableHead>
-                    <TableHead>Task ID</TableHead>
-                    <TableHead>SKU</TableHead>
-                    <TableHead>Partner</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Robot Code</TableHead>
-                    <TableHead>Dropoff Location</TableHead>
-                    <TableHead>Packing Method</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {orders.filter(order => order.category === 'Outbound').slice(0, 10).map((order) => (
-                    <TableRow key={order.id}>
-                      <TableCell className="font-medium">{order.id}</TableCell>
-                      <TableCell>{order.taskId}</TableCell>
-                      <TableCell>{order.sku}</TableCell>
-                      <TableCell>{order.partner}</TableCell>
-                      <TableCell>{getStatusBadge(order.status)}</TableCell>
-                      <TableCell>{order.robotCode}</TableCell>
-                      <TableCell>{order.dropoffLocation}</TableCell>
-                      <TableCell>{order.packingMethod}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <OrdersTable filteredOrders={outboundOrdersFiltered} />
             </CardContent>
           </Card>
         </TabsContent>
