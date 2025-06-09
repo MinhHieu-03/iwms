@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -94,6 +93,34 @@ const { t } = useTranslation();  const [activeTab, setActiveTab] = useState("2d"
         </div>
       </div>
 
+      {/* Area Statistics Summary Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+        <div className="text-center">
+          <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
+          <div className="text-xs text-muted-foreground">Total Racks</div>
+        </div>
+        <div className="text-center">
+          <div className="text-2xl font-bold text-green-600">{stats.occupied}</div>
+          <div className="text-xs text-muted-foreground">Occupied</div>
+        </div>
+        <div className="text-center">
+          <div className="text-2xl font-bold text-gray-600">{stats.empty}</div>
+          <div className="text-xs text-muted-foreground">Empty</div>
+        </div>
+        <div className="text-center">
+          <div className="text-2xl font-bold text-red-600">{stats.maintenance}</div>
+          <div className="text-xs text-muted-foreground">Maintenance</div>
+        </div>
+        <div className="text-center">
+          <div className="text-2xl font-bold text-yellow-600">{stats.reserved}</div>
+          <div className="text-xs text-muted-foreground">Reserved</div>
+        </div>
+        <div className="text-center">
+          <div className="text-2xl font-bold text-warehouse-primary">{stats.occupancyRate}%</div>
+          <div className="text-xs text-muted-foreground">Occupancy</div>
+        </div>
+      </div>
+
       {/* Area Selection Tabs */}
       <Card>
         <CardHeader>
@@ -113,34 +140,6 @@ const { t } = useTranslation();  const [activeTab, setActiveTab] = useState("2d"
               ))}
             </TabsList>
           </Tabs>
-          
-          {/* Area Statistics */}
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-6 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
-              <div className="text-xs text-muted-foreground">Total Racks</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{stats.occupied}</div>
-              <div className="text-xs text-muted-foreground">Occupied</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-600">{stats.empty}</div>
-              <div className="text-xs text-muted-foreground">Empty</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-red-600">{stats.maintenance}</div>
-              <div className="text-xs text-muted-foreground">Maintenance</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-yellow-600">{stats.reserved}</div>
-              <div className="text-xs text-muted-foreground">Reserved</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-warehouse-primary">{stats.occupancyRate}%</div>
-              <div className="text-xs text-muted-foreground">Occupancy</div>
-            </div>
-          </div>
         </CardContent>
       </Card>
 
