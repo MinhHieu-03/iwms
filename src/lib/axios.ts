@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { get } from 'lodash';
 
-export const BASE_URL = `http://${window.location.hostname}:3200`;
+export const BASE_URL = 'https://iwms-api.rostek.space'; // `http://${window.location.hostname}:3200`;
 console.log('BASE_URL', BASE_URL, window.location.hostname);
 
 type TResponseStatusCode = {
