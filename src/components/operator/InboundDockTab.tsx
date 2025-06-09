@@ -66,6 +66,8 @@ const InboundDockTab = ({ selectedDock, setSelectedDock }: InboundDockTabProps) 
   const handleCreateOrder = (orderData: InboundOrderFormData) => {
     const newOrder: InboundOutboundOrder = {
       ...orderData,
+      storeMethod: orderData.storeMethod as 'Bin' | 'Carton',
+      packingMethod: orderData.packingMethod as 'Carton' | 'Bag' | 'Kit',
       category: 'Inbound',
       id: `IN-${String(orders.length + 1).padStart(3, '0')}`,
       registrationTime: new Date().toISOString(),
@@ -204,7 +206,7 @@ const InboundDockTab = ({ selectedDock, setSelectedDock }: InboundDockTabProps) 
             <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
           </CardContent>
         </Card>
-      </div> */}
+      </div> */
 
       {/* Orders Table */}
       <Card>
