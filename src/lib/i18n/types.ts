@@ -280,4 +280,10 @@ export type TranslationKey =
   | 'mark_all_read'
   | 'clear_all'
   | 'no_notifications'
-  | 'notification_time';
+  | 'notification_time'
+  
+  // Warehouses Management
+  | 'warehouses_management'
+  | 'warehouses_management.name'
+  | 'warehouses_management.description'
+  | 'warehouses_management.createdAt';

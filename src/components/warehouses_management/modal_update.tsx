@@ -1,6 +1,6 @@
 import { RenderForm, TypeRenderForm } from "@/lib/render-form";
 import { Drawer, Form, Button } from "antd";
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 type TEdit = {
   title: string;
@@ -10,10 +10,15 @@ type TEdit = {
     isOpen: boolean;
     data?: Record<string, unknown>;
   };
-  setFormEdit: (formEdit: {
-    isOpen: boolean;
-    data?: Record<string, unknown>;
-  }) => void;
+  setFormEdit: Dispatch<
+    SetStateAction<
+      | {
+          isOpen: boolean;
+          data: unknown | Record<string, unknown>;
+        }
+      | Record<string, unknown>
+    >
+  >;
 };
 
 const ModalEdit = ({

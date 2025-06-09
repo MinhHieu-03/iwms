@@ -1,15 +1,18 @@
+import apiClient from '@/lib/axios';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 interface AuthState {
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
+  user: Record<string, unknown>;
 }
 
 const initialState: AuthState = {
   isAuthenticated: localStorage.getItem('isLoggedIn') === 'true',
   loading: false,
   error: null,
+  user: {},
 };
 
 interface LoginCredentials {
@@ -22,14 +25,14 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
-      // In a real app, this would be an API call
-      // For demo purposes, we're just checking hardcoded values
-      // Add a slight delay to simulate a network request
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      if (credentials.username === 'admin' && credentials.password === 'password') {
+      const {username, password} = credentials;
+      const {data} = await apiClient.post('/auth/login', {name: username, password});
+      const {metaData, msg} = data;
+      console.log('Login response:', metaData.access_token);
+      if (metaData && metaData.access_token) {
         localStorage.setItem('isLoggedIn', 'true');
-        return true;
+        localStorage.setItem('access_token', metaData.access_token);
+        return metaData;
       } else {
         return rejectWithValue('Invalid username or password');
       }
@@ -64,8 +67,10 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(login.fulfilled, (state) => {
+        console.log('Login successful___', state);
         state.isAuthenticated = true;
         state.loading = false;
+        state.user = state.user || {};
       })
       .addCase(login.rejected, (state, action: PayloadAction<unknown>) => {
         state.loading = false;

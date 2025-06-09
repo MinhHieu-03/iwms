@@ -11,7 +11,16 @@ export const en: Record<TranslationKey, string> = {
   welcome: 'Welcome',
   
   // Navigation & Sidebar
-  dashboard: 'Dashboard',
+  mark_all_read: 'Mark all as read',
+  clear_all: 'Clear all',
+  no_notifications: 'No new notifications',
+  notification_time: 'ago',
+  
+  // Warehouses Management
+  warehouses_management: 'Warehouse Management',
+  'warehouses_management.name': 'Name',
+  'warehouses_management.description': 'Description',
+  'warehouses_management.createdAt': 'Created At',
   operator_interface: 'Operator Interface',
   inbound_outbound: 'Inbound/Outbound',
   warehouse_layout: 'Warehouse Layout',
@@ -280,5 +289,11 @@ export const en: Record<TranslationKey, string> = {
   mark_all_read: 'Mark all as read',
   clear_all: 'Clear all',
   no_notifications: 'No notifications',
-  notification_time: 'ago'
+  notification_time: 'ago',
+  
+  // Warehouses Management
+  warehouses_management: 'Warehouse Management',
+  'warehouses_management.name': 'Name',
+  'warehouses_management.description': 'Description',
+  'warehouses_management.createdAt': 'Created At'
 };

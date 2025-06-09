@@ -281,5 +281,11 @@ export const vi: Record<TranslationKey, string> = {
   layout_config: 'Cấu hình bố cục',
   storage_model: 'Mô hình lưu trữ',
   inbound_shipments: 'Lô hàng nhập kho',
-  outbound_shipments: 'Lô hàng xuất kho'
+  outbound_shipments: 'Lô hàng xuất kho',
+  
+  // Warehouses Management
+  warehouses_management: 'Quản lý kho',
+  'warehouses_management.name': 'Tên',
+  'warehouses_management.description': 'Mô tả',
+  'warehouses_management.createdAt': 'Ngày tạo'
 };

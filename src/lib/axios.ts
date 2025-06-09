@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { get } from 'lodash';
 
-export const BASE_URL = `${'http://172.21.99.22:3100'}`;
-console.log('BASE_URL', BASE_URL);
+export const BASE_URL = `http://${window.location.hostname}:3200`;
+console.log('BASE_URL', BASE_URL, window.location.hostname);
 
 type TResponseStatusCode = {
     success: number;
@@ -18,7 +18,7 @@ const ResponseStatusCode: TResponseStatusCode = {
 };
 
 const timeout = 100000;
-const ACCESS_TOKEN = 'accessToken';
+const ACCESS_TOKEN = 'access_token';
 const REFRESH_TOKEN = 'refreshToken';
 const config: AxiosRequestConfig = {
     baseURL: BASE_URL,

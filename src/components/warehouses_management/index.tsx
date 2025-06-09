@@ -1,36 +1,31 @@
 import {
-  DownloadOutlined,
-  PlusOutlined,
-  UploadOutlined,
+  ReloadOutlined
 } from "@ant-design/icons";
 import type { UploadProps } from "antd";
-import { message, Table, Upload } from "antd";
+import { message, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
+import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Edit, Trash2, Filter, Building2, MapPin } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-
 import BasePagination from "@/components/ui/antd-pagination";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import apiClient from "@/lib/axios";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
+import {
+  domain,
+  lang_key,
+  RenderCol,
+  renderCreateForm,
+  renderEditForm,
+  DataType
+} from "./const";
 import ModalAdd from "./modal_create";
 import ModalEdit from "./modal_update";
-import { RenderCol, lang_key, title, domain } from "./const";
+
 const { list, create, update, upload, download, remove } = domain;
-interface DataType {
-  _id?: string;
-  sku: string;
-  storage_model: string;
-  action: string;
-  production_name: string;
-  carton_qty: number;
-  box_qty: number;
-  kit_qty: number;
-  createdAt?: string;
-}
+
 
 const App = () => {
   const { i18n, t } = useTranslation();
@@ -49,17 +44,13 @@ const App = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [formEdit, setFormEdit] = useState<{
     isOpen: boolean;
-    data: DataType;
+    data: DataType | Record<string, unknown>;
   }>({
     isOpen: false,
     data: {
-      sku: "",
-      storage_model: "",
-      action: "",
-      production_name: "",
-      carton_qty: 0,
-      box_qty: 0,
-      kit_qty: 0
+      name: "",
+      description: "",
+      createdAt: new Date().toISOString(),
     },
   });
   const [loading, setLoading] = useState(false);
@@ -74,7 +65,6 @@ const App = () => {
         limit: pageInfo.perPage,
         page: pageInfo.page,
       };
-      console.log("params", params);
       const { data } = await apiClient.post(list, params);
       if (data) {
         setDataList(data.metaData);
@@ -86,7 +76,7 @@ const App = () => {
       console.log("error", error);
     }
   };
-  const _handleFinish = (values: {[key: string]: unknown}) => {
+  const _handleFinish = (values: { [key: string]: unknown }) => {
     const payload = {
       ...values,
     };
@@ -103,7 +93,7 @@ const App = () => {
       });
   };
 
-  const _handleUpdateFinish = (values: {[key: string]: unknown}) => {
+  const _handleUpdateFinish = (values: { [key: string]: unknown }) => {
     const payload = {
       ...values,
     };
@@ -124,236 +114,23 @@ const App = () => {
   };
 
   const columns: ColumnsType<DataType> = useMemo(() => {
-    const col =  RenderCol({t});
+    const col = RenderCol({ t });
     console.log("col", col);
     return col || [];
   }, [pageInfo, i18n.language, t]);
-
-  const itemsRender = (dataRole: unknown, dataList: unknown) => {
-    return [
-      {
-        label: "SKU",
-        name: "sku",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_sku"),
-          },
-          () => ({
-            validator(_: unknown, value: unknown) {
-              const skuValid = dataList.find(
-                (data: unknown) => data?.sku === value
-              );
-              if (value && skuValid) {
-                return Promise.reject(new Error(t("validate.duplicate_sku")));
-              }
-              return Promise.resolve();
-            },
-          }),
-        ],
-        placeholder: `${t("common.input")} SKU`,
-      },
-      {
-        label: t(`${lang_key}.production_name`),
-        name: "production_name",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_production_name"),
-          },
-        ],
-        placeholder: `${t("common.input")} ${t(
-          `${lang_key}.production_name`
-        ).toLowerCase()}`,
-      },
-      {
-        label: t(`${lang_key}.storage_model`),
-        name: "storage_model",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_storage_model"),
-          },
-        ],
-        placeholder: `${t("common.input")} ${t(
-          `${lang_key}.storage_model`
-        ).toLowerCase()}`,
-      },
-      {
-        label: t(`${lang_key}.carton_qty`),
-        name: "carton_qty",
-        type: "number",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_carton_qty"),
-          },
-        ],
-        placeholder: `${t("common.input")} ${t(
-          `${lang_key}.carton_qty`
-        ).toLowerCase()}`,
-      },
-      {
-        label: t(`${lang_key}.box_qty`),
-        name: "box_qty",
-        type: "number",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_box_qty"),
-          },
-        ],
-        placeholder: `${t("common.input")} ${t(
-          `${lang_key}.box_qty`
-        ).toLowerCase()}`,
-      },
-      {
-        label: t(`${lang_key}.kit_qty`),
-        name: "kit_qty",
-        type: "number",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_kit_qty"),
-          },
-        ],
-        placeholder: `${t("common.input")} ${t(
-          `${lang_key}.kit_qty`
-        ).toLowerCase()}`,
-      },
-      {
-        label: t(`${lang_key}.action`),
-        name: "action",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_action"),
-          },
-        ],
-        placeholder: `${t("common.input")} ${t(
-          `${lang_key}.action`
-        ).toLowerCase()}`,
-      },
-    ];
-  };
-
-  const itemsRenderEdit = (dataRole: unknown) => {
-    return [
-      {
-        label: "SKU",
-        name: "sku",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_sku"),
-          },
-        ],
-        placeholder: `${t("common.input")} SKU`,
-      },
-      {
-        label: t(`${lang_key}.production_name`),
-        name: "production_name",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_production_name"),
-          },
-        ],
-        placeholder: `${t("common.input")} ${t(
-          `${lang_key}.production_name`
-        ).toLowerCase()}`,
-      },
-      {
-        label: t(`${lang_key}.storage_model`),
-        name: "storage_model",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_storage_model"),
-          },
-        ],
-        placeholder: `${t("common.input")} ${t(
-          `${lang_key}.storage_model`
-        ).toLowerCase()}`,
-      },
-      {
-        label: t(`${lang_key}.carton_qty`),
-        name: "carton_qty",
-        type: "number",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_carton_qty"),
-          },
-          {
-            type: "number",
-            message: t("validate.number_carton_qty"),
-          },
-        ],
-        placeholder: `${t("common.input")} ${t(
-          `${lang_key}.carton_qty`
-        ).toLowerCase()}`,
-      },
-      {
-        label: t(`${lang_key}.box_qty`),
-        name: "box_qty",
-        type: "number",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_box_qty"),
-          },
-          {
-            type: "number",
-            message: t("validate.number_box_qty"),
-          },
-        ],
-        placeholder: `${t("common.input")} ${t(
-          `${lang_key}.box_qty`
-        ).toLowerCase()}`,
-      },
-      {
-        label: t(`${lang_key}.kit_qty`),
-        name: "kit_qty",
-        type: "number",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_kit_qty"),
-          },
-          {
-            type: "number",
-            message: t("validate.number_kit_qty"),
-          },
-        ],
-        placeholder: `${t("common.input")} ${t(
-          `${lang_key}.kit_qty`
-        ).toLowerCase()}`,
-      },
-      {
-        label: t(`${lang_key}.action`),
-        name: "action",
-        rules: [
-          {
-            required: true,
-            message: t("validate.blank_action"),
-          },
-        ],
-        placeholder: `${t("common.input")} ${t(
-          `${lang_key}.action`
-        ).toLowerCase()}`,
-      },
-    ];
-  };
 
   useEffect(() => {
     // if (!permission.includes('r')) return;
     requestDataList();
   }, [pageInfo]);
 
+  const handleReload = () => {
+    requestDataList();
+  };
+
   return (
     <Card>
-      <Header setIsOpen={setIsOpen} requestDataList={requestDataList} />
+      <Header setIsOpen={setIsOpen} requestDataList={requestDataList} handleReload={handleReload} />
       <CardContent>
         <Table
           size="middle"
@@ -385,14 +162,14 @@ const App = () => {
       </CardContent>
       <ModalAdd
         title={t("btn.add_acc")}
-        itemsRender={itemsRender(dataRole, dataList)}
+        itemsRender={renderCreateForm(dataRole, dataList)}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         _handleFinish={_handleFinish}
       />
       <ModalEdit
         title={t("manager_acc.edit_acc")}
-        itemsRender={itemsRenderEdit(dataRole)}
+        itemsRender={renderEditForm(dataRole)}
         formEdit={formEdit}
         setFormEdit={setFormEdit}
         _handleFinish={_handleUpdateFinish}
@@ -401,7 +178,7 @@ const App = () => {
   );
 };
 
-const Header = ({ setIsOpen, requestDataList }) => {
+const Header = ({ setIsOpen, requestDataList, handleReload }) => {
   const { t } = useTranslation();
   const uploadProps: UploadProps = {
     name: "file",
@@ -459,22 +236,23 @@ const Header = ({ setIsOpen, requestDataList }) => {
         className="flex items-center justify-between"
         style={{ padding: "10px 0" }}
       >
-        <CardTitle>{t(`${lang_key}.${title}`)}</CardTitle>
+        <CardTitle>{t(lang_key)}</CardTitle>
         <div className="flex items-center">
           <>
-            <Button variant="default">
+            <Button onClick={()=> setIsOpen(true)} variant="default">
               <Plus className="mr-2 h-4 w-4" />
-              Create New Warehouse
+              {t("btn.create_new")}
             </Button>
-            <Upload {...uploadProps}>
+            {/* <Upload {...uploadProps}>
               <Button className="ml-2" variant="outline">
                 <UploadOutlined />
                 {t("btn.import")}
               </Button>
-            </Upload>
-            <Button className="ml-2" onClick={handleDownload} variant="outline">
-              <DownloadOutlined />
-              {t("btn.download")}
+            </Upload> */}
+            {/* <Button className="ml-2" onClick={handleDownload} variant="outline"> */}
+            <Button className="ml-2" onClick={handleReload} variant="outline">
+              <ReloadOutlined />
+              {t("btn.reload")}
             </Button>
           </>
         </div>
