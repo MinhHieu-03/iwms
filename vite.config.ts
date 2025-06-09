@@ -8,12 +8,20 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    strictPort: true,
+    allowedHosts: ['iwms.rostek.space'], // allow all incoming hosts
   },
   plugins: [
     react(),
     mode === 'development' &&
     componentTagger(),
   ].filter(Boolean),
+  preview: {
+    port: 8080,
+    strictPort: true,
+    host: '0.0.0.0',
+    allowedHosts: ['iwms.rostek.space'], // allow all incoming hosts
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
