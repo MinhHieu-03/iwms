@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { get } from 'lodash';
+import envConfig from '../config/env';
 
-export const BASE_URL = 'https://iwms-api.rostek.space'; // `http://${window.location.hostname}:3200`;
+export const BASE_URL = envConfig.API_BASE_URL;
 console.log('BASE_URL', BASE_URL, window.location.hostname);
 
 type TResponseStatusCode = {
@@ -18,7 +19,7 @@ const ResponseStatusCode: TResponseStatusCode = {
 };
 
 const timeout = 100000;
-const ACCESS_TOKEN = 'access_token';
+const ACCESS_TOKEN = envConfig.AUTH_STORAGE_KEY;
 const REFRESH_TOKEN = 'refreshToken';
 const config: AxiosRequestConfig = {
     baseURL: BASE_URL,
