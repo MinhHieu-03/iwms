@@ -18,6 +18,7 @@ import HelpFAQs from "./pages/HelpFAQs";
 import OperatorInterface from "./pages/OperatorInterface";
 import OperatorInbound from "./pages/OperatorInbound";
 import OperatorOutbound from "./pages/OperatorOutbound";
+import Outbound from "./pages/outbound";
 import OrderHistory from "./pages/OrderHistory";
 import NotFound from "./pages/NotFound";
 import UserEdit from "./pages/team/UserEdit";
@@ -43,6 +44,7 @@ function App() {
             <Routes>
               {/* Public route - accessible without authentication */}
               <Route path="/login" element={<Login />} />
+              <Route path="/oi/outbound" element={<Outbound />} />
               
               {/* Protected routes - require authentication */}
               <Route path="/*" element={
@@ -76,6 +78,7 @@ function App() {
                       <Route path="/operator-interface/inbound" element={<OperatorInbound />} />
                       <Route path="/operator-interface/outbound" element={<OperatorOutbound />} />
                       <Route path="/operator-interface/order/:orderId" element={<OrderDetails />} />
+                      
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Navbar>
