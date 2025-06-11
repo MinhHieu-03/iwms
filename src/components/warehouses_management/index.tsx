@@ -179,7 +179,7 @@ const App = () => {
           columns={columns}
           dataSource={dataList}
           pagination={false}
-          scroll={{ x: 800, y: 800 }}
+          scroll={{ x: 'calc(100vw - 640px)' }}
           onRow={(record, rowIndex) => {
             return {
               onClick: (e) => {
