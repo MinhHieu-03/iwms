@@ -11,6 +11,7 @@ export const en: Record<TranslationKey, string> = {
   welcome: 'Welcome',
   
   // Navigation & Sidebar
+  dashboard: 'Dashboard',
   mark_all_read: 'Mark all as read',
   clear_all: 'Clear all',
   no_notifications: 'No new notifications',
@@ -286,13 +287,48 @@ export const en: Record<TranslationKey, string> = {
   orders: 'Orders',
   'btn.reload': 'Reload',
   'btn.create_new': 'Create new',
+  'btn.add_acc': 'Add Account',
+  'btn.cancel': 'Cancel',
   'btn.delete': 'Delete',
   
+  // Area Management
+  'area.management': 'Area Management',
+  'area.create': 'Create New Area',
+  'area.edit': 'Edit Area',
+  'area.delete': 'Delete Area',
+  'area.delete_confirm': 'Are you sure you want to delete this area?',
+  'area.form.name': 'Area Name',
+  'area.form.description': 'Description',
+  'area.form.productions': 'Productions',
+  'area.form.status': 'Status',
+  'area.messages.create_success': 'Area created successfully',
+  'area.messages.update_success': 'Area updated successfully',
+  'area.messages.delete_success': 'Area deleted successfully',
+  'area.messages.create_error': 'Failed to create area',
+  'area.messages.update_error': 'Failed to update area',
+  'area.messages.delete_error': 'Failed to delete area',
+  
   // Common actions and messages
+  'common.name': 'Name',
+  'common.description': 'Description',
+  'common.warehouse': 'Warehouse',
+  'common.productions': 'Productions',
+  'common.status': 'Status',
+  'common.active': 'Active',
+  'common.inactive': 'Inactive',
+  'common.created_at': 'Created At',
+  'common.updated_at': 'Updated At',
   'common.delete': 'Delete',
   'common.cancel': 'Cancel',
   'common.confirm_delete': 'Confirm Delete',
   'common.confirm_delete_multiple': 'Are you sure you want to delete {{count}} selected items?',
   'common.delete_success': 'Items have been deleted successfully',
-  'common.delete_error': 'Error deleting items'
+  'common.delete_error': 'Error deleting items',
+  'common.create_success': 'Item created successfully',
+  'common.create_error': 'Error creating item',
+  'common.update_success': 'Item updated successfully',
+  'common.update_error': 'Error updating item',
+  'common.required': 'This field is required',
+  'common.select_productions': 'Select productions',
+  'common.select_warehouse': 'Select warehouse'
 };

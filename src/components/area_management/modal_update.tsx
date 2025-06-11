@@ -10,12 +10,20 @@ interface ModalEditProps {
     data: Partial<DataType>;
   };
   setFormEdit: (value: { isOpen: boolean; data: Partial<DataType> }) => void;
-  _handleFinish: (values: any) => void;
+  _handleFinish: (values: FormValues) => void;
 }
 
 interface Warehouse {
   _id: string;
   name: string;
+}
+
+interface FormValues {
+  name: string;
+  description?: string;
+  warehouse: string;
+  productions: string[];
+  isActive: boolean;
 }
 
 const ModalEdit = ({ formEdit, setFormEdit, _handleFinish }: ModalEditProps) => {
@@ -39,10 +47,16 @@ const ModalEdit = ({ formEdit, setFormEdit, _handleFinish }: ModalEditProps) => 
   }, [formEdit.isOpen]);
 
   useEffect(() => {
-    if (formEdit.isOpen) {
-      form.setFieldsValue(formEdit.data);
+    if (formEdit.isOpen && formEdit.data) {
+      const formData = {
+        ...formEdit.data,
+        warehouse: typeof formEdit.data.warehouse === 'object' 
+          ? formEdit.data.warehouse?._id 
+          : formEdit.data.warehouse
+      };
+      form.setFieldsValue(formData);
     }
-  }, [formEdit]);
+  }, [formEdit, form]);
 
   return (
     <Modal
@@ -71,7 +85,22 @@ const ModalEdit = ({ formEdit, setFormEdit, _handleFinish }: ModalEditProps) => 
           label={t("common.description")}
         >
           <Input.TextArea />
-        </Form.Item>        <Form.Item
+        </Form.Item>
+        <Form.Item
+          name="warehouse"
+          label={t("common.warehouse")}
+          rules={[{ required: true, message: t("common.required") }]}
+        >
+          <Select
+            style={{ width: '100%' }}
+            placeholder={t("common.select_warehouse")}
+            options={warehouses.map(warehouse => ({
+              label: warehouse.name,
+              value: warehouse._id
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
           name="productions"
           label={t("common.productions")}
           rules={[{ required: true, message: t("common.required") }]}

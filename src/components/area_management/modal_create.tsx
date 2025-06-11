@@ -6,12 +6,20 @@ import apiClient from "@/lib/axios";
 interface ModalAddProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  _handleFinish: (values: any) => void;
+  _handleFinish: (values: FormValues) => void;
 }
 
 interface Warehouse {
   _id: string;
   name: string;
+}
+
+interface FormValues {
+  name: string;
+  description?: string;
+  warehouse: string;
+  productions: string[];
+  isActive: boolean;
 }
 
 const ModalAdd = ({ isOpen, setIsOpen, _handleFinish }: ModalAddProps) => {
@@ -61,7 +69,22 @@ const ModalAdd = ({ isOpen, setIsOpen, _handleFinish }: ModalAddProps) => {
           label={t("common.description")}
         >
           <Input.TextArea />
-        </Form.Item>        <Form.Item
+        </Form.Item>
+        <Form.Item
+          name="warehouse"
+          label={t("common.warehouse")}
+          rules={[{ required: true, message: t("common.required") }]}
+        >
+          <Select
+            style={{ width: '100%' }}
+            placeholder={t("common.select_warehouse")}
+            options={warehouses.map(warehouse => ({
+              label: warehouse.name,
+              value: warehouse._id
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
           name="productions"
           label={t("common.productions")}
           rules={[{ required: true, message: t("common.required") }]}

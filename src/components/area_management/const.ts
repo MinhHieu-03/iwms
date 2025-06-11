@@ -5,6 +5,10 @@ export interface DataType {
   _id: string;
   name: string;
   description: string;
+  warehouse: {
+    _id: string;
+    name: string;
+  };
   productions: string[];
   isActive: boolean;
   createdAt: string;
@@ -30,6 +34,12 @@ export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<Da
     title: t("common.description"),
     dataIndex: "description",
     key: "description",
+  },
+  {
+    title: t("common.warehouse"),
+    dataIndex: "warehouse",
+    key: "warehouse",
+    render: (warehouse: { _id: string; name: string }) => warehouse.name || t("common.not_assigned"),
   },
   {
     title: t("common.productions"),
