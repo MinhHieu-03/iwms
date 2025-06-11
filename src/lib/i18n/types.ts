@@ -275,6 +275,12 @@ export type TranslationKey =
   | 'customer'
   | 'items'
   | 'orders'
+
+  // Buttons
+  | 'btn.reload'
+  | 'btn.create_new'
+  | 'btn.add_acc'
+  | 'btn.cancel'
   
   // Notifications
   | 'mark_all_read'
@@ -286,4 +292,13 @@ export type TranslationKey =
   | 'warehouses_management'
   | 'warehouses_management.name'
   | 'warehouses_management.description'
-  | 'warehouses_management.createdAt';
+  | 'warehouses_management.createdAt'
+  
+  // Common actions and messages
+  | 'common.delete'
+  | 'common.cancel'
+  | 'common.confirm_delete'
+  | 'common.confirm_delete_multiple'
+  | 'common.delete_success'
+  | 'common.delete_error'
+  | 'btn.delete';

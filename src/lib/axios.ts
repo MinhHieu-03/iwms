@@ -162,8 +162,8 @@ const apiClient = {
         // .then((res) => _handleSuccess(res, option))
         // .catch((err) => _handleError(err, option));
     },
-    delete: (url: string, data = {}) => {
-        return request({ method: 'delete', url, params: data })
+    delete: (url: string, data = {}, body) => {
+        return request({ method: 'delete', url, params: data, data: body })
         // .then((res) => _handleSuccess(res, option))
         // .catch((err) => _handleError(err, option));
     },

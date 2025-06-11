@@ -17,7 +17,7 @@ export const domain = {
   update: "warehouse",
   upload: "upload",
   download: "download",
-  remove: "remove",
+  remove: "warehouse",
 };
 export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
   return [

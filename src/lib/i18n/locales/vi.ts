@@ -287,5 +287,19 @@ export const vi: Record<TranslationKey, string> = {
   warehouses_management: 'Quản lý kho',
   'warehouses_management.name': 'Tên',
   'warehouses_management.description': 'Mô tả',
-  'warehouses_management.createdAt': 'Ngày tạo'
+  'warehouses_management.createdAt': 'Ngày tạo',
+  // Buttons
+  'btn.reload': 'Tải lại',
+  'btn.create_new': 'Tạo mới',
+  'btn.cancel': 'Hủy',
+  'btn.delete': 'Xóa',
+  'btn.add_acc': 'Thêm tài khoản',
+  
+  // Common actions and messages
+  'common.delete': 'Xóa',
+  'common.cancel': 'Hủy',
+  'common.confirm_delete': 'Xác nhận xóa',
+  'common.confirm_delete_multiple': 'Bạn có chắc chắn muốn xóa {{count}} mục đã chọn?',
+  'common.delete_success': 'Đã xóa thành công',
+  'common.delete_error': 'Lỗi khi xóa mục'
 };

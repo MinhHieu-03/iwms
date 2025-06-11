@@ -1,8 +1,6 @@
-import {
-  ReloadOutlined
-} from "@ant-design/icons";
+import { ReloadOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
-import { message, Table } from "antd";
+import { message, Table, Modal } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -19,13 +17,12 @@ import {
   RenderCol,
   renderCreateForm,
   renderEditForm,
-  DataType
+  DataType,
 } from "./const";
 import ModalAdd from "./modal_create";
 import ModalEdit from "./modal_update";
 
 const { list, create, update, upload, download, remove } = domain;
-
 
 const App = () => {
   const { i18n, t } = useTranslation();
@@ -57,6 +54,7 @@ const App = () => {
   const [total, setTotal] = useState<number>(0);
   const [dataList, setDataList] = useState<DataType[]>([]);
   const [dataRole, setDataRole] = useState<unknown[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const requestDataList = async () => {
     try {
@@ -113,11 +111,39 @@ const App = () => {
       });
   };
 
+  const handleDeleteSelected = () => {
+    if (selectedRowKeys.length === 0) return;
+
+    Modal.confirm({
+      title: t("common.confirm_delete"),
+      content: t("common.confirm_delete_multiple", {
+        count: selectedRowKeys.length,
+      }),
+      okText: t("common.delete"),
+      okType: "danger",
+      cancelText: t("common.cancel"),
+      onOk: async () => {
+        try {
+          setLoading(true);
+          // Assuming API endpoint accepts array of ids
+          await apiClient.delete(`${remove}`, {}, { ids: selectedRowKeys});
+          message.success(t("common.delete_success"));
+          setSelectedRowKeys([]);
+          requestDataList();
+        } catch (error) {
+          console.error("Delete error:", error);
+          message.error(t("common.delete_error"));
+          setLoading(false);
+        }
+      },
+    });
+  };
+
   const columns: ColumnsType<DataType> = useMemo(() => {
     const col = RenderCol({ t });
     console.log("col", col);
     return col || [];
-  }, [pageInfo, i18n.language, t]);
+  }, [t]);
 
   useEffect(() => {
     // if (!permission.includes('r')) return;
@@ -128,11 +154,25 @@ const App = () => {
     requestDataList();
   };
 
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (selectedKeys: React.Key[]) => {
+      setSelectedRowKeys(selectedKeys);
+    },
+  };
+
   return (
     <Card>
-      <Header setIsOpen={setIsOpen} requestDataList={requestDataList} handleReload={handleReload} />
+      <Header
+        setIsOpen={setIsOpen}
+        requestDataList={requestDataList}
+        handleReload={handleReload}
+        selectedRowKeys={selectedRowKeys}
+        onDelete={handleDeleteSelected}
+      />
       <CardContent>
         <Table
+          rowSelection={rowSelection}
           size="middle"
           rowKey="_id"
           loading={loading}
@@ -142,7 +182,13 @@ const App = () => {
           scroll={{ x: 800, y: 800 }}
           onRow={(record, rowIndex) => {
             return {
-              onClick: () => {
+              onClick: (e) => {
+                // Prevent row click action when clicking on checkboxes
+                if (
+                  (e.target as HTMLElement).closest(".ant-checkbox-wrapper")
+                ) {
+                  return;
+                }
                 setFormEdit({
                   isOpen: true,
                   data: record,
@@ -178,7 +224,13 @@ const App = () => {
   );
 };
 
-const Header = ({ setIsOpen, requestDataList, handleReload }) => {
+const Header = ({
+  setIsOpen,
+  requestDataList,
+  handleReload,
+  selectedRowKeys = [],
+  onDelete,
+}) => {
   const { t } = useTranslation();
   const uploadProps: UploadProps = {
     name: "file",
@@ -239,10 +291,16 @@ const Header = ({ setIsOpen, requestDataList, handleReload }) => {
         <CardTitle>{t(lang_key)}</CardTitle>
         <div className="flex items-center">
           <>
-            <Button onClick={()=> setIsOpen(true)} variant="default">
+            <Button onClick={() => setIsOpen(true)} variant="default">
               <Plus className="mr-2 h-4 w-4" />
               {t("btn.create_new")}
             </Button>
+            {selectedRowKeys.length > 0 && (
+              <Button onClick={onDelete} variant="destructive" className="ml-2">
+                <DeleteOutlined className="mr-2" />
+                {t("btn.delete")} ({selectedRowKeys.length})
+              </Button>
+            )}
             {/* <Upload {...uploadProps}>
               <Button className="ml-2" variant="outline">
                 <UploadOutlined />

@@ -284,16 +284,15 @@ export const en: Record<TranslationKey, string> = {
   customer: 'Customer',
   items: 'Items',
   orders: 'Orders',
+  'btn.reload': 'Reload',
+  'btn.create_new': 'Create new',
+  'btn.delete': 'Delete',
   
-  // Notifications
-  mark_all_read: 'Mark all as read',
-  clear_all: 'Clear all',
-  no_notifications: 'No notifications',
-  notification_time: 'ago',
-  
-  // Warehouses Management
-  warehouses_management: 'Warehouse Management',
-  'warehouses_management.name': 'Name',
-  'warehouses_management.description': 'Description',
-  'warehouses_management.createdAt': 'Created At'
+  // Common actions and messages
+  'common.delete': 'Delete',
+  'common.cancel': 'Cancel',
+  'common.confirm_delete': 'Confirm Delete',
+  'common.confirm_delete_multiple': 'Are you sure you want to delete {{count}} selected items?',
+  'common.delete_success': 'Items have been deleted successfully',
+  'common.delete_error': 'Error deleting items'
 };
