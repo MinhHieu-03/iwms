@@ -10,8 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import apiClient from "@/lib/axios";
 
 import { domain, lang_key, RenderCol, DataType } from "./const";
-import ModalAdd from "./modal_create";
-import ModalEdit from "./modal_update";
+import ModalAdd, { type FormValues } from "./modal_create";
+import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
 
 const { list, create, update, remove } = domain;
 
@@ -47,7 +47,7 @@ const AreaManagement = () => {
     }
   };
 
-  const _handleFinish = (values: { [key: string]: unknown }) => {
+  const _handleFinish = (values: FormValues) => {
     const payload = {
       ...values,
     };
@@ -65,7 +65,7 @@ const AreaManagement = () => {
       });
   };
 
-  const _handleUpdateFinish = (values: { [key: string]: unknown }) => {
+  const _handleUpdateFinish = (values: FormValuesEdit) => {
     const payload = {
       ...values,
     };
@@ -137,12 +137,20 @@ const AreaManagement = () => {
               {t("btn.create_new")}
             </Button>
             {selectedRowKeys.length > 0 && (
-              <Button onClick={handleDeleteSelected} variant="destructive" className="ml-2">
+              <Button
+                onClick={handleDeleteSelected}
+                variant="destructive"
+                className="ml-2"
+              >
                 <DeleteOutlined className="mr-2" />
                 {t("btn.delete")} ({selectedRowKeys.length})
               </Button>
             )}
-            <Button className="ml-2" onClick={requestDataList} variant="outline">
+            <Button
+              className="ml-2"
+              onClick={requestDataList}
+              variant="outline"
+            >
               <ReloadOutlined />
               {t("btn.reload")}
             </Button>
@@ -158,7 +166,7 @@ const AreaManagement = () => {
           columns={columns}
           dataSource={dataList}
           pagination={false}
-          scroll={{ x: 'calc(100vw - 640px)' }}
+          scroll={{ x: "calc(100vw - 640px)" }}
           onRow={(record) => ({
             onClick: (e) => {
               if (!(e.target as HTMLElement).closest(".ant-checkbox-wrapper")) {

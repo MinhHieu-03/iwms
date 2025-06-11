@@ -14,7 +14,7 @@ interface Warehouse {
   name: string;
 }
 
-interface FormValues {
+export interface FormValues {
   name: string;
   description?: string;
   warehouse: string;
