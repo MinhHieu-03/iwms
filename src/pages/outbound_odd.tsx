@@ -15,8 +15,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Package, Play, PackageCheck, Search } from "lucide-react";
 import { mockOrders, type Order } from "@/data/operatorData";
-import PickingDrawer from "@/components/PickingDrawer";
 import { Input } from "antd";
+
+import PickingDrawer from "@/components/odd_outbound/OddPickingDrawer";
 
 const OrdersTab: React.FC = () => {
   const { toast } = useToast();

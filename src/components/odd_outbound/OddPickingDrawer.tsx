@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Drawer, Table, Input, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Search } from "lucide-react";
-import PickingItemModal from "./PickingItemModal";
+import PickingItemModal from "./OddPickingItemModal";
 
 interface PickingItem {
   no: number;

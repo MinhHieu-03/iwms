@@ -52,12 +52,34 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
       (/^\d{0,4}-?\d{0,4}$/.test(value) && value.length === 9)
     ) {
       form.setFieldValue("sku", value);
+
+      // Voice feedback for SKU entry
+      if (value && "speechSynthesis" in window) {
+        const utterance = new SpeechSynthesisUtterance(`OK`);
+        utterance.rate = 0.9;
+        utterance.volume = 0.5;
+        speechSynthesis.speak(utterance);
+      }
+
       setValue("");
     } else if (value === "OK") {
+      // Voice feedback for SKU entry
+      if (value && "speechSynthesis" in window) {
+        const utterance = new SpeechSynthesisUtterance(`Next`);
+        utterance.rate = 0.9;
+        utterance.volume = 0.5;
+        speechSynthesis.speak(utterance);
+      }
       handleClose();
       return;
     } else if (value === "Cancel") {
       setCurrent(0);
+      if (value && "speechSynthesis" in window) {
+        const utterance = new SpeechSynthesisUtterance(`Cancel`);
+        utterance.rate = 0.9;
+        utterance.volume = 0.5;
+        speechSynthesis.speak(utterance);
+      }
     }
   };
 
@@ -144,6 +166,13 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
                   if (!isNaN(+value)) {
                     form.setFieldValue("quantity", value);
                     setValue("");
+                    // Voice feedback for SKU entry
+                    if (value && "speechSynthesis" in window) {
+                      const utterance = new SpeechSynthesisUtterance(`OK`);
+                      utterance.rate = 0.9;
+                      utterance.volume = 0.5;
+                      speechSynthesis.speak(utterance);
+                    }
                   }
                 }
               }}
