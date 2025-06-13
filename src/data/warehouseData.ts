@@ -503,13 +503,13 @@ export const storageHierarchyNodes: Node[] = [
     type: 'default',
     data: { label: 'Plastic Bin' },
     position: { x: 400, y: 50 },
-    style: { 
-      background: '#e3f2fd', 
-      border: '2px solid #1976d2',
-      borderRadius: '12px',
-      padding: '10px',
-      minWidth: '120px'
-    }
+    // style: { 
+    //   background: '#e3f2fd', 
+    //   border: '2px solid #1976d2',
+    //   borderRadius: '12px',
+    //   padding: '10px',
+    //   minWidth: '120px'
+    // }
   },
   {
     id: 'carton-1',
@@ -598,7 +598,7 @@ export const storageHierarchyEdges: Edge[] = [
     target: 'carton-1',
     animated: true,
     style: { stroke: '#1976d2', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
+    // markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
   },
   {
     id: 'e-plastic-box',

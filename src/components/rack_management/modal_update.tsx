@@ -17,7 +17,10 @@ interface AreaConfigType {
     _id: string;
     name: string;
     description: string;
-    warehouse: string;
+    warehouse: {
+        _id: string;
+        name: string;
+    };
     status: string;
 }
 
@@ -120,9 +123,8 @@ const ModalEdit = ({ isOpen, onClose, onFinish, initialValues }: Props) => {
   const warehouse = Form.useWatch('warehouse', form);
   // Filter area configs based on selected warehouse
   const filteredAreaConfigs = warehouse
-    ? areaConfigs.filter(area => area.warehouse === warehouse)
+    ? areaConfigs.filter(area => area.warehouse._id === warehouse)
     : [];
-
   return (
     <Modal
       open={isOpen}
@@ -269,10 +271,6 @@ const ModalEdit = ({ isOpen, onClose, onFinish, initialValues }: Props) => {
           label={t("rack.rcs")} 
           rules={[
             { required: true, message: t("common.required") },
-            { 
-              pattern: /^[A-Za-z0-9]+$/, 
-              message: t("rack.validation.rcs_format") 
-            }
           ]}
           tooltip={t("rack.rcs.tooltip")}
         >

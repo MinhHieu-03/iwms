@@ -390,3 +390,5 @@ export type TranslationKey =
   | 'common.create'
   | 'common.save'
   | 'common.not_assigned'
+  | 'common.column'
+  | 'common.row'

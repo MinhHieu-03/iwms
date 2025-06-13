@@ -385,5 +385,7 @@ export const en: Record<TranslationKey, string> = {
   'common.edit': 'Edit',
   'common.create': 'Create',
   'common.save': 'Save',
+  'common.column': 'column',
+  'common.row': 'Row',
   'common.not_assigned': 'Not Assigned',
 };
