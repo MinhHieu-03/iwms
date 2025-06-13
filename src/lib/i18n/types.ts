@@ -26,6 +26,21 @@ export type TranslationKey =
   | 'rack.position.bottom_right'
   | 'rack.direction.horizontal'
   | 'rack.direction.vertical'
+  | 'rack.messages.create_success'
+  | 'rack.messages.update_success'
+  | 'rack.messages.delete_success'
+  | 'rack.messages.create_error'
+  | 'rack.messages.update_error'
+  | 'rack.messages.delete_error'
+  | 'rack.validation.location_code_format'
+  | 'rack.validation.rcs_format'
+  | 'rack.search.placeholder'
+  | 'rack.filter.all_statuses'
+  | 'rack.filter.all_warehouses'
+  | 'rack.filter.clear_filters'
+  | 'rack.sort.location_code'
+  | 'rack.sort.status'
+  | 'rack.sort.warehouse'
   
   // Validation
   | 'validation.alphanumeric'
@@ -368,4 +383,10 @@ export type TranslationKey =
   | 'common.required'
   | 'common.select_productions'
   | 'common.select_warehouse'
-  | 'btn.delete';
+  | 'btn.delete'
+  // Common actions
+  | 'common.actions'
+  | 'common.edit'
+  | 'common.create'
+  | 'common.save'
+  | 'common.not_assigned'

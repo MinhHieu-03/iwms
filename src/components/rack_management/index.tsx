@@ -1,7 +1,7 @@
-import { ReloadOutlined, DeleteOutlined } from "@ant-design/icons";
-import { message, Table, Modal } from "antd";
+import { ReloadOutlined, DeleteOutlined, SearchOutlined } from "@ant-design/icons";
+import { message, Table, Modal, Input, Select, Space } from "antd";
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,9 @@ const RackManagement = () => {
     const [total, setTotal] = useState<number>(0);
     const [dataList, setDataList] = useState<RackDataType[]>([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+    const [searchText, setSearchText] = useState<string>("");
+    const [statusFilter, setStatusFilter] = useState<string>("");
+    const [warehouseFilter, setWarehouseFilter] = useState<string>("");
     const [formEdit, setFormEdit] = useState<{
         isOpen: boolean;
         data: RackDataType | Record<string, unknown>;
@@ -31,7 +34,7 @@ const RackManagement = () => {
         data: {},
     });
 
-    const requestDataList = async () => {
+    const requestDataList = useCallback(async () => {
         try {
             setLoading(true);
             const { data } = await apiClient.post(list, {
@@ -45,7 +48,7 @@ const RackManagement = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [pageInfo]);
 
     const handleFinish = (values: FormValues) => {
         const payload = {
@@ -55,12 +58,12 @@ const RackManagement = () => {
         apiClient
             .post(create, payload)
             .then(() => {
-                message.success(t("common.create_success"));
+                message.success(t("rack.messages.create_success"));
                 setIsOpen(false);
                 requestDataList();
             })
             .catch((err) => {
-                message.error(t("common.create_error"));
+                message.error(t("rack.messages.create_error"));
                 console.error(err);
             });
     };
@@ -73,7 +76,7 @@ const RackManagement = () => {
         apiClient
             .patch(`${update}/${formEdit?.data?._id}`, payload)
             .then(() => {
-                message.success(t("common.update_success"));
+                message.success(t("rack.messages.update_success"));
                 setFormEdit({
                     isOpen: false,
                     data: {},
@@ -81,7 +84,7 @@ const RackManagement = () => {
                 requestDataList();
             })
             .catch((err) => {
-                message.error(t("common.update_error"));
+                message.error(t("rack.messages.update_error"));
                 console.error(err);
             });
     };
@@ -102,20 +105,69 @@ const RackManagement = () => {
                     await Promise.all(
                         selectedRowKeys.map((id) => apiClient.delete(`${remove}/${id}`))
                     );
-                    message.success(t("common.delete_success"));
+                    message.success(t("rack.messages.delete_success"));
                     setSelectedRowKeys([]);
                     requestDataList();
                 } catch (error) {
                     console.error(error);
-                    message.error(t("common.delete_error"));
+                    message.error(t("rack.messages.delete_error"));
                 }
             },
         });
     };
 
+    const clearFilters = () => {
+        setSearchText("");
+        setStatusFilter("");
+        setWarehouseFilter("");
+    };
+
     useEffect(() => {
         requestDataList();
-    }, [pageInfo]);
+    }, [requestDataList]);
+
+    // Filtered and searched data
+    const filteredData = useMemo(() => {
+        let filtered = dataList;
+
+        // Apply search filter
+        if (searchText) {
+            filtered = filtered.filter(item =>
+                item.location_code.toLowerCase().includes(searchText.toLowerCase()) ||
+                item.warehouse?.name?.toLowerCase().includes(searchText.toLowerCase()) ||
+                item.area_config?.name?.toLowerCase().includes(searchText.toLowerCase())
+            );
+        }
+
+        // Apply status filter
+        if (statusFilter) {
+            filtered = filtered.filter(item => item.status === statusFilter);
+        }
+
+        // Apply warehouse filter
+        if (warehouseFilter) {
+            filtered = filtered.filter(item => item.warehouse?._id === warehouseFilter);
+        }
+
+        return filtered;
+    }, [dataList, searchText, statusFilter, warehouseFilter]);
+
+    // Get unique statuses and warehouses for filter options
+    const statusOptions = useMemo(() => {
+        const statuses = [...new Set(dataList.map(item => item.status))];
+        return statuses.map(status => ({
+            label: t(`rack.status.${status}`),
+            value: status
+        }));
+    }, [dataList, t]);
+
+    const warehouseOptions = useMemo(() => {
+        const warehouses = [...new Set(dataList.map(item => item.warehouse))];
+        return warehouses.filter(Boolean).map(warehouse => ({
+            label: warehouse.name,
+            value: warehouse._id
+        }));
+    }, [dataList]);
 
     const columns = [
         ...RenderCol({ t }),
@@ -170,6 +222,49 @@ const RackManagement = () => {
                         </Button>
                     </div>
                 </div>
+                
+                {/* Search and Filter Controls */}
+                <div className="flex flex-wrap gap-4 mt-4">
+                    <Input
+                        placeholder={t("rack.search.placeholder")}
+                        prefix={<SearchOutlined />}
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        style={{ width: 300 }}
+                        allowClear
+                    />
+                    <Select
+                        placeholder={t("rack.filter.all_statuses")}
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                        style={{ width: 150 }}
+                        allowClear
+                        options={[
+                            { label: t("rack.filter.all_statuses"), value: "" },
+                            ...statusOptions
+                        ]}
+                    />
+                    <Select
+                        placeholder={t("rack.filter.all_warehouses")}
+                        value={warehouseFilter}
+                        onChange={setWarehouseFilter}
+                        style={{ width: 200 }}
+                        allowClear
+                        options={[
+                            { label: t("rack.filter.all_warehouses"), value: "" },
+                            ...warehouseOptions
+                        ]}
+                    />
+                    {(searchText || statusFilter || warehouseFilter) && (
+                        <Button
+                            variant="outline"
+                            onClick={clearFilters}
+                            size="sm"
+                        >
+                            {t("rack.filter.clear_filters")}
+                        </Button>
+                    )}
+                </div>
             </CardHeader>
 
             <CardContent>
@@ -177,7 +272,7 @@ const RackManagement = () => {
                     rowKey="_id"
                     loading={loading}
                     columns={columns}
-                    dataSource={dataList}
+                    dataSource={filteredData}
                     pagination={false}
                     rowSelection={{
                         selectedRowKeys,
@@ -187,7 +282,7 @@ const RackManagement = () => {
                 <BasePagination
                     current={pageInfo.page}
                     pageSize={pageInfo.perPage}
-                    total={total}
+                    total={filteredData.length}
                     onChange={(page, perPage) => { setPageInfo({ page, perPage }); }}
                 />
             </CardContent>

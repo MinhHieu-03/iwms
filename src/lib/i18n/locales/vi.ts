@@ -361,6 +361,21 @@ export const vi: Record<TranslationKey, string> = {
   'rack.position.bottom_right': 'Dưới bên phải',
   'rack.direction.horizontal': 'Ngang',
   'rack.direction.vertical': 'Dọc',
+  'rack.messages.create_success': 'Tạo kệ thành công',
+  'rack.messages.update_success': 'Cập nhật kệ thành công',
+  'rack.messages.delete_success': 'Xóa kệ thành công',
+  'rack.messages.create_error': 'Lỗi khi tạo kệ',
+  'rack.messages.update_error': 'Lỗi khi cập nhật kệ',
+  'rack.messages.delete_error': 'Lỗi khi xóa kệ',
+  'rack.validation.location_code_format': 'Mã vị trí phải là chữ và số với dấu gạch ngang tùy chọn',
+  'rack.validation.rcs_format': 'Mã định danh RCS phải là chữ và số',
+  'rack.search.placeholder': 'Tìm kiếm theo mã vị trí, kho, hoặc khu vực...',
+  'rack.filter.all_statuses': 'Tất cả trạng thái',
+  'rack.filter.all_warehouses': 'Tất cả kho',
+  'rack.filter.clear_filters': 'Xóa bộ lọc',
+  'rack.sort.location_code': 'Sắp xếp theo mã vị trí',
+  'rack.sort.status': 'Sắp xếp theo trạng thái',
+  'rack.sort.warehouse': 'Sắp xếp theo kho',
 
   // Validation
   'validation.alphanumeric': 'Chỉ được phép sử dụng chữ cái, số và dấu gạch ngang',
@@ -369,5 +384,11 @@ export const vi: Record<TranslationKey, string> = {
   // Selection prompts
   'common.select_area': 'Chọn cấu hình khu vực',
   'common.select_warehouse_first': 'Vui lòng chọn kho trước',
-  'common.select_warehouse': 'Chọn kho',
+
+  // Common actions
+  'common.actions': 'Hành động',
+  'common.edit': 'Chỉnh sửa',
+  'common.create': 'Tạo',
+  'common.save': 'Lưu',
+  'common.not_assigned': 'Chưa được gán',
 };

@@ -96,8 +96,14 @@ const ModalEdit = ({ isOpen, onClose, onFinish, initialValues }: Props) => {
     if (isOpen && Object.keys(initialValues).length > 0) {
       form.setFieldsValue({
         ...initialValues,
-        warehouse: initialValues?.warehouse?._id || initialValues.warehouse,
-        area_config: initialValues?.area_config?._id || initialValues.area_config,
+        warehouse:
+          typeof initialValues.warehouse === "object" && initialValues.warehouse !== null && "_id" in initialValues.warehouse
+            ? (initialValues.warehouse as { _id: string })._id
+            : initialValues.warehouse,
+        area_config:
+          typeof initialValues.area_config === "object" && initialValues.area_config !== null && "_id" in initialValues.area_config
+            ? (initialValues.area_config as { _id: string })._id
+            : initialValues.area_config,
     });
     }
   }, [form, initialValues, isOpen]);
@@ -150,10 +156,13 @@ const ModalEdit = ({ isOpen, onClose, onFinish, initialValues }: Props) => {
           label={t("rack.location_code")}
           rules={[
             { required: true, message: t("common.required") },
-            { pattern: /^[A-Za-z0-9-]+$/, message: t("validation.alphanumeric") }
+            { 
+              pattern: /^[A-Za-z0-9-]+$/, 
+              message: t("rack.validation.location_code_format") 
+            }
           ]}
         >
-          <Input />
+          <Input placeholder="e.g., A1-01-L" />
         </Form.Item>
 
         <Form.Item 
@@ -258,11 +267,16 @@ const ModalEdit = ({ isOpen, onClose, onFinish, initialValues }: Props) => {
         <Form.Item 
           name="rcs" 
           label={t("rack.rcs")} 
-          rules={[{ required: true, message: t("common.required") }]
-          }
+          rules={[
+            { required: true, message: t("common.required") },
+            { 
+              pattern: /^[A-Za-z0-9]+$/, 
+              message: t("rack.validation.rcs_format") 
+            }
+          ]}
           tooltip={t("rack.rcs.tooltip")}
         >
-          <Input />
+          <Input placeholder="e.g., RCS001" />
         </Form.Item>
 
         {error && (

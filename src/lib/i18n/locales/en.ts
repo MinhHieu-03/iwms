@@ -356,6 +356,21 @@ export const en: Record<TranslationKey, string> = {
   'rack.position.bottom_right': 'Bottom Right',
   'rack.direction.horizontal': 'Horizontal',
   'rack.direction.vertical': 'Vertical',
+  'rack.messages.create_success': 'Rack created successfully',
+  'rack.messages.update_success': 'Rack updated successfully',
+  'rack.messages.delete_success': 'Rack deleted successfully',
+  'rack.messages.create_error': 'Failed to create rack',
+  'rack.messages.update_error': 'Failed to update rack',
+  'rack.messages.delete_error': 'Failed to delete rack',
+  'rack.validation.location_code_format': 'Location code must be alphanumeric with optional hyphens',
+  'rack.validation.rcs_format': 'RCS identifier must be alphanumeric',
+  'rack.search.placeholder': 'Search by location code, warehouse, or area...',
+  'rack.filter.all_statuses': 'All Statuses',
+  'rack.filter.all_warehouses': 'All Warehouses',
+  'rack.filter.clear_filters': 'Clear Filters',
+  'rack.sort.location_code': 'Sort by Location Code',
+  'rack.sort.status': 'Sort by Status',
+  'rack.sort.warehouse': 'Sort by Warehouse',
 
   // Validation
   'validation.alphanumeric': 'Only letters, numbers and hyphens are allowed',
@@ -364,5 +379,11 @@ export const en: Record<TranslationKey, string> = {
   // Selection prompts
   'common.select_area': 'Select an area configuration',
   'common.select_warehouse_first': 'Please select a warehouse first',
-  'common.select_warehouse': 'Select a warehouse',
+
+  // Common actions
+  'common.actions': 'Actions',
+  'common.edit': 'Edit',
+  'common.create': 'Create',
+  'common.save': 'Save',
+  'common.not_assigned': 'Not Assigned',
 };

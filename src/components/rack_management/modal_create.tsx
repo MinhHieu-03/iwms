@@ -111,12 +111,18 @@ const ModalAdd = ({ isOpen, onClose, onFinish }: Props) => {
                     onFinish(values);
                     form.resetFields();
                 }}
-            ><Form.Item
+            >            <Form.Item
                 name="location_code"
                 label={t("rack.location_code")}
-                rules={[{ required: true, message: t("common.required") }]}
+                rules={[
+                    { required: true, message: t("common.required") },
+                    { 
+                        pattern: /^[A-Za-z0-9-]+$/, 
+                        message: t("rack.validation.location_code_format") 
+                    }
+                ]}
             >
-                    <Input />
+                    <Input placeholder="e.g., A1-01-L" />
                 </Form.Item>
 
                 <Form.Item
@@ -178,6 +184,7 @@ const ModalAdd = ({ isOpen, onClose, onFinish }: Props) => {
                 >
                     <Select
                         loading={loading}
+                        placeholder={t("common.select_warehouse")}
                         options={warehouses.map(warehouse => ({
                             label: warehouse.name,
                             value: warehouse._id
@@ -197,15 +204,25 @@ const ModalAdd = ({ isOpen, onClose, onFinish }: Props) => {
                         loading={loadingAreas}
                         options={areaConfigOptions}
                         disabled={!form.getFieldValue('warehouse')}
+                        placeholder={warehouse 
+                            ? t("common.select_area") 
+                            : t("common.select_warehouse_first")}
                     />
                 </Form.Item>
 
                 <Form.Item
                     name="rcs"
                     label={t("rack.rcs")}
-                    rules={[{ required: true, message: t("common.required") }]}
+                    tooltip={t("rack.rcs.tooltip")}
+                    rules={[
+                        { required: true, message: t("common.required") },
+                        { 
+                            pattern: /^[A-Za-z0-9]+$/, 
+                            message: t("rack.validation.rcs_format") 
+                        }
+                    ]}
                 >
-                    <Input />
+                    <Input placeholder="e.g., RCS001" />
                 </Form.Item>        </Form>
         </Modal>
     );
