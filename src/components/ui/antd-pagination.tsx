@@ -15,7 +15,7 @@ interface IBasePagination extends PaginationProps {
   defaultCurrent?: number;
   defaultPageSize?: number;
   current?: number;
-  currentPage: number;
+  // currentPage: number;
   pageSize?: number;
   total: number;
   pageSizeOptions?: number[];
@@ -27,7 +27,7 @@ const defaultProps: IBasePagination = {
   defaultCurrent: DEFAULT_PAGINATION.INITIAL_PAGE,
   defaultPageSize: DEFAULT_PAGINATION.PAGE_SIZE,
   current: DEFAULT_PAGINATION.CURRENT_PAGE,
-  currentPage: DEFAULT_PAGINATION.CURRENT_PAGE,
+  // currentPage: DEFAULT_PAGINATION.CURRENT_PAGE,
   pageSizeOptions: DEFAULT_PAGINATION.PAGE_SIZE_OPTIONS,
   total: DEFAULT_PAGINATION.TOTAL,
   onChange: () => {},
@@ -39,7 +39,7 @@ const BasePagination: React.FC<IBasePagination> = (props) => {
     defaultCurrent,
     defaultPageSize,
     current,
-    currentPage,
+    // currentPage,
     pageSize = DEFAULT_PAGINATION.PAGE_SIZE,
     pageSizeOptions,
     total,
@@ -50,7 +50,7 @@ const BasePagination: React.FC<IBasePagination> = (props) => {
   return (
     <div className="flex items-center justify-end mt-2">
       <Pagination
-        current={currentPage}
+        current={current}
         pageSize={pageSize}
         defaultCurrent={defaultCurrent}
         defaultPageSize={defaultPageSize}

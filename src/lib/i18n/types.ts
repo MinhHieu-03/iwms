@@ -1,7 +1,40 @@
-
 export type SupportedLanguages = 'en' | 'vi' | 'zh' | 'ja' | 'ko';
 
 export type TranslationKey = 
+  // Rack Management
+  | 'rack.management'
+  | 'rack.management.title'
+  | 'rack.management.add_title'
+  | 'rack.management.edit_title'
+  | 'rack.location_code'
+  | 'rack.row'
+  | 'rack.column'
+  | 'rack.position'
+  | 'rack.direction'
+  | 'rack.status'
+  | 'rack.warehouse'
+  | 'rack.area_config'
+  | 'rack.rcs'
+  | 'rack.rcs.tooltip'
+  | 'rack.status.empty'
+  | 'rack.status.occupied'
+  | 'rack.status.reserved'
+  | 'rack.status.maintenance'
+  | 'rack.position.top_left'
+  | 'rack.position.top_right'
+  | 'rack.position.bottom_left'
+  | 'rack.position.bottom_right'
+  | 'rack.direction.horizontal'
+  | 'rack.direction.vertical'
+  
+  // Validation
+  | 'validation.alphanumeric'
+  | 'validation.positive_number'
+  
+  // Selection prompts
+  | 'common.select_area'
+  | 'common.select_warehouse_first'
+
   // Common
   | 'save_changes'
   | 'cancel'

@@ -1,4 +1,3 @@
-
 import { TranslationKey } from '../types';
 
 export const en: Record<TranslationKey, string> = {
@@ -330,5 +329,40 @@ export const en: Record<TranslationKey, string> = {
   'common.update_error': 'Error updating item',
   'common.required': 'This field is required',
   'common.select_productions': 'Select productions',
-  'common.select_warehouse': 'Select warehouse'
+  'common.select_warehouse': 'Select warehouse',
+
+  // Rack Management
+  'rack.management': 'Rack Management',
+  'rack.management.title': 'Rack Management',
+  'rack.management.add_title': 'Add New Rack',
+  'rack.management.edit_title': 'Edit Rack',
+  'rack.location_code': 'Location Code',
+  'rack.row': 'Row',
+  'rack.column': 'Column',
+  'rack.position': 'Position',
+  'rack.direction': 'Direction',
+  'rack.status': 'Status',
+  'rack.warehouse': 'Warehouse',
+  'rack.area_config': 'Area Configuration',
+  'rack.rcs': 'RCS',
+  'rack.rcs.tooltip': 'Robot Control System identifier for this rack location',
+  'rack.status.empty': 'Empty',
+  'rack.status.occupied': 'Occupied',
+  'rack.status.reserved': 'Reserved',
+  'rack.status.maintenance': 'Maintenance',
+  'rack.position.top_left': 'Top Left',
+  'rack.position.top_right': 'Top Right',
+  'rack.position.bottom_left': 'Bottom Left',
+  'rack.position.bottom_right': 'Bottom Right',
+  'rack.direction.horizontal': 'Horizontal',
+  'rack.direction.vertical': 'Vertical',
+
+  // Validation
+  'validation.alphanumeric': 'Only letters, numbers and hyphens are allowed',
+  'validation.positive_number': 'Must be a positive number',
+
+  // Selection prompts
+  'common.select_area': 'Select an area configuration',
+  'common.select_warehouse_first': 'Please select a warehouse first',
+  'common.select_warehouse': 'Select a warehouse',
 };

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,15 +13,22 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Package, Play, PackageCheck } from "lucide-react";
+import { Package, Play, PackageCheck, Search } from "lucide-react";
 import { mockOrders, type Order } from "@/data/operatorData";
 import PickingDrawer from "@/components/PickingDrawer";
+import { Input } from "antd";
 
 const OrdersTab: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [showPickingModal, setShowPickingModal] = useState(false);
+  const [searchText, setSearchText] = useState('');
+
+  const filteredOrders = mockOrders.filter(order => 
+    order.orderNumber.toLowerCase().includes(searchText.toLowerCase()) ||
+    order.customer.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   const handleOrderSelect = (orderId: string, checked: boolean) => {
     if (checked) {
@@ -34,7 +40,7 @@ const OrdersTab: React.FC = () => {
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedOrders(mockOrders.map(order => order.id));
+      setSelectedOrders(filteredOrders.map(order => order.id));
     } else {
       setSelectedOrders([]);
     }
@@ -76,7 +82,8 @@ const OrdersTab: React.FC = () => {
   };
 
   const handleOrderClick = (orderId: string) => {
-    navigate(`/operator-interface/order/${orderId}`);
+    // navigate(`/operator-interface/order/${orderId}`);
+    // setSelectedOrders(filteredOrders.map(order => order.id));
   };
 
   const getPriorityBadge = (priority: Order['priority']) => {
@@ -156,13 +163,21 @@ const OrdersTab: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="mb-4">
+            <Input
+              placeholder="Search orders..."
+              prefix={<Search className="h-4 w-4 text-gray-400" />}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              style={{ width: '300px' }}
+            />
+          </div>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-12">
-                    <Checkbox
-                      checked={selectedOrders.length === mockOrders.length}
+                  <TableHead className="w-12">                    <Checkbox
+                      checked={selectedOrders.length === filteredOrders.length && filteredOrders.length > 0}
                       onCheckedChange={handleSelectAll}
                     />
                   </TableHead>
@@ -176,7 +191,7 @@ const OrdersTab: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockOrders.map((order) => (
+                {filteredOrders.map((order) => (
                   <TableRow 
                     key={order.id}
                     className="cursor-pointer hover:bg-muted/50"

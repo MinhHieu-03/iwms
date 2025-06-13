@@ -334,5 +334,40 @@ export const vi: Record<TranslationKey, string> = {
   'common.update_error': 'Lỗi khi cập nhật mục',
   'common.required': 'Trường này là bắt buộc',
   'common.select_productions': 'Chọn sản xuất',
-  'common.select_warehouse': 'Chọn kho'
+  'common.select_warehouse': 'Chọn kho',
+  
+  // Rack Management
+  'rack.management': 'Quản lý kệ',
+  'rack.management.title': 'Quản lý kệ',
+  'rack.management.add_title': 'Thêm kệ mới',
+  'rack.management.edit_title': 'Chỉnh sửa kệ',
+  'rack.location_code': 'Mã vị trí',
+  'rack.row': 'Hàng',
+  'rack.column': 'Cột',
+  'rack.position': 'Vị trí',
+  'rack.direction': 'Hướng',
+  'rack.status': 'Trạng thái',
+  'rack.warehouse': 'Kho',
+  'rack.area_config': 'Cấu hình khu vực',
+  'rack.rcs': 'RCS',
+  'rack.rcs.tooltip': 'Mã định danh của hệ thống điều khiển robot cho vị trí kệ này',
+  'rack.status.empty': 'Trống',
+  'rack.status.occupied': 'Đã sử dụng',
+  'rack.status.reserved': 'Đã đặt trước',
+  'rack.status.maintenance': 'Bảo trì',
+  'rack.position.top_left': 'Trên bên trái',
+  'rack.position.top_right': 'Trên bên phải',
+  'rack.position.bottom_left': 'Dưới bên trái',
+  'rack.position.bottom_right': 'Dưới bên phải',
+  'rack.direction.horizontal': 'Ngang',
+  'rack.direction.vertical': 'Dọc',
+
+  // Validation
+  'validation.alphanumeric': 'Chỉ được phép sử dụng chữ cái, số và dấu gạch ngang',
+  'validation.positive_number': 'Phải là số dương',
+
+  // Selection prompts
+  'common.select_area': 'Chọn cấu hình khu vực',
+  'common.select_warehouse_first': 'Vui lòng chọn kho trước',
+  'common.select_warehouse': 'Chọn kho',
 };
