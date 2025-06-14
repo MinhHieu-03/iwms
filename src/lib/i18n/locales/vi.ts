@@ -1,6 +1,8 @@
 import { TranslationKey } from '../types';
+import { en as vi_mission } from './en_more/mission'
 
 export const vi: Record<TranslationKey, string> = {
+  ...vi_mission,
   // Common
   save_changes: 'Lưu thay đổi',
   cancel: 'Hủy',

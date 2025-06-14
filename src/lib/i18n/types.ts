@@ -1,6 +1,9 @@
+import { TranslationKey as mission_key } from "./type_more/mission"
+
 export type SupportedLanguages = 'en' | 'vi' | 'zh' | 'ja' | 'ko';
 
 export type TranslationKey = 
+  | mission_key
   // Rack Management
   | 'rack.management'
   | 'rack.management.title'
@@ -62,8 +65,8 @@ export type TranslationKey =
   | 'dashboard'
   | 'operator_interface'
   | 'inbound_outbound'
-  | 'warehouse_layout'
   | 'robot_missions'
+  | 'warehouse_layout'
   | 'team_management'
   | 'user_settings'
   | 'system_settings'

@@ -15,7 +15,9 @@ import {
   MonitorSmartphone,
   Warehouse,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  Smartphone,
+  FileText
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -117,6 +119,28 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
               path: "/warehouse-settings/storage",
               name: "storage_model_configuration" as TranslationKey,
               icon: <Box className="w-4 h-4" />,
+            }
+          ]
+        },
+        {
+          path: "/mission-settings",
+          name: "mission_settings" as TranslationKey,
+          icon: <Bot className="w-5 h-5" />,
+          children: [
+            {
+              path: "/mission-settings/template",
+              name: "mission_setting_template" as TranslationKey,
+              icon: <FileText className="w-4 h-4" />,
+            },
+            {
+              path: "/mission-settings/device",
+              name: "mission_setting_device" as TranslationKey,
+              icon: <Smartphone className="w-4 h-4" />,
+            },
+            {
+              path: "/mission-settings/device-template",
+              name: "mission_setting_device_template" as TranslationKey,
+              icon: <FileText className="w-4 h-4" />,
             }
           ]
         },

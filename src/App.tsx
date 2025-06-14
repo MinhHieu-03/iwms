@@ -29,6 +29,9 @@ import TemplateEdit from "./pages/TemplateEdit";
 import OrderDetails from "./pages/OrderDetails";
 import Login from "./pages/Login";
 import MissionsTemplates from "./components/missions/MissionsTemplates";
+import MissionTemplate from "./components/missions/MissionTemplate2";
+import DeviceTemplate from "./components/device/DeviceTemplate";
+import DeviceList from "./components/device/DeviceList";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { LanguageProvider } from "./contexts/LanguageProvider";
 import { Provider } from "react-redux";
@@ -77,6 +80,18 @@ function App() {
                         <Route
                           path="/missions/templates/:id"
                           element={<TemplateEdit />}
+                        />
+                        <Route
+                          path="/mission-settings/template"
+                          element={<MissionTemplate />}
+                        />
+                        <Route
+                          path="/mission-settings/device"
+                          element={<DeviceList />}
+                        />
+                        <Route
+                          path="/mission-settings/device-template"
+                          element={<DeviceTemplate />}
                         />
                         <Route path="/settings" element={<Settings />} />
                         <Route

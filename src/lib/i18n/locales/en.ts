@@ -1,6 +1,8 @@
 import { TranslationKey } from '../types';
+import { en as en_mission } from './en_more/mission'
 
 export const en: Record<TranslationKey, string> = {
+  ...en_mission,
   // Common
   save_changes: 'Save Changes',
   cancel: 'Cancel',
