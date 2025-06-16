@@ -1,6 +1,12 @@
 import { TranslationKey } from '../types';
+import { en as en_mission } from './en_more/mission'
+import { en as en_device } from './en_more/device'
+import { en as en_navbar } from './en_more/navbar'
 
 export const en: Record<TranslationKey, string> = {
+  ...en_mission,
+  ...en_device,
+  ...en_navbar,
   // Common
   save_changes: 'Save Changes',
   cancel: 'Cancel',
@@ -8,6 +14,12 @@ export const en: Record<TranslationKey, string> = {
   logout: 'Log out',
   login: 'Login',
   welcome: 'Welcome',
+  delete_prompt: "Delete confirmation",
+  
+  btn_create: 'Create',
+  btn_edit: 'Save Changes',
+  btn_delete: "Delete",
+  btn_cancel: 'Cancel',
   
   // Navigation & Sidebar
   dashboard: 'Dashboard',
@@ -88,7 +100,7 @@ export const en: Record<TranslationKey, string> = {
   delete: 'Delete',
   steps: 'Steps',
   modified: 'Modified:',
-  delete_template: 'Delete Template',
+  delete_template: 'Delete confirmation',
   delete_template_confirm: 'Are you sure you want to delete this template? This action cannot be undone.',
   template_created: 'Template created',
   template_created_description: 'has been created successfully.',

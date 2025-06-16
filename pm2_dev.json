@@ -1,7 +1,7 @@
 {
     "apps": [
         {
-            "name": "iwms--dev-8080",
+            "name": "iwms-wcs_fe-8080",
             "script": "npm",
             "args": "run dev"
         }

@@ -1,0 +1,21 @@
+import { TranslationKey } from '../../types';
+
+export const en: Record<TranslationKey, string> = {
+    "/": "Dashboard",
+    "/operator-interface": "Operator Interface",
+    "/inbound-outbound": "Inbound/Outbound",
+    "/layout": "Warehouse Layout",
+    "/missions": "Robot Missions",
+    "/warehouse-settings": "Warehouse Settings",
+    "/warehouse-settings/layout": "Layout Configuration",
+    "/warehouse-settings/storage": "Storage Model Configuration",
+    "/mission-settings": "WCS Setting",
+    "/mission-settings/template": "Mission Template",
+    "/mission-settings/device": "Device Management",
+    "/mission-settings/device-template": "Device Type",
+    "/team-settings": "Team Management",
+    "/user-settings": "User Settings",
+    "/system-settings": "System Settings.",
+    "/notifications": "Notifications",
+    "/help": "Help Center",
+}

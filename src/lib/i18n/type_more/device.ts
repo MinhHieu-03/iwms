@@ -1,0 +1,17 @@
+export type TranslationKey = 
+    | 'search_device'
+    | 'new_device'
+    | 'device_list'
+    | 'device_name'
+    | 'device_description'
+    | 'device_type'
+    | 'device_connection'
+    | 'device_connection_connected'
+    | 'device_connection_disconnected'
+    | 'device_state'
+    | 'device_action'
+    
+    | 'device_name_holder'
+    | 'device_description_holder'
+    | 'device_type_holder'
+    | 'device_delete_confirmation'
