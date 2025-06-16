@@ -37,8 +37,6 @@ export const en: Record<TranslationKey, string> = {
   btn_delete: "Delete",
   btn_cancel: 'Cancel',
   
-  // Navigation & Sidebar
-  dashboard: 'Dashboard',
   mark_all_read: 'Mark all as read',
   clear_all: 'Clear all',
   no_notifications: 'No new notifications',
@@ -425,4 +423,27 @@ export const en: Record<TranslationKey, string> = {
   'common.column': 'column',
   'common.row': 'Row',
   'common.not_assigned': 'Not Assigned',
+  
+  // Master Data Management
+  'master_data': 'Master Data Management',
+  'master_data.material_no': 'Material Number',
+  'master_data.material_nm': 'Material Name',
+  'master_data.material_tp': 'Material Type',
+  'master_data.pk_style': 'PK Style',
+  'master_data.new_pk_style': 'New PK Style',
+  'master_data.flg': 'Flag',
+  'master_data.comment': 'Comment',
+  'master_data.user_id': 'User ID',
+  'master_data.ent_dt': 'Entry Date',
+  'master_data.upd_dt': 'Update Date',
+  'master_data.create_master_data': 'Create Master Data',
+  'master_data.edit_master_data': 'Edit Master Data',
+  'master_data.delete_master_data': 'Delete Master Data',
+  'master_data.upload_success': 'File uploaded successfully',
+  'master_data.upload_error': 'File upload failed',
+  'master_data.download_success': 'File downloaded successfully',
+  'master_data.download_error': 'File download failed',
+  'master_data.validation.material_no_required': 'Material number is required',
+  'master_data.validation.material_nm_required': 'Material name is required',
+  'master_data.validation.material_tp_required': 'Material type is required',
 };

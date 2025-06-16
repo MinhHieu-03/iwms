@@ -22,18 +22,6 @@ const { t } = useTranslation();
 
   return (
     <div className="space-y-6">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-warehouse-primary/10 to-warehouse-secondary/10 rounded-lg p-6 border">
-        <div className="flex items-center space-x-4">
-          <div className="bg-warehouse-primary/20 p-3 rounded-lg">
-            <Users className="h-8 w-8 text-warehouse-primary" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">{t('team_management')}</h1>
-            <p className="text-muted-foreground">Manage users, roles, and access permissions for your warehouse team</p>
-          </div>
-        </div>
-      </div>
 
       {/* Navigation and Content */}
       <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full">

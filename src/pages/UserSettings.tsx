@@ -44,41 +44,6 @@ const UserSettings = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-teal-500/10 to-cyan-500/10 rounded-lg p-6 border">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="bg-teal-500/20 p-3 rounded-lg">
-              <User className="h-8 w-8 text-teal-500" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">{t('user_settings')}</h1>
-              <p className="text-muted-foreground">Manage your personal account settings and preferences</p>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {isEditing ? (
-              <>
-                <Button onClick={handleCancel} variant="outline">
-                  <X className="h-4 w-4 mr-2" />
-                  Cancel
-                </Button>
-                <Button onClick={handleSave} className="bg-teal-500 hover:bg-teal-600">
-                  <Save className="h-4 w-4 mr-2" />
-                  {t('save_changes')}
-                </Button>
-              </>
-            ) : (
-              <Button onClick={() => setIsEditing(true)} className="bg-teal-500 hover:bg-teal-600">
-                <Edit className="h-4 w-4 mr-2" />
-                Edit Profile
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation and Content */}
       <Tabs defaultValue="profile" className="w-full">
         <TabsList className="grid w-full grid-cols-4 bg-muted/50">
           <TabsTrigger value="profile" className="data-[state=active]:bg-teal-500 data-[state=active]:text-white">
