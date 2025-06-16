@@ -7,7 +7,7 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
-    port: 8079,
+    port: 8080,
     strictPort: true,
     allowedHosts: ['iwms.rostek.space'], // allow all incoming hosts
   },
@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => ({
     componentTagger(),
   ].filter(Boolean),
   preview: {
-    port: 8079,
+    port: 8080,
     strictPort: true,
     host: '0.0.0.0',
     allowedHosts: ['iwms.rostek.space'], // allow all incoming hosts
