@@ -84,7 +84,7 @@ const ModalAdd = ({ isOpen, onClose, onFinish }: Props) => {
     };
 
     const areaConfigOptions = areaConfigs
-        .filter((config) => config.warehouse._id === warehouse)
+        .filter((config) => config.warehouse?._id === warehouse)
         .map((config) => ({
             label: config.name,
             value: config._id,
