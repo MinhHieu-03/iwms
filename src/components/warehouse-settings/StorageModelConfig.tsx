@@ -1,11 +1,17 @@
-
 import React, { useState, useCallback, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Plus, Edit, Trash2, Download, Upload, Workflow } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -20,33 +26,49 @@ import {
   MarkerType,
   Panel,
   Node,
-  Edge
+  Edge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { 
-  storageHierarchy, 
-  storageFlows, 
+import {
+  storageHierarchy,
+  storageFlows,
   masterData,
   storageHierarchyNodes,
   storageHierarchyEdges,
   type StorageHierarchy,
   type StorageFlow,
-  type MasterDataItem
+  type MasterDataItem,
 } from "@/data/warehouseData";
+import apiClient from "@/lib/axios";
+import { Select } from "antd";
 
 const StorageModelConfig = () => {
   const { toast } = useToast();
-  
-  const [hierarchyData, setHierarchyData] = useState<StorageHierarchy[]>(storageHierarchy);
+
+  const [hierarchyData, setHierarchyData] =
+    useState<StorageHierarchy[]>(storageHierarchy);
   const [flowsData, setFlowsData] = useState<StorageFlow[]>(storageFlows);
-  const [masterDataItems, setMasterDataItems] = useState<MasterDataItem[]>(masterData);
+  const [masterDataItems, setMasterDataItems] =
+    useState<MasterDataItem[]>(masterData);
 
   // ReactFlow state using data from warehouse file
-  const [nodes, setNodes, onNodesChange] = useNodesState(storageHierarchyNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(storageHierarchyEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   const [editingNode, setEditingNode] = useState<string | null>(null);
   const [editingNodeName, setEditingNodeName] = useState<string>("");
+
+  const initData = async () => {
+    const { data } = await apiClient.get("/storage-model");
+    const dataFull = data?.metaData?.[0] || {};
+    setNodes(dataFull.nodes || storageHierarchyNodes);
+    setEdges(dataFull.edges || storageHierarchyEdges);
+  };
+
+  useEffect(() => {
+    initData();
+    // Initialize nodes and edges from storageHierarchyNodes and storageHierarchyEdges
+  }, []);
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -56,52 +78,58 @@ const StorageModelConfig = () => {
       console.log("End (target):", connection.target);
       console.log("Source Handle:", connection.sourceHandle);
       console.log("Target Handle:", connection.targetHandle);
-      
+
       // Add markerEnd to the connection
       const connectionWithMarker = {
         ...connection,
-        markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' },
+        markerEnd: { type: MarkerType.ArrowClosed, color: "#1976d2" },
         animated: true,
-        style: { stroke: '#1976d2', strokeWidth: 2 }
+        style: { stroke: "#1976d2", strokeWidth: 2 },
       };
-      
+
       setEdges((eds) => addEdge(connectionWithMarker, eds));
-      toast({ 
-        title: "Edge Added", 
-        description: `Connected ${connection.source} → ${connection.target}` 
+      toast({
+        title: "Edge Added",
+        description: `Connected ${connection.source} → ${connection.target}`,
       });
     },
     [setEdges, toast]
   );
 
   // Handle node selection
-  const onSelectionChange = useCallback((params: { nodes: Node[]; edges: Edge[] }) => {
-    setSelectedNodes(params.nodes.map((node: Node) => node.id));
-  }, []);
+  const onSelectionChange = useCallback(
+    (params: { nodes: Node[]; edges: Edge[] }) => {
+      setSelectedNodes(params.nodes.map((node: Node) => node.id));
+    },
+    []
+  );
 
   // Handle double click to edit node name
-  const onNodeDoubleClick = useCallback((event: React.MouseEvent, node: Node) => {
-    setEditingNode(node.id);
-    setEditingNodeName((node.data as { label: string }).label);
-  }, []);
+  const onNodeDoubleClick = useCallback(
+    (event: React.MouseEvent, node: Node) => {
+      setEditingNode(node.id);
+      setEditingNodeName((node.data as { label: string }).label);
+    },
+    []
+  );
 
   // Add new node
   const addNewNode = useCallback(() => {
     const newNodeId = `node-${Date.now()}`;
     const newNode: Node = {
       id: newNodeId,
-      type: 'default',
-      data: { label: 'New Node' },
+      type: "default",
+      data: { label: "New Node" },
       position: { x: 300, y: 300 },
-      style: { 
-        background: '#f0f0f0', 
-        border: '2px solid #666',
-        borderRadius: '12px',
-        padding: '10px',
-        minWidth: '100px'
-      }
+      style: {
+        background: "#f0f0f0",
+        border: "2px solid #666",
+        borderRadius: "12px",
+        padding: "10px",
+        minWidth: "100px",
+      },
     };
-    
+
     setNodes((nds) => [...nds, newNode]);
     toast({ title: "New node added successfully" });
   }, [setNodes, toast]);
@@ -109,11 +137,15 @@ const StorageModelConfig = () => {
   // Delete selected nodes
   const deleteSelectedNodes = useCallback(() => {
     if (selectedNodes.length === 0) return;
-    
+
     setNodes((nds) => nds.filter((node) => !selectedNodes.includes(node.id)));
-    setEdges((eds) => eds.filter((edge) => 
-      !selectedNodes.includes(edge.source) && !selectedNodes.includes(edge.target)
-    ));
+    setEdges((eds) =>
+      eds.filter(
+        (edge) =>
+          !selectedNodes.includes(edge.source) &&
+          !selectedNodes.includes(edge.target)
+      )
+    );
     setSelectedNodes([]);
     toast({ title: `${selectedNodes.length} node(s) deleted successfully` });
   }, [selectedNodes, setNodes, setEdges, toast]);
@@ -121,12 +153,14 @@ const StorageModelConfig = () => {
   // Save node name edit
   const saveNodeEdit = useCallback(() => {
     if (!editingNode) return;
-    
-    setNodes((nds) => nds.map((node) => 
-      node.id === editingNode 
-        ? { ...node, data: { ...node.data, label: editingNodeName } }
-        : node
-    ));
+
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === editingNode
+          ? { ...node, data: { ...node.data, label: editingNodeName } }
+          : node
+      )
+    );
     setEditingNode(null);
     setEditingNodeName("");
     toast({ title: "Node name updated successfully" });
@@ -141,10 +175,11 @@ const StorageModelConfig = () => {
   // Add edge between selected nodes
   const addEdgeBetweenSelected = useCallback(() => {
     if (selectedNodes.length !== 2) {
-      toast({ 
-        title: "Select exactly 2 nodes", 
-        description: "You need to select exactly 2 nodes to create an edge between them",
-        variant: "destructive"
+      toast({
+        title: "Select exactly 2 nodes",
+        description:
+          "You need to select exactly 2 nodes to create an edge between them",
+        variant: "destructive",
       });
       return;
     }
@@ -155,8 +190,8 @@ const StorageModelConfig = () => {
       source: sourceId,
       target: targetId,
       animated: true,
-      style: { stroke: '#666', strokeWidth: 2 },
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#666' }
+      style: { stroke: "#666", strokeWidth: 2 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: "#666" },
     };
 
     console.log("Creating edge manually:");
@@ -164,62 +199,96 @@ const StorageModelConfig = () => {
     console.log("Target (end):", targetId);
 
     setEdges((eds) => [...eds, newEdge]);
-    toast({ 
-      title: "Edge created", 
-      description: `Connected ${sourceId} → ${targetId}` 
+    toast({
+      title: "Edge created",
+      description: `Connected ${sourceId} → ${targetId}`,
     });
   }, [selectedNodes, setEdges, toast]);
 
   // Get edge information for debugging
   const logEdgeInfo = useCallback(() => {
     console.log("Current edges:");
-    edges.forEach(edge => {
+    edges.forEach((edge) => {
       console.log(`Edge ${edge.id}: ${edge.source} → ${edge.target}`);
     });
-    
+
     console.log("Current nodes:");
-    nodes.forEach(node => {
-      console.log(`Node ${node.id}: ${node.data.label} at (${node.position.x}, ${node.position.y})`);
+    nodes.forEach((node) => {
+      console.log(
+        `Node ${node.id}: ${node.data.label} at (${node.position.x}, ${node.position.y})`
+      );
     });
   }, [edges, nodes]);
 
   // Handle edge selection for debugging
-  const onEdgeClick = useCallback((event: React.MouseEvent, edge: Edge) => {
-    console.log("Edge clicked:");
-    console.log("Edge ID:", edge.id);
-    console.log("Source (start):", edge.source);
-    console.log("Target (end):", edge.target);
-    console.log("Full edge object:", edge);
-    
-    toast({ 
-      title: "Edge Selected", 
-      description: `${edge.source} → ${edge.target}` 
-    });
-  }, [toast]);
+  const onEdgeClick = useCallback(
+    (event: React.MouseEvent, edge: Edge) => {
+      console.log("Edge clicked:");
+      console.log("Edge ID:", edge.id);
+      console.log("Source (start):", edge.source);
+      console.log("Target (end):", edge.target);
+      console.log("Full edge object:", edge);
 
+      toast({
+        title: "Edge Selected",
+        description: `${edge.source} → ${edge.target}`,
+      });
+    },
+    [toast]
+  );
 
   // Handle keyboard events
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Delete' && selectedNodes.length > 0) {
+      if (event.key === "Delete" && selectedNodes.length > 0) {
         deleteSelectedNodes();
       }
-      if (event.key === 'Escape' && editingNode) {
+      if (event.key === "Escape" && editingNode) {
         cancelNodeEdit();
       }
-      if (event.key === 'Enter' && editingNode) {
+      if (event.key === "Enter" && editingNode) {
         saveNodeEdit();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedNodes, editingNode, deleteSelectedNodes, cancelNodeEdit, saveNodeEdit]);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [
+    selectedNodes,
+    editingNode,
+    deleteSelectedNodes,
+    cancelNodeEdit,
+    saveNodeEdit,
+  ]);
 
-  const [selectedTags, setSelectedTags] = useState<string[]>(["Plastic Bin", "Carton"]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([
+    "Plastic Bin",
+    "Carton",
+  ]);
 
   const removeTag = (tag: string) => {
-    setSelectedTags(selectedTags.filter(t => t !== tag));
+    setSelectedTags(selectedTags.filter((t) => t !== tag));
+  };
+
+  const submit = async () => {
+    try {
+      await apiClient.post("/storage-model", {
+        nodes: nodes,
+        edges: edges,
+      });
+      console.log(edgesToTree(edges));
+      toast({
+        title: "Data saved successfully",
+        description: "Your changes have been saved.",
+      });
+    } catch (error) {
+      console.error("Error during submission:", error);
+      toast({
+        title: "Submission Error",
+        description: "There was an error submitting your data.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -239,37 +308,48 @@ const StorageModelConfig = () => {
                 Storage Hierarchy Visualization
               </CardTitle>
               <div className="flex items-center gap-2">
-                <Button onClick={addNewNode} size="sm">
+                <Button onClick={addNewNode} size="sm" variant="outline">
                   <Plus className="mr-2 h-4 w-4" />
                   Add Node
                 </Button>
                 {selectedNodes.length === 2 && (
-                  <Button onClick={addEdgeBetweenSelected} size="sm" variant="outline">
+                  <Button
+                    onClick={addEdgeBetweenSelected}
+                    size="sm"
+                    variant="outline"
+                  >
                     Connect Selected
                   </Button>
                 )}
                 {selectedNodes.length > 0 && (
-                  <Button onClick={deleteSelectedNodes} variant="destructive" size="sm">
+                  <Button
+                    onClick={deleteSelectedNodes}
+                    variant="destructive"
+                    size="sm"
+                  >
                     <Trash2 className="mr-2 h-4 w-4" />
                     Delete ({selectedNodes.length})
                   </Button>
                 )}
-                <Button onClick={logEdgeInfo} size="sm" variant="outline">
-                  Log Graph Info
+                <Button onClick={submit} size="sm">
+                  Save
                 </Button>
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="border rounded-lg bg-gray-50" style={{ height: '500px' }}>
+              <div
+                className="border rounded-lg bg-gray-50"
+                style={{ height: "50vh" }}
+              >
                 <ReactFlow
                   nodes={nodes}
                   edges={edges}
                   onNodesChange={onNodesChange}
                   onEdgesChange={(val) => {
                     console.log("Edges_changed:", val);
-                    onEdgesChange(val)
+                    onEdgesChange(val);
                   }}
                   onConnect={onConnect}
                   onSelectionChange={onSelectionChange}
@@ -303,7 +383,8 @@ const StorageModelConfig = () => {
                           </p>
                           {selectedNodes.length === 2 && (
                             <p className="text-xs text-green-600 mt-1">
-                              Ready to connect: {selectedNodes[0]} → {selectedNodes[1]}
+                              Ready to connect: {selectedNodes[0]} →{" "}
+                              {selectedNodes[1]}
                             </p>
                           )}
                         </div>
@@ -312,7 +393,7 @@ const StorageModelConfig = () => {
                   </Panel>
                 </ReactFlow>
               </div>
-              
+
               {editingNode && (
                 <div className="flex items-center gap-2 p-3 border rounded-md bg-blue-50">
                   <span className="text-sm font-medium">Edit node name:</span>
@@ -322,12 +403,38 @@ const StorageModelConfig = () => {
                     className="flex-1"
                     autoFocus
                   />
-                  <Button onClick={saveNodeEdit} size="sm">Save</Button>
-                  <Button onClick={cancelNodeEdit} variant="outline" size="sm">Cancel</Button>
+                  <Button onClick={saveNodeEdit} size="sm">
+                    Save
+                  </Button>
+                  <Button onClick={cancelNodeEdit} variant="outline" size="sm">
+                    Cancel
+                  </Button>
                 </div>
               )}
             </div>
           </CardContent>
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <CardTitle className="flex items-center gap-2">
+                <Workflow className="h-5 w-5" />
+                Store Unit: 
+              </CardTitle>
+              <div className="flex-1 gap-2 pl-5">
+                <Select
+                  mode="multiple"
+                  placeholder="Select Tags"
+                  value={selectedTags}
+                  onChange={(value) => setSelectedTags(value as string[])}
+                  // style={{ width: "200px" }}
+                  options={Array.from(new Set(nodes.map((node) => node?.data?.label))).map((tag) => ({
+                    value: tag,
+                    label: tag,
+                  }))}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </CardHeader>
         </Card>
       </TabsContent>
 
@@ -357,7 +464,7 @@ const StorageModelConfig = () => {
                   </Badge>
                 ))}
               </div>
-              
+
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -378,13 +485,24 @@ const StorageModelConfig = () => {
                       <TableCell>{flow.targetLevel}</TableCell>
                       <TableCell>{flow.rules.maxCapacity}</TableCell>
                       <TableCell>
-                        <Badge variant={flow.rules.priority === 'high' ? 'destructive' : 
-                                      flow.rules.priority === 'medium' ? 'default' : 'secondary'}>
+                        <Badge
+                          variant={
+                            flow.rules.priority === "high"
+                              ? "destructive"
+                              : flow.rules.priority === "medium"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
                           {flow.rules.priority}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={flow.status === 'active' ? 'default' : 'secondary'}>
+                        <Badge
+                          variant={
+                            flow.status === "active" ? "default" : "secondary"
+                          }
+                        >
                           {flow.status}
                         </Badge>
                       </TableCell>
@@ -393,7 +511,11 @@ const StorageModelConfig = () => {
                           <Button variant="outline" size="sm">
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="outline" size="sm" className="text-red-500">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-red-500"
+                          >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -463,7 +585,11 @@ const StorageModelConfig = () => {
                         <Button variant="outline" size="sm">
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="outline" size="sm" className="text-red-500">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-red-500"
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -480,3 +606,32 @@ const StorageModelConfig = () => {
 };
 
 export default StorageModelConfig;
+
+function edgesToTree(edges) {
+  const childMap = {};
+  const parentSet = new Set();
+  const childSet = new Set();
+
+  for (const edge of edges) {
+    const { source, target } = edge;
+
+    if (!childMap[source]) {
+      childMap[source] = [];
+    }
+    childMap[source].push(target);
+
+    parentSet.add(source);
+    childSet.add(target);
+  }
+
+  const roots = [...parentSet].filter((node) => !childSet.has(node));
+
+  function buildTree(nodeId) {
+    return {
+      id: nodeId,
+      children: (childMap[nodeId] || []).map(buildTree),
+    };
+  }
+
+  return roots.map(buildTree);
+}

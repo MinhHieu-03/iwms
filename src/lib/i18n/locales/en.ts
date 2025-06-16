@@ -15,6 +15,22 @@ export const en: Record<TranslationKey, string> = {
   login: 'Login',
   welcome: 'Welcome',
   delete_prompt: "Delete confirmation",
+
+    
+  // Navigation & Sidebar
+  dashboard: 'Dashboard',
+  operator_interface: 'Operator interface',
+  inbound_outbound: 'Inbound outbound',
+  warehouse_layout: 'warehouse layout',
+  robot_missions: 'robot missions',
+  team_management: 'team management',
+  user_settings: 'user settings',
+  system_settings: 'system settings',
+  warehouse_settings: 'warehouse settings',
+  layout_configuration: 'layout configuration',
+  storage_model_configuration: 'storage model configuration',
+  notifications: 'notifications',
+  help_center: 'help center',
   
   btn_create: 'Create',
   btn_edit: 'Save Changes',

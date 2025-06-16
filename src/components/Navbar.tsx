@@ -245,7 +245,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
       >
         <div className="flex items-center space-x-3">
           {item.icon}
-          <span>{t(item.name)}</span>
+          <span className="capitalize">{t(item.name)}</span>
         </div>
         {item.badge && (
           <Badge variant="destructive" className="text-xs">
