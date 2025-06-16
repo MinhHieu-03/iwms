@@ -288,12 +288,34 @@ export const vi: Record<TranslationKey, string> = {
   'warehouses_management.name': 'Tên',
   'warehouses_management.description': 'Mô tả',
   'warehouses_management.createdAt': 'Ngày tạo',
+  'warehouses_management.create_warehouse': 'Tạo kho',
+  'warehouses_management.edit_warehouse': 'Chỉnh sửa kho',
+  
+  // Inbound Management
+  inbound_management: 'Quản lý nhập kho',
+  'inbound_management.sku': 'Mã SKU',
+  'inbound_management.quantity': 'Số lượng',
+  'inbound_management.store_method': 'Phương thức lưu trữ',
+  'inbound_management.packing_method': 'Phương thức đóng gói',
+  'inbound_management.bin_code': 'Mã bin',
+  'inbound_management.supplier': 'Nhà cung cấp',
+  'inbound_management.invoice_code': 'Mã hóa đơn',
+  'inbound_management.status': 'Trạng thái',
+  'inbound_management.note': 'Ghi chú',
+  'inbound_management.created_at': 'Ngày tạo',
+  'inbound_management.create_inbound': 'Tạo phiếu nhập',
+  'inbound_management.edit_inbound': 'Chỉnh sửa phiếu nhập',
+  
   // Buttons
   'btn.reload': 'Tải lại',
   'btn.create_new': 'Tạo mới',
+  'btn.add_acc': 'Thêm tài khoản',
+  'btn.add': 'Thêm',
+  'btn.save': 'Lưu',
   'btn.cancel': 'Hủy',
   'btn.delete': 'Xóa',
-  'btn.add_acc': 'Thêm tài khoản',
+  'btn.import': 'Nhập',
+  'btn.export': 'Xuất',
   
   // Area Management
   'area.management': 'Quản lý khu vực',

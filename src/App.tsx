@@ -27,6 +27,7 @@ import RoleEdit from "./pages/team/RoleEdit";
 import GroupEdit from "./pages/team/GroupEdit";
 import TemplateEdit from "./pages/TemplateEdit";
 import OrderDetails from "./pages/OrderDetails";
+import InboundManagement from "./pages/InboundManagement";
 import Login from "./pages/Login";
 import MissionsTemplates from "./components/missions/MissionsTemplates";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -47,7 +48,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/oi/outbound" element={<Outbound />} />
               <Route path="/oi/outbound-odd" element={<OutboundOdd />} />
-              <Route path="/oi/inbound" element={<OperatorInbound />} />
+              <Route path="/oi/inbound" element={<InboundManagement />} />
               {/* Protected routes - require authentication */}
               <Route
                 path="/*"
@@ -130,10 +131,10 @@ function App() {
                           path="/operator-interface"
                           element={<OperatorInterface />}
                         />
-                        <Route
+                        {/* <Route
                           path="/operator-interface/inbound"
                           element={<OperatorInbound />}
-                        />
+                        /> */}
                         <Route
                           path="/operator-interface/outbound"
                           element={<OperatorOutbound />}

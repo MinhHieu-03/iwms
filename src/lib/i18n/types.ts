@@ -329,8 +329,12 @@ export type TranslationKey =
   | 'btn.reload'
   | 'btn.create_new'
   | 'btn.add_acc'
+  | 'btn.add'
+  | 'btn.save'
   | 'btn.cancel'
   | 'btn.delete'
+  | 'btn.import'
+  | 'btn.export'
   
   // Notifications
   | 'mark_all_read'
@@ -343,6 +347,23 @@ export type TranslationKey =
   | 'warehouses_management.name'
   | 'warehouses_management.description'
   | 'warehouses_management.createdAt'
+  | 'warehouses_management.create_warehouse'
+  | 'warehouses_management.edit_warehouse'
+  
+  // Inbound Management
+  | 'inbound_management'
+  | 'inbound_management.sku'
+  | 'inbound_management.quantity'
+  | 'inbound_management.store_method'
+  | 'inbound_management.packing_method'
+  | 'inbound_management.bin_code'
+  | 'inbound_management.supplier'
+  | 'inbound_management.invoice_code'
+  | 'inbound_management.status'
+  | 'inbound_management.note'
+  | 'inbound_management.created_at'
+  | 'inbound_management.create_inbound'
+  | 'inbound_management.edit_inbound'
   
   // Area Management
   | 'area.management'
