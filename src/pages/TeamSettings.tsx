@@ -7,6 +7,7 @@ import { Users, Shield, Settings } from "lucide-react";
 import UsersTab from "@/components/team/UsersTab";
 import RolesTab from "@/components/team/RolesTab";
 import GroupsTab from "@/components/team/GroupsTab";
+import User from "@/components/user_management";
 
 const TeamSettings = () => {
   const { section = "users" } = useParams();
@@ -41,7 +42,7 @@ const { t } = useTranslation();
         </TabsList>
 
         <TabsContent value="users" className="mt-6">
-          <UsersTab />
+          <User />
         </TabsContent>
 
         <TabsContent value="roles" className="mt-6">
