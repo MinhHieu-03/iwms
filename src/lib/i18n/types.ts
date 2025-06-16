@@ -66,6 +66,11 @@ export type TranslationKey =
   | 'login'
   | 'welcome'
   | 'delete_prompt'
+
+  | 'btn_create'
+  | 'btn_edit'
+  | 'btn_delete'
+  | 'btn_cancel'
   
   // Navigation & Sidebar
   | 'dashboard'

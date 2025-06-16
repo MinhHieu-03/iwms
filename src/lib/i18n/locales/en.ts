@@ -16,6 +16,11 @@ export const en: Record<TranslationKey, string> = {
   welcome: 'Welcome',
   delete_prompt: "Delete confirmation",
   
+  btn_create: 'Create',
+  btn_edit: 'Save Changes',
+  btn_delete: "Delete",
+  btn_cancel: 'Cancel',
+  
   // Navigation & Sidebar
   dashboard: 'Dashboard',
   mark_all_read: 'Mark all as read',
