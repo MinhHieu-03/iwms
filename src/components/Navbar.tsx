@@ -335,14 +335,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
                   : t("warehouse_settings")
                 : location.pathname.startsWith("/team-settings")
                 ? t("team_management")
-                : t(
-                  navSections.flatMap(s => s.items)
-                    .concat(supportItems)
-                    .find((item) => 
-                      item.path === location.pathname || 
-                      (item.path !== "/" && location.pathname.startsWith(item.path))
-                    )?.name || ("dashboard" as TranslationKey)
-                )}
+                : t(location.pathname)}
             </h1>
           </div>
 

@@ -14,28 +14,24 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useTranslation } from "react-i18next";
-import { devices, deviceTypes, type DeviceData } from "@/data/deviceData";
-import { Search, Filter, Eye, Pause, Play, Square, AlertCircle } from "lucide-react";
+import { devices as device_init_data, deviceTypes, type DeviceData } from "@/data/deviceData";
+import { Search, Filter, Eye, Pause, Play, Trash, PlusCircle } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { DeviceForm, type DeviceFormData } from "@/components/device/DeviceForm";
+import { DeleteConfirmForm } from "@/components/common/DeleteConfirm";
 
 const DeviceList = () => {
-const { t } = useTranslation();  const [searchQuery, setSearchQuery] = useState("");
+  const { t } = useTranslation();
+  const [searchQuery, setSearchQuery] = useState("");
+  const { toast } = useToast();
   const [stateFilter, setStateFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [selectedDevice, setSelectedDevice] = useState<DeviceData | null>(null);
-  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
-  
-  
-  // Get unique values for filters
-  const device_states = [...new Set(devices.map(m => m.state))];
-  const device_types = [...new Set(deviceTypes.map(m => m.name))];
+  const [deviceToDelete, setDeviceToDelete] = useState<DeviceData | null>(null);
+  const [isDeleteFormOpen, setIsDeleteFormOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingDevice, setEditingDevice] = useState<DeviceData | null>(null);
+  const [devices, setDevices] = useState<DeviceData[]>(device_init_data);
   
   // Filter missions based on search and filters
   const filter_devices = devices.filter(device => {
@@ -50,6 +46,66 @@ const { t } = useTranslation();  const [searchQuery, setSearchQuery] = useState(
   //   setSelectedMission(mission);
   //   setIsDetailDialogOpen(true);
   // };
+  
+  const handleCreateDevice = (deviceData: DeviceFormData) => {
+    if (!deviceData) return;
+
+    const newDevice: DeviceData = {
+      ...deviceData,
+      id: `fake_id`,
+      connected: false,
+      state: "init"
+    };
+    
+    setDevices(prev => [...prev, newDevice]);
+    toast({
+      title: "Device Created",
+      description: `Device ${newDevice.name} has been created successfully.`,
+    });
+  };
+
+  const handleEditDevice = (deviceData: DeviceFormData) => {
+    if (!editingDevice) return;
+    
+    const updatedDevice: DeviceData = {
+      ...deviceData,
+      id: editingDevice.id,
+      connected: editingDevice.connected,
+      state: editingDevice.state
+    };
+    
+    setDevices(prev => prev.map(device => device.id === updatedDevice.id ? updatedDevice : device));
+    setEditingDevice(null);
+    toast({
+      title: "Device Updated",
+      description: `Device ${updatedDevice.name} has been updated successfully.`,
+    });
+  };
+
+  const handleDeleteDevice = (deviceData: DeviceData) => {
+    setDevices(prev => prev.filter(device => device.id !== deviceData.id));
+    setIsDeleteFormOpen(false);
+    toast({
+      title: "Device deleted",
+      description: `Device ${deviceData.name} has been deleted.`,
+      variant: "destructive",
+    });
+  };
+  
+  const openCreateForm = () => {
+    setEditingDevice(null);
+    setIsFormOpen(true);
+  };
+
+  const openEditForm = (device: DeviceData) => {
+    setEditingDevice(device);
+    setIsFormOpen(true);
+  };
+
+  const openDeleteForm = (device: DeviceData) => {
+    setDeviceToDelete(device);
+    setIsDeleteFormOpen(true);
+  };
 
   return (
     <div className="space-y-6">
@@ -66,29 +122,22 @@ const { t } = useTranslation();  const [searchQuery, setSearchQuery] = useState(
             />
           </div>
           <div className="flex gap-2">
-            <Select value={stateFilter} onValueChange={setStateFilter}>
-              <SelectTrigger className="w-32">
-                <SelectValue placeholder="State" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All States</SelectItem>
-                {device_states.map((state) => (
-                  <SelectItem value={state}>{state}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            
             <Select value={typeFilter} onValueChange={setTypeFilter}>
               <SelectTrigger className="w-32">
                 <SelectValue placeholder="Type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                {device_types.map(type => (
-                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                <SelectItem key="all" value="all">All Types</SelectItem>
+                {deviceTypes.map(type => (
+                  <SelectItem key={type.id} value={type.id}>{type.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            
+            <Button onClick={openCreateForm} className="h-10 bg-warehouse-primary hover:bg-warehouse-primary/90">
+              <PlusCircle className="h-4 w-4 mr-2" />
+              {t("new_device")}
+            </Button>
           </div>
         </div>
       </Card>
@@ -102,51 +151,56 @@ const { t } = useTranslation();  const [searchQuery, setSearchQuery] = useState(
                 <TableHead className="font-medium text-center">{t('device_type')}</TableHead>
                 <TableHead className="font-medium text-center">{t('device_connection')}</TableHead>
                 <TableHead className="font-medium text-center">{t('device_state')}</TableHead>
+                <TableHead className="font-medium text-center">{t('device_action')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filter_devices.map((device) => (
-                <TableRow key={device.id}>
+                <TableRow key={device.id} onClick={() => openEditForm(device)}>
                   <TableCell>
                     <div>
                       <div className="font-medium">{device.name}</div>
                       <div className="text-sm text-muted-foreground">{device.description}</div>
                     </div>
                   </TableCell>
-                  <TableCell>{device.type}</TableCell>
+                  <TableCell>{deviceTypes.find(type => type.id === device.type).name}</TableCell>
                   <TableCell>
-                    <div className="text-sm">
-                      {device.connected}
-                    </div>
+                    <Badge variant={device.connected ? "secondary" : "destructive"} className="w-fit">
+                      {device.connected ? t("device_connection_connected") : t("device_connection_disconnected")}
+                    </Badge>
                   </TableCell>
                   <TableCell>
                     <div className="text-sm">
                       {device.state}
                     </div>
                   </TableCell>
-                  {/* <TableCell>
-                    <div className="flex gap-1">
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => handleViewDetails(device)}
-                      >
-                        <Eye className="h-3 w-3" />
-                      </Button>
-                      <Button variant="ghost" size="sm" className="text-yellow-600 hover:text-yellow-800">
-                        <Pause className="h-3 w-3" />
-                      </Button>
-                      <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-800">
-                        <Square className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </TableCell> */}
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-800" onClick={() => openDeleteForm(device)}>
+                      <Trash className="h-3 w-3" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
       </Card>
+      
+      <DeviceForm
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        onSubmit={editingDevice ? handleEditDevice : handleCreateDevice}
+        initialData={editingDevice}
+        mode={editingDevice ? 'edit' : 'create'}
+      />
+      
+      <DeleteConfirmForm
+        isOpen={isDeleteFormOpen}
+        confirmation={t("device_delete_confirmation")}
+        data={deviceToDelete}
+        onConfirm={handleDeleteDevice}
+        onCancel={() => setIsDeleteFormOpen(false)}
+      />
     </div>
   );
 };

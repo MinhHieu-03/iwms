@@ -1,9 +1,14 @@
 import { TranslationKey as mission_key } from "./type_more/mission"
+import { TranslationKey as device_key } from "./type_more/device"
+import { TranslationKey as navbar_key } from "./type_more/navbar"
 
 export type SupportedLanguages = 'en' | 'vi' | 'zh' | 'ja' | 'ko';
 
 export type TranslationKey = 
   | mission_key
+  | device_key
+  | navbar_key
+  
   // Rack Management
   | 'rack.management'
   | 'rack.management.title'
@@ -60,6 +65,7 @@ export type TranslationKey =
   | 'logout'
   | 'login'
   | 'welcome'
+  | 'delete_prompt'
   
   // Navigation & Sidebar
   | 'dashboard'

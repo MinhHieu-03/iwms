@@ -20,7 +20,6 @@ export interface DeviceData {
   connected: boolean;
   state: string;
   config: any;
-  task: TaskTemplate[];
 }
 
 const deviceTypes: DeviceType[] = [
@@ -104,7 +103,6 @@ const devices: DeviceData[] = [
     connected: true,
     state: "active",
     config: { temperature: 22.5, humidity: 45, pressure: 1013 },
-    task: deviceTypes[0].task
   },
   {
     id: "device-2",
@@ -114,7 +112,6 @@ const devices: DeviceData[] = [
     connected: false,
     state: "idle",
     config: { temperature: 23.0, humidity: 50, pressure: 1012 },
-    task: deviceTypes[0].task
   },
   {
     id: "device-3",
@@ -124,7 +121,6 @@ const devices: DeviceData[] = [
     connected: true,
     state: "active",
     config: { temperature: 20.0, humidity: 55, pressure: 1010 },
-    task: deviceTypes[0].task
   },
   {
     id: "device-4",
@@ -134,7 +130,6 @@ const devices: DeviceData[] = [
     connected: true,
     state: "running",
     config: { speed: 150, direction: "forward", mode: "manual" },
-    task: deviceTypes[1].task
   },
   {
     id: "device-5",
@@ -144,7 +139,6 @@ const devices: DeviceData[] = [
     connected: true,
     state: "running",
     config: { speed: 120, direction: "reverse", mode: "auto" },
-    task: deviceTypes[1].task
   },
   {
     id: "device-6",
@@ -154,7 +148,6 @@ const devices: DeviceData[] = [
     connected: false,
     state: "stopped",
     config: { speed: 0, direction: "forward", mode: "manual" },
-    task: deviceTypes[1].task
   },
   {
     id: "device-7",
@@ -164,7 +157,6 @@ const devices: DeviceData[] = [
     connected: true,
     state: "operational",
     config: { ip_address: "192.168.1.100", port: 8080, protocol: "TCP" },
-    task: deviceTypes[2].task
   },
   {
     id: "device-8",
@@ -174,7 +166,6 @@ const devices: DeviceData[] = [
     connected: true,
     state: "standby",
     config: { ip_address: "192.168.1.101", port: 8081, protocol: "UDP" },
-    task: deviceTypes[2].task
   },
   {
     id: "device-9",
@@ -184,7 +175,6 @@ const devices: DeviceData[] = [
     connected: false,
     state: "offline",
     config: { ip_address: "192.168.1.102", port: 8082, protocol: "TCP" },
-    task: deviceTypes[2].task
   },
   {
     id: "device-10",
@@ -194,7 +184,6 @@ const devices: DeviceData[] = [
     connected: true,
     state: "active",
     config: { temperature: 21.5, humidity: 48, pressure: 1011 },
-    task: deviceTypes[0].task
   }
 ];
 
