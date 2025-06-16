@@ -199,21 +199,21 @@ const App = () => {
         <BasePagination
           total={total}
           pageSize={pageInfo.perPage}
-          currentPage={pageInfo.page}
+          current={pageInfo.page}
           onChange={(page: number, perPage: number) =>
             setPageInfo({ page, perPage })
           }
         />
       </CardContent>
       <ModalAdd
-        title={t("btn.add_acc")}
+        title={t("warehouses_management.create_warehouse")}
         itemsRender={renderCreateForm(dataRole, dataList)}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         _handleFinish={_handleFinish}
       />
       <ModalEdit
-        title={t("manager_acc.edit_acc")}
+        title={t("warehouses_management.edit_warehouse")}
         itemsRender={renderEditForm(dataRole)}
         formEdit={formEdit}
         setFormEdit={setFormEdit}

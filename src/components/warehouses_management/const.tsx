@@ -1,6 +1,4 @@
 import { ColumnsType } from "antd/es/table";
-import { useTranslation } from "react-i18next";
-
 export const lang_key = "warehouses_management";
 export const title = "Quản lý kho";
 export interface DataType {

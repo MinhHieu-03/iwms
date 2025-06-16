@@ -1,5 +1,5 @@
 import { RenderForm, TypeRenderForm } from "@/lib/render-form";
-import { Drawer, Form, Button } from "antd";
+import { Modal, Form, Button } from "antd";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 type TEdit = {
@@ -36,17 +36,18 @@ const ModalEdit = ({
     }
   }, [formEdit, form]);
   return (
-    <Drawer
+    <Modal
       title={title}
-      placement="right"
-      onClose={() => {
+      open={formEdit.isOpen}
+      onCancel={() => {
         form.resetFields();
         setFormEdit({
           ...formEdit,
           isOpen: false,
         });
       }}
-      open={formEdit.isOpen}
+      footer={null}
+      width={600}
     >
       <Form onFinish={_handleFinish} form={form} layout="vertical">
         {itemsRender.map((items: TypeRenderForm) => {
@@ -71,7 +72,7 @@ const ModalEdit = ({
           </Button>
         </div>
       </Form>
-    </Drawer>
+    </Modal>
   );
 };
 
