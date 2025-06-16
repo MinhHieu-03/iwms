@@ -42,6 +42,7 @@ export const renderCreateForm = (dataRole: unknown, dataList: unknown) => {
     {
       label: "Name",
       name: "name",
+      rules: [{ required: true, message: "Please input the name!" }],
     },
     {
       label: "Description",

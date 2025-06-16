@@ -141,7 +141,6 @@ const App = () => {
 
   const columns: ColumnsType<DataType> = useMemo(() => {
     const col = RenderCol({ t });
-    console.log("col", col);
     return col || [];
   }, [t]);
 

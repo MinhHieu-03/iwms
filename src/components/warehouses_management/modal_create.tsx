@@ -20,19 +20,19 @@ const ModalAdd = ({
 }: TAdd) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
-  useEffect(() => {
-    if (!isOpen) form.resetFields();
-  }, [isOpen]);
   return (
     <Drawer
       title={title}
       placement="right"
-      onClose={() => setIsOpen(false)}
+      onClose={() => {
+        form?.resetFields();
+        setIsOpen(false);
+      }}
       open={isOpen}
     >
       <Form onFinish={_handleFinish} form={form} layout="vertical">
         {itemsRender.map((items: TypeRenderForm) => {
-          return <RenderForm data={items} />;
+          return <RenderForm key={items.name} data={items} />;
         })}
         <div
           className="flex items-center justify-end gap-4"

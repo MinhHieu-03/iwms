@@ -22,6 +22,7 @@ export const en: Record<TranslationKey, string> = {
   'warehouses_management.description': 'Description',
   'warehouses_management.createdAt': 'Created At',
   operator_interface: 'Operator Interface',
+  '/operator-interface': 'Operator Interface',
   inbound_outbound: 'Inbound/Outbound',
   warehouse_layout: 'Warehouse Layout',
   robot_missions: 'Robot Missions',

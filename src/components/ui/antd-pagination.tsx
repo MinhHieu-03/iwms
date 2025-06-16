@@ -1,6 +1,5 @@
 import { Pagination, PaginationProps } from "antd";
 import React from "react";
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 
 const DEFAULT_PAGINATION = {
   INITIAL_PAGE: 1,
@@ -65,7 +64,5 @@ const BasePagination: React.FC<IBasePagination> = (props) => {
     </div>
   );
 };
-
-BasePagination.defaultProps = defaultProps;
 
 export default BasePagination;

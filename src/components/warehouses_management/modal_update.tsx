@@ -31,26 +31,26 @@ const ModalEdit = ({
   const { t } = useTranslation();
   const [form] = Form.useForm();
   useEffect(() => {
-    if (!formEdit.isOpen) form.resetFields();
-    else {
+    if (formEdit.isOpen) {
       form.setFieldsValue(formEdit.data);
     }
-  }, [formEdit]);
+  }, [formEdit, form]);
   return (
     <Drawer
       title={title}
       placement="right"
-      onClose={() =>
+      onClose={() => {
+        form.resetFields();
         setFormEdit({
           ...formEdit,
           isOpen: false,
-        })
-      }
+        });
+      }}
       open={formEdit.isOpen}
     >
       <Form onFinish={_handleFinish} form={form} layout="vertical">
         {itemsRender.map((items: TypeRenderForm) => {
-          return <RenderForm data={items} />;
+          return <RenderForm key={items.name} data={items} />;
         })}
         <div
           className="flex items-center justify-end gap-4"

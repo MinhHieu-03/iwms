@@ -61,6 +61,7 @@ export type TranslationKey =
   // Navigation & Sidebar
   | 'dashboard'
   | 'operator_interface'
+  | '/operator-interface'
   | 'inbound_outbound'
   | 'warehouse_layout'
   | 'robot_missions'

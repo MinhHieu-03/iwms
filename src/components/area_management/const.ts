@@ -39,7 +39,7 @@ export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<Da
     title: t("common.warehouse"),
     dataIndex: "warehouse",
     key: "warehouse",
-    render: (warehouse: { _id: string; name: string }) => warehouse.name || t("common.not_assigned"),
+    render: (warehouse: { _id: string; name: string }) => warehouse?.name || t("common.not_assigned"),
   },
   {
     title: t("common.productions"),

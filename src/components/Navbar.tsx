@@ -15,7 +15,7 @@ import {
   MonitorSmartphone,
   Warehouse,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -54,21 +54,21 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { isAuthenticated } = useAppSelector(state => state.auth);
-  
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+
   const navigate = useNavigate();
-  
+
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/login');
+    navigate("/login");
   };
-  
+
   const user = {
     name: "John Doe",
     email: "john.doe@example.com",
     avatar: "",
   };
-  
+
   const navSections = [
     {
       title: "Main",
@@ -117,8 +117,8 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
               path: "/warehouse-settings/storage",
               name: "storage_model_configuration" as TranslationKey,
               icon: <Box className="w-4 h-4" />,
-            }
-          ]
+            },
+          ],
         },
         {
           path: "/team-settings",
@@ -154,16 +154,15 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
   ];
 
   const toggleSubmenu = (path: string) => {
-    setExpandedMenus(prev => 
-      prev.includes(path) 
-        ? prev.filter(p => p !== path)
-        : [...prev, path]
+    setExpandedMenus((prev) =>
+      prev.includes(path) ? prev.filter((p) => p !== path) : [...prev, path]
     );
   };
 
   const renderNavItem = (item: NavItem) => {
-    const isActive = location.pathname === item.path || 
-                     (item.path !== "/" && location.pathname.startsWith(item.path));
+    const isActive =
+      location.pathname === item.path ||
+      (item.path !== "/" && location.pathname.startsWith(item.path));
     const isExpanded = expandedMenus.includes(item.path);
 
     if (item.children) {
@@ -181,9 +180,13 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
               {item.icon}
               <span>{t(item.name)}</span>
             </div>
-            {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            {isExpanded ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
           </button>
-          
+
           {isExpanded && (
             <div className="ml-4 space-y-1">
               {item.children.map((child) => (
@@ -221,7 +224,9 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           <span>{t(item.name)}</span>
         </div>
         {item.badge && (
-          <Badge variant="destructive" className="text-xs">{item.badge}</Badge>
+          <Badge variant="destructive" className="text-xs">
+            {item.badge}
+          </Badge>
         )}
       </Link>
     );
@@ -230,9 +235,9 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
   React.useEffect(() => {
     // Auto-expand warehouse settings if we're on a child page
     if (location.pathname.startsWith("/warehouse-settings")) {
-      setExpandedMenus(prev => 
-        prev.includes("/warehouse-settings") 
-          ? prev 
+      setExpandedMenus((prev) =>
+        prev.includes("/warehouse-settings")
+          ? prev
           : [...prev, "/warehouse-settings"]
       );
     }
@@ -244,9 +249,11 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
       <div className="fixed left-0 top-0 h-full w-64 bg-background border-r border-border shadow-sm z-50 overflow-y-auto">
         <div className="p-4 flex items-center space-x-2 border-b border-border">
           <Box className="h-6 w-6 text-warehouse-primary" />
-          <h1 className="text-lg font-bold text-warehouse-primary">iWMS System</h1>
+          <h1 className="text-lg font-bold text-warehouse-primary">
+            iWMS System
+          </h1>
         </div>
-        
+
         <div className="flex flex-col h-full">
           <nav className="p-2 space-y-6 flex-1">
             {navSections.map((section, index) => (
@@ -267,7 +274,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
               </h2>
               {supportItems.map(renderNavItem)}
             </div>
-            
+
             {isAuthenticated && (
               <div className="px-2">
                 <button
@@ -288,45 +295,54 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
         {/* Top Header */}
         <header className="bg-background shadow-sm h-16 flex items-center justify-between px-6 border-b border-border sticky top-0 z-40">
           <div className="flex items-center">
-            <div className={`h-8 w-1 rounded-full mr-2 ${
-              location.pathname === "/" ? "bg-warehouse-primary" :
-              location.pathname === "/inbound-outbound" ? "bg-warehouse-accent1" :
-              location.pathname === "/layout" ? "bg-warehouse-secondary" :
-              location.pathname === "/missions" ? "bg-warehouse-accent2" :
-              location.pathname.startsWith("/team-settings") ? "bg-indigo-500" :
-              location.pathname === "/user-settings" ? "bg-teal-500" :
-              location.pathname === "/system-settings" ? "bg-purple-500" :
-              location.pathname === "/notifications" ? "bg-amber-500" :
-              location.pathname === "/operator-interface" ? "bg-cyan-500" :
-              location.pathname === "/help" ? "bg-green-500" :
-              location.pathname.startsWith("/warehouse-settings") ? "bg-orange-500" :
-              "bg-warehouse-highlight"
-            }`}></div>
+            <div
+              className={`h-8 w-1 rounded-full mr-2 ${
+                location.pathname === "/"
+                  ? "bg-warehouse-primary"
+                  : location.pathname === "/inbound-outbound"
+                  ? "bg-warehouse-accent1"
+                  : location.pathname === "/layout"
+                  ? "bg-warehouse-secondary"
+                  : location.pathname === "/missions"
+                  ? "bg-warehouse-accent2"
+                  : location.pathname.startsWith("/team-settings")
+                  ? "bg-indigo-500"
+                  : location.pathname === "/user-settings"
+                  ? "bg-teal-500"
+                  : location.pathname === "/system-settings"
+                  ? "bg-purple-500"
+                  : location.pathname === "/notifications"
+                  ? "bg-amber-500"
+                  : location.pathname === "/operator-interface"
+                  ? "bg-cyan-500"
+                  : location.pathname === "/help"
+                  ? "bg-green-500"
+                  : location.pathname.startsWith("/warehouse-settings")
+                  ? "bg-orange-500"
+                  : "bg-warehouse-highlight"
+              }`}
+            ></div>
             <h1 className="text-xl font-bold">
-              {location.pathname.startsWith("/warehouse-settings") 
-                ? location.pathname === "/warehouse-settings/layout" 
+              {location.pathname.startsWith("/warehouse-settings")
+                ? location.pathname === "/warehouse-settings/layout"
                   ? "Layout Configuration"
                   : location.pathname === "/warehouse-settings/storage"
                   ? "Storage Model Configuration"
                   : t("warehouse_settings")
                 : location.pathname.startsWith("/team-settings")
                 ? t("team_management")
-                : t(
-                  navSections.flatMap(s => s.items)
-                    .concat(supportItems)
-                    .find((item) => 
-                      item.path === location.pathname || 
-                      (item.path !== "/" && location.pathname.startsWith(item.path))
-                    )?.name || ("dashboard" as TranslationKey)
-                )}
+                : t(location.pathname as TranslationKey)}
             </h1>
           </div>
 
           {/* User profile dropdown & Language selector */}
           <div className="flex items-center space-x-4">
             <LanguageSelector />
-            
-            <Link to="/notifications" className="relative p-2 rounded-full hover:bg-muted">
+
+            <Link
+              to="/notifications"
+              className="relative p-2 rounded-full hover:bg-muted"
+            >
               <Bell className="h-5 w-5 text-foreground" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </Link>
@@ -338,16 +354,23 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.avatar} alt={user.name} />
                       <AvatarFallback className="bg-primary/10 text-primary">
-                        {user.name.split(' ').map(name => name[0]).join('')}
+                        {user.name
+                          .split(" ")
+                          .map((name) => name[0])
+                          .join("")}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm font-medium text-foreground">{user.name}</span>
+                    <span className="text-sm font-medium text-foreground">
+                      {user.name}
+                    </span>
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="flex flex-col space-y-1 p-2">
                     <p className="text-sm font-medium">{user.name}</p>
-                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {user.email}
+                    </p>
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
@@ -376,7 +399,10 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link to="/login" className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors">
+              <Link
+                to="/login"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
+              >
                 Log in
               </Link>
             )}
@@ -384,9 +410,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
         </header>
 
         {/* Scrollable Main Content */}
-        <main className="flex-1 p-6 overflow-auto">
-          {children}
-        </main>
+        <main className="flex-1 p-6 overflow-auto">{children}</main>
       </div>
     </div>
   );
