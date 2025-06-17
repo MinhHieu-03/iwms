@@ -149,16 +149,16 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           name: "team_management" as TranslationKey,
           icon: <Users className="w-5 h-5" />,
         },
-        {
-          path: "/user-settings",
-          name: "user_settings" as TranslationKey,
-          icon: <User className="w-5 h-5" />,
-        },
-        {
-          path: "/system-settings",
-          name: "system_settings" as TranslationKey,
-          icon: <Settings className="w-5 h-5" />,
-        },
+        // {
+        //   path: "/user-settings",
+        //   name: "user_settings" as TranslationKey,
+        //   icon: <User className="w-5 h-5" />,
+        // },
+        // {
+        //   path: "/system-settings",
+        //   name: "system_settings" as TranslationKey,
+        //   icon: <Settings className="w-5 h-5" />,
+        // },
       ],
     },
   ];
