@@ -15,7 +15,7 @@ import OrderForm from "@/components/OrderForm";
 const InboundOutbound = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("orders");
+  const [activeTab, setActiveTab] = useState("inbound");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -351,11 +351,20 @@ const InboundOutbound = () => {
 
         <TabsContent value="inbound" className="mt-6">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-col sm:flex-row items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <ArrowDown className="h-5 w-5" />
                 {t('inbound_shipments')}
               </CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-2"
+                onClick={openCreateForm}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                {t('btn.create_new')}
+              </Button>
             </CardHeader>
             <CardContent>
               <OrdersTable filteredOrders={inboundOrdersFiltered} />

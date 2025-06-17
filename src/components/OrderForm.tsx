@@ -93,8 +93,8 @@ const OrderForm: React.FC<OrderFormProps> = ({
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
+            <div className="grid grid-cols-1 gap-4">
+              {/* <FormField
                 control={form.control}
                 name="category"
                 render={({ field }) => (
@@ -114,7 +114,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
 
               <FormField
                 control={form.control}
@@ -132,7 +132,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="taskId"
                 render={({ field }) => (
@@ -144,8 +144,8 @@ const OrderForm: React.FC<OrderFormProps> = ({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
-
+              /> */}
+{/* 
               <FormField
                 control={form.control}
                 name="robotCode"
@@ -158,7 +158,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -269,7 +269,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="missionId"
                 render={({ field }) => (
@@ -281,9 +281,9 @@ const OrderForm: React.FC<OrderFormProps> = ({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
 
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="partner"
                 render={({ field }) => (
@@ -295,10 +295,10 @@ const OrderForm: React.FC<OrderFormProps> = ({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
             </div>
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="status"
               render={({ field }) => (
@@ -319,7 +319,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
             <div className="flex justify-end gap-2 pt-4">
               <Button type="button" variant="outline" onClick={onClose}>
