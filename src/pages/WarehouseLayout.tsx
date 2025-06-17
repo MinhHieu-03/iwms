@@ -19,25 +19,13 @@ const WarehouseLayout = () => {
   );
   const [highlightedRack, setHighlightedRack] = useState<string | null>(null);
   const [hoveredRack, setHoveredRack] = useState<string | null>(null);
-
-  //  id: "area-001",
-  // warehouseId: "wh-001",
-  // name: "Inbound Area A1",
-  // description: "Primary receiving dock",
-  // type: "inbound",
-  // status: "active",
-  // capacity: 2000,
-  // currentUtilization: 1650,
-  // createdAt: "2024-01-15T08:00:00Z"
-
   const getWarehouseAreas = async () => {
     const { data } = await apiClient.get('/warehouse');
     if (data.metaData) {
       setWarehouseAreas(
         data.metaData.map((area) => ({
-          // id: area._id || `area-${Math.random().toString(36).substr(2, 9)}`,
-          id: "area-001",
-          warehouseId: 'wh-001',
+          id: area.name,
+          _id: area._id,
           name: area.name || 'Inbound Area A1',
           description: area.description || 'Primary receiving dock',
           type: 'inbound',

@@ -10,6 +10,7 @@ export interface Warehouse {
 
 export interface WarehouseArea {
   id: string;
+  _id: string;
   warehouseId: string;
   name: string;
   description: string;
@@ -24,6 +25,7 @@ export interface Rack {
   id: string;
   areaId: string;
   locationCode: string;
+  location_code: string;
   row: number;
   column: number;
   level: number;
