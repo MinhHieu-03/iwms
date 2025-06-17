@@ -162,7 +162,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="pickupLocation"
                 render={({ field }) => (
@@ -174,9 +174,9 @@ const OrderForm: React.FC<OrderFormProps> = ({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
 
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="dropoffLocation"
                 render={({ field }) => (
@@ -188,7 +188,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
             </div>
 
             <div className="grid grid-cols-2 gap-4">

@@ -179,8 +179,8 @@ const InboundOutbound = () => {
                 {/* <TableHead>Task ID</TableHead> */}
                 <TableHead>SKU</TableHead>
                 {/* <TableHead>Robot Code</TableHead> */}
-                <TableHead>Pickup Location</TableHead>
-                <TableHead>Dropoff Location</TableHead>
+                {/* <TableHead>Pickup Location</TableHead>
+                <TableHead>Dropoff Location</TableHead> */}
                 <TableHead>Status</TableHead>
                 <TableHead>Store Method</TableHead>
                 <TableHead>Store Code</TableHead>
@@ -198,8 +198,8 @@ const InboundOutbound = () => {
                   {/* <TableCell className="font-medium">{order.taskId}</TableCell> */}
                   <TableCell>{order.sku}</TableCell>
                   {/* <TableCell>{order.robotCode}</TableCell> */}
-                  <TableCell>{order.pickupLocation}</TableCell>
-                  <TableCell>{order.dropoffLocation}</TableCell>
+                  {/* <TableCell>{order.pickupLocation}</TableCell>
+                  <TableCell>{order.dropoffLocation}</TableCell> */}
                   <TableCell>{getStatusBadge(order.status)}</TableCell>
                   <TableCell>{order.storeMethod}</TableCell>
                   <TableCell>{order.storeCode}</TableCell>
