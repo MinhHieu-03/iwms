@@ -39,18 +39,18 @@ export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<Ra
     sorter: (a, b) => a.location_code.localeCompare(b.location_code),
     sortDirections: ['ascend', 'descend'],
   },
-  {
-    title: t("rack.position"),
-    dataIndex: "position",
-    key: "position",
-    render: (position: string) => t(`rack.position.${position.replace('-', '_')}`),
-  },
-  {
-    title: t("rack.direction"),
-    dataIndex: "direction",
-    key: "direction",
-    render: (direction: string) => t(`rack.direction.${direction}`),
-  },
+  // {
+  //   title: t("rack.position"),
+  //   dataIndex: "position",
+  //   key: "position",
+  //   render: (position: string) => t(`rack.position.${position.replace('-', '_')}`),
+  // },
+  // {
+  //   title: t("rack.direction"),
+  //   dataIndex: "direction",
+  //   key: "direction",
+  //   render: (direction: string) => t(`rack.direction.${direction}`),
+  // },
   {
     title: t("rack.status"),
     dataIndex: "status",

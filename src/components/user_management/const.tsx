@@ -13,15 +13,13 @@ export interface UserDataType {
   role: string;
   status: string;
   department: string;
-  ent_dt?: string;
-  upd_dt?: string;
   [key: string]: unknown;
 }
 
 export const domain = {
   list: "auth/list",
-  create: "auth",
-  update: "auth",
+  create: "auth/signup",
+  update: "auth/account",
   remove: "auth",
 };
 

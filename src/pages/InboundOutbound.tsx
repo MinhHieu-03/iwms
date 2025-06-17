@@ -176,9 +176,9 @@ const InboundOutbound = () => {
               <TableRow>
                 <TableHead>STT</TableHead>
                 {showCategory && <TableHead>Category</TableHead>}
-                <TableHead>Task ID</TableHead>
+                {/* <TableHead>Task ID</TableHead> */}
                 <TableHead>SKU</TableHead>
-                <TableHead>Robot Code</TableHead>
+                {/* <TableHead>Robot Code</TableHead> */}
                 <TableHead>Pickup Location</TableHead>
                 <TableHead>Dropoff Location</TableHead>
                 <TableHead>Status</TableHead>
@@ -195,9 +195,9 @@ const InboundOutbound = () => {
                 <TableRow key={order.id}>
                   <TableCell>{startIndex + index + 1}</TableCell>
                   {showCategory && <TableCell>{getCategoryBadge(order.category)}</TableCell>}
-                  <TableCell className="font-medium">{order.taskId}</TableCell>
+                  {/* <TableCell className="font-medium">{order.taskId}</TableCell> */}
                   <TableCell>{order.sku}</TableCell>
-                  <TableCell>{order.robotCode}</TableCell>
+                  {/* <TableCell>{order.robotCode}</TableCell> */}
                   <TableCell>{order.pickupLocation}</TableCell>
                   <TableCell>{order.dropoffLocation}</TableCell>
                   <TableCell>{getStatusBadge(order.status)}</TableCell>
@@ -289,25 +289,7 @@ const InboundOutbound = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-warehouse-primary/10 to-warehouse-secondary/10 rounded-lg p-6 border">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="bg-warehouse-primary/20 p-3 rounded-lg">
-              <Truck className="h-8 w-8 text-warehouse-primary" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Orders Management</h1>
-              <p className="text-muted-foreground">Manage incoming and outgoing orders with real-time tracking</p>
-            </div>
-          </div>
-          <Button onClick={openCreateForm} className="bg-warehouse-primary hover:bg-warehouse-primary/90">
-            <Plus className="h-4 w-4 mr-2" />
-            New Order
-          </Button>
-        </div>
-      </div>
-
+   
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
@@ -346,10 +328,6 @@ const InboundOutbound = () => {
 
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-3 bg-muted/50">
-          <TabsTrigger value="orders" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
-            <Package className="h-4 w-4 mr-2" />
-            All Orders
-          </TabsTrigger>
           <TabsTrigger value="inbound" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
             <ArrowDown className="h-4 w-4 mr-2" />
             {t('inbound')}

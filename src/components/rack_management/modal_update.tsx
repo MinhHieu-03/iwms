@@ -189,7 +189,7 @@ const ModalEdit = ({ isOpen, onClose, onFinish, initialValues }: Props) => {
           <InputNumber min={1} style={{ width: "100%" }} />
         </Form.Item>
 
-        <Form.Item 
+        {/* <Form.Item 
           name="position" 
           label={t("rack.position")} 
           rules={[{ required: true, message: t("common.required") }]
@@ -213,7 +213,7 @@ const ModalEdit = ({ isOpen, onClose, onFinish, initialValues }: Props) => {
             <Select.Option value="horizontal">{t("rack.direction.horizontal")}</Select.Option>
             <Select.Option value="vertical">{t("rack.direction.vertical")}</Select.Option>
           </Select>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item 
           name="status" 
@@ -266,7 +266,7 @@ const ModalEdit = ({ isOpen, onClose, onFinish, initialValues }: Props) => {
           />
         </Form.Item>
 
-        <Form.Item 
+        {/* <Form.Item 
           name="rcs" 
           label={t("rack.rcs")} 
           rules={[
@@ -275,7 +275,7 @@ const ModalEdit = ({ isOpen, onClose, onFinish, initialValues }: Props) => {
           tooltip={t("rack.rcs.tooltip")}
         >
           <Input placeholder="e.g., RCS001" />
-        </Form.Item>
+        </Form.Item> */}
 
         {error && (
           <div className="text-red-500 mb-4">

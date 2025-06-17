@@ -395,7 +395,22 @@ export const en: Record<TranslationKey, string> = {
   'common.required': 'This field is required',
   'common.select_productions': 'Select productions',
   'common.select_warehouse': 'Select warehouse',
-
+  'common.fetch_error': 'Error fetching data',
+  'common.confirm_delete_message': 'Are you sure you want to delete this item?',
+  'common.select_items_to_delete': 'Please select items to delete',
+  'common.confirm_bulk_delete': 'Confirm Bulk Delete',
+  'common.confirm_bulk_delete_message': 'Are you sure you want to delete {{count}} selected items?',
+  'common.bulk_delete_success': 'Selected items have been deleted successfully',
+  'common.actions': 'Actions',
+  'common.edit': 'Edit',
+  'common.create': 'Create',
+  'common.save': 'Save',
+  'common.not_assigned': 'Not Assigned',
+  'common.column': 'Column',
+  'common.row': 'Row',
+  'btn.refresh': 'Refresh',
+  'btn.delete_selected': 'Delete Selected',
+  'btn.edit': 'Edit',
   // Rack Management
   'rack.management': 'Rack Management',
   'rack.management.title': 'Rack Management',
@@ -445,14 +460,6 @@ export const en: Record<TranslationKey, string> = {
   'common.select_area': 'Select an area configuration',
   'common.select_warehouse_first': 'Please select a warehouse first',
 
-  // Common actions
-  'common.actions': 'Actions',
-  'common.edit': 'Edit',
-  'common.create': 'Create',
-  'common.save': 'Save',
-  'common.column': 'column',
-  'common.row': 'Row',
-  'common.not_assigned': 'Not Assigned',
   
   // Master Data Management
   'master_data': 'Master Data Management',

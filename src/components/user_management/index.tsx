@@ -43,8 +43,6 @@ const UserManagement = () => {
       role: "",
       status: "active",
       department: "",
-      ent_dt: new Date().toISOString(),
-      upd_dt: new Date().toISOString(),
     },
   });
   const [loading, setLoading] = useState(false);
@@ -87,7 +85,7 @@ const UserManagement = () => {
         requestDataList();
       })
       .catch((err) => {
-        message.error(err?.response?.data?.message || err.message);
+        message.error(err?.response?.data?.reason || err.message);
       });
   };
 
@@ -98,7 +96,7 @@ const UserManagement = () => {
     };
 
     apiClient
-      .put(`${update}/${formEdit.data._id}`, payload)
+      .patch(`${update}/${formEdit.data._id}`, payload)
       .then(() => {
         message.success(t('common.update_success'));
         setFormEdit({
