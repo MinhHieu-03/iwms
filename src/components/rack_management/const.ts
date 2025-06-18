@@ -69,7 +69,7 @@ export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<Ra
   },
   {
     title: t("rack.area_config"),
-    render: (record: RackDataType) => record.area_config?.name || t("common.not_assigned"),
+    render: (record: { _id: string; name: string }) => record?.name || t("common.not_assigned"),
     dataIndex: "area_config",
     key: "area_config",
     sorter: (a, b) => (a.area_config?.name || '').localeCompare(b.area_config?.name || ''),
