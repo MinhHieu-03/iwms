@@ -9,6 +9,37 @@ export type TranslationKey =
   | device_key
   | navbar_key
   
+  // Storage Model Configuration
+  | 'storage_hierarchy'
+  | 'storage_hierarchy_visualization'
+  | 'storage_master_data'
+  | 'store_unit'
+  | 'add_node'
+  | 'connect_selected'
+  | 'new_node'
+  | 'edit_node_name'
+  | 'select_tags'
+  | 'edge_added'
+  | 'connected'
+  | 'select_exactly_2_nodes'
+  | 'select_exactly_2_nodes_description'
+  | 'edge_created'
+  | 'edge_selected'
+  | 'new_node_added_successfully'
+  | 'nodes_deleted_successfully'
+  | 'node_name_updated_successfully'
+  | 'data_saved_successfully'
+  | 'changes_saved_description'
+  | 'submission_error'
+  | 'submission_error_description'
+  | 'storage_hierarchy_instructions.double_click'
+  | 'storage_hierarchy_instructions.delete_key'
+  | 'storage_hierarchy_instructions.drag_rearrange'
+  | 'storage_hierarchy_instructions.drag_connect'
+  | 'storage_hierarchy_instructions.select_connect'
+  | 'nodes_selected'
+  | 'ready_to_connect'
+  
   // Rack Management
   | 'rack.management'
   | 'rack.management.title'

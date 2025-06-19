@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { get } from 'lodash';
 import envConfig from '../config/env';
+import { message } from 'antd';
 
 export const BASE_URL = envConfig.API_BASE_URL;
 console.log('BASE_URL', BASE_URL, window.location.hostname);
@@ -132,15 +133,20 @@ const optionDefault = {
 };
 const apiClient = {
     get: (url: string, data = {}) => {
-        console.log('data_dnd', data);
         return request({ method: 'get', url, params: data })
+        .catch((err) => {
+            message.error(err?.response?.data?.message || err.message);
+            throw err;
+        });
         // .then((res) => _handleSuccess(res, option))
         // .catch((err) => _handleError(err, option));
     },
     post: (url: string, data = {}) => {
         return request({ method: 'post', url, data })
-        // .then((res) => _handleSuccess(res, option))
-        // .catch((err) => _handleError(err, option));
+        .catch((err) => {
+            message.error(err?.response?.data?.message || err.message);
+            throw err;
+        });
     },
     upload: (url: string, data = {}) => {
         return request({
@@ -159,6 +165,10 @@ const apiClient = {
     },
     patch: (url: string, data = {}) => {
         return request({ method: 'patch', url, data })
+        .catch((err) => {
+            message.error(err?.response?.data?.message || err.message);
+            throw err;
+        });
         // .then((res) => _handleSuccess(res, option))
         // .catch((err) => _handleError(err, option));
     },

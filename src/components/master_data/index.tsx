@@ -178,16 +178,19 @@ const App = () => {
         onDelete={handleDeleteSelected}
       />
       <CardContent>
-        <Table
-          rowSelection={rowSelection}
-          size="middle"
-          rowKey="_id"
-          loading={loading}
-          columns={columns}
-          dataSource={dataList}
-          pagination={false}
-          scroll={{ x: 'calc(100vw - 640px)' }}
-          onRow={(record, rowIndex) => {
+        <div className="overflow-auto" style={{ width: 'calc(100vw - 340px)' }}>
+          <Table
+            rowSelection={rowSelection}
+            size="middle"
+            rowKey="_id"
+            loading={loading}
+            columns={columns}
+            dataSource={dataList}
+            pagination={false}
+            // scroll={{ x: 620, y: 600 }}
+            scroll={{ x:  'calc(100vw - 340px)' }}
+            // style={{ minWidth: '1520px' }}
+            onRow={(record, rowIndex) => {
             return {
               onClick: (e) => {
                 if (
@@ -203,6 +206,7 @@ const App = () => {
             };
           }}
         />
+        </div>
         <BasePagination
           total={total}
           pageSize={pageInfo.perPage}

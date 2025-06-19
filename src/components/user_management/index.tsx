@@ -85,7 +85,7 @@ const UserManagement = () => {
         requestDataList();
       })
       .catch((err) => {
-        message.error(err?.response?.data?.reason || err.message);
+        message.error(err?.response?.data?.message || err.message);
       });
   };
 
@@ -257,7 +257,7 @@ const UserManagement = () => {
             rowKey="_id"
             rowSelection={rowSelection}
             pagination={false}
-            scroll={{ x: 1200 }}
+            scroll={{ x:  'calc(100vw - 340px)' }}
             size="small"
           />
           

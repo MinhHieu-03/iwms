@@ -33,9 +33,11 @@ import { Select } from "antd";
 import { Plus, Trash2, Workflow } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import MasterTable from "@/components/master_data";
+import { useI18n } from "@/contexts/useI18n";
 
 const StorageModelConfig = () => {
   const { toast } = useToast();
+  const { t } = useI18n();
 
   const [hierarchyData, setHierarchyData] =
     useState<StorageHierarchy[]>(storageHierarchy);
@@ -50,17 +52,17 @@ const StorageModelConfig = () => {
   const [editingNode, setEditingNode] = useState<string | null>(null);
   const [editingNodeName, setEditingNodeName] = useState<string>("");
 
-  const initData = async () => {
+  const initData = useCallback(async () => {
     const { data } = await apiClient.get("/storage-model");
     const dataFull = data?.metaData?.[0] || {};
     setNodes(dataFull.nodes || storageHierarchyNodes);
     setEdges(dataFull.edges || storageHierarchyEdges);
-  };
+  }, [setNodes, setEdges]);
 
   useEffect(() => {
     initData();
     // Initialize nodes and edges from storageHierarchyNodes and storageHierarchyEdges
-  }, []);
+  }, [initData]);
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -81,11 +83,11 @@ const StorageModelConfig = () => {
 
       setEdges((eds) => addEdge(connectionWithMarker, eds));
       toast({
-        title: "Edge Added",
-        description: `Connected ${connection.source} → ${connection.target}`,
+        title: t("edge_added"),
+        description: `${t("connected")} ${connection.source} → ${connection.target}`,
       });
     },
-    [setEdges, toast]
+    [setEdges, toast, t]
   );
 
   // Handle node selection
@@ -111,7 +113,7 @@ const StorageModelConfig = () => {
     const newNode: Node = {
       id: newNodeId,
       type: "default",
-      data: { label: "New Node" },
+      data: { label: t("new_node") },
       position: { x: 300, y: 300 },
       style: {
         background: "#f0f0f0",
@@ -123,8 +125,8 @@ const StorageModelConfig = () => {
     };
 
     setNodes((nds) => [...nds, newNode]);
-    toast({ title: "New node added successfully" });
-  }, [setNodes, toast]);
+    toast({ title: t("new_node_added_successfully") });
+  }, [setNodes, toast, t]);
 
   // Delete selected nodes
   const deleteSelectedNodes = useCallback(() => {
@@ -139,8 +141,8 @@ const StorageModelConfig = () => {
       )
     );
     setSelectedNodes([]);
-    toast({ title: `${selectedNodes.length} node(s) deleted successfully` });
-  }, [selectedNodes, setNodes, setEdges, toast]);
+    toast({ title: `${selectedNodes.length} ${t("nodes_deleted_successfully")}` });
+  }, [selectedNodes, setNodes, setEdges, toast, t]);
 
   // Save node name edit
   const saveNodeEdit = useCallback(() => {
@@ -155,8 +157,8 @@ const StorageModelConfig = () => {
     );
     setEditingNode(null);
     setEditingNodeName("");
-    toast({ title: "Node name updated successfully" });
-  }, [editingNode, editingNodeName, setNodes, toast]);
+    toast({ title: t("node_name_updated_successfully") });
+  }, [editingNode, editingNodeName, setNodes, toast, t]);
 
   // Cancel node edit
   const cancelNodeEdit = useCallback(() => {
@@ -168,9 +170,8 @@ const StorageModelConfig = () => {
   const addEdgeBetweenSelected = useCallback(() => {
     if (selectedNodes.length !== 2) {
       toast({
-        title: "Select exactly 2 nodes",
-        description:
-          "You need to select exactly 2 nodes to create an edge between them",
+        title: t("select_exactly_2_nodes"),
+        description: t("select_exactly_2_nodes_description"),
         variant: "destructive",
       });
       return;
@@ -192,10 +193,10 @@ const StorageModelConfig = () => {
 
     setEdges((eds) => [...eds, newEdge]);
     toast({
-      title: "Edge created",
-      description: `Connected ${sourceId} → ${targetId}`,
+      title: t("edge_created"),
+      description: `${t("connected")} ${sourceId} → ${targetId}`,
     });
-  }, [selectedNodes, setEdges, toast]);
+  }, [selectedNodes, setEdges, toast, t]);
 
   // Get edge information for debugging
   const logEdgeInfo = useCallback(() => {
@@ -222,11 +223,11 @@ const StorageModelConfig = () => {
       console.log("Full edge object:", edge);
 
       toast({
-        title: "Edge Selected",
+        title: t("edge_selected"),
         description: `${edge.source} → ${edge.target}`,
       });
     },
-    [toast]
+    [toast, t]
   );
 
   // Handle keyboard events
@@ -270,14 +271,14 @@ const StorageModelConfig = () => {
       });
       console.log(edgesToTree(edges));
       toast({
-        title: "Data saved successfully",
-        description: "Your changes have been saved.",
+        title: t("data_saved_successfully"),
+        description: t("changes_saved_description"),
       });
     } catch (error) {
       console.error("Error during submission:", error);
       toast({
-        title: "Submission Error",
-        description: "There was an error submitting your data.",
+        title: t("submission_error"),
+        description: t("submission_error_description"),
         variant: "destructive",
       });
     }
@@ -285,10 +286,10 @@ const StorageModelConfig = () => {
 
   return (
     <Tabs defaultValue="storage-hierarchy" className="w-full">
-      <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="storage-hierarchy">Storage Hierarchy</TabsTrigger>
-        {/* <TabsTrigger value="storage-flow">Storage Flow</TabsTrigger> */}
-        <TabsTrigger value="master-data">Master Data</TabsTrigger>
+      <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger  className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white" value="storage-hierarchy">{t("storage_hierarchy")}</TabsTrigger>
+        {/* <TabsTrigger  className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white" value="storage-flow">Storage Flow</TabsTrigger> */}
+        <TabsTrigger  className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white" value="master-data">{t("storage_master_data")}</TabsTrigger>
       </TabsList>
 
       <TabsContent value="storage-hierarchy" className="space-y-4">
@@ -297,12 +298,12 @@ const StorageModelConfig = () => {
             <div className="flex justify-between items-center">
               <CardTitle className="flex items-center gap-2">
                 <Workflow className="h-5 w-5" />
-                Storage Hierarchy Visualization
+                {t("storage_hierarchy_visualization")}
               </CardTitle>
               <div className="flex items-center gap-2">
                 <Button onClick={addNewNode} size="sm" variant="outline">
                   <Plus className="mr-2 h-4 w-4" />
-                  Add Node
+                  {t("add_node")}
                 </Button>
                 {selectedNodes.length === 2 && (
                   <Button
@@ -310,7 +311,7 @@ const StorageModelConfig = () => {
                     size="sm"
                     variant="outline"
                   >
-                    Connect Selected
+                    {t("connect_selected")}
                   </Button>
                 )}
                 {selectedNodes.length > 0 && (
@@ -320,11 +321,11 @@ const StorageModelConfig = () => {
                     size="sm"
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
-                    Delete ({selectedNodes.length})
+                    {t("btn_delete")} ({selectedNodes.length})
                   </Button>
                 )}
                 <Button onClick={submit} size="sm">
-                  Save
+                  {t("btn_edit")}
                 </Button>
               </div>
             </div>
@@ -357,25 +358,25 @@ const StorageModelConfig = () => {
                   <Background gap={16} size={1} />
                   <Panel position="top-right">
                     <div className="bg-white border p-3 rounded-md shadow-sm text-sm">
-                      <h4 className="font-medium mb-2">Storage Hierarchy</h4>
+                      <h4 className="font-medium mb-2">{t("storage_hierarchy")}</h4>
                       <div className="text-xs text-gray-600 space-y-1">
-                        <p>• Double-click to edit node names</p>
-                        <p>• Delete key to remove selected items</p>
-                        <p>• Drag to rearrange nodes</p>
-                        <p>• Drag from node edge to create connections</p>
-                        <p>• Select 2 nodes + click "Connect" button</p>
+                        <p>{t("storage_hierarchy_instructions.double_click")}</p>
+                        <p>{t("storage_hierarchy_instructions.delete_key")}</p>
+                        <p>{t("storage_hierarchy_instructions.drag_rearrange")}</p>
+                        <p>{t("storage_hierarchy_instructions.drag_connect")}</p>
+                        <p>{t("storage_hierarchy_instructions.select_connect")}</p>
                       </div>
                       {selectedNodes.length > 0 && (
                         <div className="mt-2 pt-2 border-t">
                           <p className="text-xs text-blue-600 font-medium">
-                            {selectedNodes.length} node(s) selected:
+                            {selectedNodes.length} {t("nodes_selected")}:
                           </p>
                           <p className="text-xs text-gray-500">
                             {selectedNodes.join(", ")}
                           </p>
                           {selectedNodes.length === 2 && (
                             <p className="text-xs text-green-600 mt-1">
-                              Ready to connect: {selectedNodes[0]} →{" "}
+                              {t("ready_to_connect")}: {selectedNodes[0]} →{" "}
                               {selectedNodes[1]}
                             </p>
                           )}
@@ -388,7 +389,7 @@ const StorageModelConfig = () => {
 
               {editingNode && (
                 <div className="flex items-center gap-2 p-3 border rounded-md bg-blue-50">
-                  <span className="text-sm font-medium">Edit node name:</span>
+                  <span className="text-sm font-medium">{t("edit_node_name")}:</span>
                   <Input
                     value={editingNodeName}
                     onChange={(e) => setEditingNodeName(e.target.value)}
@@ -396,10 +397,10 @@ const StorageModelConfig = () => {
                     autoFocus
                   />
                   <Button onClick={saveNodeEdit} size="sm">
-                    Save
+                    {t("btn_edit")}
                   </Button>
                   <Button onClick={cancelNodeEdit} variant="outline" size="sm">
-                    Cancel
+                    {t("btn_cancel")}
                   </Button>
                 </div>
               )}
@@ -409,12 +410,12 @@ const StorageModelConfig = () => {
             <div className="flex justify-between items-center">
               <CardTitle className="flex items-center gap-2">
                 <Workflow className="h-5 w-5" />
-                Store Unit: 
+                {t("store_unit")}: 
               </CardTitle>
               <div className="flex-1 gap-2 pl-5">
                 <Select
                   mode="multiple"
-                  placeholder="Select Tags"
+                  placeholder={t("select_tags")}
                   value={selectedTags}
                   onChange={(value) => setSelectedTags(value as string[])}
                   // style={{ width: "200px" }}

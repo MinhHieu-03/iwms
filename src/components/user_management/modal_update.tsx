@@ -1,5 +1,6 @@
 import { RenderForm, TypeRenderForm } from "@/lib/render-form";
 import { Modal, Form, Button } from "antd";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 type TEdit = {
@@ -21,20 +22,28 @@ const ModalEdit = ({
 }: TEdit) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
+  useEffect(() => {
+    if (isOpen) {
+      form.setFieldsValue(data);
+    }
+  }, [isOpen, form, data]);
 
   return (
     <Modal
       title={title}
       open={isOpen}
       onCancel={() => {
-        form?.resetFields();
+        form?.setFieldsValue({});
         setIsOpen(false);
       }}
       footer={null}
       width={800}
     >
       <Form 
-        onFinish={_handleFinish} 
+        onFinish={(values) => {
+          _handleFinish(values);
+          form.resetFields();
+        }} 
         form={form} 
         layout="vertical"
         initialValues={data}

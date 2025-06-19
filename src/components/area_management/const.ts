@@ -41,12 +41,12 @@ export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<Da
     key: "warehouse",
     render: (warehouse: { _id: string; name: string }) => warehouse?.name || t("common.not_assigned"),
   },
-  {
-    title: t("common.productions"),
-    dataIndex: "productions",
-    key: "productions",
-    render: (productions: string[]) => productions.join(", "),
-  },
+  // {
+  //   title: t("common.productions"),
+  //   dataIndex: "productions",
+  //   key: "productions",
+  //   render: (productions: string[]) => productions.join(", "),
+  // },
   {
     title: t("common.status"),
     dataIndex: "isActive",

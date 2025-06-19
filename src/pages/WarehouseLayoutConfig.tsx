@@ -195,9 +195,9 @@ const WarehouseLayoutConfig = () => {
     <div className="space-y-6">
       <Tabs defaultValue="warehouses" className="w-full">
         <TabsList className="inline-flex gap-1 min-w-0 w-full">
-          <TabsTrigger value="warehouses" className="flex-1 min-w-0">Warehouses</TabsTrigger>
-          <TabsTrigger value="areas" className="flex-1 min-w-0">Areas</TabsTrigger>
-          <TabsTrigger value="racks" className="flex-1 min-w-0">Rack Structure</TabsTrigger>
+          <TabsTrigger value="warehouses" className="flex-1 min-w-0 data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">Warehouses</TabsTrigger>
+          <TabsTrigger value="areas" className="flex-1 min-w-0 data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">Areas</TabsTrigger>
+          <TabsTrigger value="racks" className="flex-1 min-w-0 data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">Rack Structure</TabsTrigger>
         </TabsList>
 
         <TabsContent value="warehouses" className="space-y-4">

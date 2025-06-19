@@ -32,7 +32,8 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
     {
       dataIndex: "material_no",
       title: t(`${lang_key}.material_no`),
-      width: 120,
+      width: 150,
+      fixed: 'left',
     },
     {
       dataIndex: "material_nm",
@@ -42,7 +43,7 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
     {
       dataIndex: "material_tp",
       title: t(`${lang_key}.material_tp`),
-      width: 120,
+      width: 150,
     },
     {
       dataIndex: "pk_style",
@@ -57,29 +58,29 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
     {
       dataIndex: "flg",
       title: t(`${lang_key}.flg`),
-      width: 80,
+      width: 100,
     },
     {
       dataIndex: "comment",
       title: t(`${lang_key}.comment`),
-      width: 150,
+      width: 200,
       ellipsis: true,
     },
     {
       dataIndex: "user_id",
       title: t(`${lang_key}.user_id`),
-      width: 100,
+      width: 120,
     },
     {
       dataIndex: "ent_dt",
       title: t(`${lang_key}.ent_dt`),
-      width: 150,
+      width: 180,
       render: (value: string) => value ? new Date(value).toLocaleString() : '',
     },
     {
       dataIndex: "upd_dt",
       title: t(`${lang_key}.upd_dt`),
-      width: 150,
+      width: 180,
       render: (value: string) => value ? new Date(value).toLocaleString() : '',
     },
   ];

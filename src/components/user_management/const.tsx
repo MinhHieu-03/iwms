@@ -66,7 +66,7 @@ export const RenderCol: ({ t }) => ColumnsType<UserDataType> = ({ t }) => {
       width: 150,
     },
     {
-      dataIndex: "ent_dt",
+      dataIndex: "createdAt",
       title: t(`${lang_key}.created_date`),
       width: 150,
       render: (date: string) => new Date(date).toLocaleDateString(),

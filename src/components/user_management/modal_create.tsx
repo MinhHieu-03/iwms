@@ -1,5 +1,6 @@
 import { RenderForm, TypeRenderForm } from "@/lib/render-form";
 import { Modal, Form, Button } from "antd";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 type TAdd = {
@@ -21,6 +22,11 @@ const ModalAdd = ({
 }: TAdd) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
+  useEffect(() => {
+    if (isOpen) {
+      form.resetFields();
+    }
+  }, [isOpen, form]);
 
   return (
     <Modal
@@ -33,7 +39,14 @@ const ModalAdd = ({
       footer={null}
       width={800}
     >
-      <Form onFinish={_handleFinish} form={form} layout="vertical">
+      <Form 
+        onFinish={(values) => {
+          _handleFinish(values);
+          form.resetFields();
+        }} 
+        form={form} 
+        layout="vertical"
+      >
         {itemsRender.map((items: TypeRenderForm) => {
           return <RenderForm key={items.name} data={items} />;
         })}

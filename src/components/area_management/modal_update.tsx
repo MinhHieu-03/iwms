@@ -100,7 +100,7 @@ const ModalEdit = ({ formEdit, setFormEdit, _handleFinish }: ModalEditProps) => 
             }))}
           />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           name="productions"
           label={t("common.productions")}
           rules={[{ required: true, message: t("common.required") }]}
@@ -114,7 +114,7 @@ const ModalEdit = ({ formEdit, setFormEdit, _handleFinish }: ModalEditProps) => 
               value: warehouse.name
             }))}
           />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           name="isActive"
           label={t("common.status")}
