@@ -48,6 +48,7 @@ const RackConfigurationModal: React.FC<RackConfigurationModalProps> = ({
         rackId: rackIdentifier,
       })
       .then((response) => {
+        setMaterials([]);
         console.log('Racks configured successfully:', response.data);
       })
       .catch((error) => {

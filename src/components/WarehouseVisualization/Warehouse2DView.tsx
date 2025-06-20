@@ -16,13 +16,15 @@ export const STATUS_LOCATION = {
   DISABLED: "disable",
   FILL: "fill",
   WAIT_FILL: "wait_fill",
+  configured: "configured",
 };
 export const STATUS_COLOR = {
-  AVAILABLE: "bg-blue-500/80",
-  UNAVAILABLE: "bg-gray-100/80",
-  DISABLED: "bg-red-500/880",
-  FILL: "bg-yellow-5080",
-  WAIT_FILL: "bg-gray-100/80",
+  AVAILABLE: "bg-gray-100",
+  UNAVAILABLE: "bg-gray-700",
+  DISABLED: "bg-red-500",
+  FILL: "bg-blue-500",
+  WAIT_FILL: "bg-yellow-300",
+  configured: "bg-gray-400",
 };
 interface Warehouse2DViewProps {
   area: string;
@@ -88,8 +90,6 @@ const RackGrid: React.FC<{
       enabled: open && !!rackIdentifier, // Only fetch when modal is open and rackIdentifier exists
       refetchInterval: 10 * 1000,
     });
-
-    // console.log('Location_data:', locationData);
     // action
     const onRackClick = (rackId: string) => {
       setHighlightedRack((prev) =>
@@ -99,8 +99,9 @@ const RackGrid: React.FC<{
       );
     };
 
-    const getRackStatusColor = (status: string) => {
+    const getRackStatusColor = (status: string, configured) => {
       const stt = locationData?.[status]?.status || status;
+      if(configured && stt === STATUS_LOCATION.AVAILABLE) return 'bg-gray-400';
       switch (stt) {
         case STATUS_LOCATION.FILL:
           return 'bg-blue-500/80 text-white';
@@ -164,9 +165,12 @@ const RackGrid: React.FC<{
                       const cellId = `${rackId}/${row.toString().padStart(2, '0')}-${col.toString().padStart(2, '0')}`;
                       const rackData = rackGrid.get(cellId);
                       const ractStt = get(locationData, cellId, { status: 'available' });
+                      if(ractStt.status === 'available' && rackData?.skus?.length) {
+                        ractStt.status = STATUS_LOCATION.configured;
+                      }
                       const rack = {
                         ...rackData,
-                        ...ractStt
+                        ...ractStt,
                       }
                       if (!rack) {
                         return (
@@ -185,7 +189,7 @@ const RackGrid: React.FC<{
                             className={`
                               w-10 h-10 flex items-center justify-center text-xs font-medium
                               transition-all duration-200 ease-in-out rounded border
-                              ${getRackStatusColor(rack.locationCode)}
+                              ${getRackStatusColor(rack.locationCode, rack?.skus?.length)}
                               ${isHighlighted
                                 ? 'ring-2 ring-warehouse-highlight scale-105 z-10 shadow-md'
                                 : 'ring-1 ring-gray-200 dark:ring-gray-700'
@@ -214,10 +218,12 @@ const RackGrid: React.FC<{
           onSubmit={(selectedRacks) => {
             console.log('Configuring racks:', selectedRacks);
             setShowConfigure([]);
+            setHighlightedRack([]);
           }}
           onInactive={(selectedRacks) => {
             console.log('Setting racks inactive:', selectedRacks);
             setShowConfigure([]);
+            setHighlightedRack([]);
           }}
         />
       </Card>
@@ -225,6 +231,7 @@ const RackGrid: React.FC<{
   };
 
 const Content = ({ rack }) => {
+  console.log('Rack_content:', rack);
   return (
     <div className='w-80 p-0'>
       <div className='bg-warehouse-primary text-white px-3 py-2 text-sm font-medium rounded-md'>
@@ -244,6 +251,26 @@ const Content = ({ rack }) => {
               <span className='capitalize'>{rack.status.replace('_', ' ')}</span>
             </Badge>
           </div>
+          {/* skus */}
+          {rack?.skus?.length ? <div className='flex justify-between'>
+            <span>SKU config:</span>
+            <span>{rack.skus.join(', ')}</span>
+          </div>: null}
+          {rack?.inventory?.sku ? <div className='flex justify-between'>
+            <span>SKU store:</span>
+            <span>{rack?.inventory?.sku}</span>
+          </div>: null}
+          {rack?.inventory?.store ? <p className="mt-5 font-semibold">Store Item: </p>: null}
+          {
+            rack?.inventory?.store ? rack?.inventory?.store.map(({key, qty}) => {
+              return (
+                <div className='flex justify-between'>
+                  <span>{key}:</span>
+                  <span>{qty}</span>
+                </div>
+              )
+            }) : null
+          }
           {/* <div className='flex justify-between'>
             <span>Capacity:</span>
             <span>{rack.capacity}</span>
@@ -366,7 +393,7 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
           </CardTitle>
 
           <div className='flex flex-wrap gap-2 text-xs'>
-            {Object.keys(STATUS_LOCATION).map((status) => (<div className='flex items-center gap-1'>
+            {Object.keys(STATUS_COLOR).map((status) => (<div className='flex items-center gap-1'>
               <div className={`w-3 h-3 ${STATUS_COLOR[status]} rounded`}></div>
               <span>{status}</span>
             </div>))}

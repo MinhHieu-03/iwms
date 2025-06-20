@@ -30,6 +30,7 @@ export interface Rack {
   row: number;
   column: number;
   level: number;
+  skus: string[];
   status: "empty" | "occupied" | "maintenance" | "reserved";
   warehouse: string;
   area: string;
