@@ -26,7 +26,6 @@ const RackConfigurationModal: React.FC<RackConfigurationModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [materials, setMaterials] = React.useState<string[]>([]);
-
   const {
     data: masterData,
     isLoading,

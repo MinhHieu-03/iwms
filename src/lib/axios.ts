@@ -143,6 +143,10 @@ const apiClient = {
     },
     post: (url: string, data = {}) => {
         return request({ method: 'post', url, data })
+        .then((res) => {
+            message.success(res.data.msg || 'Update successful');
+            return res;
+        })
         .catch((err) => {
             message.error(err?.response?.data?.message || err.message);
             throw err;
@@ -165,6 +169,10 @@ const apiClient = {
     },
     patch: (url: string, data = {}) => {
         return request({ method: 'patch', url, data })
+        .then((res) => {
+            message.success(res.data.msg || 'Update successful');
+            return res;
+        })
         .catch((err) => {
             message.error(err?.response?.data?.message || err.message);
             throw err;

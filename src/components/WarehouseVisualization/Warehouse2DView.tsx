@@ -1,22 +1,31 @@
 import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card';
 import { Map as MapIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { WarehouseArea, Rack } from '@/data/warehouseData';
-import { use } from 'i18next';
 import apiClient from '@/lib/axios';
-import { Button } from 'antd';
-import {get} from 'lodash';
+import { Button, Popover, Skeleton } from 'antd';
+import { get, keyBy } from 'lodash';
 import RackConfigurationModal from './RackConfigurationModal';
+import { useQuery } from '@tanstack/react-query';
+
+export const STATUS_LOCATION = {
+  AVAILABLE: "available",
+  UNAVAILABLE: "unavailable",
+  DISABLED: "disable",
+  FILL: "fill",
+  WAIT_FILL: "wait_fill",
+};
+export const STATUS_COLOR = {
+  AVAILABLE: "bg-blue-500/80",
+  UNAVAILABLE: "bg-gray-100/80",
+  DISABLED: "bg-red-500/880",
+  FILL: "bg-yellow-5080",
+  WAIT_FILL: "bg-gray-100/80",
+};
 interface Warehouse2DViewProps {
   area: string;
-  // racks: Rack[];
   hoveredRack: string | null;
   onRackHover: (rackId: string | null) => void;
 }
@@ -38,6 +47,7 @@ const groupRacksByIdentifier = (racks: Rack[]) => {
 };
 
 const RackGrid: React.FC<{
+  index: number; // Index of the rack group
   rackId: string; // reack code, e.g., "A01-01"
   racks: Rack[]; // List of racks in this group
   area?: string; // id of area_config
@@ -47,243 +57,263 @@ const RackGrid: React.FC<{
   rackId,
   racks,
   area,
-  // highlightedRack,
-  hoveredRack,
-  // onRackClick,
-  onRackHover,
+  index,
 }) => {
-  const { t } = useTranslation();
-  const [highlightedRack, setHighlightedRack] = React.useState<string[]>([]);
-  const [showConfigure, setShowConfigure] = React.useState([]);
+    const { t } = useTranslation();
+    const [highlightedRack, setHighlightedRack] = React.useState<string[]>([]);
+    const [showConfigure, setShowConfigure] = React.useState([]);
+    const [show, setShow] = React.useState(false);
 
-  const maxRow = Math.max(...racks.map((r) => r.row), 0);
-  const maxCol = Math.max(...racks.map((r) => r.column), 0);
-  const rackGrid = new Map<string, Rack>();
-  const rackIdentifier = get(racks[0], '_id', '');
-  racks.forEach((rack) => {
-    rackGrid.set(`${rack.row}-${rack.column}`, rack);
-  });
+    const maxRow = Math.max(...racks.map((r) => r.row), 0);
+    const maxCol = Math.max(...racks.map((r) => r.column), 0);
+    const rackIdentifier = get(racks[0], '_id', '');
 
-  // action
-  const onRackClick = (rackId: string) => {
-    console.log('Rack clicked:', rackId, highlightedRack);
-    setHighlightedRack((prev) =>
-      prev.includes(rackId)
-        ? prev.filter((id) => id !== rackId)
-        : [...prev, rackId]
-    );
-  };
 
-  const getRackStatusColor = (status: string) => {
-    switch (status) {
-      case 'occupied':
-        return 'bg-blue-500/80 text-white';
-      case 'empty':
-        return 'bg-gray-100/80 text-gray-600 dark:bg-gray-700 dark:text-gray-300';
-      case 'maintenance':
-        return 'bg-red-500/80 text-white';
-      case 'reserved':
-        return 'bg-yellow-500/80 text-white';
-      default:
-        return 'bg-gray-100/80 text-gray-600';
+    const rackGrid = new Map<string, Rack>();
+    racks.forEach((rack) => {
+      rackGrid.set(rack.locationCode, rack);
+    });
+
+    const {
+      data: locationData,
+      isLoading: isLocationLoading,
+      error: locationError,
+    } = useQuery({
+      queryKey: ['location-area', rackIdentifier],
+      queryFn: async () => {
+        console.log('Fetching location data for rack:', rackIdentifier);
+        const { data } = await apiClient.get(`/location/area/${rackIdentifier}`);
+        return keyBy(data.metaData, 'code');
+      },
+      enabled: open && !!rackIdentifier, // Only fetch when modal is open and rackIdentifier exists
+      refetchInterval: 10 * 1000,
+    });
+
+    // console.log('Location_data:', locationData);
+    // action
+    const onRackClick = (rackId: string) => {
+      setHighlightedRack((prev) =>
+        prev.includes(rackId)
+          ? prev.filter((id) => id !== rackId)
+          : [...prev, rackId]
+      );
+    };
+
+    const getRackStatusColor = (status: string) => {
+      const stt = locationData?.[status]?.status || status;
+      switch (stt) {
+        case STATUS_LOCATION.FILL:
+          return 'bg-blue-500/80 text-white';
+        case STATUS_LOCATION.AVAILABLE:
+          return 'bg-gray-100/80 text-gray-600 dark:bg-gray-700 dark:text-gray-300';
+        case STATUS_LOCATION.UNAVAILABLE:
+          return 'bg-red-500/80 text-white';
+        case STATUS_LOCATION.WAIT_FILL:
+          return 'bg-yellow-500/80 text-white';
+        default:
+          return 'bg-gray-100/80 text-gray-600';
+      }
+    };
+    const handleConfigureRack = () => {
+      setShowConfigure(highlightedRack);
+      // Handle rack configuration logic here, e.g., open a modal or navigate to a configuration page
+    };
+
+    useEffect(() => {
+      setTimeout(() => {
+        setShow(true);
+      }, 2000 * index); // Simulate a delay for the index to be set
+    }, [index]);
+    if (!show) {
+      return <Skeleton />; // Don't render anything until show is true
     }
-  };
-  const handleConfigureRack = () => {
-    setShowConfigure(highlightedRack);
-    // Handle rack configuration logic here, e.g., open a modal or navigate to a configuration page
-  };
-  return (
-    <Card className='mb-4'>
-      <CardHeader className='pb-3'>
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-2'>
-            <CardTitle className='text-lg'>Rack {rackId}</CardTitle>
-            <div className='text-sm text-muted-foreground'>
-              ({racks.length} positions • {maxRow} rows × {maxCol} columns)
+    return (
+      <Card className='mb-4'>
+        <CardHeader className='pb-3'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-2'>
+              <CardTitle className='text-lg'>Rack {rackId}</CardTitle>
+              <div className='text-sm text-muted-foreground'>
+                ({racks.length} positions • {maxRow} rows × {maxCol} columns)
+              </div>
+            </div>
+            <div>
+              {highlightedRack.length ? (
+                <Button onClick={handleConfigureRack}>
+                  {t('configure_rack')}
+                </Button>
+              ) : null}
             </div>
           </div>
-          <div>
-            {highlightedRack.length ? (
-              <Button onClick={handleConfigureRack}>
-                {t('configure_rack')}
-              </Button>
-            ) : null}
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className='space-y-2'>
-          {Array.from({ length: maxRow }, (_, rowIndex) => {
-            const row = rowIndex + 1;
-            return (
-              <div
-                key={`row-${row}-${highlightedRack.length}`}
-                className='flex items-center gap-2'
-              >
-                <div className='text-xs font-medium text-muted-foreground w-8'>
-                  R{row}
-                </div>
-                <div className='flex gap-1'>
-                  {Array.from({ length: maxCol }, (_, colIndex) => {
-                    const col = colIndex + 1;
-                    const rack = rackGrid.get(`${row}-${col}`);
-
-                    if (!rack) {
+        </CardHeader>
+        <CardContent>
+          <div className='space-y-2'>
+            {Array.from({ length: maxRow }, (_, rowIndex) => {
+              const row = rowIndex + 1;
+              return (
+                <div
+                  key={`row-${row}-${highlightedRack.length}`}
+                  className='flex items-center gap-2'
+                >
+                  <div className='text-xs font-medium text-muted-foreground w-8'>
+                    R{row}
+                  </div>
+                  <div className='flex gap-1'>
+                    {Array.from({ length: maxCol }, (_, colIndex) => {
+                      const col = colIndex + 1;
+                      const cellId = `${rackId}/${row.toString().padStart(2, '0')}-${col.toString().padStart(2, '0')}`;
+                      const rackData = rackGrid.get(cellId);
+                      const ractStt = get(locationData, cellId, { status: 'available' });
+                      const rack = {
+                        ...rackData,
+                        ...ractStt
+                      }
+                      if (!rack) {
+                        return (
+                          <div
+                            key={`${row}-${col}`}
+                            className='w-10 h-10 border border-dashed border-gray-300 rounded flex items-center justify-center text-xs text-gray-400'
+                          >
+                            -
+                          </div>
+                        );
+                      }
+                      const isHighlighted = highlightedRack.includes(rack.id);
                       return (
-                        <div
-                          key={`${row}-${col}`}
-                          className='w-10 h-10 border border-dashed border-gray-300 rounded flex items-center justify-center text-xs text-gray-400'
-                        >
-                          -
-                        </div>
-                      );
-                    }
-
-                    const isHighlighted = highlightedRack.includes(rack.id);
-                    const isHovered = hoveredRack === rack.id;
-                    const storedItems = rack.storedItems || [];
-
-                    return (
-                      <HoverCard key={rack.id}>
-                        <HoverCardTrigger asChild>
+                        <Popover content={<Content rack={rack} />} key={`${rack.id}-${row}-${col}`}>
                           <button
                             className={`
                               w-10 h-10 flex items-center justify-center text-xs font-medium
                               transition-all duration-200 ease-in-out rounded border
-                              ${getRackStatusColor(rack.status)}
-                              ${
-                                isHighlighted || isHovered
-                                  ? 'ring-2 ring-warehouse-highlight scale-105 z-10 shadow-md'
-                                  : 'ring-1 ring-gray-200 dark:ring-gray-700'
+                              ${getRackStatusColor(rack.locationCode)}
+                              ${isHighlighted
+                                ? 'ring-2 ring-warehouse-highlight scale-105 z-10 shadow-md'
+                                : 'ring-1 ring-gray-200 dark:ring-gray-700'
                               }
                               hover:shadow-md relative
                             `}
                             onClick={() => onRackClick(rack.id)}
-                            onMouseEnter={() => onRackHover(rack.id)}
-                            onMouseLeave={() => onRackHover(null)}
                           >
                             <span className='z-10'>{col}</span>
                           </button>
-                        </HoverCardTrigger>
-                        <HoverCardContent className='w-80 p-0'>
-                          <div className='bg-warehouse-primary text-white px-3 py-2 text-sm font-medium rounded-t-md'>
-                            {rack.locationCode} - Level {rack.level}
-                          </div>
-                          <div className='p-3 dark:bg-gray-800'>
-                            <div className='space-y-2 text-sm'>
-                              <div className='flex justify-between'>
-                                <span>Status:</span>
-                                <Badge
-                                  variant={
-                                    rack.status === 'occupied'
-                                      ? 'default'
-                                      : 'secondary'
-                                  }
-                                >
-                                  {rack.status}
-                                </Badge>
-                              </div>
-                              <div className='flex justify-between'>
-                                <span>Capacity:</span>
-                                <span>{rack.capacity}</span>
-                              </div>
-                              <div className='flex justify-between'>
-                                <span>Current Load:</span>
-                                <span>{rack.currentLoad}</span>
-                              </div>
-                              <div className='flex justify-between'>
-                                <span>Utilization:</span>
-                                <span>
-                                  {Math.round(
-                                    (rack.currentLoad / rack.capacity) * 100
-                                  )}
-                                  %
-                                </span>
-                              </div>
-                              {/* <div className='text-xs text-gray-500'>
-                                Dimensions: {rack.dimensions.width.toFixed(1)}×
-                                {rack.dimensions.height.toFixed(1)}×
-                                {rack.dimensions.depth.toFixed(1)}m
-                              </div> */}
-                            </div>
-
-                            {rack.status === 'occupied' &&
-                              storedItems.length > 0 && (
-                                <>
-                                  <hr className='my-2' />
-                                  <h5 className='font-medium mb-2 text-sm'>
-                                    {t('stored_items')}:
-                                  </h5>
-                                  <div className='space-y-1'>
-                                    {storedItems.slice(0, 3).map((item) => (
-                                      <div
-                                        key={item.id}
-                                        className='flex justify-between text-xs border-b pb-1'
-                                      >
-                                        <div className='flex flex-col'>
-                                          <span className='font-medium'>
-                                            {item.sku}
-                                          </span>
-                                          <span className='text-gray-500 dark:text-gray-400'>
-                                            {item.productName}
-                                          </span>
-                                        </div>
-                                        <div className='flex flex-col items-end'>
-                                          <span className='text-gray-500 dark:text-gray-400'>
-                                            Qty: {item.quantity}
-                                          </span>
-                                          <span
-                                            className={
-                                              item.status === 'stored'
-                                                ? 'text-green-500'
-                                                : item.status === 'picked'
-                                                ? 'text-orange-500'
-                                                : 'text-blue-500'
-                                            }
-                                          >
-                                            {item.status}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    ))}
-                                    {storedItems.length > 3 && (
-                                      <div className='text-xs text-gray-500 text-center pt-1'>
-                                        +{storedItems.length - 3} more items
-                                      </div>
-                                    )}
-                                  </div>
-                                </>
-                              )}
-                          </div>
-                        </HoverCardContent>
-                      </HoverCard>
-                    );
-                  })}
+                        </Popover>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      </CardContent>
-      <RackConfigurationModal
-        area={area}
-        rackIdentifier={rackIdentifier}
-        open={showConfigure.length > 0}
-        selectedRacks={showConfigure}
-        onCancel={() => setShowConfigure([])}
-        onSubmit={(selectedRacks) => {
-          console.log('Configuring racks:', selectedRacks);
-          setShowConfigure([]);
-        }}
-        onInactive={(selectedRacks) => {
-          console.log('Setting racks inactive:', selectedRacks);
-          setShowConfigure([]);
-        }}
-      />
-    </Card>
-  );
-};
+              );
+            })}
+          </div>
+        </CardContent>
+        <RackConfigurationModal
+          area={area}
+          rackIdentifier={rackIdentifier}
+          open={showConfigure.length > 0}
+          selectedRacks={showConfigure}
+          onCancel={() => setShowConfigure([])}
+          onSubmit={(selectedRacks) => {
+            console.log('Configuring racks:', selectedRacks);
+            setShowConfigure([]);
+          }}
+          onInactive={(selectedRacks) => {
+            console.log('Setting racks inactive:', selectedRacks);
+            setShowConfigure([]);
+          }}
+        />
+      </Card>
+    );
+  };
 
+const Content = ({ rack }) => {
+  return (
+    <div className='w-80 p-0'>
+      <div className='bg-warehouse-primary text-white px-3 py-2 text-sm font-medium rounded-md'>
+        {rack.locationCode}
+      </div>
+      <div className='p-3 dark:bg-gray-800'>
+        <div className='space-y-2 text-sm'>
+          <div className='flex justify-between'>
+            <span>Status:</span>
+            <Badge
+              variant={
+                rack.status === 'occupied'
+                  ? 'default'
+                  : 'secondary'
+              }
+            >
+              <span className='capitalize'>{rack.status.replace('_', ' ')}</span>
+            </Badge>
+          </div>
+          {/* <div className='flex justify-between'>
+            <span>Capacity:</span>
+            <span>{rack.capacity}</span>
+          </div>
+          <div className='flex justify-between'>
+            <span>Current Load:</span>
+            <span>{rack.currentLoad}</span>
+          </div>
+          <div className='flex justify-between'>
+            <span>Utilization:</span>
+            <span>
+              {Math.round(
+                (rack.currentLoad / rack.capacity) * 100
+              )}
+              %
+            </span>
+          </div> */}
+        </div>
+
+        {/* {rack.status === 'occupied' &&
+          storedItems.length > 0 && (
+            <>
+              <hr className='my-2' />
+              <h5 className='font-medium mb-2 text-sm'>
+                {t('stored_items')}:
+              </h5>
+              <div className='space-y-1'>
+                {storedItems.slice(0, 3).map((item) => (
+                  <div
+                    key={item.id}
+                    className='flex justify-between text-xs border-b pb-1'
+                  >
+                    <div className='flex flex-col'>
+                      <span className='font-medium'>
+                        {item.sku}
+                      </span>
+                      <span className='text-gray-500 dark:text-gray-400'>
+                        {item.productName}
+                      </span>
+                    </div>
+                    <div className='flex flex-col items-end'>
+                      <span className='text-gray-500 dark:text-gray-400'>
+                        Qty: {item.quantity}
+                      </span>
+                      <span
+                        className={
+                          item.status === 'stored'
+                            ? 'text-green-500'
+                            : item.status === 'picked'
+                              ? 'text-orange-500'
+                              : 'text-blue-500'
+                        }
+                      >
+                        {item.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+                {storedItems.length > 3 && (
+                  <div className='text-xs text-gray-500 text-center pt-1'>
+                    +{storedItems.length - 3} more items
+                  </div>
+                )}
+              </div>
+            </>
+          )} */}
+      </div>
+    </div>
+  )
+}
 const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
   area,
   hoveredRack,
@@ -303,22 +333,17 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
           const list = [];
           for (let i = 1; i <= row; i++) {
             for (let j = 1; j <= column; j++) {
-              const locationCode = `${location_code}/${i
-                .toString()
-                .padStart(2, '0')}-${j.toString().padStart(2, '0')}`;
+              const locationCode = `${location_code}/${i.toString().padStart(2, '0')}-${j.toString().padStart(2, '0')}`;
               list.push({
                 _id: _id,
+
                 areaId: locationCode,
-                capacity: row * column,
-                column: j,
-                createdAt: '2024-01-14T17:00:00.000Z',
-                currentLoad: 71,
                 id: locationCode,
-                level: 1,
                 locationCode: locationCode,
-                row: i,
-                status: 'empty',
-                warehouse: 'Main',
+
+                capacity: row * column,
+                row: i.toString().padStart(2, '0'),
+                column: j.toString().padStart(2, '0'),
               });
             }
           }
@@ -341,29 +366,18 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
           </CardTitle>
 
           <div className='flex flex-wrap gap-2 text-xs'>
-            <div className='flex items-center gap-1'>
-              <div className='w-3 h-3 bg-blue-500 rounded'></div>
-              <span>Occupied</span>
-            </div>
-            <div className='flex items-center gap-1'>
-              <div className='w-3 h-3 bg-gray-300 rounded'></div>
-              <span>Empty</span>
-            </div>
-            <div className='flex items-center gap-1'>
-              <div className='w-3 h-3 bg-red-500 rounded'></div>
-              <span>Maintenance</span>
-            </div>
-            <div className='flex items-center gap-1'>
-              <div className='w-3 h-3 bg-yellow-500 rounded'></div>
-              <span>Reserved</span>
-            </div>
+            {Object.keys(STATUS_LOCATION).map((status) => (<div className='flex items-center gap-1'>
+              <div className={`w-3 h-3 ${STATUS_COLOR[status]} rounded`}></div>
+              <span>{status}</span>
+            </div>))}
           </div>
         </div>
       </CardHeader>
       <div className='space-y-4'>
-        {Array.from(rackGroups.entries()).map(([rackId, rackList]) => (
+        {Array.from(rackGroups.entries()).map(([rackId, rackList], index) => (
           <RackGrid
             area={area}
+            index={index}
             key={rackId}
             rackId={rackId}
             racks={rackList}
