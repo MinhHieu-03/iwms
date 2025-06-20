@@ -23,6 +23,7 @@ export interface WarehouseArea {
 
 export interface Rack {
   id: string;
+  _id?: string;
   areaId: string;
   locationCode: string;
   location_code: string;
