@@ -1,43 +1,77 @@
-import React, { useState, useMemo } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowDown, ArrowUp, Package, Truck, Clock, CheckCircle, AlertCircle, Plus, Search, Edit, Trash2 } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import { useToast } from "@/components/ui/use-toast";
-import { inboundOutboundOrders, InboundOutboundOrder } from "@/data/inboundOutboundData";
-import OrderForm from "@/components/OrderForm";
+import React, { useState, useMemo } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import InboundTable from '@/components/inbound_table';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  ArrowDown,
+  ArrowUp,
+  Package,
+  Truck,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Plus,
+  Search,
+  Edit,
+  Trash2,
+} from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { useToast } from '@/components/ui/use-toast';
+import {
+  inboundOutboundOrders,
+  InboundOutboundOrder,
+} from '@/data/inboundOutboundData';
+import OrderForm from '@/components/OrderForm';
 
 const InboundOutbound = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("inbound");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState('inbound');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingOrder, setEditingOrder] = useState<InboundOutboundOrder | undefined>();
-  const [orders, setOrders] = useState<InboundOutboundOrder[]>(inboundOutboundOrders);
-  
+  const [editingOrder, setEditingOrder] = useState<
+    InboundOutboundOrder | undefined
+  >();
+  const [orders, setOrders] = useState<InboundOutboundOrder[]>(
+    inboundOutboundOrders
+  );
+
   const itemsPerPage = 10;
 
   // Filter and search logic for each tab
   const getFilteredOrders = (category?: 'Inbound' | 'Outbound') => {
-    return orders.filter(order => {
-      const matchesSearch = 
+    return orders.filter((order) => {
+      const matchesSearch =
         order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.taskId.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.partner.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.robotCode.toLowerCase().includes(searchTerm.toLowerCase());
-      
+
       const matchesCategory = !category || order.category === category;
-      const matchesStatus = statusFilter === "all" || order.status === statusFilter;
-      
+      const matchesStatus =
+        statusFilter === 'all' || order.status === statusFilter;
+
       return matchesSearch && matchesCategory && matchesStatus;
     });
   };
@@ -50,47 +84,58 @@ const InboundOutbound = () => {
   const getPaginatedOrders = (filteredOrders: InboundOutboundOrder[]) => {
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const paginatedOrders = filteredOrders.slice(startIndex, startIndex + itemsPerPage);
+    const paginatedOrders = filteredOrders.slice(
+      startIndex,
+      startIndex + itemsPerPage
+    );
     return { totalPages, startIndex, paginatedOrders };
   };
 
-  const handleCreateOrder = (orderData: Omit<InboundOutboundOrder, 'id' | 'registrationTime'>) => {
+  const handleCreateOrder = (
+    orderData: Omit<InboundOutboundOrder, 'id' | 'registrationTime'>
+  ) => {
     const newOrder: InboundOutboundOrder = {
       ...orderData,
-      id: `${orderData.category === 'Inbound' ? 'IN' : 'OUT'}-${String(orders.length + 1).padStart(3, '0')}`,
-      registrationTime: new Date().toISOString()
+      id: `${orderData.category === 'Inbound' ? 'IN' : 'OUT'}-${String(
+        orders.length + 1
+      ).padStart(3, '0')}`,
+      registrationTime: new Date().toISOString(),
     };
-    
-    setOrders(prev => [...prev, newOrder]);
+
+    setOrders((prev) => [...prev, newOrder]);
     toast({
-      title: "Order Created",
+      title: 'Order Created',
       description: `${orderData.category} order ${newOrder.id} has been created successfully.`,
     });
   };
 
-  const handleEditOrder = (orderData: Omit<InboundOutboundOrder, 'id' | 'registrationTime'>) => {
+  const handleEditOrder = (
+    orderData: Omit<InboundOutboundOrder, 'id' | 'registrationTime'>
+  ) => {
     if (!editingOrder) return;
-    
+
     const updatedOrder: InboundOutboundOrder = {
       ...orderData,
       id: editingOrder.id,
-      registrationTime: editingOrder.registrationTime
+      registrationTime: editingOrder.registrationTime,
     };
-    
-    setOrders(prev => prev.map(order => order.id === editingOrder.id ? updatedOrder : order));
+
+    setOrders((prev) =>
+      prev.map((order) => (order.id === editingOrder.id ? updatedOrder : order))
+    );
     setEditingOrder(undefined);
     toast({
-      title: "Order Updated",
+      title: 'Order Updated',
       description: `Order ${updatedOrder.id} has been updated successfully.`,
     });
   };
 
   const handleDeleteOrder = (orderId: string) => {
-    setOrders(prev => prev.filter(order => order.id !== orderId));
+    setOrders((prev) => prev.filter((order) => order.id !== orderId));
     toast({
-      title: "Order Deleted",
+      title: 'Order Deleted',
       description: `Order ${orderId} has been deleted.`,
-      variant: "destructive",
+      variant: 'destructive',
     });
   };
 
@@ -106,32 +151,60 @@ const InboundOutbound = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "Pending":
-        return <Badge variant="outline" className="bg-yellow-100 text-yellow-800"><Clock className="w-3 h-3 mr-1" />{status}</Badge>;
-      case "Processing":
-        return <Badge variant="secondary" className="bg-blue-100 text-blue-800"><ArrowUp className="w-3 h-3 mr-1" />{status}</Badge>;
-      case "Completed":
-        return <Badge variant="default" className="bg-green-100 text-green-800"><CheckCircle className="w-3 h-3 mr-1" />{status}</Badge>;
+      case 'Pending':
+        return (
+          <Badge variant='outline' className='bg-yellow-100 text-yellow-800'>
+            <Clock className='w-3 h-3 mr-1' />
+            {status}
+          </Badge>
+        );
+      case 'Processing':
+        return (
+          <Badge variant='secondary' className='bg-blue-100 text-blue-800'>
+            <ArrowUp className='w-3 h-3 mr-1' />
+            {status}
+          </Badge>
+        );
+      case 'Completed':
+        return (
+          <Badge variant='default' className='bg-green-100 text-green-800'>
+            <CheckCircle className='w-3 h-3 mr-1' />
+            {status}
+          </Badge>
+        );
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <Badge variant='outline'>{status}</Badge>;
     }
   };
 
   const getCategoryBadge = (category: string) => {
     return (
-      <Badge variant={category === 'Inbound' ? 'secondary' : 'default'} className={category === 'Inbound' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}>
+      <Badge
+        variant={category === 'Inbound' ? 'secondary' : 'default'}
+        className={
+          category === 'Inbound'
+            ? 'bg-blue-100 text-blue-800'
+            : 'bg-purple-100 text-purple-800'
+        }
+      >
         {category}
       </Badge>
     );
   };
 
   const getStats = (category?: 'Inbound' | 'Outbound') => {
-    const filteredOrders = category ? orders.filter(order => order.category === category) : orders;
+    const filteredOrders = category
+      ? orders.filter((order) => order.category === category)
+      : orders;
     return {
       total: filteredOrders.length,
-      pending: filteredOrders.filter(order => order.status === 'Pending').length,
-      processing: filteredOrders.filter(order => order.status === 'Processing').length,
-      completed: filteredOrders.filter(order => order.status === 'Completed').length,
+      pending: filteredOrders.filter((order) => order.status === 'Pending')
+        .length,
+      processing: filteredOrders.filter(
+        (order) => order.status === 'Processing'
+      ).length,
+      completed: filteredOrders.filter((order) => order.status === 'Completed')
+        .length,
     };
   };
 
@@ -140,37 +213,44 @@ const InboundOutbound = () => {
   const outboundStats = getStats('Outbound');
 
   // Component for rendering the detailed orders table
-  const OrdersTable = ({ filteredOrders, showCategory = false }: { filteredOrders: InboundOutboundOrder[], showCategory?: boolean }) => {
-    const { totalPages, startIndex, paginatedOrders } = getPaginatedOrders(filteredOrders);
+  const OrdersTable = ({
+    filteredOrders,
+    showCategory = false,
+  }: {
+    filteredOrders: InboundOutboundOrder[];
+    showCategory?: boolean;
+  }) => {
+    const { totalPages, startIndex, paginatedOrders } =
+      getPaginatedOrders(filteredOrders);
 
     return (
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+      <div className='space-y-4'>
+        <div className='flex flex-col sm:flex-row gap-4'>
+          <div className='flex-1'>
+            <div className='relative'>
+              <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4' />
               <Input
-                placeholder="Search by ID, Task, SKU, Partner..."
+                placeholder='Search by ID, Task, SKU, Partner...'
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
+                className='pl-9'
               />
             </div>
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="All Status" />
+            <SelectTrigger className='w-[180px]'>
+              <SelectValue placeholder='All Status' />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="Pending">Pending</SelectItem>
-              <SelectItem value="Processing">Processing</SelectItem>
-              <SelectItem value="Completed">Completed</SelectItem>
+              <SelectItem value='all'>All Status</SelectItem>
+              <SelectItem value='Pending'>Pending</SelectItem>
+              <SelectItem value='Processing'>Processing</SelectItem>
+              <SelectItem value='Completed'>Completed</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <div className="rounded-md border">
+        <div className='rounded-md border'>
           <Table>
             <TableHeader>
               <TableRow>
@@ -194,7 +274,9 @@ const InboundOutbound = () => {
               {paginatedOrders.map((order, index) => (
                 <TableRow key={order.id}>
                   <TableCell>{startIndex + index + 1}</TableCell>
-                  {showCategory && <TableCell>{getCategoryBadge(order.category)}</TableCell>}
+                  {showCategory && (
+                    <TableCell>{getCategoryBadge(order.category)}</TableCell>
+                  )}
                   {/* <TableCell className="font-medium">{order.taskId}</TableCell> */}
                   <TableCell>{order.sku}</TableCell>
                   {/* <TableCell>{order.robotCode}</TableCell> */}
@@ -207,20 +289,20 @@ const InboundOutbound = () => {
                   <TableCell>{order.packingCode}</TableCell>
                   <TableCell>{order.partner}</TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
+                    <div className='flex gap-2'>
                       <Button
-                        variant="outline"
-                        size="sm"
+                        variant='outline'
+                        size='sm'
                         onClick={() => openEditForm(order)}
                       >
-                        <Edit className="h-3 w-3" />
+                        <Edit className='h-3 w-3' />
                       </Button>
                       <Button
-                        variant="outline"
-                        size="sm"
+                        variant='outline'
+                        size='sm'
                         onClick={() => handleDeleteOrder(order.id)}
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash2 className='h-3 w-3' />
                       </Button>
                     </div>
                   </TableCell>
@@ -231,15 +313,17 @@ const InboundOutbound = () => {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between space-x-2 py-4">
-          <div className="text-sm text-muted-foreground">
-            Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredOrders.length)} of {filteredOrders.length} entries
+        <div className='flex items-center justify-between space-x-2 py-4'>
+          <div className='text-sm text-muted-foreground'>
+            Showing {startIndex + 1} to{' '}
+            {Math.min(startIndex + itemsPerPage, filteredOrders.length)} of{' '}
+            {filteredOrders.length} entries
           </div>
-          <div className="flex items-center space-x-2">
+          <div className='flex items-center space-x-2'>
             <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              variant='outline'
+              size='sm'
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
               Previous
@@ -249,28 +333,30 @@ const InboundOutbound = () => {
               return (
                 <Button
                   key={page}
-                  variant={currentPage === page ? "default" : "outline"}
-                  size="sm"
+                  variant={currentPage === page ? 'default' : 'outline'}
+                  size='sm'
                   onClick={() => setCurrentPage(page)}
                 >
                   {page}
                 </Button>
               );
             })}
-            {totalPages > 5 && <span className="px-2">...</span>}
+            {totalPages > 5 && <span className='px-2'>...</span>}
             {totalPages > 5 && (
               <Button
-                variant={currentPage === totalPages ? "default" : "outline"}
-                size="sm"
+                variant={currentPage === totalPages ? 'default' : 'outline'}
+                size='sm'
                 onClick={() => setCurrentPage(totalPages)}
               >
                 {totalPages}
               </Button>
             )}
             <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              variant='outline'
+              size='sm'
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
               disabled={currentPage === totalPages}
             >
               Next
@@ -288,95 +374,78 @@ const InboundOutbound = () => {
   };
 
   return (
-    <div className="space-y-6">
-   
+    <div className='space-y-6'>
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {/* <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+          <CardHeader className='pb-2'>
+            <CardTitle className='text-sm font-medium'>Total Orders</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{allStats.total}</div>
+            <div className='text-2xl font-bold'>{allStats.total}</div>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Pending</CardTitle>
+          <CardHeader className='pb-2'>
+            <CardTitle className='text-sm font-medium'>Pending</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{allStats.pending}</div>
+            <div className='text-2xl font-bold text-yellow-600'>
+              {allStats.pending}
+            </div>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Processing</CardTitle>
+          <CardHeader className='pb-2'>
+            <CardTitle className='text-sm font-medium'>Processing</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{allStats.processing}</div>
+            <div className='text-2xl font-bold text-blue-600'>
+              {allStats.processing}
+            </div>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Completed</CardTitle>
+          <CardHeader className='pb-2'>
+            <CardTitle className='text-sm font-medium'>Completed</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{allStats.completed}</div>
+            <div className='text-2xl font-bold text-green-600'>
+              {allStats.completed}
+            </div>
           </CardContent>
         </Card>
-      </div>
-
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-muted/50">
-          <TabsTrigger value="inbound" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
-            <ArrowDown className="h-4 w-4 mr-2" />
+      </div> */}
+      <Tabs
+        value={activeTab}
+        onValueChange={handleTabChange}
+        className='w-full'
+      >
+        <TabsList className='grid w-full grid-cols-3 bg-muted/50'>
+          <TabsTrigger
+            value='inbound'
+            className='data-[state=active]:bg-warehouse-primary data-[state=active]:text-white'
+          >
+            <ArrowDown className='h-4 w-4 mr-2' />
             {t('inbound')}
           </TabsTrigger>
-          <TabsTrigger value="outbound" className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white">
-            <ArrowUp className="h-4 w-4 mr-2" />
+          <TabsTrigger
+            value='outbound'
+            className='data-[state=active]:bg-warehouse-primary data-[state=active]:text-white'
+          >
+            <ArrowUp className='h-4 w-4 mr-2' />
             {t('outbound')}
           </TabsTrigger>
         </TabsList>
-
-        <TabsContent value="orders" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>All Orders</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <OrdersTable filteredOrders={allOrdersFiltered} showCategory={true} />
-            </CardContent>
-          </Card>
+        <TabsContent value='inbound' className='mt-6'>
+          <InboundTable />
         </TabsContent>
 
-        <TabsContent value="inbound" className="mt-6">
-          <Card>
-            <CardHeader className="flex flex-col sm:flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <ArrowDown className="h-5 w-5" />
-                {t('inbound_shipments')}
-              </CardTitle>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-2"
-                onClick={openCreateForm}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                {t('btn.create_new')}
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <OrdersTable filteredOrders={inboundOrdersFiltered} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="outbound" className="mt-6">
+        <TabsContent value='outbound' className='mt-6'>
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ArrowUp className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <ArrowUp className='h-5 w-5' />
                 {t('outbound_shipments')}
               </CardTitle>
             </CardHeader>

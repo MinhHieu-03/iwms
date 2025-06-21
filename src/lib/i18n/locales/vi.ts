@@ -2,11 +2,13 @@ import { TranslationKey } from '../types';
 import { en as vi_mission } from './en_more/mission'
 import { en as vi_device } from './en_more/device'
 import { en as vi_navbar } from './en_more/navbar'
+import { vi as vi_inbound } from './vn_more/inbound'
 
 export const vi: Record<TranslationKey, string> = {
   ...vi_mission,
   ...vi_device,
   ...vi_navbar,
+  ...vi_inbound,
   // Common
   save_changes: 'Lưu thay đổi',
   cancel: 'Hủy',

@@ -2,11 +2,13 @@ import { TranslationKey } from '../types';
 import { en as en_mission } from './en_more/mission'
 import { en as en_device } from './en_more/device'
 import { en as en_navbar } from './en_more/navbar'
+import { en as en_inbound } from './en_more/inbound'
 
 export const en: Record<TranslationKey, string> = {
   ...en_mission,
   ...en_device,
   ...en_navbar,
+  ...en_inbound,
   // Common
   save_changes: 'Save Changes',
   cancel: 'Cancel',
