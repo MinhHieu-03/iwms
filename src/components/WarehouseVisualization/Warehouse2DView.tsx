@@ -16,15 +16,18 @@ export const STATUS_LOCATION = {
   DISABLED: "disable",
   FILL: "fill",
   WAIT_FILL: "wait_fill",
+  WAIT_OUTBOUND: "wait_outbound",
   configured: "configured",
 };
+
 export const STATUS_COLOR = {
-  AVAILABLE: "bg-gray-100",
-  UNAVAILABLE: "bg-gray-700",
-  DISABLED: "bg-red-500",
-  FILL: "bg-blue-500",
-  WAIT_FILL: "bg-yellow-300",
-  configured: "bg-gray-400",
+  [STATUS_LOCATION.AVAILABLE]: "bg-gray-100",
+  [STATUS_LOCATION.UNAVAILABLE]: "bg-gray-700",
+  [STATUS_LOCATION.DISABLED]: "bg-red-500",
+  [STATUS_LOCATION.FILL]: "bg-blue-500",
+  [STATUS_LOCATION.WAIT_FILL]: "bg-yellow-300",
+  [STATUS_LOCATION.WAIT_OUTBOUND]: "bg-green-300",
+  [STATUS_LOCATION.configured]: "bg-gray-400",
 };
 interface Warehouse2DViewProps {
   area: string;
@@ -99,21 +102,26 @@ const RackGrid: React.FC<{
       );
     };
 
-    const getRackStatusColor = (status: string, configured) => {
-      const stt = locationData?.[status]?.status || status;
+    const getRackStatusColor = (locationData, configured) => {
+      const stt = locationData?.status || 'available';
       if(configured && stt === STATUS_LOCATION.AVAILABLE) return 'bg-gray-400';
-      switch (stt) {
-        case STATUS_LOCATION.FILL:
-          return 'bg-blue-500/80 text-white';
-        case STATUS_LOCATION.AVAILABLE:
-          return 'bg-gray-100/80 text-gray-600 dark:bg-gray-700 dark:text-gray-300';
-        case STATUS_LOCATION.UNAVAILABLE:
-          return 'bg-red-500/80 text-white';
-        case STATUS_LOCATION.WAIT_FILL:
-          return 'bg-yellow-500/80 text-white';
-        default:
-          return 'bg-gray-100/80 text-gray-600';
+      console.log('getRackStatusColor:', stt, STATUS_COLOR[stt], locationData);
+      if(STATUS_COLOR[stt]) {
+        return STATUS_COLOR[stt] || 'bg-black-100';
       }
+      return 'bg-black-100'; // Default color if status is not recognized
+      // switch (stt) {
+      //   case STATUS_LOCATION.FILL:
+      //     return 'bg-blue-500/80 text-white';
+      //   case STATUS_LOCATION.AVAILABLE:
+      //     return 'bg-gray-100/80 text-gray-600 dark:bg-gray-700 dark:text-gray-300';
+      //   case STATUS_LOCATION.UNAVAILABLE:
+      //     return 'bg-red-500/80 text-white';
+      //   case STATUS_LOCATION.WAIT_FILL:
+      //     return 'bg-yellow-500/80 text-white';
+      //   default:
+      //     return 'bg-gray-100/80 text-gray-600';
+      // }
     };
     const handleConfigureRack = () => {
       setShowConfigure(highlightedRack);
@@ -189,7 +197,7 @@ const RackGrid: React.FC<{
                             className={`
                               w-10 h-10 flex items-center justify-center text-xs font-medium
                               transition-all duration-200 ease-in-out rounded border
-                              ${getRackStatusColor(rack.locationCode, rack?.skus?.length)}
+                              ${getRackStatusColor(locationData?.[rack.locationCode], rack?.skus?.length)}
                               ${isHighlighted
                                 ? 'ring-2 ring-warehouse-highlight scale-105 z-10 shadow-md'
                                 : 'ring-1 ring-gray-200 dark:ring-gray-700'

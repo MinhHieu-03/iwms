@@ -4,12 +4,11 @@ import { useEffect } from "react";
 import { DataType } from "./const";
 
 interface ModalEditProps {
-  formEdit: {
-    isOpen: boolean;
-    data: DataType | Record<string, unknown>;
-  };
-  setFormEdit: (formEdit: { isOpen: boolean; data: DataType | Record<string, unknown> }) => void;
-  _handleFinish: (values: FormValues) => void;
+  isOpen: boolean;
+  data: DataType | Record<string, unknown>;
+  onClose: () => void;
+  onFinish: (values: FormValues) => void;
+  loading?: boolean;
 }
 
 export interface FormValues {
@@ -21,15 +20,21 @@ export interface FormValues {
 
 const { Option } = Select;
 
-const ModalEdit = ({ formEdit, setFormEdit, _handleFinish }: ModalEditProps) => {
+const ModalEdit = ({ isOpen, data, onClose, onFinish, loading }: ModalEditProps) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (formEdit.isOpen && formEdit.data) {
-      form.setFieldsValue(formEdit.data);
+    if (isOpen && data && '_id' in data) {
+      const typedData = data as DataType;
+      form.setFieldsValue({
+        sku: typedData.sku,
+        origin: typedData.origin,
+        product_name: typedData.product_name,
+        status: typedData.status,
+      });
     }
-  }, [formEdit.isOpen, formEdit.data, form]);
+  }, [isOpen, data, form]);
 
   const handleOk = () => {
     form.submit();
@@ -37,43 +42,44 @@ const ModalEdit = ({ formEdit, setFormEdit, _handleFinish }: ModalEditProps) => 
 
   const handleCancel = () => {
     form.resetFields();
-    setFormEdit({ isOpen: false, data: {} });
+    onClose();
   };
 
-  const onFinish = (values: FormValues) => {
-    _handleFinish(values);
+  const onFormFinish = (values: FormValues) => {
+    onFinish(values);
     form.resetFields();
   };
 
   return (
     <Modal
       title={t("inbound.edit")}
-      open={formEdit.isOpen}
+      open={isOpen}
       onOk={handleOk}
       onCancel={handleCancel}
-      okText={t("inbound.btn.save")}
-      cancelText={t("inbound.btn.cancel")}
+      okText={t("common.save")}
+      cancelText={t("common.cancel")}
+      confirmLoading={loading}
     >
       <Form
         form={form}
         layout="vertical"
-        onFinish={onFinish}
+        onFinish={onFormFinish}
         autoComplete="off"
       >
         <Form.Item
           label={t("inbound.sku")}
           name="sku"
-          rules={[{ required: true, message: t("inbound.validation.sku_required") }]}
+          rules={[{ required: true, message: t("validation.required", { field: t("inbound.sku") }) }]}
         >
-          <Input placeholder={t("inbound.placeholder.sku")} />
+          <Input placeholder={t("inbound.sku_placeholder")} />
         </Form.Item>
 
         <Form.Item
           label={t("inbound.origin")}
           name="origin"
-          rules={[{ required: true, message: t("inbound.validation.origin_required") }]}
+          rules={[{ required: true, message: t("validation.required", { field: t("inbound.origin") }) }]}
         >
-          <Select placeholder={t("inbound.placeholder.origin")}>
+          <Select placeholder={t("inbound.origin_placeholder")}>
             <Option value="inbound">{t("inbound.origin.inbound")}</Option>
             <Option value="outbound">{t("inbound.origin.outbound")}</Option>
             <Option value="internal">{t("inbound.origin.internal")}</Option>
@@ -83,17 +89,17 @@ const ModalEdit = ({ formEdit, setFormEdit, _handleFinish }: ModalEditProps) => 
         <Form.Item
           label={t("inbound.product_name")}
           name="product_name"
-          rules={[{ required: true, message: t("inbound.validation.product_name_required") }]}
+          rules={[{ required: true, message: t("validation.required", { field: t("inbound.product_name") }) }]}
         >
-          <Input placeholder={t("inbound.placeholder.product_name")} />
+          <Input placeholder={t("inbound.product_name_placeholder")} />
         </Form.Item>
 
         <Form.Item
           label={t("inbound.status")}
           name="status"
-          rules={[{ required: true, message: t("inbound.validation.status_required") }]}
+          rules={[{ required: true, message: t("validation.required", { field: t("inbound.status") }) }]}
         >
-          <Select placeholder={t("inbound.placeholder.status")}>
+          <Select placeholder={t("inbound.status_placeholder")}>
             <Option value="wait_fill">{t("inbound.status.wait_fill")}</Option>
             <Option value="in_progress">{t("inbound.status.in_progress")}</Option>
             <Option value="completed">{t("inbound.status.completed")}</Option>

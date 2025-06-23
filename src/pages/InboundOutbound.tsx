@@ -40,6 +40,7 @@ import {
   InboundOutboundOrder,
 } from '@/data/inboundOutboundData';
 import OrderForm from '@/components/OrderForm';
+import OutboundTable from '@/components/outbound_table';
 
 const InboundOutbound = () => {
   const { t } = useTranslation();
@@ -442,17 +443,7 @@ const InboundOutbound = () => {
         </TabsContent>
 
         <TabsContent value='outbound' className='mt-6'>
-          <Card>
-            <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <ArrowUp className='h-5 w-5' />
-                {t('outbound_shipments')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <OrdersTable filteredOrders={outboundOrdersFiltered} />
-            </CardContent>
-          </Card>
+          <OutboundTable />
         </TabsContent>
       </Tabs>
 

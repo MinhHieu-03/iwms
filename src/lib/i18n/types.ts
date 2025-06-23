@@ -2,6 +2,7 @@ import { TranslationKey as mission_key } from "./type_more/mission"
 import { TranslationKey as device_key } from "./type_more/device"
 import { TranslationKey as navbar_key } from "./type_more/navbar"
 import { TranslationKey as inbound_key } from "./type_more/inbound"
+import { TranslationKey as outbound_key } from "./type_more/outbound"
 
 export type SupportedLanguages = 'en' | 'vi' | 'zh' | 'ja' | 'ko';
 
@@ -10,6 +11,7 @@ export type TranslationKey =
   | device_key
   | navbar_key
   | inbound_key
+  | outbound_key
   
   // Storage Model Configuration
   | 'storage_hierarchy'

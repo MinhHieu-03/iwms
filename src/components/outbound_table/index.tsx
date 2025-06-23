@@ -1,5 +1,5 @@
 import { ReloadOutlined, DeleteOutlined } from "@ant-design/icons";
-import { message, Table, Modal, Tag } from "antd";
+import { message, Table, Modal } from "antd";
 import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,51 +19,59 @@ const { list, create, update, remove } = domain;
 const mockData: DataType[] = [
   {
     _id: "1",
-    pic: "admin",
-    sku: "8898-3254",
-    origin: "inbound",
-    product_name: "nhua 32",
-    destination: "A-02/01-03",
-    status: "wait_fill",
+    sku: "SKU-001",
+    qty: 50,
+    unit: "pcs",
+    location: "A-01-01",
+    status: "pending",
+    inventory: {
+      product_name: "Laptop Computer",
+    },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
   {
     _id: "2",
-    pic: "user1",
-    sku: "7745-1122",
-    origin: "inbound",
-    product_name: "kim loai 15",
-    destination: "B-01/02-05",
+    sku: "SKU-002",
+    qty: 25,
+    unit: "boxes",
+    location: "B-02-03",
     status: "in_progress",
+    inventory: {
+      product_name: "Office Supplies",
+    },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
   {
     _id: "3",
-    pic: "user2",
-    sku: "9988-7766",
-    origin: "outbound",
-    product_name: "go tre 22",
-    destination: "C-03/01-01",
+    sku: "SKU-003",
+    qty: 100,
+    unit: "kg",
+    location: "C-01-05",
     status: "completed",
+    inventory: {
+      product_name: "Raw Materials",
+    },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
   {
     _id: "4",
-    pic: "admin",
-    sku: "1122-3344",
-    origin: "internal",
-    product_name: "thep 45",
-    destination: "A-01/03-02",
+    sku: "SKU-004",
+    qty: 10,
+    unit: "units",
+    location: "A-03-02",
     status: "cancelled",
+    inventory: {
+      product_name: "Electronic Components",
+    },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
 ];
 
-const InboundTable = () => {
+const OutboundTable = () => {
   const { t } = useTranslation();
   const [pageInfo, setPageInfo] = useState({ page: 1, perPage: 10 });
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -98,7 +106,7 @@ const InboundTable = () => {
       }
     } catch (error) {
       console.error(error);
-      message.error(t("common.error.fetch_data"));
+      message.error(t("outbound.message.create_error"));
       // Fallback to mock data on error
       setDataList(mockData);
       setTotal(mockData.length);
@@ -113,94 +121,97 @@ const InboundTable = () => {
       const payload = {
         ...values,
       };
-
+      
       // Try API call first
       try {
         await apiClient.post(create, payload);
-        message.success(t("common.success.create"));
+        message.success(t("outbound.message.create_success"));
       } catch (apiError) {
         console.warn("API not available for create operation:", apiError);
-        message.success(t("common.success.create"));
+        message.success(t("outbound.message.create_success"));
       }
-
+      
       setIsOpen(false);
       requestDataList();
     } catch (error) {
       console.error(error);
-      message.error(t("common.error.create"));
+      message.error(t("outbound.message.create_error"));
     } finally {
       setLoading(false);
     }
   };
 
-  const _handleUpdateFinish = async (values: FormValuesEdit) => {
+  const _handleUpdate = async (values: FormValuesEdit) => {
     try {
       setLoading(true);
       const payload = {
         ...values,
         _id: formEdit.data._id,
       };
-
+      
       // Try API call first
       try {
-        await apiClient.patch(`${update}/${formEdit?.data?._id}`, payload);
-        message.success(t("common.success.update"));
+        await apiClient.put(update, payload);
+        message.success(t("outbound.message.update_success"));
       } catch (apiError) {
         console.warn("API not available for update operation:", apiError);
-        message.success(t("common.success.update"));
+        message.success(t("outbound.message.update_success"));
       }
-
-      setFormEdit({
-        isOpen: false,
-        data: {},
-      });
+      
+      setFormEdit({ isOpen: false, data: {} });
       requestDataList();
     } catch (error) {
       console.error(error);
-      message.error(t("common.error.update"));
+      message.error(t("outbound.message.update_error"));
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDeleteSelected = useCallback(async () => {
+  const _handleDeleteConfirm = useCallback(() => {
+    async function deleteItems() {
+      try {
+        setLoading(true);
+        
+        // Try API call first
+        try {
+          await apiClient.delete(remove, {
+            data: { ids: selectedRowKeys },
+          });
+          message.success(t("outbound.message.delete_success"));
+        } catch (apiError) {
+          console.warn("API not available for delete operation:", apiError);
+          message.success(t("outbound.message.delete_success"));
+        }
+        
+        setSelectedRowKeys([]);
+        requestDataList();
+      } catch (error) {
+        console.error(error);
+        message.error(t("outbound.message.delete_error"));
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    deleteItems();
+  }, [selectedRowKeys, t, requestDataList]);
+
+  const _handleDelete = useCallback(() => {
     if (selectedRowKeys.length === 0) {
       message.warning(t("common.warning.select_items"));
       return;
     }
 
     Modal.confirm({
-      title: t("common.confirm.delete_title"),
-      content: t("common.confirm.delete_content", {
-        count: selectedRowKeys.length,
-      }),
+      title: t("outbound.message.confirm_delete"),
+      content: t("outbound.message.confirm_delete_multiple", { count: selectedRowKeys.length }),
       okText: t("common.confirm.ok"),
-      okType: "danger",
       cancelText: t("common.confirm.cancel"),
-      onOk: async () => {
-        try {
-          setLoading(true);
-          
-          // Try API call first
-          try {
-            await apiClient.delete(remove, { data: { ids: selectedRowKeys } });
-            message.success(t("common.success.delete"));
-          } catch (apiError) {
-            console.warn("API not available for delete operation:", apiError);
-            message.success(t("common.success.delete"));
-          }
-          
-          setSelectedRowKeys([]);
-          requestDataList();
-        } catch (error) {
-          console.error("Delete error:", error);
-          message.error(t("common.error.delete"));
-        } finally {
-          setLoading(false);
-        }
-      },
+      okType: "danger",
+      onOk: _handleDeleteConfirm,
     });
-  }, [selectedRowKeys, t, requestDataList]);
+  }, [selectedRowKeys, t, _handleDeleteConfirm]);
 
   const columns = useMemo(() => {
     const baseColumns = RenderCol({ t });
@@ -224,22 +235,20 @@ const InboundTable = () => {
     ];
   }, [t]);
 
-  useEffect(() => {
-    requestDataList();
-  }, [pageInfo, requestDataList]);
-
   const rowSelection = {
     selectedRowKeys,
-    onChange: (selectedKeys: React.Key[]) => {
-      setSelectedRowKeys(selectedKeys);
-    },
+    onChange: setSelectedRowKeys,
   };
+
+  useEffect(() => {
+    requestDataList();
+  }, [requestDataList]);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>{t("inbound.title")}</span>
+          <span>{t("outbound.title")}</span>
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -253,7 +262,7 @@ const InboundTable = () => {
             <Button
               variant="destructive"
               size="sm"
-              onClick={handleDeleteSelected}
+              onClick={_handleDelete}
               disabled={selectedRowKeys.length === 0 || loading}
             >
               <DeleteOutlined />
@@ -285,6 +294,7 @@ const InboundTable = () => {
           }}
         />
       </CardContent>
+
       {/* Create Modal */}
       <ModalAdd
         isOpen={isOpen}
@@ -298,11 +308,11 @@ const InboundTable = () => {
         isOpen={formEdit.isOpen}
         data={formEdit.data}
         onClose={() => setFormEdit({ isOpen: false, data: {} })}
-        onFinish={_handleUpdateFinish}
+        onFinish={_handleUpdate}
         loading={loading}
       />
     </Card>
   );
 };
 
-export default InboundTable;
+export default OutboundTable;
