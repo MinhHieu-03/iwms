@@ -30,7 +30,7 @@ import OrderDetails from "./pages/OrderDetails";
 import InboundManagement from "./pages/InboundManagement";
 import Login from "./pages/Login";
 import MissionsTemplates from "./components/missions/MissionsTemplates";
-import MissionTemplate from "./components/missions/MissionTemplate2";
+import MissionTemplate from "./components/mission_setting/mission_template";
 import DeviceTemplate from "./components/device/DeviceTemplate";
 import DeviceList from "./components/device/DeviceList";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -39,6 +39,11 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import { Toaster } from "./components/ui/toaster";
 import "./App.css";
+
+import { createRoute, createLangKey } from "@/lib/utils"
+import { route as mission_setting_route } from "./components/mission_setting/const";
+import { route as mission_template_route } from "./components/mission_setting/mission_template/const";
+import EditMissionTemplate from "@/components/mission_setting/mission_template/update"
 
 function App() {
   return (
@@ -79,11 +84,15 @@ function App() {
                           element={<TemplateEdit />}
                         />
                         <Route
-                          path="/missions/templates/:id"
+                          path={createRoute([...mission_template_route, "new"])}
                           element={<TemplateEdit />}
                         />
                         <Route
-                          path="/mission-settings/template"
+                          path={createRoute([...mission_template_route, ":id"])}
+                          element={<EditMissionTemplate />}
+                        />
+                        <Route
+                          path={createRoute(mission_template_route)}
                           element={<MissionTemplate />}
                         />
                         <Route
