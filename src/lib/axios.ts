@@ -144,6 +144,7 @@ const apiClient = {
     post: (url: string, data = {}) => {
         return request({ method: 'post', url, data })
         .then((res) => {
+            if(!url.includes('list'))
             message.success(res.data.msg || 'Update successful');
             return res;
         })

@@ -120,7 +120,6 @@ const InboundTable = () => {
         message.success(t("common.success.create"));
       } catch (apiError) {
         console.warn("API not available for create operation:", apiError);
-        message.success(t("common.success.create"));
       }
 
       setIsOpen(false);
@@ -248,7 +247,7 @@ const InboundTable = () => {
               disabled={loading}
             >
               <ReloadOutlined />
-              {t("common.refresh")}
+              {t("btn.refresh")}
             </Button>
             <Button
               variant="destructive"
@@ -257,11 +256,11 @@ const InboundTable = () => {
               disabled={selectedRowKeys.length === 0 || loading}
             >
               <DeleteOutlined />
-              {t("common.delete")}
+              {t("btn.delete")}
             </Button>
             <Button size="sm" onClick={() => setIsOpen(true)}>
               <Plus className="w-4 h-4" />
-              {t("common.add")}
+              {t("btn.add")}
             </Button>
           </div>
         </CardTitle>

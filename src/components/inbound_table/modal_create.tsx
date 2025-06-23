@@ -95,8 +95,8 @@ const ModalAdd = ({ isOpen, onClose, onFinish, loading }: ModalAddProps) => {
       open={isOpen}
       onOk={handleOk}
       onCancel={handleCancel}
-      okText={t("common.save")}
-      cancelText={t("common.cancel")}
+      okText={t("btn.save")}
+      cancelText={t("btn.cancel")}
       confirmLoading={loading}
     >
       <Form
