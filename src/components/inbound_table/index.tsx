@@ -205,21 +205,21 @@ const InboundTable = () => {
     const baseColumns = RenderCol({ t });
     return [
       ...baseColumns,
-      {
-        title: t("common.action"),
-        key: "action",
-        width: 100,
-        fixed: "right" as const,
-        render: (_: unknown, record: DataType) => (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setFormEdit({ isOpen: true, data: record })}
-          >
-            {t("common.edit")}
-          </Button>
-        ),
-      },
+      // {
+      //   title: t("common.action"),
+      //   key: "action",
+      //   width: 100,
+      //   fixed: "right" as const,
+      //   render: (_: unknown, record: DataType) => (
+      //     <Button
+      //       variant="outline"
+      //       size="sm"
+      //       onClick={() => setFormEdit({ isOpen: true, data: record })}
+      //     >
+      //       {t("common.edit")}
+      //     </Button>
+      //   ),
+      // },
     ];
   }, [t]);
 
@@ -249,7 +249,7 @@ const InboundTable = () => {
               <ReloadOutlined />
               {t("btn.refresh")}
             </Button>
-            <Button
+            {/* <Button
               variant="destructive"
               size="sm"
               onClick={handleDeleteSelected}
@@ -257,7 +257,7 @@ const InboundTable = () => {
             >
               <DeleteOutlined />
               {t("btn.delete")}
-            </Button>
+            </Button> */}
             <Button size="sm" onClick={() => setIsOpen(true)}>
               <Plus className="w-4 h-4" />
               {t("btn.add")}
@@ -273,7 +273,7 @@ const InboundTable = () => {
           loading={loading}
           rowSelection={rowSelection}
           pagination={false}
-          scroll={{ x: 1200 }}
+          scroll={{ x: "calc(100vw - 640px)" }}
         />
         <BasePagination
           current={pageInfo.page}

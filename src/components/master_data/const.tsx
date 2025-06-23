@@ -48,40 +48,18 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
     {
       dataIndex: "pk_style",
       title: t(`${lang_key}.pk_style`),
-      width: 120,
+      width: 190,
     },
     {
       dataIndex: "new_pk_style",
       title: t(`${lang_key}.new_pk_style`),
-      width: 120,
-    },
-    {
-      dataIndex: "flg",
-      title: t(`${lang_key}.flg`),
-      width: 100,
+      width: 190,
     },
     {
       dataIndex: "comment",
       title: t(`${lang_key}.comment`),
       width: 200,
       ellipsis: true,
-    },
-    {
-      dataIndex: "user_id",
-      title: t(`${lang_key}.user_id`),
-      width: 120,
-    },
-    {
-      dataIndex: "ent_dt",
-      title: t(`${lang_key}.ent_dt`),
-      width: 180,
-      render: (value: string) => value ? new Date(value).toLocaleString() : '',
-    },
-    {
-      dataIndex: "upd_dt",
-      title: t(`${lang_key}.upd_dt`),
-      width: 180,
-      render: (value: string) => value ? new Date(value).toLocaleString() : '',
     },
   ];
 };

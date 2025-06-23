@@ -40,12 +40,12 @@ const getStatusColor = (status: string) => {
 };
 
 export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<DataType> => [
-  {
-    title: t("inbound.pic"),
-    dataIndex: "pic",
-    key: "pic",
-    width: 120,
-  },
+  // {
+  //   title: t("inbound.pic"),
+  //   dataIndex: "pic",
+  //   key: "pic",
+  //   width: 120,
+  // },
   {
     title: t("inbound.sku"),
     dataIndex: "sku",
@@ -79,7 +79,7 @@ export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<Da
     render: (status: string) => {
       return (
         <Tag color={getStatusColor(status)}>
-          {t(`inbound.status.${status}`)}
+          {status}
         </Tag>
       );
     },

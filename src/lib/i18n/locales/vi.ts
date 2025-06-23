@@ -362,6 +362,12 @@ export const vi: Record<TranslationKey, string> = {
   'warehouses_management.create_warehouse': 'Tạo kho',
   'warehouses_management.edit_warehouse': 'Chỉnh sửa kho',
   
+  // Warehouse Layout Config Tabs
+  'warehouse_layout_config.warehouses_tab': 'Kho hàng',
+  'warehouse_layout_config.areas_tab': 'Khu vực',
+  'warehouse_layout_config.racks_tab': 'Cấu trúc kệ',
+  'inbound.title': 'Quản lý nhập kho',
+  
   // Inbound Management
   inbound_management: 'Quản lý nhập kho',
   'inbound_management.sku': 'Mã SKU',
@@ -379,6 +385,7 @@ export const vi: Record<TranslationKey, string> = {
   
   // Buttons
   'btn.reload': 'Tải lại',
+  'btn.refresh': 'Tải lại',
   'btn.create_new': 'Tạo mới',
   'btn.add_acc': 'Thêm tài khoản',
   'btn.add': 'Thêm',

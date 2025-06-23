@@ -437,6 +437,12 @@ export type TranslationKey =
   | 'warehouses_management.create_warehouse'
   | 'warehouses_management.edit_warehouse'
   
+  // Warehouse Layout Config Tabs
+  | 'warehouse_layout_config.warehouses_tab'
+  | 'warehouse_layout_config.areas_tab'
+  | 'warehouse_layout_config.racks_tab'
+  | 'inbound.title'
+  
   // Inbound Management
   | 'inbound_management'
   | 'inbound_management.sku'

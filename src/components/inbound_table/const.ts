@@ -23,11 +23,11 @@ export const domain = {
 export const lang_key = "inbound.table";
 
 export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<DataType> => [
-  {
-    title: t("inbound.pic"),
-    dataIndex: "pic",
-    key: "pic",
-  },
+  // {
+  //   title: t("inbound.pic"),
+  //   dataIndex: "pic",
+  //   key: "pic",
+  // },
   {
     title: t("inbound.sku"),
     dataIndex: "sku",
@@ -54,10 +54,10 @@ export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<Da
     key: "status",
     render: (status: string) => {
       const statusMap: Record<string, { text: string; color: string }> = {
-        wait_fill: { text: t("inbound.status.wait_fill"), color: "orange" },
-        in_progress: { text: t("inbound.status.in_progress"), color: "blue" },
-        completed: { text: t("inbound.status.completed"), color: "green" },
-        cancelled: { text: t("inbound.status.cancelled"), color: "red" },
+        wait_fill: { text: status, color: "orange" },
+        in_progress: { text: status, color: "blue" },
+        completed: { text: status, color: "green" },
+        cancelled: { text: status, color: "red" },
       };
       
       const statusInfo = statusMap[status] || { text: status, color: "default" };

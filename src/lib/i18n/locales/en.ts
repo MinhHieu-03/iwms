@@ -85,6 +85,14 @@ export const en: Record<TranslationKey, string> = {
   'warehouses_management.create_warehouse': 'Create Warehouse',
   'warehouses_management.edit_warehouse': 'Edit Warehouse',
   
+  // Warehouse Layout Config Tabs
+  'warehouse_layout_config.warehouses_tab': 'Warehouses',
+  'warehouse_layout_config.areas_tab': 'Areas',
+  'warehouse_layout_config.racks_tab': 'Rack Structure',
+  'inbound.title': 'Inbound Management',
+
+
+  
   // Inbound Management
   inbound_management: 'Inbound Management',
   'inbound_management.sku': 'SKU',

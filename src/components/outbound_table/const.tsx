@@ -83,7 +83,7 @@ export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<Da
     render: (status: string) => {
       return (
         <Tag color={getStatusColor(status)}>
-          {t(`outbound.status.${status}`)}
+          {status}
         </Tag>
       );
     },

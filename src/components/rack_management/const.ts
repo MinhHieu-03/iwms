@@ -76,14 +76,14 @@ export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<Ra
     sortDirections: ['ascend', 'descend'],
   },
   {
-    title: t("common.row"),
+    title: t("rack.row"),
     dataIndex: "row",
     key: "row",
     sorter: (a, b) => a.row - b.row,
     sortDirections: ['ascend', 'descend'],
   },
   {
-    title: t("common.column"),
+    title: t("rack.column"),
     dataIndex: "column",
     key: "column",
     sorter: (a, b) => a.column - b.column,
