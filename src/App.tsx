@@ -19,6 +19,7 @@ import HelpGuides from "./pages/HelpGuides";
 import HelpFAQs from "./pages/HelpFAQs";
 import OperatorInterface from "./pages/OperatorInterface";
 import OperatorInbound from "./pages/OperatorInbound";
+import InboundManagement from "@/components/inbound_management";
 import OperatorOutbound from "./pages/OperatorOutbound";
 import Outbound from "./pages/outbound";
 import OutboundOdd from "./pages/outbound_odd";
@@ -63,6 +64,8 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/oi/outbound" element={<Outbound />} />
                 <Route path="/oi/outbound-odd" element={<OutboundOdd />} />
+                <Route path="/oi/inbound" element={<InboundManagement />} />
+
                 {/* Protected routes - require authentication */}
                 <Route
                   path="/*"
