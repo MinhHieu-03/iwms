@@ -13,8 +13,8 @@ export const vi: Record<TranslationKey, string> = {
   'inbound.product_name': 'Tên vật tư',
   'inbound.destination': 'Vị trí lưu kho',
   'inbound.status': 'Trạng Thái',
-  'inbound.created_at': 'Ngày Tạo',
-  'inbound.updated_at': 'Ngày Cập Nhật',
+  'inbound.created_at': 'Thời điểm tạo',
+  'inbound.updated_at': 'Thời điểm cập nhật',
   
   // Status values
   'inbound.status.wait_fill': 'Chờ Điền',

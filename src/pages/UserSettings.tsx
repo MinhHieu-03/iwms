@@ -16,7 +16,7 @@ const UserSettings = () => {
   const { t, language, changeLanguage, themeSettings, updateThemeSetting } = useI18n();
   const [isEditing, setIsEditing] = useState(false);
   const [userProfile, setUserProfile] = useState({
-    name: "John Doe",
+    name: "doan nguyen",
     email: "john.doe@warehouse.com",
     jobTitle: "Warehouse Manager",
     department: "Operations"

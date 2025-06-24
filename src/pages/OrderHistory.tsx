@@ -32,7 +32,7 @@ const OrderHistory = () => {
       type: "inbound",
       date: "2023-05-15T10:30:00",
       customer: "Tech Supplies Inc.",
-      operator: "John Doe",
+      operator: "doan nguyen",
       items: 24,
       status: "Completed"
     },
@@ -68,7 +68,7 @@ const OrderHistory = () => {
       type: "inbound",
       date: "2023-05-13T09:15:00",
       customer: "Global Parts Ltd.",
-      operator: "John Doe",
+      operator: "doan nguyen",
       items: 36,
       status: "Completed"
     },

@@ -96,7 +96,7 @@ export const mockRobotMissions: RobotMission[] = Array.from({ length: 200 }, (_,
   const statuses = ['pending', 'in-progress', 'completed', 'failed', 'cancelled'] as const;
   const types = ['inbound', 'outbound', 'transfer', 'maintenance'] as const;
   const priorities = ['low', 'medium', 'high', 'urgent'] as const;
-  const operators = ["John Doe", "Jane Smith", "Mike Johnson", "Sarah Wilson", "Tom Brown"];
+  const operators = ["doan nguyen", "Jane Smith", "Mike Johnson", "Sarah Wilson", "Tom Brown"];
   const partners = [
     'Tech Supplies Inc.', 'Office Solutions', 'Global Parts Ltd.',
     'Industrial Equipment Co.', 'City Electronics', 'Retail Group'

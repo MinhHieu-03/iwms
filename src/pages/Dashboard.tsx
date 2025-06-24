@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 const Dashboard = () => {
 const { t } = useTranslation();
   const userData = [
-    { name: "John Doe", visits: 1200, orders: 800 },
+    { name: "doan nguyen", visits: 1200, orders: 800 },
     { name: "Jane Smith", visits: 1100, orders: 950 },
     { name: "Mike Johnson", visits: 1000, orders: 700 },
     { name: "Emily Brown", visits: 900, orders: 850 },

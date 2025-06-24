@@ -21,7 +21,7 @@ interface User {
 
 const UsersTab = () => {
 const { t } = useTranslation();  const [users, setUsers] = useState<User[]>([
-    { id: 1, name: "John Doe", email: "john.doe@warehouse.com", role: "administrator", department: "Operations", status: "active" },
+    { id: 1, name: "doan nguyen", email: "john.doe@warehouse.com", role: "administrator", department: "Operations", status: "active" },
     { id: 2, name: "Jane Smith", email: "jane.smith@warehouse.com", role: "operator", department: "Logistics", status: "active" },
     { id: 3, name: "Robert Johnson", email: "robert.j@warehouse.com", role: "manager", department: "Management", status: "inactive" }
   ]);

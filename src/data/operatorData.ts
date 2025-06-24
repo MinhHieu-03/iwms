@@ -93,7 +93,7 @@ export const mockInboundRecords: InboundRecord[] = Array.from({ length: 100 }, (
     "Tech Components Ltd", "Industrial Parts Co", "Quality Supplies Inc",
     "Fast Delivery Co", "Reliable Sources", "Premium Goods Ltd"
   ];
-  const operators = ["John Doe", "Jane Smith", "Mike Johnson", "Sarah Wilson", "Tom Brown"];
+  const operators = ["doan nguyen", "Jane Smith", "Mike Johnson", "Sarah Wilson", "Tom Brown"];
   const statuses = ['pending', 'in-progress', 'completed', 'cancelled'] as const;
   const storeMethods = ['Bin', 'Carton'] as const;
   const packingMethods = ['Carton', 'Bag', 'Kit'] as const;
@@ -132,7 +132,7 @@ export const mockOrders: Order[] = Array.from({ length: 50 }, (_, i) => {
   ];
   const priorities = ['low', 'medium', 'high', 'urgent'] as const;
   const statuses = ['pending', 'picking', 'packing', 'ready', 'shipped'] as const;
-  const operators = ["John Doe", "Jane Smith", "Mike Johnson", "Sarah Wilson", "Tom Brown"];
+  const operators = ["doan nguyen", "Jane Smith", "Mike Johnson", "Sarah Wilson", "Tom Brown"];
 
   const priority = priorities[Math.floor(Math.random() * priorities.length)];
   const status = statuses[Math.floor(Math.random() * statuses.length)];
@@ -195,7 +195,7 @@ export const mockOrders: Order[] = Array.from({ length: 50 }, (_, i) => {
 // Generate operator shifts (30 entries)
 export const mockOperatorShifts: OperatorShift[] = Array.from({ length: 30 }, (_, i) => {
   const operators = [
-    { id: "op-001", name: "John Doe" },
+    { id: "op-001", name: "doan nguyen" },
     { id: "op-002", name: "Jane Smith" },
     { id: "op-003", name: "Mike Johnson" },
     { id: "op-004", name: "Sarah Wilson" },

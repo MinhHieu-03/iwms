@@ -9,12 +9,12 @@ export const vi: Record<TranslationKey, string> = {
   'outbound.edit': 'Chỉnh Sửa Xuất Kho',
   'outbound.sku': 'Mã vật tư',
   'outbound.product_name': 'Tên vật tư',
-  'outbound.qty': 'Số Lượng',
-  'outbound.unit': 'Đơn Vị',
-  'outbound.location': 'Vị Trí',
+  'outbound.qty': 'SL Yêu cầu',
+  'outbound.unit': 'Kiểu đóng gói',
+  'outbound.location': 'Vị Trí lấy hàng',
   'outbound.status': 'Trạng Thái',
-  'outbound.created_at': 'Ngày Tạo',
-  'outbound.updated_at': 'Ngày Cập Nhật',
+  'outbound.created_at': 'Thời điểm tạo',
+  'outbound.updated_at': 'Thời điểm cập nhật',
   
   // Status values
   'outbound.status.pending': 'Chờ Xử Lý',
@@ -41,7 +41,7 @@ export const vi: Record<TranslationKey, string> = {
   // Placeholders
   'outbound.placeholder.sku': 'Nhập Mã vật tư',
   'outbound.placeholder.product_name': 'Nhập Tên vật tư',
-  'outbound.placeholder.qty': 'Nhập số lượng',
+  'outbound.placeholder.qty': 'Nhập số lượng cần lấy',
   'outbound.placeholder.unit': 'Chọn đơn vị',
   'outbound.placeholder.location': 'Nhập vị trí (vd: A-01-01)',
   'outbound.placeholder.status': 'Chọn trạng thái',

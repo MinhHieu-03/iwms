@@ -28,7 +28,7 @@ const { t } = useTranslation();  const { toast } = useToast();
     id: parseInt(id || "0"),
     name: id === "1" ? "Warehouse Staff" : id === "2" ? "Management Team" : "IT Support",
     description: `Group for ${id === "1" ? "warehouse operators" : id === "2" ? "management personnel" : "IT support staff"}`,
-    members: id === "1" ? ["John Doe", "Jane Smith", "Mike Brown", "Sarah Lee", "Chris Wong"] : 
+    members: id === "1" ? ["doan nguyen", "Jane Smith", "Mike Brown", "Sarah Lee", "Chris Wong"] : 
              id === "2" ? ["Robert Johnson", "Lisa Chen", "Michael Davis"] : 
              ["Alex Kim", "Priya Patel"]
   } : {
@@ -41,7 +41,7 @@ const { t } = useTranslation();  const { toast } = useToast();
   const [group, setGroup] = useState(groupData);
   const [newMember, setNewMember] = useState("");
 
-  const allUsers = ["John Doe", "Jane Smith", "Mike Brown", "Sarah Lee", "Chris Wong", 
+  const allUsers = ["doan nguyen", "Jane Smith", "Mike Brown", "Sarah Lee", "Chris Wong", 
                    "Robert Johnson", "Lisa Chen", "Michael Davis", "Alex Kim", "Priya Patel"];
                    
   const availableUsers = allUsers.filter(user => !group.members.includes(user));

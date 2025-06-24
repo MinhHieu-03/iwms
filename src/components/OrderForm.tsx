@@ -326,7 +326,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 Cancel
               </Button>
               <Button type="submit">
-                {mode === 'create' ? 'Create Order' : 'Save Changes'}
+                {mode === 'create' ? 'Create Order' : 'Lưu thay đổi'}
               </Button>
             </div>
           </form>

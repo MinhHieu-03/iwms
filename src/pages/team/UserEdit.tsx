@@ -20,7 +20,7 @@ const UserEdit = () => {
   // Mock user data
   const userData = !isNew ? {
     id: parseInt(id || "0"),
-    name: id === "1" ? "John Doe" : id === "2" ? "Jane Smith" : "Robert Johnson",
+    name: id === "1" ? "doan nguyen" : id === "2" ? "Jane Smith" : "Robert Johnson",
     email: id === "1" ? "john@example.com" : id === "2" ? "jane@example.com" : "robert@example.com",
     role: id === "1" ? "administrator" : id === "2" ? "operator" : "manager",
     active: true

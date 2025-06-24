@@ -144,7 +144,7 @@ const HelpFAQs = () => {
               <AccordionItem value="item-2">
                 <AccordionTrigger>How do I update notification preferences?</AccordionTrigger>
                 <AccordionContent>
-                  You can update your notification preferences in the User Settings page under the Notification Preferences section. Toggle the switches for email and push notifications according to your preferences, then click "Save Changes" at the top of the page.
+                  You can update your notification preferences in the User Settings page under the Notification Preferences section. Toggle the switches for email and push notifications according to your preferences, then click "Lưu thay đổi" at the top of the page.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-3">

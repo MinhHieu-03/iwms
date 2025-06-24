@@ -47,13 +47,13 @@ const OperatorInterface = () => {
                       <ArrowDown className="h-8 w-8 text-green-600" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900">Inbound Operations</h3>
+                      <h3 className="text-xl font-semibold text-gray-900">OI Nhập kho</h3>
                       <p className="text-gray-600 mt-1">
                         Process incoming shipments and manage inbound
                       </p>
                       <div className="flex items-center mt-3 text-green-600">
                         <Package className="h-4 w-4 mr-2" />
-                        <span className="text-sm font-medium">Go to Inbound</span>
+                        <span className="text-sm font-medium">Đi đến OI nhập kho</span>
                       </div>
                     </div>
                   </div>
@@ -69,13 +69,13 @@ const OperatorInterface = () => {
                       <ArrowUp className="h-8 w-8 text-purple-600" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900">Outbound Standard</h3>
+                      <h3 className="text-xl font-semibold text-gray-900">OI Pick tổng</h3>
                       <p className="text-gray-600 mt-1">
                         Standard outbound operations and order processing
                       </p>
                       <div className="flex items-center mt-3 text-purple-600">
                         <Truck className="h-4 w-4 mr-2" />
-                        <span className="text-sm font-medium">Go to Outbound</span>
+                        <span className="text-sm font-medium">Đi đến OI Pick tổng</span>
                       </div>
                     </div>
                   </div>
@@ -91,13 +91,13 @@ const OperatorInterface = () => {
                       <ArrowUp className="h-8 w-8 text-blue-600" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900">Outbound Special</h3>
+                      <h3 className="text-xl font-semibold text-gray-900">OI Pick lẻ</h3>
                       <p className="text-gray-600 mt-1">
                         Special outbound operations and expedited processing
                       </p>
                       <div className="flex items-center mt-3 text-blue-600">
                         <Truck className="h-4 w-4 mr-2" />
-                        <span className="text-sm font-medium">Go to Outbound ODD</span>
+                        <span className="text-sm font-medium">Đi đến OI Pick lẻ</span>
                       </div>
                     </div>
                   </div>

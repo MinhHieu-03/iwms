@@ -12,7 +12,7 @@ export const en: Record<TranslationKey, string> = {
   ...en_inbound,
   ...en_outbound,
   // Common
-  save_changes: 'Save Changes',
+  save_changes: 'Lưu thay đổi',
   cancel: 'Cancel',
   submit: 'Submit',
   logout: 'Log out',
@@ -68,7 +68,7 @@ export const en: Record<TranslationKey, string> = {
   ready_to_connect: 'Ready to connect',
   
   btn_create: 'Create',
-  btn_edit: 'Save Changes',
+  btn_edit: 'Lưu thay đổi',
   btn_delete: "Delete",
   btn_cancel: 'Cancel',
   

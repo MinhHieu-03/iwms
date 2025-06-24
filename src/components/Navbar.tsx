@@ -66,8 +66,8 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
   };
 
   const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
+    name: "doan nguyen",
+    email: "dnt@vti.com.vn",
     avatar: "",
   };
 
@@ -349,9 +349,9 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
             <h1 className="text-xl font-bold">
               {location.pathname.startsWith("/warehouse-settings")
                 ? location.pathname === "/warehouse-settings/layout"
-                  ? "Layout Configuration"
+                  ? "Cấu hình cấu trúc kho"
                   : location.pathname === "/warehouse-settings/storage"
-                  ? "Storage Model Configuration"
+                  ? "Cấu hình lưu trữ kho"
                   : t("warehouse_settings")
                 : location.pathname.startsWith("/team-settings")
                 ? t("team_management")

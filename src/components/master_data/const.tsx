@@ -1,7 +1,7 @@
 import { ColumnsType } from "antd/es/table";
 
 export const lang_key = "master_data";
-export const title = "Quản lý dữ liệu chính";
+export const title = "Master data";
 
 export interface DataType {
   _id?: string;
@@ -67,42 +67,42 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
 export const renderCreateForm = (dataRole: unknown, dataList: unknown) => {
   return [
     {
-      label: "Material No",
+      label: "Mã vật tư",
       name: "material_no",
       rules: [{ required: true, message: "master_data.validation.material_no_required" }],
     },
     {
-      label: "Material Name", 
+      label: "Tên vật tư", 
       name: "material_nm",
       rules: [{ required: true, message: "master_data.validation.material_nm_required" }],
     },
     {
-      label: "Material Type",
+      label: "Kiểu vật tư",
       name: "material_tp", 
       rules: [{ required: true, message: "master_data.validation.material_tp_required" }],
     },
     {
-      label: "PK Style",
+      label: "Qui cách đóng gói",
       name: "pk_style",
       type: "number",
     },
     {
-      label: "New PK Style",
+      label: "Qui cách đóng gói mới",
       name: "new_pk_style",
       type: "number",
     },
     {
-      label: "Flag",
+      label: "Cờ",
       name: "flg",
       type: "number",
     },
     {
-      label: "Comment",
+      label: "Ghi chú",
       name: "comment",
       type: "textarea",
     },
     {
-      label: "User ID",
+      label: "Người tạo",
       name: "user_id",
     },
   ];
