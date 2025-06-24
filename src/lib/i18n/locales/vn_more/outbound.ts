@@ -5,7 +5,7 @@ export const vi: Record<TranslationKey, string> = {
   'outbound.table': 'Bảng Xuất Kho',
   'outbound.table.title': 'Quản Lý Xuất Kho',
   'outbound.title': 'Đơn Hàng Xuất Kho',
-  'outbound.create': 'Tạo Xuất Kho',
+  'outbound.create': 'Tạo Đơn Xuất Kho',
   'outbound.edit': 'Chỉnh Sửa Xuất Kho',
   'outbound.sku': 'Mã vật tư',
   'outbound.product_name': 'Tên vật tư',
@@ -62,8 +62,8 @@ export const vi: Record<TranslationKey, string> = {
   'outbound.placeholder.storage': 'Chọn vị trí lưu trữ',
   
   // Success/Error messages
-  'outbound.message.create_success': 'Tạo xuất kho thành công',
-  'outbound.message.create_error': 'Không thể tạo xuất kho',
+  'outbound.message.create_success': 'Tạo Đơn Xuất Kho thành công',
+  'outbound.message.create_error': 'Không thể Tạo Đơn Xuất Kho',
   'outbound.message.update_success': 'Cập nhật xuất kho thành công',
   'outbound.message.update_error': 'Không thể cập nhật xuất kho',
   'outbound.message.delete_success': 'Xóa xuất kho thành công',
