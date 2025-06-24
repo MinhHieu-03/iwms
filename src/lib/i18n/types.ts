@@ -88,6 +88,8 @@ export type TranslationKey =
   // Validation
   | 'validation.alphanumeric'
   | 'validation.positive_number'
+  | 'validation.required'
+  | 'validation.min_value'
   
   // Selection prompts
   | 'common.select_area'
@@ -441,7 +443,24 @@ export type TranslationKey =
   | 'warehouse_layout_config.warehouses_tab'
   | 'warehouse_layout_config.areas_tab'
   | 'warehouse_layout_config.racks_tab'
-  | 'inbound.title'
+  
+  // Warehouse Layout Page
+  | 'warehouse_layout.area_configuration'
+  | 'warehouse_layout.no_areas_available'
+  | 'warehouse_layout.select_area_prompt'
+  | 'warehouse_layout.3d_view_title'
+  | 'warehouse_layout.heatmap_title'
+  | 'warehouse_layout.zones_title'
+  | 'warehouse_layout.2d_view_title'
+  | 'warehouse_layout.stats.total_racks'
+  | 'warehouse_layout.stats.occupied_racks'
+  | 'warehouse_layout.stats.empty_racks'
+  | 'warehouse_layout.stats.maintenance_racks'
+  | 'warehouse_layout.stats.reserved_racks'
+  | 'warehouse_layout.stats.occupancy_rate'
+  | 'warehouse_layout.stats.type'
+  | 'warehouse_layout.stats.capacity'
+  | 'warehouse_layout.stats.status'
   
   // Inbound Management
   | 'inbound_management'
@@ -519,6 +538,7 @@ export type TranslationKey =
   | 'common.update_success'
   | 'common.update_error'
   | 'common.required'
+  | 'common.loading'
   | 'common.select_productions'
   | 'common.select_warehouse'
   | 'btn.delete'

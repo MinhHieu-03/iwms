@@ -260,7 +260,7 @@ const InboundTable = () => {
             </Button> */}
             <Button size="sm" onClick={() => setIsOpen(true)}>
               <Plus className="w-4 h-4" />
-              {t("btn.add")}
+              {t("btn.create_new")}
             </Button>
           </div>
         </CardTitle>

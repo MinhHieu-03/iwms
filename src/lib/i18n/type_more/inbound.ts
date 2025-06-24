@@ -34,10 +34,17 @@ export type TranslationKey =
   // Placeholders
   | 'inbound.placeholder.pic'
   | 'inbound.placeholder.sku'
+  | 'inbound.sku_placeholder'
   | 'inbound.placeholder.origin'
   | 'inbound.placeholder.product_name'
+  | 'inbound.product_name_placeholder'
   | 'inbound.placeholder.destination'
   | 'inbound.placeholder.status'
+  | 'inbound.storage_location'
+  | 'inbound.storage_location_placeholder'
+  | 'inbound.quantity'
+  | 'inbound.quantity_placeholder'
+  | 'inbound.add_storage_location'
   
   // Validation messages
   | 'inbound.validation.required'
