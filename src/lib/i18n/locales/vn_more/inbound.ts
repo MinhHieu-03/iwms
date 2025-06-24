@@ -2,6 +2,7 @@ import { TranslationKey } from '../../type_more/inbound';
 
 export const vi: Record<TranslationKey, string> = {
   // Inbound Table
+  'inbound.title': 'Quản Lý Nhập Kho',
   'inbound.table': 'Bảng Nhập Kho',
   'inbound.table.title': 'Quản Lý Nhập Kho',
   'inbound.create': 'Tạo Đơn Nhập kho',

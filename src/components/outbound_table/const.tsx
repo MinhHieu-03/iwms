@@ -88,18 +88,18 @@ export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<Da
       );
     },
   },
-  {
-    title: t("common.created_at"),
-    dataIndex: "createdAt",
-    key: "createdAt",
-    width: 150,
-    render: (text: string) => (text ? dayjs(text).format("YYYY-MM-DD HH:mm") : "-"),
-  },
-  {
-    title: t("common.updated_at"),
-    dataIndex: "updatedAt",
-    key: "updatedAt",
-    width: 150,
-    render: (text: string) => (text ? dayjs(text).format("YYYY-MM-DD HH:mm") : "-"),
-  },
+  // {
+  //   title: t("common.created_at"),
+  //   dataIndex: "createdAt",
+  //   key: "createdAt",
+  //   width: 150,
+  //   render: (text: string) => (text ? dayjs(text).format("YYYY-MM-DD HH:mm") : "-"),
+  // },
+  // {
+  //   title: t("common.updated_at"),
+  //   dataIndex: "updatedAt",
+  //   key: "updatedAt",
+  //   width: 150,
+  //   render: (text: string) => (text ? dayjs(text).format("YYYY-MM-DD HH:mm") : "-"),
+  // },
 ];

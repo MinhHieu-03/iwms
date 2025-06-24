@@ -1,5 +1,6 @@
 export type TranslationKey = 
   // Inbound Table
+  | 'inbound.title'
   | 'inbound.table'
   | 'inbound.table.title'
   | 'inbound.create'

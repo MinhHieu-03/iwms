@@ -2,6 +2,7 @@ import { TranslationKey } from '../../type_more/inbound';
 
 export const en: Record<TranslationKey, string> = {
   // Inbound Table
+  'inbound.title': 'Inbound Management',
   'inbound.table': 'Inbound Table',
   'inbound.table.title': 'Inbound Management',
   'inbound.create': 'Create Inbound',

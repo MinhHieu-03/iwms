@@ -178,7 +178,7 @@ const AreaManagement = () => {
         <BasePagination
           total={total}
           pageSize={pageInfo.perPage}
-          currentPage={pageInfo.page}
+          current={pageInfo.page}
           onChange={(page: number, perPage: number) =>
             setPageInfo({ page, perPage })
           }
