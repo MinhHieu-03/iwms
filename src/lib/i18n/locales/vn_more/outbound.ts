@@ -7,8 +7,8 @@ export const vi: Record<TranslationKey, string> = {
   'outbound.title': 'Đơn Hàng Xuất Kho',
   'outbound.create': 'Tạo Xuất Kho',
   'outbound.edit': 'Chỉnh Sửa Xuất Kho',
-  'outbound.sku': 'Mã SKU',
-  'outbound.product_name': 'Tên Sản Phẩm',
+  'outbound.sku': 'Mã vật tư',
+  'outbound.product_name': 'Tên vật tư',
   'outbound.qty': 'Số Lượng',
   'outbound.unit': 'Đơn Vị',
   'outbound.location': 'Vị Trí',
@@ -39,8 +39,8 @@ export const vi: Record<TranslationKey, string> = {
   'outbound.btn.cancel': 'Hủy',
   
   // Placeholders
-  'outbound.placeholder.sku': 'Nhập mã SKU',
-  'outbound.placeholder.product_name': 'Nhập tên sản phẩm',
+  'outbound.placeholder.sku': 'Nhập Mã vật tư',
+  'outbound.placeholder.product_name': 'Nhập Tên vật tư',
   'outbound.placeholder.qty': 'Nhập số lượng',
   'outbound.placeholder.unit': 'Chọn đơn vị',
   'outbound.placeholder.location': 'Nhập vị trí (vd: A-01-01)',
@@ -48,8 +48,8 @@ export const vi: Record<TranslationKey, string> = {
   
   // Validation messages
   'outbound.validation.required': 'Trường này là bắt buộc',
-  'outbound.validation.sku_required': 'Mã SKU là bắt buộc',
-  'outbound.validation.product_name_required': 'Tên sản phẩm là bắt buộc',
+  'outbound.validation.sku_required': 'Mã vật tư là bắt buộc',
+  'outbound.validation.product_name_required': 'Tên vật tư là bắt buộc',
   'outbound.validation.qty_required': 'Số lượng là bắt buộc',
   'outbound.validation.qty_positive': 'Số lượng phải lớn hơn 0',
   'outbound.validation.unit_required': 'Đơn vị là bắt buộc',

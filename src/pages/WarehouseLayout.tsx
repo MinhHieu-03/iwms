@@ -116,7 +116,7 @@ const WarehouseLayout = () => {
     <div className='space-y-6'>
       <Card>
         <CardHeader>
-          <CardTitle>Area Configuration</CardTitle>
+          <CardTitle>{t('warehouse_layout.area_configuration')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs
@@ -157,7 +157,7 @@ const WarehouseLayout = () => {
               {area.name}
             </TabsTrigger>
           ))}
-        </TabsList>: "No Areas Available" }
+        </TabsList> : t('warehouse_layout.no_areas_available') }
 
         <TabsContent value={selectedArea} className='mt-6'>
           <Card>
@@ -166,7 +166,7 @@ const WarehouseLayout = () => {
                 area={selectedArea}
                 hoveredRack={hoveredRack}
                 onRackHover={handleRackHover}
-              />: <p className='mt-4'>"Please select an area from the tabs above."</p>}
+              />: <p className='mt-4'>{t('warehouse_layout.select_area_prompt')}</p>}
             </CardContent>
           </Card>
         </TabsContent>
@@ -176,7 +176,7 @@ const WarehouseLayout = () => {
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <Box className='h-5 w-5' />
-                3D Warehouse View - All Areas
+                {t('warehouse_layout.3d_view_title')}
               </CardTitle>
             </CardHeader>
             <CardContent>

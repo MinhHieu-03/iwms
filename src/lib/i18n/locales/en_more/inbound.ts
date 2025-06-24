@@ -36,10 +36,17 @@ export const en: Record<TranslationKey, string> = {
   // Placeholders
   'inbound.placeholder.pic': 'Enter PIC',
   'inbound.placeholder.sku': 'Enter SKU',
+  'inbound.sku_placeholder': 'Select SKU',
   'inbound.placeholder.origin': 'Select Origin',
   'inbound.placeholder.product_name': 'Enter Product Name',
+  'inbound.product_name_placeholder': 'Enter Product Name',
   'inbound.placeholder.destination': 'Enter Destination (e.g., A-02/01-03)',
   'inbound.placeholder.status': 'Select Status',
+  'inbound.storage_location': 'Storage Location',
+  'inbound.storage_location_placeholder': 'Select Storage Location',
+  'inbound.quantity': 'Quantity',
+  'inbound.quantity_placeholder': 'Enter Quantity',
+  'inbound.add_storage_location': 'Add Storage Location',
   
   // Validation messages
   'inbound.validation.required': 'This field is required',
