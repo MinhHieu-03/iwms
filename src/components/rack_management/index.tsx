@@ -207,6 +207,10 @@ const RackManagement = () => {
                                 {t("btn.delete")} ({selectedRowKeys.length})
                             </Button>
                         )}
+                        <Button size="sm" onClick={() => setIsOpen(true)}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            {t("btn.create_new")}
+                        </Button>
                         <Button
                             variant="outline"
                             size="sm"
@@ -215,10 +219,6 @@ const RackManagement = () => {
                         >
                             <ReloadOutlined className="mr-2 h-4 w-4" />
                             {t("btn.reload")}
-                        </Button>
-                        <Button size="sm" onClick={() => setIsOpen(true)}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            {t("btn.create_new")}
                         </Button>
                     </div>
                 </div>

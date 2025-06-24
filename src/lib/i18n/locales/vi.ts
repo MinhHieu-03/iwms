@@ -424,6 +424,7 @@ export const vi: Record<TranslationKey, string> = {
   'common.not_assigned': 'Chưa được gán',
   'common.column': 'Cột',
   'common.row': 'Hàng',
+  'btn.refresh': 'Tải lại',
     // Area Management
   'area.management': 'Quản lý khu vực',
   'area.create': 'Tạo khu vực mới',
