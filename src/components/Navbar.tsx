@@ -34,6 +34,10 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { logout } from "@/store/authSlice";
 import { SupportedLanguages, TranslationKey } from "@/lib/i18n/translations";
 
+import { createRoute, createLangKey, routeToLangKey } from "@/lib/utils"
+import { route as mission_setting_route } from "@/components/mission_setting/const"
+import { route as mission_template_route } from "@/components/mission_setting/mission_template/const"
+
 type NavSection = {
   title: string;
   items: NavItem[];
@@ -123,13 +127,13 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           ],
         },
         {
-          path: "/mission-settings",
-          name: "mission_settings" as TranslationKey,
+          path: createRoute(mission_setting_route),
+          name: createLangKey(mission_setting_route) as TranslationKey,
           icon: <Bot className="w-5 h-5" />,
           children: [
             {
-              path: "/mission-settings/template",
-              name: "mission_setting_template" as TranslationKey,
+              path: createRoute(mission_template_route),
+              name: createLangKey(mission_template_route) as TranslationKey,
               icon: <FileText className="w-4 h-4" />,
             },
             {
@@ -355,7 +359,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
                   : t("warehouse_settings")
                 : location.pathname.startsWith("/team-settings")
                 ? t("team_management")
-                : t(location.pathname as TranslationKey)}
+                : t(routeToLangKey(location.pathname) as TranslationKey)}
             </h1>
           </div>
 

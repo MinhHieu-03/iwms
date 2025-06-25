@@ -1,24 +1,48 @@
 import { ColumnsType } from "antd/es/table";
 import { useTranslation } from "react-i18next";
+import { route as route_parent } from "../const"
+import { createLangKey } from "@/lib/utils"
 
-export const lang_key = "warehouses_management";
+export const route = [...route_parent, "template"];
+export const lang_key = createLangKey(route);
 export const title = "Quản lý kho";
-export interface DataType {
-  _id?: string;
-  createdAt: string;
+
+export interface TaskData {
+  id: string;
+  name: string;
+  device: string;
+  param: any;
+}
+
+export interface MissionTemplate {
+  id: string;
   name: string;
   description: string;
-  [key: string]: unknown; // Add index signature for compatibility
+  tasks: TaskData[];
+  createAt: string;
+}
+
+export interface DataType extends Omit<MissionTemplate, "tasks"> {
+  task_num: number;
+}
+
+export const missionTemplateGenForm = (data: MissionTemplate) => {
+  const form: DataType = {
+    ...data,
+    task_num: data.tasks.length
+  }
+  return form;
 }
 
 export const domain = {
-  list: "warehouse/list",
-  create: "warehouse",
-  update: "warehouse",
+  list: "mission_template/list",
+  create: "mission_template",
+  update: "mission_template",
   upload: "upload",
   download: "download",
-  remove: "warehouse",
+  remove: "mission_template",
 };
+
 export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
   return [
     {
@@ -30,35 +54,13 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
       title: t(`${lang_key}.description`),
     },
     {
-      dataIndex: "createdAt",
-      title: t(`${lang_key}.createdAt`),
+      dataIndex: "createAt",
+      title: t(`${lang_key}.createAt`),
       render: (value: string) => new Date(value).toLocaleString(),
     },
-  ];
-};
-
-export const renderCreateForm = (dataRole: unknown, dataList: unknown) => {
-  return [
     {
-      label: "Name",
-      name: "name",
-    },
-    {
-      label: "Description",
-      name: "description",
-    },
-  ];
-};
-
-export const renderEditForm = (dataRole: unknown) => {
-  return [
-    {
-      label: "Name",
-      name: "name",
-    },
-    {
-      label: "Description", 
-      name: "description",
+      dataIndex: "task_num",
+      title: t(`${lang_key}.task_num`),
     },
   ];
 };

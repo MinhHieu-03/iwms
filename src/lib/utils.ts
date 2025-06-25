@@ -2,6 +2,18 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+export const createRoute = (routes: string[]) => {
+  return routes.map(r => `/${r}`).join("");
+}
+
+export const createLangKey = (routes: string[]) => {
+  return routes.join(".");
+}
+
+export const routeToLangKey = (route: string) => {
+  return route.replace(/^\//, "").split("/").join(".");
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

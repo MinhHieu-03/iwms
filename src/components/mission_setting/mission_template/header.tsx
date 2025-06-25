@@ -1,99 +1,51 @@
-import type { UploadProps } from "antd";
 import { useTranslation } from "react-i18next";
-import apiClient from "@/lib/axios";
+import { Search, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-const Header = ({
-  setIsOpen,
-  requestDataList,
-  handleReload,
-  selectedRowKeys = [],
-  onDelete,
+interface HeaderProps {
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({
+  searchQuery,
+  setSearchQuery
 }) => {
   const { t } = useTranslation();
-  const uploadProps: UploadProps = {
-    name: "file",
-    accept: ".xlsx,.xls", // Only allow Excel files
-    fileList: [],
-    beforeUpload: (file) => {
-      const formData = new FormData();
-      formData.append("file", file);
-      apiClient
-        .upload(`${upload}`, formData)
-        .then(() => {
-          requestDataList();
-          message.success("File uploaded successfully!");
-        })
-        .catch((err) => {
-          console.error("Upload error:", err);
-          message.error("File upload failed.");
-        });
+  const navigate = useNavigate();
 
-      return false;
-    },
-  };
-
-  const handleDownload = async () => {
-    try {
-      const response = await apiClient.get(`${download}`, {
-        responseType: "blob", // Important for binary files÷ßß
-      });
-
-      // Create a Blob URL
-      const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
-
-      // Create a temporary link element
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.setAttribute("download", "sku.xlsx"); // Replace with your desired file name
-      document.body.appendChild(link);
-
-      // Trigger the download
-      link.click();
-
-      // Cleanup
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(blobUrl);
-
-      message.success("File downloaded successfully!");
-    } catch (error) {
-      message.error("File download failed.");
-      console.error("Download error:", error);
-    }
-  };
   return (
-    <CardHeader>
-      <div
-        className="flex items-center justify-between"
-        style={{ padding: "10px 0" }}
-      >
-        <CardTitle>{t(lang_key)}</CardTitle>
-        <div className="flex items-center">
+    <div>
+    <Card className="p-4">
+      <div className="flex flex-col sm:flex-row gap-4 justify-between">
+        <div className="relative flex-1">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search device"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-8"
+          />
+        </div>
+        <div className="flex gap-2">
           <>
-            <Button onClick={() => setIsOpen(true)} variant="default">
+            <Button
+              onClick={() => navigate(`/mission-setting/template/new`)}
+              className="h-10 bg-warehouse-primary hover:bg-warehouse-primary/90"
+            >
               <Plus className="mr-2 h-4 w-4" />
               {t("btn.create_new")}
-            </Button>
-            {selectedRowKeys.length > 0 && (
-              <Button onClick={onDelete} variant="destructive" className="ml-2">
-                <DeleteOutlined className="mr-2" />
-                {t("btn.delete")} ({selectedRowKeys.length})
-              </Button>
-            )}
-            {/* <Upload {...uploadProps}>
-                <Button className="ml-2" variant="outline">
-                  <UploadOutlined />
-                  {t("btn.import")}
-                </Button>
-              </Upload> */}
-            {/* <Button className="ml-2" onClick={handleDownload} variant="outline"> */}
-            <Button className="ml-2" onClick={handleReload} variant="outline">
-              <ReloadOutlined />
-              {t("btn.reload")}
             </Button>
           </>
         </div>
       </div>
-    </CardHeader>
+    </Card>
+    </div>
   );
 };
+
+export default Header;

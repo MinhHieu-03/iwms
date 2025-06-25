@@ -49,7 +49,7 @@ function getNumberEnvVariable(key: string, defaultValue: number = 0): number {
 const config: EnvConfig = {
   // API
   API_BASE_URL: getEnvVariable('API_BASE_URL', 'https://iwms-api.rostek.space'),
-  WCS_BASE_URL: getEnvVariable('WCS_BASE_URL', 'http://127.0.0.1:3142'),
+  WCS_BASE_URL: getEnvVariable('WCS_BASE_URL', 'http://35.184.194.168:3142'),
   
   // Application
   APP_TITLE: getEnvVariable('APP_TITLE', 'IWMS Dashboard'),
