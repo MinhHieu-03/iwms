@@ -1,6 +1,6 @@
 import { ReloadOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
-import { message, Table, Modal } from "antd";
+import { message, Table, Modal, Drawer } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import BasePagination from "@/components/ui/antd-pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import apiClient from "@/lib/axios";
+import Detail from "./update";
 
 import { mission_templates } from "@/data/missionData";
 import {
@@ -27,6 +28,7 @@ const App = () => {
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [showDetail, setShowDetail] = useState("");
   const [pageInfo, setPageInfo] = useState({
     page: 1,
     perPage: 10,
@@ -90,7 +92,8 @@ const App = () => {
             onRow={(record, rowIndex) => {
               return {
                 onClick: (e) => {
-                  navigate(`/mission-setting/template/${record.id}`);
+                  // navigate(`/mission-setting/template/${record.id}`);
+                  setShowDetail(record.id);
                 },
               };
             }}
@@ -103,6 +106,15 @@ const App = () => {
               setPageInfo({ page, perPage })
             }
           />
+          <Drawer 
+            title={t("mission_template.create_new_template")}
+            height={'94vh'}
+            placement="bottom"
+            onClose={() => setShowDetail("")}
+            open={!!showDetail}
+            >
+              <Detail />
+          </Drawer>
         </CardContent>
       </Card>
     </div>

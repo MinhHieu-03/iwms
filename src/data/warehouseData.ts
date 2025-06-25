@@ -1,3 +1,5 @@
+import { Node, Edge, MarkerType } from '@xyflow/react';
+
 export interface Warehouse {
   id: string;
   name: string;
@@ -499,99 +501,48 @@ export const masterData: MasterDataItem[] = Array.from({ length: 100 }, (_, i) =
 });
 
 // ReactFlow node and edge data for Storage Hierarchy Visualization
-import { Node, Edge, MarkerType } from '@xyflow/react';
-
 export const storageHierarchyNodes: Node[] = [
   {
     id: 'plastic-bin',
-    type: 'default',
+    type: 'customStorage',
     data: { label: 'Plastic Bin' },
     position: { x: 400, y: 50 },
-    // style: { 
-    //   background: '#e3f2fd', 
-    //   border: '2px solid #1976d2',
-    //   borderRadius: '12px',
-    //   padding: '10px',
-    //   minWidth: '120px'
-    // }
   },
   {
     id: 'carton-1',
-    type: 'default', 
+    type: 'customStorage', 
     data: { label: 'Carton' },
     position: { x: 200, y: 200 },
-    style: { 
-      background: '#f3e5f5', 
-      border: '2px solid #7b1fa2',
-      borderRadius: '12px',
-      padding: '10px',
-      minWidth: '100px'
-    }
   },
   {
     id: 'box-1',
-    type: 'default',
+    type: 'customStorage',
     data: { label: 'Box' },
     position: { x: 400, y: 200 },
-    style: { 
-      background: '#e8f5e8', 
-      border: '2px solid #388e3c',
-      borderRadius: '12px',
-      padding: '10px',
-      minWidth: '100px'
-    }
   },
   {
     id: 'kit-1',
-    type: 'default',
+    type: 'customStorage',
     data: { label: 'Kit' },
     position: { x: 600, y: 200 },
-    style: { 
-      background: '#fff3e0', 
-      border: '2px solid #f57c00',
-      borderRadius: '12px',
-      padding: '10px',
-      minWidth: '100px'
-    }
   },
   {
     id: 'box-2',
-    type: 'default',
+    type: 'customStorage',
     data: { label: 'Box' },
     position: { x: 150, y: 350 },
-    style: { 
-      background: '#e8f5e8', 
-      border: '2px solid #388e3c',
-      borderRadius: '12px',
-      padding: '10px',
-      minWidth: '100px'
-    }
   },
   {
     id: 'kit-2',
-    type: 'default',
+    type: 'customStorage',
     data: { label: 'Kit' },
     position: { x: 250, y: 350 },
-    style: { 
-      background: '#fff3e0', 
-      border: '2px solid #f57c00',
-      borderRadius: '12px',
-      padding: '10px',
-      minWidth: '100px'
-    }
   },
   {
     id: 'kit-3',
-    type: 'default',
+    type: 'customStorage',
     data: { label: 'Kit' },
     position: { x: 400, y: 350 },
-    style: { 
-      background: '#fff3e0', 
-      border: '2px solid #f57c00',
-      borderRadius: '12px',
-      padding: '10px',
-      minWidth: '100px'
-    }
   }
 ];
 
@@ -599,14 +550,16 @@ export const storageHierarchyEdges: Edge[] = [
   {
     id: 'e-plastic-carton',
     source: 'plastic-bin',
+    sourceHandle: 'output-1',
     target: 'carton-1',
     animated: true,
     style: { stroke: '#1976d2', strokeWidth: 2 },
-    // markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
   },
   {
     id: 'e-plastic-box',
     source: 'plastic-bin',
+    sourceHandle: 'output-2',
     target: 'box-1',
     animated: true,
     style: { stroke: '#1976d2', strokeWidth: 2 },
@@ -615,6 +568,7 @@ export const storageHierarchyEdges: Edge[] = [
   {
     id: 'e-plastic-kit',
     source: 'plastic-bin',
+    sourceHandle: 'output-3',
     target: 'kit-1',
     animated: true,
     style: { stroke: '#1976d2', strokeWidth: 2 },
@@ -623,6 +577,7 @@ export const storageHierarchyEdges: Edge[] = [
   {
     id: 'e-carton-box',
     source: 'carton-1',
+    sourceHandle: 'output-1',
     target: 'box-2',
     animated: true,
     style: { stroke: '#7b1fa2', strokeWidth: 2 },
@@ -631,6 +586,7 @@ export const storageHierarchyEdges: Edge[] = [
   {
     id: 'e-carton-kit',
     source: 'carton-1',
+    sourceHandle: 'output-2',
     target: 'kit-2',
     animated: true,
     style: { stroke: '#7b1fa2', strokeWidth: 2 },
@@ -639,6 +595,7 @@ export const storageHierarchyEdges: Edge[] = [
   {
     id: 'e-box-kit',
     source: 'box-1',
+    sourceHandle: 'output-1',
     target: 'kit-3',
     animated: true,
     style: { stroke: '#388e3c', strokeWidth: 2 },

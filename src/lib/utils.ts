@@ -11,6 +11,7 @@ export const createLangKey = (routes: string[]) => {
 }
 
 export const routeToLangKey = (route: string) => {
+  console.log("routeToLangKey", route);
   return route.replace(/^\//, "").split("/").join(".");
 }
 

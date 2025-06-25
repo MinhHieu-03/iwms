@@ -17,5 +17,7 @@ export const vn: Record<TranslationKey, string> = {
     "/user-settings": "Cài Đặt Người Dùng",
     "/system-settings": "Cài Đặt Hệ Thống",
     "/notifications": "Thông Báo",
+    '/mission-setting': 'Cài đặt nhiệm vụ',
+    "/mission-setting/template": "Mẫu Nhiệm Vụ",
     "/help": "Trung Tâm Trợ Giúp",
 }

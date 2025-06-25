@@ -17,5 +17,7 @@ export const en: Record<TranslationKey, string> = {
     "/user-settings": "User Settings",
     "/system-settings": "System Settings.",
     "/notifications": "Notifications",
+    '/mission-setting': 'Mission Settings',
+    "/mission-setting/template": "Mission Template",
     "/help": "Help Center",
 }
