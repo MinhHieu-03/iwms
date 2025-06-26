@@ -7,15 +7,38 @@ export const title = "Quản lý nhập kho";
 export interface DataType {
   _id?: string;
   createdAt: string;
+  pic: string;
   sku: string;
-  quantity: number;
-  storeMethod: "Bin" | "Carton" | "Kit";
-  packingMethod: "Carton" | "Kit";
-  bin_code: string;
-  supplier: string;
-  invoice_code: string;
-  status: "new" | "pending" | "done";
-  note: string;
+  origin: string;
+  product_name: string;
+  destination: string;
+  status: "wait_fill" | "new" | "pending" | "done";
+  location: string;
+  inventory: {
+    _id: string;
+    sku: string;
+    product_name: string;
+    locationId: string;
+    locationCode: string;
+    store: Array<{
+      key: string;
+      qty: number;
+    }>;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  };
+  updatedAt: string;
+  __v: number;
+  // Legacy fields for backwards compatibility
+  quantity?: number;
+  storeMethod?: "Bin" | "Carton" | "Kit";
+  packingMethod?: "Carton" | "Kit";
+  bin_code?: string;
+  supplier?: string;
+  invoice_code?: string;
+  note?: string;
   [key: string]: unknown; // Add index signature for compatibility
 }
 
@@ -71,6 +94,8 @@ const getStatusColor = (status: string) => {
       return "orange";
     case "done":
       return "green";
+    case "wait_fill":
+      return "yellow";
     default:
       return "default";
   }
@@ -79,31 +104,48 @@ const getStatusColor = (status: string) => {
 export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
   return [
     {
+      dataIndex: "pic",
+      title: t(`${lang_key}.pic`),
+      width: 100,
+    },
+    {
       dataIndex: "sku",
       title: t(`${lang_key}.sku`),
       width: 120,
     },
     {
-      dataIndex: "quantity",
-      title: t(`${lang_key}.quantity`),
+      dataIndex: "product_name",
+      title: t(`${lang_key}.product_name`),
+      width: 150,
+    },
+    {
+      dataIndex: "origin",
+      title: t(`${lang_key}.origin`),
       width: 100,
     },
     {
-      dataIndex: "storeMethod",
-      title: t(`${lang_key}.store_method`),
-      width: 120,
-      render: (value: string) => <Tag color="blue">{value?.toLowerCase()}</Tag>,
+      dataIndex: "destination",
+      title: t(`${lang_key}.destination`),
+      width: 150,
     },
+    // {
+    //   dataIndex: ["inventory", "locationCode"],
+    //   title: t(`${lang_key}.location_code`),
+    //   width: 120,
+    // },
     {
-      dataIndex: "packingMethod",
-      title: t(`${lang_key}.packing_method`),
-      width: 120,
-      render: (value: string) => <Tag color="purple">{value?.toLowerCase()}</Tag>,
-    },
-    {
-      dataIndex: "bin_code",
-      title: t(`${lang_key}.bin_code`),
-      width: 120,
+      dataIndex: ["inventory", "store"],
+      title: t(`${lang_key}.store_info`),
+      width: 200,
+      render: (store: Array<{ key: string; qty: number }>) => (
+        <div>
+          {store?.map((item, index) => (
+            <Tag key={index} color="blue">
+              {item.key}: {item.qty}
+            </Tag>
+          ))}
+        </div>
+      ),
     },
     {
       dataIndex: "status",
@@ -114,14 +156,14 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
       ),
     },
     {
-      dataIndex: "note",
-      title: t(`${lang_key}.note`),
-      width: 200,
-      ellipsis: true,
-    },
-    {
       dataIndex: "createdAt",
       title: t(`${lang_key}.created_at`),
+      width: 150,
+      render: (value: string) => new Date(value).toLocaleString(),
+    },
+    {
+      dataIndex: "updatedAt",
+      title: t(`${lang_key}.updated_at`),
       width: 150,
       render: (value: string) => new Date(value).toLocaleString(),
     },

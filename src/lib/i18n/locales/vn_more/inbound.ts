@@ -6,6 +6,7 @@ export const vi: Record<TranslationKey, string> = {
   'inbound.table': 'Bảng Nhập Kho',
   'inbound.table.title': 'Quản Lý Nhập Kho',
   'inbound.create': 'Tạo Đơn Nhập kho',
+  'inbound.store_info': 'Lưu kho',
   'inbound.edit': 'Chỉnh Sửa Nhập Kho',
   'inbound.detail_title': 'Chi Tiết Nhập Kho',
   'inbound.id': 'Mã ID',

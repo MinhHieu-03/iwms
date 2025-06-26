@@ -7,6 +7,7 @@ export type TranslationKey =
   | 'inbound.edit'
   | 'inbound.detail_title'
   | 'inbound.id'
+  | 'inbound.store_info'
   | 'inbound.inventory_title'
   | 'inbound.inventory_id'
   | 'inbound.inventory_sku'

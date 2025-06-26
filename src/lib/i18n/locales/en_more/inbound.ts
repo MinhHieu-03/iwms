@@ -6,6 +6,7 @@ export const en: Record<TranslationKey, string> = {
   'inbound.table': 'Inbound Table',
   'inbound.table.title': 'Inbound Management',
   'inbound.create': 'Create Inbound',
+  'inbound.store_info': 'Store info',
   'inbound.edit': 'Edit Inbound',
   'inbound.detail_title': 'Inbound Details',
   'inbound.id': 'ID',

@@ -212,7 +212,7 @@ const InboundManagement = () => {
         />
       </CardContent>
       <ModalAdd
-        title={t("inbound_management.create_inbound")}
+        title={t("inbound.create")}
         itemsRender={renderCreateForm(dataRole, dataList, t)}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -307,7 +307,7 @@ const Header = ({
               {t("btn.delete")} ({selectedRowKeys.length})
             </Button>
           )}
-          <Upload {...uploadProps}>
+          {/* <Upload {...uploadProps}>
             <Button className="ml-2" variant="outline">
               <UploadOutlined />
               {t("btn.import")}
@@ -315,7 +315,7 @@ const Header = ({
           </Upload>
           <Button className="ml-2" onClick={handleDownload} variant="outline">
             {t("btn.export")}
-          </Button>
+          </Button> */}
           <Button className="ml-2" onClick={handleReload} variant="outline">
             <ReloadOutlined />
             {t("btn.reload")}

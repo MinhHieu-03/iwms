@@ -1,7 +1,7 @@
 import { RenderForm, TypeRenderForm } from "@/lib/render-form";
 import { Button, Form, Input, InputNumber, Modal, Select, Drawer } from "antd";
 import apiClient from "@/lib/axios";
-import { keyBy } from "lodash";
+import { keyBy, uniq } from "lodash";
 
 import { useTranslation } from "react-i18next";
 
@@ -58,6 +58,9 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
   const [form] = Form.useForm();
   const [masterData, setMasterData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [storageData, setStorageData] = useState<string[]>([]);
+  const [storeUnits, setStoreUnits] = useState<string[]>([]);
+  console.log("storageData__", storageData);
 
   const sku = Form.useWatch("sku", form);
 
@@ -84,16 +87,35 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
     fetchMasterData();
   }, []);
 
+  const fetchStorageData = async () => {
+    try {
+      const { data } = await apiClient.get("/storage-model");
+      const dataNodes = data?.metaData?.[0]?.nodes || [];
+      const allData = dataNodes.map((i) => i?.data?.label) || [];
+      setStorageData(uniq(allData));
+      setStoreUnits(data?.metaData?.[0]?.storage_unit || []);
+    } catch (error) {
+      console.error("Error fetching storage data:", error);
+    }
+  };
+
   useEffect(() => {
     if (sku && masterData) {
       const item = masterData[sku];
       if (item) {
+        if (item.new_pk_style == 2) {
+          form.setFieldsValue({
+            sku: item.material_no,
+            storeMethod: "Carton",
+            packingMethod: "Bag",
+            name: item.material_nm,
+            bin_code: item.material_no,
+          });
+        }
         console.log("Item found in master data:", item);
       }
     }
   }, [sku, masterData]);
-
-      
 
   useEffect(() => {
     if (selectedItem) {
@@ -104,17 +126,32 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
     }
   }, [selectedItem, form]);
 
-  const handleSubmit = (values) => {
-    console.log("Form submitted:", values);
-    console.log("Master data available:", masterData);
-    // Handle form submission here
-    // You can now use the masterData along with form values
-    const submissionData = {
-      ...values,
-      masterData: masterData,
-      timestamp: new Date().toISOString(),
-    };
-    console.log("Complete submission data:", submissionData);
+  useEffect(() => {
+    fetchStorageData();
+  }, []);
+
+  const handleSubmit = async () => {
+    try {
+      const values = form.getFieldsValue();
+      console.log("Form submitted:", values);
+      console.log("Master data available:", masterData);
+
+      const body = {
+        product_name: values.name,
+        sku: values.sku,
+        store: [
+          { key: values.storeMethod, qty: 1 },
+          { key: values.packingMethod, qty: values.quantity },
+        ],
+      };
+      await apiClient.post("/inbound", body);
+      form.resetFields();
+      // Handle form submission here
+      console.log("Form_values:", body);
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      return;
+    }
   };
 
   const refAction = useRef(null);
@@ -182,31 +219,35 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
           onFinish={handleSubmit}
           className="bg-white p-6 rounded-lg shadow-sm"
         >
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <Form.Item
-              label="SKU"
+              label="Mã vật tư"
               name="sku"
               rules={[{ required: true, message: "Please input SKU!" }]}
             >
               <Input placeholder="Enter SKU" />
             </Form.Item>
+            <Form.Item
+              label="Tên vật tư"
+              name="name"
+              rules={[{ required: true, message: "Please input SKU!" }]}
+            >
+              <Input placeholder="Enter Name" />
+            </Form.Item>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <Form.Item
-              label="Store Method"
+              label="Phương pháp lưu trữ"
               name="storeMethod"
               rules={[
                 { required: true, message: "Please select store method!" },
               ]}
             >
               <Select placeholder="Select store method" loading={loading}>
-                {masterData?.storeMethods?.map((method) => (
-                  <Select.Option
-                    key={method.id || method.value}
-                    value={method.value || method.name}
-                  >
-                    {method.name || method.label}
+                {storeUnits?.map((method) => (
+                  <Select.Option key={method} value={method}>
+                    {method}
                   </Select.Option>
                 )) || (
                   <>
@@ -218,19 +259,16 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
             </Form.Item>
 
             <Form.Item
-              label="Packing Method"
+              label="Phương pháp đóng gói"
               name="packingMethod"
               rules={[
                 { required: true, message: "Please select packing method!" },
               ]}
             >
               <Select placeholder="Select packing method" loading={loading}>
-                {masterData?.packingMethods?.map((method) => (
-                  <Select.Option
-                    key={method.id || method.value}
-                    value={method.value || method.name}
-                  >
-                    {method.name || method.label}
+                {storageData?.map((method) => (
+                  <Select.Option key={method} value={method}>
+                    {method}
                   </Select.Option>
                 )) || (
                   <>
@@ -243,22 +281,11 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
             </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <Form.Item
-              label="Quantity"
-              name="quantity"
-              rules={[
-                { required: true, message: "Please input quantity!" },
-                {
-                  type: "number",
-                  min: 1,
-                  message: "Quantity must be greater than 0!",
-                },
-              ]}
-            >
-              <InputNumber placeholder="Enter quantity" className="w-full" />
+            <Form.Item label="Mã thùng" name="bin_code">
+              <Input placeholder="Enter Bin code" className="w-full" />
             </Form.Item>
             <Form.Item
-              label="Quantity"
+              label="Số lượng"
               name="quantity"
               rules={[
                 { required: true, message: "Please input quantity!" },
@@ -304,10 +331,16 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
               }}
             />
             <div className="flex justify-center mt-4 gap-3">
-              <Button onClick={() => setCurrent(0)} type="default">
+              <Button
+                onClick={() => {
+                  form.resetFields();
+                  handleClose();
+                }}
+                type="default"
+              >
                 Cancel
               </Button>
-              <Button onClick={() => handleClose()} type="primary">
+              <Button onClick={() => handleSubmit()} type="primary">
                 Next
               </Button>
             </div>
