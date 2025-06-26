@@ -1,0 +1,26 @@
+name: iwms-api CI
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+
+  build:
+    name: ssh
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing nodejs CI commands using key
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: 35.184.194.168
+        username: rostek
+        key: ${{ secrets.PRIVATE_KEY }}
+        port: 22
+        script: |
+          cd /home/rostek/iwms/rostek-iwms-47
+          git pull
+          pwd
+          ./run.sh
+          echo "done2"
