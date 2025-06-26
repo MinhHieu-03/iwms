@@ -306,7 +306,7 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
         <div className=" p-4 bg-white rounded-lg shadow-sm">
           <div className="text-center">
             <p className="text-lg text-gray-600 font-semibold mb-2">
-              Next Action
+              {sku ? "Để nguyên thùng carton": "Next Action"}
             </p>
             <Input
               ref={refAction}
