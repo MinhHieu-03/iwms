@@ -1,4 +1,8 @@
-import { ReloadOutlined, DeleteOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  ReloadOutlined,
+  DeleteOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import type { UploadProps } from "antd";
 import { message, Table, Modal, Upload } from "antd";
 import { ColumnsType } from "antd/es/table";
@@ -63,7 +67,10 @@ const InboundManagement = () => {
         limit: pageInfo.perPage,
         page: pageInfo.page,
       };
-      const { data } = await apiClient.post(list, params);
+      const { data } = await apiClient.post(list, {
+        ...params,
+        populate: ["inventory"],
+      });
       if (data) {
         setDataList(data.metaData);
         setTotal(data.total);
@@ -177,7 +184,7 @@ const InboundManagement = () => {
           columns={columns}
           dataSource={dataList}
           pagination={false}
-          scroll={{ x: 'calc(100vw - 640px)' }}
+          scroll={{ x: "calc(100vw - 640px)" }}
           onRow={(record, rowIndex) => {
             return {
               onClick: (e) => {
@@ -206,14 +213,14 @@ const InboundManagement = () => {
       </CardContent>
       <ModalAdd
         title={t("inbound_management.create_inbound")}
-        itemsRender={renderCreateForm(dataRole, dataList)}
+        itemsRender={renderCreateForm(dataRole, dataList, t)}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         _handleFinish={_handleFinish}
       />
       <ModalEdit
         title={t("inbound_management.edit_inbound")}
-        itemsRender={renderEditForm(dataRole)}
+        itemsRender={renderEditForm(dataRole, t)}
         formEdit={formEdit}
         setFormEdit={setFormEdit}
         _handleFinish={_handleUpdateFinish}
@@ -230,7 +237,7 @@ const Header = ({
   onDelete,
 }) => {
   const { t } = useTranslation();
-  
+
   const uploadProps: UploadProps = {
     name: "file",
     accept: ".xlsx,.xls", // Only allow Excel files
@@ -242,11 +249,11 @@ const Header = ({
         .upload(`${upload}`, formData)
         .then(() => {
           requestDataList();
-          message.success("File uploaded successfully!");
+          message.success(t("common.upload_success"));
         })
         .catch((err) => {
           console.error("Upload error:", err);
-          message.error("File upload failed.");
+          message.error(t("common.upload_error"));
         });
 
       return false;
@@ -275,9 +282,9 @@ const Header = ({
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
 
-      message.success("File downloaded successfully!");
+      message.success(t("common.download_success"));
     } catch (error) {
-      message.error("File download failed.");
+      message.error(t("common.download_error"));
       console.error("Download error:", error);
     }
   };

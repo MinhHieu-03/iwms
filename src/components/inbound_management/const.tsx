@@ -1,7 +1,7 @@
 import { ColumnsType } from "antd/es/table";
 import { Tag } from "antd";
 
-export const lang_key = "inbound_management";
+export const lang_key = "inbound";
 export const title = "Quản lý nhập kho";
 
 export interface DataType {
@@ -45,6 +45,24 @@ export const STATUS_OPTIONS = [
   { value: "done", label: "Done" },
 ];
 
+// Updated functions to support translation
+export const getStoreMethodOptions = (t: (key: string) => string) => [
+  { value: "Bin", label: t(`${lang_key}.store_method_bin`) },
+  { value: "Carton", label: t(`${lang_key}.store_method_carton`) },
+  { value: "Kit", label: t(`${lang_key}.store_method_kit`) },
+];
+
+export const getPackingMethodOptions = (t: (key: string) => string) => [
+  { value: "Carton", label: t(`${lang_key}.packing_method_carton`) },
+  { value: "Kit", label: t(`${lang_key}.packing_method_kit`) },
+];
+
+export const getStatusOptions = (t: (key: string) => string) => [
+  { value: "new", label: t(`${lang_key}.status_new`) },
+  { value: "pending", label: t(`${lang_key}.status_pending`) },
+  { value: "done", label: t(`${lang_key}.status_done`) },
+];
+
 const getStatusColor = (status: string) => {
   switch (status) {
     case "new":
@@ -74,13 +92,13 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
       dataIndex: "storeMethod",
       title: t(`${lang_key}.store_method`),
       width: 120,
-      render: (value: string) => <Tag color="blue">{value}</Tag>,
+      render: (value: string) => <Tag color="blue">{value?.toLowerCase()}</Tag>,
     },
     {
       dataIndex: "packingMethod",
       title: t(`${lang_key}.packing_method`),
       width: 120,
-      render: (value: string) => <Tag color="purple">{value}</Tag>,
+      render: (value: string) => <Tag color="purple">{value?.toLowerCase()}</Tag>,
     },
     {
       dataIndex: "bin_code",
@@ -88,21 +106,11 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
       width: 120,
     },
     {
-      dataIndex: "supplier",
-      title: t(`${lang_key}.supplier`),
-      width: 150,
-    },
-    {
-      dataIndex: "invoice_code",
-      title: t(`${lang_key}.invoice_code`),
-      width: 120,
-    },
-    {
       dataIndex: "status",
       title: t(`${lang_key}.status`),
       width: 100,
       render: (value: string) => (
-        <Tag color={getStatusColor(value)}>{value.toUpperCase()}</Tag>
+        <Tag color={getStatusColor(value)}>{value}</Tag>
       ),
     },
     {
@@ -120,105 +128,105 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
   ];
 };
 
-export const renderCreateForm = (dataRole: unknown, dataList: unknown) => {
+export const renderCreateForm = (dataRole: unknown, dataList: unknown, t: (key: string) => string) => {
   return [
     {
-      label: "SKU",
+      label: t(`${lang_key}.sku`),
       name: "sku",
-      rules: [{ required: true, message: "Please input the SKU!" }],
+      rules: [{ required: true, message: t(`${lang_key}.validation.sku_required`) }],
     },
     {
-      label: "Quantity",
+      label: t(`${lang_key}.quantity`),
       name: "quantity",
       type: "number",
-      rules: [{ required: true, message: "Please input the quantity!" }],
+      rules: [{ required: true, message: t(`${lang_key}.validation.quantity_required`) }],
     },
     {
-      label: "Store Method",
+      label: t(`${lang_key}.store_method`),
       name: "storeMethod",
       type: "select",
-      items: STORE_METHOD_OPTIONS,
-      rules: [{ required: true, message: "Please select store method!" }],
+      items: getStoreMethodOptions(t),
+      rules: [{ required: true, message: t(`${lang_key}.validation.store_method_required`) }],
     },
     {
-      label: "Packing Method",
+      label: t(`${lang_key}.packing_method`),
       name: "packingMethod",
       type: "select",
-      items: PACKING_METHOD_OPTIONS,
-      rules: [{ required: true, message: "Please select packing method!" }],
+      items: getPackingMethodOptions(t),
+      rules: [{ required: true, message: t(`${lang_key}.validation.packing_method_required`) }],
     },
     {
-      label: "Bin Code",
+      label: t(`${lang_key}.bin_code`),
       name: "bin_code",
-      rules: [{ required: true, message: "Please input the bin code!" }],
+      rules: [{ required: true, message: t(`${lang_key}.validation.bin_code_required`) }],
     },
     {
-      label: "Supplier",
+      label: t(`${lang_key}.supplier`),
       name: "supplier",
-      rules: [{ required: true, message: "Please input the supplier!" }],
+      rules: [{ required: true, message: t(`${lang_key}.validation.supplier_required`) }],
     },
     {
-      label: "Invoice Code",
+      label: t(`${lang_key}.invoice_code`),
       name: "invoice_code",
-      rules: [{ required: true, message: "Please input the invoice code!" }],
+      rules: [{ required: true, message: t(`${lang_key}.validation.invoice_code_required`) }],
     },
     {
-      label: "Status",
+      label: t(`${lang_key}.status`),
       name: "status",
       type: "select",
-      items: STATUS_OPTIONS,
-      rules: [{ required: true, message: "Please select status!" }],
+      items: getStatusOptions(t),
+      rules: [{ required: true, message: t(`${lang_key}.validation.status_required`) }],
     },
     {
-      label: "Note",
+      label: t(`${lang_key}.note`),
       name: "note",
     },
   ];
 };
 
-export const renderEditForm = (dataRole: unknown) => {
+export const renderEditForm = (dataRole: unknown, t: (key: string) => string) => {
   return [
     {
-      label: "SKU",
+      label: t(`${lang_key}.sku`),
       name: "sku",
     },
     {
-      label: "Quantity",
+      label: t(`${lang_key}.quantity`),
       name: "quantity",
       type: "number",
     },
     {
-      label: "Store Method",
+      label: t(`${lang_key}.store_method`),
       name: "storeMethod",
       type: "select",
-      items: STORE_METHOD_OPTIONS,
+      items: getStoreMethodOptions(t),
     },
     {
-      label: "Packing Method",
+      label: t(`${lang_key}.packing_method`),
       name: "packingMethod",
       type: "select",
-      items: PACKING_METHOD_OPTIONS,
+      items: getPackingMethodOptions(t),
     },
     {
-      label: "Bin Code",
+      label: t(`${lang_key}.bin_code`),
       name: "bin_code",
     },
     {
-      label: "Supplier",
+      label: t(`${lang_key}.supplier`),
       name: "supplier",
     },
     {
-      label: "Invoice Code",
+      label: t(`${lang_key}.invoice_code`),
       name: "invoice_code",
     },
     {
-      label: "Status",
+      label: t(`${lang_key}.status`),
       name: "status",
       type: "select",
-      items: STATUS_OPTIONS,
+      items: getStatusOptions(t),
     },
     {
-      label: "Note",
+      label: t(`${lang_key}.note`),
       name: "note",
     },
   ];
