@@ -196,7 +196,8 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
         utterance.volume = 0.5;
         speechSynthesis.speak(utterance);
       }
-      handleClose();
+      // handleClose();
+      form.resetFields();
       return;
     } else if (value === "Cancel") {
       setCurrent(0);
