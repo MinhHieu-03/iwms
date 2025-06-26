@@ -23,4 +23,4 @@ jobs:
           git pull
           pwd
           ./run.sh
-          echo "done2"
+          echo "done3"
