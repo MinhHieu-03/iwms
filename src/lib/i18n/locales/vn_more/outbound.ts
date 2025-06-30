@@ -57,7 +57,7 @@ export const vi: Record<TranslationKey, string> = {
   'outbound.validation.status_required': 'Trạng thái là bắt buộc',
   
   // Storage/Location
-  'outbound.storage': 'Vị Trí Lưu Trữ',
+  'outbound.storage': 'Đơn vị lưu trữ',
   'outbound.storage.loading': 'Đang tải vị trí lưu trữ...',
   'outbound.placeholder.storage': 'Chọn đơn vị lưu trữ',
   

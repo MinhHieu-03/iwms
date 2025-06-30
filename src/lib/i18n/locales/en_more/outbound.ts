@@ -57,7 +57,7 @@ export const en: Record<TranslationKey, string> = {
   'outbound.validation.status_required': 'Status is required',
   
   // Storage/Location
-  'outbound.storage': 'Storage Location',
+  'outbound.storage': 'Storage Unit',
   'outbound.storage.loading': 'Loading storage locations...',
   'outbound.placeholder.storage': 'Select storage Unit',
   
