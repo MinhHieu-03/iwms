@@ -59,7 +59,7 @@ export const vi: Record<TranslationKey, string> = {
   // Storage/Location
   'outbound.storage': 'Vị Trí Lưu Trữ',
   'outbound.storage.loading': 'Đang tải vị trí lưu trữ...',
-  'outbound.placeholder.storage': 'Chọn vị trí lưu trữ',
+  'outbound.placeholder.storage': 'Chọn đơn vị lưu trữ',
   
   // Success/Error messages
   'outbound.message.create_success': 'Tạo Đơn Xuất Kho thành công',

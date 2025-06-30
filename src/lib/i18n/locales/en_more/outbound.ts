@@ -59,7 +59,7 @@ export const en: Record<TranslationKey, string> = {
   // Storage/Location
   'outbound.storage': 'Storage Location',
   'outbound.storage.loading': 'Loading storage locations...',
-  'outbound.placeholder.storage': 'Select storage location',
+  'outbound.placeholder.storage': 'Select storage Unit',
   
   // Success/Error messages
   'outbound.message.create_success': 'Outbound created successfully',
