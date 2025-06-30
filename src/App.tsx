@@ -32,7 +32,8 @@ import TemplateEdit from "./pages/TemplateEdit";
 import OrderDetails from "./pages/OrderDetails";
 import Login from "./pages/Login";
 import MissionsTemplates from "./components/missions/MissionsTemplates";
-import MissionTemplate from "./components/missions/MissionTemplate2";
+import MissionTemplate from "./components/mission_setting/mission_template";
+import EditMissionTemplate from "@/components/mission_setting/mission_template/update"
 import DeviceTemplate from "./components/device/DeviceTemplate";
 import DeviceList from "./components/device/DeviceList";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -41,6 +42,8 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import { Toaster } from "./components/ui/toaster";
 import "./App.css";
+import { createRoute } from "./lib/utils";
+import { route as mission_template_route } from "./components/mission_setting/mission_template/const";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -164,6 +167,18 @@ function App() {
                           path="/operator-interface/inbound"
                           element={<OperatorInbound />}
                         /> */}
+                          <Route
+                          path={createRoute([...mission_template_route, "new"])}
+                          element={<TemplateEdit />}
+                        />
+                        <Route
+                          path={createRoute([...mission_template_route, ":id"])}
+                          element={<EditMissionTemplate />}
+                        />
+                        <Route
+                          path={createRoute(mission_template_route)}
+                          element={<MissionTemplate />}
+                        />
                           <Route
                             path="/operator-interface/outbound"
                             element={<OperatorOutbound />}

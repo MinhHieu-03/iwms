@@ -15,4 +15,5 @@ export type TranslationKey =
     | '/user-settings'
     | '/system-settings'
     | '/notifications'
+    | '/mission-setting'
     | '/help'

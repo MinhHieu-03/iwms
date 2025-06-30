@@ -17,7 +17,7 @@ import {
   ChevronDown,
   ChevronRight,
   Smartphone,
-  FileText
+  FileText,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -33,6 +33,10 @@ import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { logout } from "@/store/authSlice";
 import { SupportedLanguages, TranslationKey } from "@/lib/i18n/translations";
+
+import { createRoute, createLangKey, routeToLangKey } from "@/lib/utils";
+import { route as mission_setting_route } from "@/components/mission_setting/const";
+import { route as mission_template_route } from "@/components/mission_setting/mission_template/const";
 
 type NavSection = {
   title: string;
@@ -123,26 +127,26 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           ],
         },
         {
-          path: "/mission-settings",
-          name: "mission_settings" as TranslationKey,
+          path: createRoute(mission_setting_route),
+          name: createRoute(mission_setting_route) as TranslationKey,
           icon: <Bot className="w-5 h-5" />,
           children: [
             {
-              path: "/mission-settings/template",
-              name: "mission_setting_template" as TranslationKey,
+              path: createRoute(mission_template_route),
+              name: createRoute(mission_template_route) as TranslationKey,
               icon: <FileText className="w-4 h-4" />,
             },
             {
               path: "/mission-settings/device",
-              name: "mission_setting_device" as TranslationKey,
+              name: "/mission-settings/device" as TranslationKey,
               icon: <Smartphone className="w-4 h-4" />,
             },
             {
               path: "/mission-settings/device-template",
-              name: "mission_setting_device_template" as TranslationKey,
+              name: "/mission-settings/device-template" as TranslationKey,
               icon: <FileText className="w-4 h-4" />,
-            }
-          ]
+            },
+          ],
         },
         {
           path: "/team-settings",
@@ -319,43 +323,9 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
         {/* Top Header */}
         <header className="bg-background shadow-sm h-16 flex items-center justify-between px-6 border-b border-border sticky top-0 z-40">
           <div className="flex items-center">
-            <div
-              className={`h-8 w-1 rounded-full mr-2 ${
-                location.pathname === "/"
-                  ? "bg-warehouse-primary"
-                  : location.pathname === "/inbound-outbound"
-                  ? "bg-warehouse-accent1"
-                  : location.pathname === "/layout"
-                  ? "bg-warehouse-secondary"
-                  : location.pathname === "/missions"
-                  ? "bg-warehouse-accent2"
-                  : location.pathname.startsWith("/team-settings")
-                  ? "bg-indigo-500"
-                  : location.pathname === "/user-settings"
-                  ? "bg-teal-500"
-                  : location.pathname === "/system-settings"
-                  ? "bg-purple-500"
-                  : location.pathname === "/notifications"
-                  ? "bg-amber-500"
-                  : location.pathname === "/operator-interface"
-                  ? "bg-cyan-500"
-                  : location.pathname === "/help"
-                  ? "bg-green-500"
-                  : location.pathname.startsWith("/warehouse-settings")
-                  ? "bg-orange-500"
-                  : "bg-warehouse-highlight"
-              }`}
-            ></div>
+            <div className={`h-8 w-1 rounded-full mr-2 bg-warehouse-primary`} />
             <h1 className="text-xl font-bold">
-              {location.pathname.startsWith("/warehouse-settings")
-                ? location.pathname === "/warehouse-settings/layout"
-                  ? "Cấu hình cấu trúc kho"
-                  : location.pathname === "/warehouse-settings/storage"
-                  ? "Cấu hình lưu trữ kho"
-                  : t("warehouse_settings")
-                : location.pathname.startsWith("/team-settings")
-                ? t("team_management")
-                : t(location.pathname as TranslationKey)}
+              {t(location.pathname as TranslationKey)}
             </h1>
           </div>
 

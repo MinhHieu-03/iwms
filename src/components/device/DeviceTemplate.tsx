@@ -49,25 +49,27 @@ const DeviceTemplate = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row gap-4 justify-between">
-        <div className="relative flex-grow">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder={t("search_device")}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-2 top-2.5"
-            >
-              <XCircle className="h-4 w-4 text-muted-foreground hover:text-primary" />
-            </button>
-          )}
+      <Card className="p-4">
+        <div className="flex flex-col sm:flex-row gap-4 justify-between">
+          <div className="relative flex-grow">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder={t("search_device")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-8"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2 top-2.5"
+              >
+                <XCircle className="h-4 w-4 text-muted-foreground hover:text-primary" />
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      </Card>
 
       {filtered_device_types.length === 0 ? (
         <Card className="p-8 flex flex-col items-center justify-center text-center">
