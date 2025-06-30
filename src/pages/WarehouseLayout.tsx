@@ -116,7 +116,7 @@ const WarehouseLayout = () => {
     <div className='space-y-6'>
       <Card>
         <CardHeader>
-          <CardTitle>{t('warehouse_layout.area_configuration')}</CardTitle>
+          <CardTitle>{t('common.warehouse')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs

@@ -490,7 +490,7 @@ export const vi: Record<TranslationKey, string> = {
   'rack.sort.status': 'Sắp xếp theo trạng thái',
   'rack.sort.warehouse': 'Sắp xếp theo kho hàng',
   // Master Data Management
-  'master_data': 'Master data',
+  'master_data': 'Dữ liệu vât tư',
   'master_data.material_no': 'Mã vật tư',
   'master_data.material_nm': 'Tên vật tư',
   'master_data.material_tp': 'Kiểu vật tư',
@@ -520,4 +520,17 @@ export const vi: Record<TranslationKey, string> = {
   'status.wait_fill': 'Chờ nhập kho',
   'status.wait_outbound': 'Chờ xuất kho',
   'status.configured': 'Đã cấu hình',
+  
+  // Warehouse Content Component
+  'sku_config': 'DS Vật tư chỉ định',
+  'sku_store': 'Vật tư thực tế',
+  'store_item': 'Mặt hàng thực tế',
+  
+  // Rack Grid Component
+  'configure_rack': 'Cấu hình kệ',
+  'positions': 'vị trí',
+  'rows': 'hàng',
+  'columns': 'cột',
+  'rack': 'Kệ',
+  'row_prefix': 'H',
 };

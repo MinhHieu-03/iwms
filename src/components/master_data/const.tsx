@@ -91,63 +91,63 @@ export const renderCreateForm = (dataRole: unknown, dataList: unknown) => {
       name: "new_pk_style",
       type: "number",
     },
-    {
-      label: "Cờ",
-      name: "flg",
-      type: "number",
-    },
-    {
-      label: "Ghi chú",
-      name: "comment",
-      type: "textarea",
-    },
-    {
-      label: "Người tạo",
-      name: "user_id",
-    },
+    // {
+    //   label: "Cờ",
+    //   name: "flg",
+    //   type: "number",
+    // },
+    // {
+    //   label: "Ghi chú",
+    //   name: "comment",
+    //   type: "textarea",
+    // },
+    // {
+    //   label: "Người tạo",
+    //   name: "user_id",
+    // },
   ];
 };
 
 export const renderEditForm = (dataRole: unknown) => {
   return [
     {
-      label: "Material No",
+      label: "Mã vật tư",
       name: "material_no",
       rules: [{ required: true, message: "master_data.validation.material_no_required" }],
     },
     {
-      label: "Material Name",
+      label: "Tên vật tư", 
       name: "material_nm", 
       rules: [{ required: true, message: "master_data.validation.material_nm_required" }],
     },
     {
-      label: "Material Type",
+      label: "Kiểu vật tư",
       name: "material_tp",
       rules: [{ required: true, message: "master_data.validation.material_tp_required" }],
     },
     {
-      label: "PK Style",
+      label: "Qui cách đóng gói",
       name: "pk_style",
       type: "number",
     },
     {
-      label: "New PK Style",
+      label: "Qui cách đóng gói mới",
       name: "new_pk_style",
       type: "number",
     },
-    {
-      label: "Flag",
-      name: "flg",
-      type: "number",
-    },
-    {
-      label: "Comment",
-      name: "comment",
-      type: "textarea",
-    },
-    {
-      label: "User ID",
-      name: "user_id",
-    },
+    // {
+    //   label: "Flag",
+    //   name: "flg",
+    //   type: "number",
+    // },
+    // {
+    //   label: "Comment",
+    //   name: "comment",
+    //   type: "textarea",
+    // },
+    // {
+    //   label: "User ID",
+    //   name: "user_id",
+    // },
   ];
 };

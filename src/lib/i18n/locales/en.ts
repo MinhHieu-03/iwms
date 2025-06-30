@@ -256,4 +256,17 @@ export const en: Record<TranslationKey, string> = {
   'status.wait_fill': 'Waiting to Fill',
   'status.wait_outbound': 'Waiting Outbound',
   'status.configured': 'Configured',
+  
+  // Warehouse Content Component
+  'sku_config': 'SKU Config',
+  'sku_store': 'SKU Store',
+  'store_item': 'Store Item',
+  
+  // Rack Grid Component
+  'configure_rack': 'Configure Rack',
+  'positions': 'positions',
+  'rows': 'rows',
+  'columns': 'columns',
+  'rack': 'Rack',
+  'row_prefix': 'R',
 };

@@ -141,9 +141,9 @@ const RackGrid: React.FC<{
         <CardHeader className='pb-3'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-2'>
-              <CardTitle className='text-lg'>Rack {rackId}</CardTitle>
+              <CardTitle className='text-lg'>{t('rack')} {rackId}</CardTitle>
               <div className='text-sm text-muted-foreground'>
-                ({racks.length} positions • {maxRow} rows × {maxCol} columns)
+                ({racks.length} {t('positions')} • {maxRow} {t('rows')} × {maxCol} {t('columns')})
               </div>
             </div>
             <div>
@@ -165,7 +165,7 @@ const RackGrid: React.FC<{
                   className='flex items-center gap-2'
                 >
                   <div className='text-xs font-medium text-muted-foreground w-8'>
-                    R{row}
+                    H{row}
                   </div>
                   <div className='flex gap-1'>
                     {Array.from({ length: maxCol }, (_, colIndex) => {
@@ -239,7 +239,8 @@ const RackGrid: React.FC<{
   };
 
 const Content = ({ rack }) => {
-  console.log('Rack_content:', rack);
+  const { t } = useTranslation();
+  
   return (
     <div className='w-80 p-0'>
       <div className='bg-warehouse-primary text-white px-3 py-2 text-sm font-medium rounded-md'>
@@ -248,7 +249,7 @@ const Content = ({ rack }) => {
       <div className='p-3 dark:bg-gray-800'>
         <div className='space-y-2 text-sm'>
           <div className='flex justify-between'>
-            <span>Status:</span>
+            <span>{t('common.status')}:</span>
             <Badge
               variant={
                 rack.status === 'occupied'
@@ -256,23 +257,23 @@ const Content = ({ rack }) => {
                   : 'secondary'
               }
             >
-              <span className='capitalize'>{rack.status.replace('_', ' ')}</span>
+              <span className='capitalize'>{t(`status.${rack.status}`) || rack.status.replace('_', ' ')}</span>
             </Badge>
           </div>
           {/* skus */}
           {rack?.skus?.length ? <div className='flex justify-between'>
-            <span>SKU config:</span>
+            <span>{t('sku_config')}:</span>
             <span>{rack.skus.join(', ')}</span>
           </div>: null}
           {rack?.inventory?.sku ? <div className='flex justify-between'>
-            <span>SKU store:</span>
+            <span>{t('sku_store')}:</span>
             <span>{rack?.inventory?.sku}</span>
           </div>: null}
-          {rack?.inventory?.store ? <p className="mt-5 font-semibold">Store Item: </p>: null}
+          {rack?.inventory?.store ? <p className="mt-5 font-semibold">{t('store_item')}: </p>: null}
           {
-            rack?.inventory?.store ? rack?.inventory?.store.map(({key, qty}) => {
+            rack?.inventory?.store ? rack?.inventory?.store.map(({key, qty}, index) => {
               return (
-                <div className='flex justify-between'>
+                <div key={index} className='flex justify-between'>
                   <span>{key}:</span>
                   <span>{qty}</span>
                 </div>

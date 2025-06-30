@@ -572,4 +572,17 @@ export type TranslationKey =
   | 'status.fill'
   | 'status.wait_fill'
   | 'status.wait_outbound'
-  | 'status.configured';
+  | 'status.configured'
+  
+  // Warehouse Content Component
+  | 'sku_config'
+  | 'sku_store'
+  | 'store_item'
+  
+  // Rack Grid Component
+  | 'configure_rack'
+  | 'positions'
+  | 'rows'
+  | 'columns'
+  | 'rack'
+  | 'row_prefix';
