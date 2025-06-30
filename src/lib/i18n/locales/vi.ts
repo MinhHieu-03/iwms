@@ -511,4 +511,13 @@ export const vi: Record<TranslationKey, string> = {
   'master_data.validation.material_no_required': 'Mã vật tư là bắt buộc',
   'master_data.validation.material_nm_required': 'Tên vật tư là bắt buộc',
   'master_data.validation.material_tp_required': 'Kiểu vật tư là bắt buộc',
+  
+  // Status translations for warehouse locations
+  'status.available': 'Trống',
+  'status.unavailable': 'Không có sẵn',
+  'status.disable': 'Vô hiệu hóa',
+  'status.fill': 'Đã có hàng',
+  'status.wait_fill': 'Chờ nhập kho',
+  'status.wait_outbound': 'Chờ xuất kho',
+  'status.configured': 'Đã cấu hình',
 };

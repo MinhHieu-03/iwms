@@ -15,8 +15,8 @@ i18n
       ja: { translation: en },
       ko: { translation: en },
     },
-    lng: localStorage.getItem('language') || 'en', // Default language
-    fallbackLng: 'en',
+    lng: localStorage.getItem('language') || 'vi', // Default language
+    fallbackLng: 'vi',
     interpolation: {
       escapeValue: false, // React already safes from XSS
     },

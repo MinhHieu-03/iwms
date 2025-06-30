@@ -401,9 +401,9 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
           </CardTitle>
 
           <div className='flex flex-wrap gap-2 text-xs'>
-            {Object.keys(STATUS_COLOR).map((status) => (<div className='flex items-center gap-1'>
+            {Object.keys(STATUS_COLOR).map((status) => (<div key={status} className='flex items-center gap-1'>
               <div className={`w-3 h-3 ${STATUS_COLOR[status]} rounded`}></div>
-              <span>{status}</span>
+              <span>{t(`status.${status}`)}</span>
             </div>))}
           </div>
         </div>

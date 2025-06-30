@@ -247,4 +247,13 @@ export const en: Record<TranslationKey, string> = {
   'master_data.validation.material_no_required': 'Material number is required',
   'master_data.validation.material_nm_required': 'Material name is required',
   'master_data.validation.material_tp_required': 'Material type is required',
+  
+  // Status translations for warehouse locations
+  'status.available': 'Available',
+  'status.unavailable': 'Unavailable',
+  'status.disable': 'Disabled',
+  'status.fill': 'Filled',
+  'status.wait_fill': 'Waiting to Fill',
+  'status.wait_outbound': 'Waiting Outbound',
+  'status.configured': 'Configured',
 };

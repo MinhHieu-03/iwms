@@ -564,3 +564,12 @@ export type TranslationKey =
   | 'btn.edit'
   | 'btn.cancel'
   | 'btn.save'
+  
+  // Status translations for warehouse locations
+  | 'status.available'
+  | 'status.unavailable'
+  | 'status.disable'
+  | 'status.fill'
+  | 'status.wait_fill'
+  | 'status.wait_outbound'
+  | 'status.configured';
