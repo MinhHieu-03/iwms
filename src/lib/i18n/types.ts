@@ -14,6 +14,7 @@ export type TranslationKey =
   | outbound_key
   
   // Storage Model Configuration
+  | 'btn.create'
   | 'storage_hierarchy'
   | 'storage_hierarchy_visualization'
   | 'storage_master_data'
@@ -478,6 +479,7 @@ export type TranslationKey =
   | 'inbound_management.edit_inbound'
   
   // Area Management
+  | 'warehouse.2d_view'
   | 'area.management'
   | 'area.create'
   | 'area.edit'

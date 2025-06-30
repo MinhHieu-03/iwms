@@ -1,6 +1,7 @@
 import { Form, InputNumber, Modal, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/lib/axios";
 import {uniq} from 'lodash';
 interface ModalAddProps {
@@ -35,43 +36,37 @@ const { Option } = Select;
 const ModalAdd = ({ isOpen, onClose, onFinish, loading }: ModalAddProps) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
-  const [masterData, setMasterData] = useState<MasterDataItem[]>([]);
-  const [storageData, setStorageData] = useState<string[]>([]);
-  const [loadingMasterData, setLoadingMasterData] = useState(false);
 
-  // Fetch master data for SKU options
-  useEffect(() => {
-    if (isOpen) {
-      fetchStorageData();
-      fetchMasterData();
-    }
-  }, [isOpen]);
+  // Use TanStack Query for master data
+  const { 
+    data: masterData = [], 
+    isLoading: loadingMasterData 
+  } = useQuery({
+    queryKey: ['master-data'],
+    queryFn: async () => {
+      const { data } = await apiClient.get('/master-data');
+      return data?.metaData || [];
+    },
+    enabled: isOpen,
+  });
 
-  const fetchMasterData = async () => {
-    setLoadingMasterData(true);
-    try {
-      const {data} = await apiClient.get('/master-data');
-      setMasterData(data?.metaData || []);
-    } catch (error) {
-      console.error('Error fetching master data:', error);
-    } finally {
-      setLoadingMasterData(false);
-    }
-  };
-  const fetchStorageData = async () => {
-    setLoadingMasterData(true);
-    try {
-      const {data} = await apiClient.get('/storage-model');
+  // Use TanStack Query for storage data
+  const { 
+    data: storageData = [], 
+    isLoading: loadingStorageData 
+  } = useQuery({
+    queryKey: ['storage-model'],
+    queryFn: async () => {
+      const { data } = await apiClient.get('/storage-model');
       const dataNodes = data?.metaData?.[0]?.nodes || [];
       const allData = dataNodes.map(i => i?.data?.label) || [];
-      console.log('uniq(allData)', uniq(allData))
-      setStorageData(uniq(allData));
-    } catch (error) {
-      console.error('Error fetching master data:', error);
-    } finally {
-      setLoadingMasterData(false);
-    }
-  };
+      console.log('uniq(allData)', uniq(allData));
+      return uniq(allData);
+    },
+    enabled: isOpen,
+  });
+
+  const isDataLoading = loadingMasterData || loadingStorageData;
 
   const handleOk = () => {
     form.submit();
@@ -114,8 +109,8 @@ const ModalAdd = ({ isOpen, onClose, onFinish, loading }: ModalAddProps) => {
           ]}
         >
           <Select 
-            placeholder={loadingMasterData ? t("outbound.storage.loading") : t("outbound.placeholder.sku")}
-            loading={loadingMasterData}
+            placeholder={isDataLoading ? t("outbound.storage.loading") : t("outbound.placeholder.sku")}
+            loading={isDataLoading}
             showSearch
             filterOption={(input, option) => {
               const label = `${option?.value} - ${masterData.find(item => item.material_no === option?.value)?.material_nm || ''}`;
@@ -163,8 +158,8 @@ const ModalAdd = ({ isOpen, onClose, onFinish, loading }: ModalAddProps) => {
           ]}
         >
           <Select 
-            placeholder={loadingMasterData ? t("outbound.storage.loading") : t("outbound.placeholder.storage")}
-            loading={loadingMasterData}
+            placeholder={isDataLoading ? t("outbound.storage.loading") : t("outbound.placeholder.storage")}
+            loading={isDataLoading}
           >
             {storageData.map((item) => (
               <Option key={item} value={item}>

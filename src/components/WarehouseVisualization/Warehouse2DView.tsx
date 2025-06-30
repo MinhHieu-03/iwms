@@ -397,7 +397,7 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
         <div className='flex items-center justify-between'>
           <CardTitle className='flex items-center gap-2'>
             <MapIcon className='h-5 w-5' />
-            2D Warehouse View
+            {t('warehouse.2d_view')}
           </CardTitle>
 
           <div className='flex flex-wrap gap-2 text-xs'>

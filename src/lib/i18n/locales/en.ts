@@ -68,9 +68,14 @@ export const en: Record<TranslationKey, string> = {
   ready_to_connect: 'Ready to connect',
   
   btn_create: 'Create',
-  btn_edit: 'Lưu thay đổi',
+  btn_edit: 'Update',
   btn_delete: "Delete",
   btn_cancel: 'Cancel',
+  "btn.create": 'Create',
+  "btn.add": 'Create',
+  "btn.edit": 'Update',
+  "btn.delete": "Delete",
+  "btn.cancel": 'Cancel',
   
   mark_all_read: 'Mark all as read',
   clear_all: 'Clear all',
@@ -107,6 +112,7 @@ export const en: Record<TranslationKey, string> = {
   'warehouse_layout.stats.type': 'Type',
   'warehouse_layout.stats.capacity': 'Capacity',
   'warehouse_layout.stats.status': 'Status',
+  "warehouse.2d_view": "2D Warehouse View",
 
   
   // Area Management

@@ -47,6 +47,8 @@ const ModalAdd = ({ isOpen, setIsOpen, _handleFinish }: ModalAddProps) => {
       title={t("area.create")}
       open={isOpen}
       onOk={() => form.submit()}
+      okText={t("btn.create")}
+      cancelText={t("btn.cancel")}
       onCancel={() => setIsOpen(false)}
     >
       <Form

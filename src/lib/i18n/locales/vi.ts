@@ -356,6 +356,7 @@ export const vi: Record<TranslationKey, string> = {
   outbound_shipments: 'Lô hàng xuất kho',
   
   // Warehouses Management
+  "warehouse.2d_view": "Chế độ xem Kho 2D",
   warehouses_management: 'Quản lý kho',
   'warehouses_management.name': 'Tên',
   'warehouses_management.description': 'Mô tả',
@@ -388,6 +389,8 @@ export const vi: Record<TranslationKey, string> = {
   'btn.create_new': 'Tạo mới',
   'btn.reload': 'Tải lại',
   'btn.save': 'Lưu',
+  'btn.add': 'Lưu',
+  "btn.create": 'Tạo mới',
   'btn.cancel': 'Hủy',
   'btn.refresh': 'Làm mới',
   'btn.delete_selected': 'Xóa đã chọn',
@@ -424,7 +427,7 @@ export const vi: Record<TranslationKey, string> = {
   'common.bulk_delete_success': 'Các mục đã chọn đã được xóa thành công',
   'common.actions': 'Thao tác',
   'common.edit': 'Chỉnh sửa',
-  'common.create': 'Tạo',
+  'common.create': 'Tạo mới',
   'common.save': 'Lưu',
   'common.not_assigned': 'Chưa được gán',
   'common.column': 'Cột',
