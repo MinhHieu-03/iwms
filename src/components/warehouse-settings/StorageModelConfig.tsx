@@ -51,12 +51,13 @@ const StorageModelConfig = () => {
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   const [editingNode, setEditingNode] = useState<string | null>(null);
   const [editingNodeName, setEditingNodeName] = useState<string>("");
-
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const initData = useCallback(async () => {
     const { data } = await apiClient.get("/storage-model");
     const dataFull = data?.metaData?.[0] || {};
     setNodes(dataFull.nodes || storageHierarchyNodes);
     setEdges(dataFull.edges || storageHierarchyEdges);
+    setSelectedTags(dataFull.storage_unit);
   }, [setNodes, setEdges]);
 
   useEffect(() => {
@@ -254,20 +255,13 @@ const StorageModelConfig = () => {
     saveNodeEdit,
   ]);
 
-  const [selectedTags, setSelectedTags] = useState<string[]>([
-    "Plastic Bin",
-    "Carton",
-  ]);
-
-  const removeTag = (tag: string) => {
-    setSelectedTags(selectedTags.filter((t) => t !== tag));
-  };
 
   const submit = async () => {
     try {
       await apiClient.post("/storage-model", {
         nodes: nodes,
         edges: edges,
+        storage_unit: selectedTags
       });
       console.log(edgesToTree(edges));
       toast({

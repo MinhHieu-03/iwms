@@ -164,6 +164,8 @@ export const en: Record<TranslationKey, string> = {
   'common.row': 'Row',
   'btn.create_new': 'Create new',
   'btn.reload': 'Refresh',
+  'btn.save': 'Save',
+  'btn.cancel': 'Cancel',
   'btn.refresh': 'Refresh',
   'btn.delete_selected': 'Delete Selected',
   'btn.edit': 'Edit',

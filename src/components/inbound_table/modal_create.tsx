@@ -43,7 +43,19 @@ const ModalAdd = ({ isOpen, onClose, onFinish, loading }: ModalAddProps) => {
   const [masterData, setMasterData] = useState<MasterDataItem[]>([]);
   const [storageData, setStorageData] = useState<string[]>([]);
   const [loadingMasterData, setLoadingMasterData] = useState(false);
+  const sku = Form.useWatch('sku', form);
 
+  useEffect(() => {
+    if (sku) {
+      const selectedItem = masterData.find(item => item.material_no === sku);
+      if (selectedItem) {
+        form.setFieldsValue({
+          product_name: selectedItem.material_nm,
+        });
+      }
+    }
+  }, [sku, masterData, form]);
+  
   // Fetch master data for SKU options
   useEffect(() => {
     if (isOpen) {

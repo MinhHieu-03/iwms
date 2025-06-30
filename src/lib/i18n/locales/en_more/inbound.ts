@@ -6,7 +6,20 @@ export const en: Record<TranslationKey, string> = {
   'inbound.table': 'Inbound Table',
   'inbound.table.title': 'Inbound Management',
   'inbound.create': 'Create Inbound',
+  'inbound.store_info': 'Store info',
   'inbound.edit': 'Edit Inbound',
+  'inbound.detail_title': 'Inbound Details',
+  'inbound.id': 'ID',
+  'inbound.inventory_title': 'Inventory Information',
+  'inbound.inventory_id': 'Inventory ID',
+  'inbound.inventory_sku': 'Inventory SKU',
+  'inbound.inventory_product_name': 'Inventory Product Name',
+  'inbound.location_id': 'Location ID',
+  'inbound.location_code': 'Location Code',
+  'inbound.inventory_status': 'Inventory Status',
+  'inbound.store_items': 'Store Items',
+  'inbound.store_key': 'Store Type',
+  'inbound.store_quantity': 'Quantity',
   'inbound.pic': 'PIC',
   'inbound.sku': 'SKU',
   'inbound.origin': 'Origin',
@@ -16,11 +29,32 @@ export const en: Record<TranslationKey, string> = {
   'inbound.created_at': 'Created At',
   'inbound.updated_at': 'Updated At',
   
+  // New fields for inbound management
+  'inbound.quantity': 'Quantity',
+  'inbound.store_method': 'Store Method',
+  'inbound.packing_method': 'Packing Method',
+  'inbound.bin_code': 'Bin Code',
+  'inbound.supplier': 'Supplier',
+  'inbound.invoice_code': 'Invoice Code',
+  'inbound.note': 'Note',
+  
+  // Store method values
+  'inbound.store_method_bin': 'Bin',
+  'inbound.store_method_carton': 'Carton',
+  'inbound.store_method_kit': 'Kit',
+  
+  // Packing method values
+  'inbound.packing_method_carton': 'Carton',
+  'inbound.packing_method_kit': 'Kit',
+  
   // Status values
   'inbound.status.wait_fill': 'Wait Fill',
   'inbound.status.in_progress': 'In Progress',
   'inbound.status.completed': 'Completed',
   'inbound.status.cancelled': 'Cancelled',
+  'inbound.status_new': 'New',
+  'inbound.status_pending': 'Pending',
+  'inbound.status_done': 'Done',
   
   // Origin values
   'inbound.origin.inbound': 'Inbound',
@@ -45,7 +79,6 @@ export const en: Record<TranslationKey, string> = {
   'inbound.placeholder.status': 'Select Status',
   'inbound.storage_location': 'Storage Location',
   'inbound.storage_location_placeholder': 'Select Storage Location',
-  'inbound.quantity': 'Quantity',
   'inbound.quantity_placeholder': 'Enter Quantity',
   'inbound.add_storage_location': 'Add Storage Location',
   
@@ -57,6 +90,12 @@ export const en: Record<TranslationKey, string> = {
   'inbound.validation.product_name_required': 'Product name is required',
   'inbound.validation.destination_required': 'Destination is required',
   'inbound.validation.status_required': 'Status is required',
+  'inbound.validation.quantity_required': 'Quantity is required',
+  'inbound.validation.store_method_required': 'Store method is required',
+  'inbound.validation.packing_method_required': 'Packing method is required',
+  'inbound.validation.bin_code_required': 'Bin code is required',
+  'inbound.validation.supplier_required': 'Supplier is required',
+  'inbound.validation.invoice_code_required': 'Invoice code is required',
   
   // Success/Error messages
   'inbound.message.create_success': 'Inbound created successfully',

@@ -9,59 +9,12 @@ import BasePagination from "@/components/ui/antd-pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import apiClient from "@/lib/axios";
 
-import { domain, lang_key, RenderCol, DataType } from "./const";
+import { domain, lang_key, RenderCol, DataType, mockData } from "./const";
 import ModalAdd, { type FormValues } from "./modal_create";
 import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
+import ModalDetail from "./modal_detail";
 
 const { list, create, update, remove } = domain;
-
-// Mock data for development - replace with actual API call
-const mockData: DataType[] = [
-  {
-    _id: "1",
-    pic: "admin",
-    sku: "8898-3254",
-    origin: "inbound",
-    product_name: "nhua 32",
-    destination: "A-02/01-03",
-    status: "wait_fill",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    _id: "2",
-    pic: "user1",
-    sku: "7745-1122",
-    origin: "inbound",
-    product_name: "kim loai 15",
-    destination: "B-01/02-05",
-    status: "in_progress",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    _id: "3",
-    pic: "user2",
-    sku: "9988-7766",
-    origin: "outbound",
-    product_name: "go tre 22",
-    destination: "C-03/01-01",
-    status: "completed",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    _id: "4",
-    pic: "admin",
-    sku: "1122-3344",
-    origin: "internal",
-    product_name: "thep 45",
-    destination: "A-01/03-02",
-    status: "cancelled",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
 
 const InboundTable = () => {
   const { t } = useTranslation();
@@ -77,6 +30,14 @@ const InboundTable = () => {
   }>({
     isOpen: false,
     data: {},
+  });
+  
+  const [detailModal, setDetailModal] = useState<{
+    isOpen: boolean;
+    data: DataType | null;
+  }>({
+    isOpen: false,
+    data: null,
   });
 
   const requestDataList = useCallback(async () => {
@@ -234,6 +195,13 @@ const InboundTable = () => {
     },
   };
 
+  const handleRowClick = (record: DataType) => {
+    setDetailModal({
+      isOpen: true,
+      data: record,
+    });
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -274,6 +242,10 @@ const InboundTable = () => {
           rowSelection={rowSelection}
           pagination={false}
           scroll={{ x: "calc(100vw - 640px)" }}
+          onRow={(record) => ({
+            onClick: () => handleRowClick(record),
+            style: { cursor: 'pointer' },
+          })}
         />
         <BasePagination
           current={pageInfo.page}
@@ -299,6 +271,13 @@ const InboundTable = () => {
         onClose={() => setFormEdit({ isOpen: false, data: {} })}
         onFinish={_handleUpdateFinish}
         loading={loading}
+      />
+
+      {/* Detail Modal */}
+      <ModalDetail
+        isOpen={detailModal.isOpen}
+        data={detailModal.data}
+        onClose={() => setDetailModal({ isOpen: false, data: null })}
       />
     </Card>
   );

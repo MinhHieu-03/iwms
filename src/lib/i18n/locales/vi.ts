@@ -387,6 +387,11 @@ export const vi: Record<TranslationKey, string> = {
   'warehouse_layout.stats.status': 'Trạng thái',
   'btn.create_new': 'Tạo mới',
   'btn.reload': 'Tải lại',
+  'btn.save': 'Lưu',
+  'btn.cancel': 'Hủy',
+  'btn.refresh': 'Làm mới',
+  'btn.delete_selected': 'Xóa đã chọn',
+  'btn.edit': 'Chỉnh sửa',
 
   // Common actions and messages
   'common.name': 'Tên',

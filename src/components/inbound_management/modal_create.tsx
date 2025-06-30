@@ -1,5 +1,7 @@
 import { RenderForm, TypeRenderForm } from "@/lib/render-form";
 import { Button, Form, Input, InputNumber, Modal, Select, Drawer } from "antd";
+import apiClient from "@/lib/axios";
+import { keyBy, uniq } from "lodash";
 
 import { useTranslation } from "react-i18next";
 
@@ -54,6 +56,66 @@ export default ModalAdd;
 
 const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
   const [form] = Form.useForm();
+  const [masterData, setMasterData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [storageData, setStorageData] = useState<string[]>([]);
+  const [storeUnits, setStoreUnits] = useState<string[]>([]);
+  console.log("storageData__", storageData);
+
+  const sku = Form.useWatch("sku", form);
+
+  // Fetch master data on component mount
+  useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        setLoading(true);
+        const { data } = await apiClient.get("/master-data");
+        if (data?.metaData?.length) {
+          setMasterData(keyBy(data.metaData, "material_no"));
+        }
+        console.log(
+          "Master data fetched:",
+          keyBy(data.metaData, "material_no")
+        );
+      } catch (error) {
+        console.error("Error fetching master data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMasterData();
+  }, []);
+
+  const fetchStorageData = async () => {
+    try {
+      const { data } = await apiClient.get("/storage-model");
+      const dataNodes = data?.metaData?.[0]?.nodes || [];
+      const allData = dataNodes.map((i) => i?.data?.label) || [];
+      setStorageData(uniq(allData));
+      setStoreUnits(data?.metaData?.[0]?.storage_unit || []);
+    } catch (error) {
+      console.error("Error fetching storage data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (sku && masterData) {
+      const item = masterData[sku];
+      if (item) {
+        if (item.new_pk_style == 2) {
+          form.setFieldsValue({
+            sku: item.material_no,
+            storeMethod: "Carton",
+            packingMethod: "Bag",
+            name: item.material_nm,
+            bin_code: item.material_no,
+          });
+        }
+        console.log("Item found in master data:", item);
+      }
+    }
+  }, [sku, masterData]);
 
   useEffect(() => {
     if (selectedItem) {
@@ -64,9 +126,32 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
     }
   }, [selectedItem, form]);
 
-  const handleSubmit = (values) => {
-    console.log("Form submitted:", values);
-    // Handle form submission here
+  useEffect(() => {
+    fetchStorageData();
+  }, []);
+
+  const handleSubmit = async () => {
+    try {
+      const values = form.getFieldsValue();
+      console.log("Form submitted:", values);
+      console.log("Master data available:", masterData);
+
+      const body = {
+        product_name: values.name,
+        sku: values.sku,
+        store: [
+          { key: values.storeMethod, qty: 1 },
+          { key: values.packingMethod, qty: values.quantity },
+        ],
+      };
+      await apiClient.post("/inbound", body);
+      form.resetFields();
+      // Handle form submission here
+      console.log("Form_values:", body);
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      return;
+    }
   };
 
   const refAction = useRef(null);
@@ -111,7 +196,8 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
         utterance.volume = 0.5;
         speechSynthesis.speak(utterance);
       }
-      handleClose();
+      // handleClose();
+      form.resetFields();
       return;
     } else if (value === "Cancel") {
       setCurrent(0);
@@ -136,15 +222,71 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
         >
           <div className="grid grid-cols-2 gap-4">
             <Form.Item
-              label="SKU"
+              label="Mã vật tư"
               name="sku"
               rules={[{ required: true, message: "Please input SKU!" }]}
             >
               <Input placeholder="Enter SKU" />
             </Form.Item>
+            <Form.Item
+              label="Tên vật tư"
+              name="name"
+              rules={[{ required: true, message: "Please input SKU!" }]}
+            >
+              <Input placeholder="Enter Name" />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <Form.Item
+              label="Phương pháp lưu trữ"
+              name="storeMethod"
+              rules={[
+                { required: true, message: "Please select store method!" },
+              ]}
+            >
+              <Select placeholder="Select store method" loading={loading}>
+                {storeUnits?.map((method) => (
+                  <Select.Option key={method} value={method}>
+                    {method}
+                  </Select.Option>
+                )) || (
+                  <>
+                    <Select.Option value="bin">Bin</Select.Option>
+                    <Select.Option value="carton">Carton</Select.Option>
+                  </>
+                )}
+              </Select>
+            </Form.Item>
 
             <Form.Item
-              label="Quantity"
+              label="Phương pháp đóng gói"
+              name="packingMethod"
+              rules={[
+                { required: true, message: "Please select packing method!" },
+              ]}
+            >
+              <Select placeholder="Select packing method" loading={loading}>
+                {storageData?.map((method) => (
+                  <Select.Option key={method} value={method}>
+                    {method}
+                  </Select.Option>
+                )) || (
+                  <>
+                    <Select.Option value="bin">Bin</Select.Option>
+                    <Select.Option value="carton">Carton</Select.Option>
+                    <Select.Option value="kit">Kit</Select.Option>
+                  </>
+                )}
+              </Select>
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <Form.Item label="Mã thùng" name="bin_code">
+              <Input placeholder="Enter Bin code" className="w-full" />
+            </Form.Item>
+            <Form.Item
+              label="Số lượng"
               name="quantity"
               rules={[
                 { required: true, message: "Please input quantity!" },
@@ -158,42 +300,13 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
               <InputNumber placeholder="Enter quantity" className="w-full" />
             </Form.Item>
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <Form.Item
-              label="Store Method"
-              name="storeMethod"
-              rules={[
-                { required: true, message: "Please select store method!" },
-              ]}
-            >
-              <Select placeholder="Select store method">
-                <Select.Option value="bin">Bin</Select.Option>
-                <Select.Option value="carton">Carton</Select.Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              label="Packing Method"
-              name="packingMethod"
-              rules={[
-                { required: true, message: "Please select packing method!" },
-              ]}
-            >
-              <Select placeholder="Select packing method">
-                <Select.Option value="bin">Bin</Select.Option>
-                <Select.Option value="carton">Carton</Select.Option>
-                <Select.Option value="kit">Kit</Select.Option>
-              </Select>
-            </Form.Item>
-          </div>
         </Form>
       </div>
       <div className="space-y-4 mt-5 bg-gray-50 p-4 rounded-lg">
         <div className=" p-4 bg-white rounded-lg shadow-sm">
           <div className="text-center">
             <p className="text-lg text-gray-600 font-semibold mb-2">
-              Next Action
+              {sku ? "Để nguyên thùng carton": "Next Action"}
             </p>
             <Input
               ref={refAction}
@@ -219,10 +332,16 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
               }}
             />
             <div className="flex justify-center mt-4 gap-3">
-              <Button onClick={() => setCurrent(0)} type="default">
+              <Button
+                onClick={() => {
+                  form.resetFields();
+                  handleClose();
+                }}
+                type="default"
+              >
                 Cancel
               </Button>
-              <Button onClick={() => handleClose()} type="primary">
+              <Button onClick={() => handleSubmit()} type="primary">
                 Next
               </Button>
             </div>
