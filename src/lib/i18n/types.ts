@@ -580,6 +580,7 @@ export type TranslationKey =
   | 'store_item'
   
   // Rack Grid Component
+  | 'sku_cell'
   | 'configure_rack'
   | 'positions'
   | 'rows'

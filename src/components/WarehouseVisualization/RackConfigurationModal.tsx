@@ -64,6 +64,7 @@ const RackConfigurationModal: React.FC<RackConfigurationModalProps> = ({
   };
 
   const handleCancel = () => {
+    setMaterials([]);
     onCancel();
   };
 
@@ -71,26 +72,27 @@ const RackConfigurationModal: React.FC<RackConfigurationModalProps> = ({
     <Modal
       open={open}
       onCancel={handleCancel}
-      title='Configure Rack'
+      maskClosable={false}
+      title={t('configure_rack')}
       footer={
         <div className='mt-4'>
           <Button type='primary' onClick={handleSubmit}>
             {t('submit')}
           </Button>
-          <Button danger className='mx-2' onClick={handleInactive}>
+          {/* <Button danger className='mx-2' onClick={handleInactive}>
             {t('inactive')}
-          </Button>
-          <Button onClick={handleCancel}>{t('cancel')}</Button>
+          </Button> */}
+          <Button className='mx-2'  onClick={handleCancel}>{t('cancel')}</Button>
         </div>
       }
     >
       <div className='p-4'>
-        <p className='text-sm text-gray-600 mb-4'>Select Sku in Rack:</p>
+        <p className='text-sm text-gray-600 mb-4'>{t('sku_cell')}</p>
 
         <div className='space-y-2'>
           <Select
             mode='multiple'
-            placeholder='Select configuration options'
+            placeholder='Chọn danh sách vật tư cho vị trí'
             className='w-full'
             loading={isLoading}
             value={materials}

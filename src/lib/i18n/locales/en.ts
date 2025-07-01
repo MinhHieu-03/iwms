@@ -264,6 +264,7 @@ export const en: Record<TranslationKey, string> = {
   
   // Rack Grid Component
   'configure_rack': 'Configure Rack',
+  'sku_cell': 'Select SKU in Cell',
   'positions': 'positions',
   'rows': 'rows',
   'columns': 'columns',

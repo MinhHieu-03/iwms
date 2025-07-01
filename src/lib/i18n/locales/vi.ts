@@ -395,6 +395,10 @@ export const vi: Record<TranslationKey, string> = {
   'btn.refresh': 'Làm mới',
   'btn.delete_selected': 'Xóa đã chọn',
   'btn.edit': 'Chỉnh sửa',
+  btn_create: 'Tạo mới',
+  btn_edit: 'Chỉnh sửa',
+  btn_delete: "Xóa",
+  btn_cancel: 'Hủy',
 
   // Common actions and messages
   'common.name': 'Tên',
@@ -432,7 +436,6 @@ export const vi: Record<TranslationKey, string> = {
   'common.not_assigned': 'Chưa được gán',
   'common.column': 'Cột',
   'common.row': 'Hàng',
-  'btn.refresh': 'Tải lại',
     // Area Management
   'area.management': 'Quản lý khu vực',
   'area.create': 'Tạo khu vực mới',
@@ -489,6 +492,7 @@ export const vi: Record<TranslationKey, string> = {
   'rack.sort.location_code': 'Sắp xếp theo mã vị trí',
   'rack.sort.status': 'Sắp xếp theo trạng thái',
   'rack.sort.warehouse': 'Sắp xếp theo kho hàng',
+  'sku_cell': 'Chọn Vật tư',
   // Master Data Management
   'master_data': 'Dữ liệu vât tư',
   'master_data.material_no': 'Mã vật tư',
@@ -529,8 +533,6 @@ export const vi: Record<TranslationKey, string> = {
   // Rack Grid Component
   'configure_rack': 'Cấu hình kệ',
   'positions': 'vị trí',
-  'rows': 'hàng',
-  'columns': 'cột',
   'rack': 'Kệ',
   'row_prefix': 'H',
 };
