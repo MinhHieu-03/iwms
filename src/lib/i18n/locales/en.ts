@@ -254,6 +254,10 @@ export const en: Record<TranslationKey, string> = {
   'status.disable': 'Disabled',
   'status.fill': 'Filled',
   'status.wait_fill': 'Waiting to Fill',
+  'status.in_progress': 'In Progress',
+  'status.completed': 'Completed',
+  'status.cancelled': 'Cancelled',
+  'status.unknown': 'Unknown',
   'status.wait_outbound': 'Waiting Outbound',
   'status.configured': 'Configured',
   

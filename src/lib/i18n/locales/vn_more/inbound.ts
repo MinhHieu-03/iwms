@@ -28,6 +28,7 @@ export const vi: Record<TranslationKey, string> = {
   'inbound.status': 'Trạng Thái',
   'inbound.created_at': 'Thời điểm tạo',
   'inbound.updated_at': 'Thời điểm cập nhật',
+  'inbound.actions': 'Hành động',
   
   // New fields for inbound management
   'inbound.quantity': 'Số lượng',
@@ -106,4 +107,6 @@ export const vi: Record<TranslationKey, string> = {
   'inbound.message.delete_error': 'Không thể xóa nhập kho',
   'inbound.message.confirm_delete': 'Xác Nhận Xóa',
   'inbound.message.confirm_delete_multiple': 'Bạn có chắc chắn muốn xóa {{count}} mục? Hành động này không thể hoàn tác.',
+  'inbound.confirm_cancel': 'Xác Nhận Hủy',
+  'inbound.confirm_cancel_description': 'Bạn có chắc chắn muốn hủy đơn nhập kho này? Hành động này không thể hoàn tác.',
 };

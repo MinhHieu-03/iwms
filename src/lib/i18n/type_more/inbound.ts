@@ -26,6 +26,7 @@ export type TranslationKey =
   | 'inbound.status'
   | 'inbound.created_at'
   | 'inbound.updated_at'
+  | 'inbound.actions'
   
   // New fields for inbound management
   | 'inbound.quantity'
@@ -104,4 +105,6 @@ export type TranslationKey =
   | 'inbound.message.delete_success'
   | 'inbound.message.delete_error'
   | 'inbound.message.confirm_delete'
-  | 'inbound.message.confirm_delete_multiple';
+  | 'inbound.message.confirm_delete_multiple'
+  | 'inbound.confirm_cancel'
+  | 'inbound.confirm_cancel_description';

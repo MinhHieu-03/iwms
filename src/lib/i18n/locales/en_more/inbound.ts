@@ -28,6 +28,7 @@ export const en: Record<TranslationKey, string> = {
   'inbound.status': 'Status',
   'inbound.created_at': 'Created At',
   'inbound.updated_at': 'Updated At',
+  'inbound.actions': 'Actions',
   
   // New fields for inbound management
   'inbound.quantity': 'Quantity',
@@ -106,4 +107,6 @@ export const en: Record<TranslationKey, string> = {
   'inbound.message.delete_error': 'Failed to delete inbound(s)',
   'inbound.message.confirm_delete': 'Delete Confirmation',
   'inbound.message.confirm_delete_multiple': 'Are you sure you want to delete {{count}} item(s)? This action cannot be undone.',
+  'inbound.confirm_cancel': 'Cancel Confirmation',
+  'inbound.confirm_cancel_description': 'Are you sure you want to cancel this inbound order? This action cannot be undone.',
 };

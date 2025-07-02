@@ -162,8 +162,21 @@ const InboundTable = () => {
     });
   }, [selectedRowKeys, t, requestDataList]);
 
+  const onCancel = useCallback(
+    async (record: DataType) => {
+      apiClient.patch(`${update}/${record._id}`, {
+        status: "cancelled",
+      })
+        .then(() => {
+          requestDataList();
+        })
+        .catch((error) => {
+          console.error("Cancel error:", error);
+        });
+    }, [t, requestDataList]);
+
   const columns = useMemo(() => {
-    const baseColumns = RenderCol({ t });
+    const baseColumns = RenderCol({ t, onCancel });
     return [
       ...baseColumns,
       // {
@@ -182,7 +195,7 @@ const InboundTable = () => {
       //   ),
       // },
     ];
-  }, [t]);
+  }, [t, onCancel]);
 
   useEffect(() => {
     requestDataList();
