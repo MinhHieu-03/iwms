@@ -60,32 +60,28 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
   const [loading, setLoading] = useState(false);
   const [storageData, setStorageData] = useState<string[]>([]);
   const [storeUnits, setStoreUnits] = useState<string[]>([]);
+  const [skuMaster, setSkuMaster] = useState<any>({});
+  const refAction = useRef(null);
+  const [value, setValue] = useState("");
   console.log("storageData__", storageData);
 
   const sku = Form.useWatch("sku", form);
 
   // Fetch master data on component mount
-  useEffect(() => {
-    const fetchMasterData = async () => {
-      try {
-        setLoading(true);
-        const { data } = await apiClient.get("/master-data");
-        if (data?.metaData?.length) {
-          setMasterData(keyBy(data.metaData, "material_no"));
-        }
-        console.log(
-          "Master data fetched:",
-          keyBy(data.metaData, "material_no")
-        );
-      } catch (error) {
-        console.error("Error fetching master data:", error);
-      } finally {
-        setLoading(false);
+  const fetchMasterData = async () => {
+    try {
+      setLoading(true);
+      const { data } = await apiClient.get("/master-data");
+      if (data?.metaData?.length) {
+        setMasterData(keyBy(data.metaData, "material_no"));
       }
-    };
-
-    fetchMasterData();
-  }, []);
+      console.log("Master data fetched:", keyBy(data.metaData, "material_no"));
+    } catch (error) {
+      console.error("Error fetching master data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchStorageData = async () => {
     try {
@@ -98,15 +94,28 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
       console.error("Error fetching storage data:", error);
     }
   };
+  useEffect(() => {
+    fetchMasterData();
+    fetchStorageData();
+  }, []);
 
   useEffect(() => {
     if (sku && masterData) {
       const item = masterData[sku];
+      setSkuMaster(item);
       if (item) {
         if (item.new_pk_style == 2) {
           form.setFieldsValue({
             sku: item.material_no,
             storeMethod: "Carton",
+            packingMethod: "Bag",
+            name: item.material_nm,
+            bin_code: item.material_no,
+          });
+        } else if (item.new_pk_style == 1) {
+          form.setFieldsValue({
+            sku: item.material_no,
+            storeMethod: "Plastic Bin",
             packingMethod: "Bag",
             name: item.material_nm,
             bin_code: item.material_no,
@@ -126,22 +135,18 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
     }
   }, [selectedItem, form]);
 
-  useEffect(() => {
-    fetchStorageData();
-  }, []);
-
   const handleSubmit = async () => {
     try {
       const values = form.getFieldsValue();
       console.log("Form submitted:", values);
       console.log("Master data available:", masterData);
-
       const body = {
         product_name: values.name,
         sku: values.sku,
         store: [
           { key: values.storeMethod, qty: 1 },
-          { key: values.packingMethod, qty: values.quantity },
+          { key: values.packingMethod, qty: values.bag_quantity },
+          { key: storageData[storageData.length-1], qty: values.quantity },
         ],
       };
       await apiClient.post("/inbound", body);
@@ -154,8 +159,6 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
     }
   };
 
-  const refAction = useRef(null);
-  const [value, setValue] = useState("");
   useEffect(() => {
     const currentRef = refAction.current;
     if (currentRef) {
@@ -169,10 +172,13 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
       }
     };
   }, [selectedItem]);
+  const [current, setCurrentField] = useState("sku");
 
   const handleAction = (e) => {
     const value = e.target.value.trim();
     setValue(value);
+    return 1;
+    // ==========
     if (
       value === "" ||
       (/^\d{0,4}-?\d{0,4}$/.test(value) && value.length === 9)
@@ -207,6 +213,44 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
         utterance.volume = 0.5;
         speechSynthesis.speak(utterance);
       }
+    }
+  };
+
+  const handleActionForm = (value) => {
+
+    if (value === "OK") {
+      form.resetFields();
+      return;
+    } else if (value === "Cancel") {
+      setCurrent(0);
+      return;
+    } else if (current === "sku") {
+      form.setFieldValue("sku", value);
+      setCurrentField("qty");
+      setValue("");
+    } else if (current === "qty") {
+      const count = value/skuMaster.pcs_bag
+      form.setFieldValue("quantity", value);
+      form.setFieldValue("bag_quantity", count);
+      if (skuMaster.new_pk_style === 1) {
+        setCurrentField("bin");
+      } else {
+        setCurrentField("sku");
+        // handleSubmit();
+      }
+      setValue("");
+    } else if (current === "bin") {
+      form.setFieldValue("bin_code", value);
+      setCurrentField("sku");
+      setValue("");
+      handleSubmit();
+    }
+
+    if (value && "speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(`OK`);
+      utterance.rate = 0.9;
+      utterance.volume = 0.5;
+      speechSynthesis.speak(utterance);
     }
   };
 
@@ -286,6 +330,22 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
               <Input placeholder="Enter Bin code" className="w-full" />
             </Form.Item>
             <Form.Item
+              label={`Số lượng túi ${skuMaster.pcs_bag ? `(mặc định ${skuMaster.pcs_bag}/Túi)`: ''}`}
+              name="bag_quantity"
+              rules={[
+                { required: true, message: "Please input quantity!" },
+                {
+                  type: "number",
+                  min: 1,
+                  message: "Quantity must be greater than 0!",
+                },
+              ]}
+            >
+              <InputNumber placeholder="Số lượng túi" className="w-full" />
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-1 gap-4">
+            <Form.Item
               label="Số lượng"
               name="quantity"
               rules={[
@@ -306,7 +366,8 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
         <div className=" p-4 bg-white rounded-lg shadow-sm">
           <div className="text-center">
             <p className="text-lg text-gray-600 font-semibold mb-2">
-              {sku ? "Để nguyên thùng carton": "Next Action"}
+              {skuMaster.new_pk_style === 2 ? `Để nguyên thùng carton ` : ''}
+              {skuMaster.new_pk_style === 1 ? `Bỏ vào thùng nhựa ` : ''}
             </p>
             <Input
               ref={refAction}
@@ -317,17 +378,19 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
               onChange={handleAction}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  if (!isNaN(+value)) {
-                    form.setFieldValue("quantity", value);
-                    setValue("");
-                    // Voice feedback for SKU entry
-                    if (value && "speechSynthesis" in window) {
-                      const utterance = new SpeechSynthesisUtterance(`OK`);
-                      utterance.rate = 0.9;
-                      utterance.volume = 0.5;
-                      speechSynthesis.speak(utterance);
-                    }
-                  }
+                  // handleAction(value)
+                  handleActionForm(value);
+                  // if (!isNaN(+value)) {
+                  //   form.setFieldValue("quantity", value);
+                  //   setValue("");
+                  //   // Voice feedback for SKU entry
+                  //   if (value && "speechSynthesis" in window) {
+                  //     const utterance = new SpeechSynthesisUtterance(`OK`);
+                  //     utterance.rate = 0.9;
+                  //     utterance.volume = 0.5;
+                  //     speechSynthesis.speak(utterance);
+                  //   }
+                  // }
                 }
               }}
             />

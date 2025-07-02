@@ -1,8 +1,10 @@
+import MasterTable from "@/components/master_data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
+import { useI18n } from "@/contexts/useI18n";
 import {
   masterData,
   storageFlows,
@@ -32,8 +34,6 @@ import "@xyflow/react/dist/style.css";
 import { Select } from "antd";
 import { Plus, Trash2, Workflow } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
-import MasterTable from "@/components/master_data";
-import { useI18n } from "@/contexts/useI18n";
 
 const StorageModelConfig = () => {
   const { toast } = useToast();

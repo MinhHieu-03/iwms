@@ -20,6 +20,7 @@ import HelpFAQs from "./pages/HelpFAQs";
 import OperatorInterface from "./pages/OperatorInterface";
 import OperatorInbound from "./pages/OperatorInbound";
 import InboundManagement from "@/components/inbound_management";
+// import Outbound_pick_to_line from "@/components/outbound_pick_to_line";
 import OperatorOutbound from "./pages/OperatorOutbound";
 import Outbound from "./pages/outbound";
 import OutboundOdd from "./pages/outbound_odd";
@@ -68,6 +69,7 @@ function App() {
                 <Route path="/oi/outbound" element={<Outbound />} />
                 <Route path="/oi/outbound-odd" element={<OutboundOdd />} />
                 <Route path="/oi/inbound" element={<InboundManagement />} />
+                <Route path="/oi/outbound-pick-to-line" element={<InboundManagement />} />
 
                 {/* Protected routes - require authentication */}
                 <Route

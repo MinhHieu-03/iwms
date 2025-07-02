@@ -218,13 +218,13 @@ const InboundManagement = () => {
         setIsOpen={setIsOpen}
         _handleFinish={_handleFinish}
       />
-      <ModalEdit
+      {/* <ModalEdit
         title={t("inbound_management.edit_inbound")}
         itemsRender={renderEditForm(dataRole, t)}
         formEdit={formEdit}
         setFormEdit={setFormEdit}
         _handleFinish={_handleUpdateFinish}
-      />
+      /> */}
     </Card>
   );
 };
@@ -282,9 +282,9 @@ const Header = ({
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
 
-      message.success(t("common.download_success"));
+      // message.success(t("common.download_success"));
     } catch (error) {
-      message.error(t("common.download_error"));
+      // message.error(t("common.download_error"));
       console.error("Download error:", error);
     }
   };
@@ -327,3 +327,4 @@ const Header = ({
 };
 
 export default InboundManagement;
+

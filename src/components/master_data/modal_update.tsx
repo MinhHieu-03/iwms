@@ -34,6 +34,7 @@ const ModalEdit = ({
   
   useEffect(() => {
     if (formEdit.isOpen) {
+        form.resetFields();
       form.setFieldsValue(formEdit.data);
     }
   }, [formEdit, form]);

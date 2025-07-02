@@ -56,6 +56,11 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
       width: 190,
     },
     {
+      dataIndex: "pcs_bag",
+      title: 'PCS/Bag',
+      width: 190,
+    },
+    {
       dataIndex: "comment",
       title: t(`${lang_key}.comment`),
       width: 200,
@@ -89,6 +94,11 @@ export const renderCreateForm = (dataRole: unknown, dataList: unknown) => {
     {
       label: "Qui cách đóng gói mới",
       name: "new_pk_style",
+      type: "number",
+    },
+    {
+      label: "PCS/Bag",
+      name: "pcs_bag",
       type: "number",
     },
     // {
@@ -133,6 +143,11 @@ export const renderEditForm = (dataRole: unknown) => {
     {
       label: "Qui cách đóng gói mới",
       name: "new_pk_style",
+      type: "number",
+    },
+    {
+      label: "PCS/Bag",
+      name: "pcs_bag",
       type: "number",
     },
     // {
