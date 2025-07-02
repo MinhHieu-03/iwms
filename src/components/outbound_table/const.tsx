@@ -1,6 +1,6 @@
 import React from "react";
 import { ColumnsType } from "antd/es/table";
-import { Tag } from "antd";
+import { Tag, Button, Popconfirm } from "antd";
 import dayjs from "dayjs";
 
 export interface DataType {
@@ -43,7 +43,7 @@ const getStatusColor = (status: string) => {
   }
 };
 
-export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<DataType> => [
+export const RenderCol = ({ t, onCancel }: {onCancel: (data: DataType) =>void ; t: (key: string) => string }): ColumnsType<DataType> => [
   {
     title: t("outbound.sku"),
     dataIndex: "sku",
@@ -87,6 +87,35 @@ export const RenderCol = ({ t }: { t: (key: string) => string }): ColumnsType<Da
         </Tag>
       );
     },
+  },
+  {
+    title: t("common.actions"),
+    key: "actions",
+    width: 100,
+    render: (_, record: DataType) => (
+      <Popconfirm
+        title={t("inbound.confirm_cancel")}
+        // description={t("inbound.confirm_cancel_description")}
+        okText={t("submit")}
+        cancelText={t("common.cancel")}
+        okType="danger"
+        onConfirm={() => {
+          // Handle cancel action
+          console.log('Cancel confirmed for:', record._id);
+          onCancel(record)
+          // Add your cancel API call here
+        }}
+      >
+        <Button 
+          type="primary" 
+          danger 
+          size="small"
+          disabled={record.status === 'completed' || record.status === 'cancelled'}
+        >
+          {t("common.cancel")}
+        </Button>
+      </Popconfirm>
+    ),
   },
   // {
   //   title: t("common.created_at"),

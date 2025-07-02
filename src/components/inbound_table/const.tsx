@@ -108,10 +108,6 @@ export const RenderCol = ({
     title: t("inbound.actions"),
     key: "actions",
     render: (_, record: DataType) => {
-      if (record.status !== "wait_fill" || !onCancel) {
-        return null;
-      }
-
       return (
         <Popconfirm
           title={t("inbound.confirm_cancel")}
@@ -126,6 +122,7 @@ export const RenderCol = ({
             type="primary" 
             danger 
             size="small"
+            disabled={record.status !== "wait_fill"}
             onClick={(e) => e.stopPropagation()}
           >
             {t("common.cancel")}

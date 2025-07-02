@@ -1,70 +1,70 @@
-import { ReloadOutlined, DeleteOutlined } from "@ant-design/icons";
-import { message, Table, Modal } from "antd";
-import { Plus } from "lucide-react";
-import { useEffect, useMemo, useState, useCallback } from "react";
-import { useTranslation } from "react-i18next";
+import { ReloadOutlined, DeleteOutlined } from '@ant-design/icons';
+import { message, Table, Modal } from 'antd';
+import { Plus } from 'lucide-react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { Button } from "@/components/ui/button";
-import BasePagination from "@/components/ui/antd-pagination";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import apiClient from "@/lib/axios";
+import { Button } from '@/components/ui/button';
+import BasePagination from '@/components/ui/antd-pagination';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import apiClient from '@/lib/axios';
 
-import { domain, lang_key, RenderCol, DataType } from "./const";
-import ModalAdd, { type FormValues } from "./modal_create";
-import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
+import { domain, lang_key, RenderCol, DataType } from './const';
+import ModalAdd, { type FormValues } from './modal_create';
+import ModalEdit, { type FormValues as FormValuesEdit } from './modal_update';
 
 const { list, create, update, remove } = domain;
 
 // Mock data for development - replace with actual API call
 const mockData: DataType[] = [
   {
-    _id: "1",
-    sku: "SKU-001",
+    _id: '1',
+    sku: 'SKU-001',
     qty: 50,
-    unit: "pcs",
-    location: "A-01-01",
-    status: "pending",
+    unit: 'pcs',
+    location: 'A-01-01',
+    status: 'pending',
     inventory: {
-      product_name: "Laptop Computer",
+      product_name: 'Laptop Computer',
     },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
   {
-    _id: "2",
-    sku: "SKU-002",
+    _id: '2',
+    sku: 'SKU-002',
     qty: 25,
-    unit: "boxes",
-    location: "B-02-03",
-    status: "in_progress",
+    unit: 'boxes',
+    location: 'B-02-03',
+    status: 'in_progress',
     inventory: {
-      product_name: "Office Supplies",
+      product_name: 'Office Supplies',
     },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
   {
-    _id: "3",
-    sku: "SKU-003",
+    _id: '3',
+    sku: 'SKU-003',
     qty: 100,
-    unit: "kg",
-    location: "C-01-05",
-    status: "completed",
+    unit: 'kg',
+    location: 'C-01-05',
+    status: 'completed',
     inventory: {
-      product_name: "Raw Materials",
+      product_name: 'Raw Materials',
     },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
   {
-    _id: "4",
-    sku: "SKU-004",
+    _id: '4',
+    sku: 'SKU-004',
     qty: 10,
-    unit: "units",
-    location: "A-03-02",
-    status: "cancelled",
+    unit: 'units',
+    location: 'A-03-02',
+    status: 'cancelled',
     inventory: {
-      product_name: "Electronic Components",
+      product_name: 'Electronic Components',
     },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -99,14 +99,14 @@ const OutboundTable = () => {
         setDataList(data.metaData);
         setTotal(data.total);
       } catch (apiError) {
-        console.warn("API not available, using mock data:", apiError);
+        console.warn('API not available, using mock data:', apiError);
         // Using mock data as fallback
         setDataList(mockData);
         setTotal(mockData.length);
       }
     } catch (error) {
       console.error(error);
-      message.error(t("outbound.message.create_error"));
+      message.error(t('outbound.message.create_error'));
       // Fallback to mock data on error
       setDataList(mockData);
       setTotal(mockData.length);
@@ -121,20 +121,20 @@ const OutboundTable = () => {
       const payload = {
         ...values,
       };
-      
+
       // Try API call first
       try {
         await apiClient.post(create, payload);
-        message.success(t("outbound.message.create_success"));
+        message.success(t('outbound.message.create_success'));
       } catch (apiError) {
-        console.warn("API not available for create operation:", apiError);
+        console.warn('API not available for create operation:', apiError);
       }
-      
+
       setIsOpen(false);
       requestDataList();
     } catch (error) {
       console.error(error);
-      message.error(t("outbound.message.create_error"));
+      message.error(t('outbound.message.create_error'));
     } finally {
       setLoading(false);
     }
@@ -147,21 +147,21 @@ const OutboundTable = () => {
         ...values,
         _id: formEdit.data._id,
       };
-      
+
       // Try API call first
       try {
         await apiClient.put(update, payload);
-        message.success(t("outbound.message.update_success"));
+        message.success(t('outbound.message.update_success'));
       } catch (apiError) {
-        console.warn("API not available for update operation:", apiError);
-        message.success(t("outbound.message.update_success"));
+        console.warn('API not available for update operation:', apiError);
+        message.success(t('outbound.message.update_success'));
       }
-      
+
       setFormEdit({ isOpen: false, data: {} });
       requestDataList();
     } catch (error) {
       console.error(error);
-      message.error(t("outbound.message.update_error"));
+      message.error(t('outbound.message.update_error'));
     } finally {
       setLoading(false);
     }
@@ -171,49 +171,65 @@ const OutboundTable = () => {
     async function deleteItems() {
       try {
         setLoading(true);
-        
+
         // Try API call first
         try {
           await apiClient.delete(remove, {
             data: { ids: selectedRowKeys },
           });
-          message.success(t("outbound.message.delete_success"));
+          message.success(t('outbound.message.delete_success'));
         } catch (apiError) {
-          console.warn("API not available for delete operation:", apiError);
-          message.success(t("outbound.message.delete_success"));
+          console.warn('API not available for delete operation:', apiError);
+          message.success(t('outbound.message.delete_success'));
         }
-        
+
         setSelectedRowKeys([]);
         requestDataList();
       } catch (error) {
         console.error(error);
-        message.error(t("outbound.message.delete_error"));
+        message.error(t('outbound.message.delete_error'));
       } finally {
         setLoading(false);
       }
     }
-    
+
     deleteItems();
   }, [selectedRowKeys, t, requestDataList]);
 
   const _handleDelete = useCallback(() => {
     if (selectedRowKeys.length === 0) {
-      message.warning(t("common.warning.select_items"));
+      message.warning(t('common.warning.select_items'));
       return;
     }
 
     Modal.confirm({
-      title: t("outbound.message.confirm_delete"),
-      content: t("outbound.message.confirm_delete_multiple", { count: selectedRowKeys.length }),
-      okText: t("common.confirm.ok"),
-      cancelText: t("common.confirm.cancel"),
-      okType: "danger",
+      title: t('outbound.message.confirm_delete'),
+      content: t('outbound.message.confirm_delete_multiple', {
+        count: selectedRowKeys.length,
+      }),
+      okText: t('common.confirm.ok'),
+      cancelText: t('common.confirm.cancel'),
+      okType: 'danger',
       onOk: _handleDeleteConfirm,
     });
   }, [selectedRowKeys, t, _handleDeleteConfirm]);
-
+  const onCancel = useCallback(
+    (record: DataType) => {
+      apiClient
+        .patch(`${update}/${record._id}`, {
+          status: 'cancelled',
+        })
+        .then(() => {
+          requestDataList();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    [requestDataList, t]
+  );
   const columns = useMemo(() => {
-    const baseColumns = RenderCol({ t });
+    const baseColumns = RenderCol({ t, onCancel });
     return [
       ...baseColumns,
       // {
@@ -232,7 +248,7 @@ const OutboundTable = () => {
       //   ),
       // },
     ];
-  }, [t]);
+  }, [t, onCancel]);
 
   const rowSelection = {
     selectedRowKeys,
@@ -246,17 +262,17 @@ const OutboundTable = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span>{t("outbound.title")}</span>
-          <div className="flex gap-2">
+        <CardTitle className='flex items-center justify-between'>
+          <span>{t('outbound.title')}</span>
+          <div className='flex gap-2'>
             <Button
-              variant="outline"
-              size="sm"
+              variant='outline'
+              size='sm'
               onClick={requestDataList}
               disabled={loading}
             >
               <ReloadOutlined />
-              {t("btn.refresh")}
+              {t('btn.refresh')}
             </Button>
             {/* <Button
               variant="destructive"
@@ -267,22 +283,22 @@ const OutboundTable = () => {
               <DeleteOutlined />
               {t("btn.delete")}
             </Button> */}
-            <Button size="sm" onClick={() => setIsOpen(true)}>
-              <Plus className="w-4 h-4" />
-              {t("btn.create_new")}
+            <Button size='sm' onClick={() => setIsOpen(true)}>
+              <Plus className='w-4 h-4' />
+              {t('btn.create_new')}
             </Button>
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
         <Table
-          rowKey="_id"
+          rowKey='_id'
           columns={columns}
           dataSource={dataList}
           loading={loading}
           rowSelection={rowSelection}
           pagination={false}
-          scroll={{ x: "calc(100vw - 640px)" }}
+          scroll={{ x: 'calc(100vw - 640px)' }}
         />
         <BasePagination
           current={pageInfo.page}
