@@ -1,0 +1,53 @@
+export const en = {
+  // Issue Time Schedule translations
+  'issue_time_schedule.table.section': 'Section',
+  'issue_time_schedule.table.factory': 'Factory',
+  'issue_time_schedule.table.line': 'Line',
+  'issue_time_schedule.table.product_no': 'Product No.',
+  'issue_time_schedule.table.customer_desc_1': 'Customer Desc 1',
+  'issue_time_schedule.table.customer_desc_2': 'Customer Desc 2',
+  'issue_time_schedule.table.internal_desc': 'Internal Desc',
+  'issue_time_schedule.table.issue_order_no': 'Issue Order No.',
+  'issue_time_schedule.table.plan_issue_date': 'Plan Issue Date',
+  'issue_time_schedule.table.required_time': 'Required Time',
+  'issue_time_schedule.table.issue_time': 'Issue Time',
+  'issue_time_schedule.table.user_id': 'User ID',
+  'issue_time_schedule.table.entry_date': 'Entry Date',
+  'issue_time_schedule.table.update_date': 'Update Date',
+  
+  // Issue Time Schedule Form
+  'issue_time_schedule.form.title': 'Issue Time Schedule',
+  'issue_time_schedule.form.create_title': 'Create Issue Time Schedule',
+  'issue_time_schedule.form.edit_title': 'Edit Issue Time Schedule',
+  'issue_time_schedule.form.detail_title': 'Issue Time Schedule Details',
+  
+  // Issue Time Schedule Actions
+  'issue_time_schedule.action.create': 'Create Schedule',
+  'issue_time_schedule.action.edit': 'Edit Schedule',
+  'issue_time_schedule.action.delete': 'Delete Schedule',
+  'issue_time_schedule.action.view_details': 'View Details',
+  
+  // Issue Time Schedule Messages
+  'issue_time_schedule.message.create_success': 'Issue time schedule created successfully',
+  'issue_time_schedule.message.update_success': 'Issue time schedule updated successfully',
+  'issue_time_schedule.message.delete_success': 'Issue time schedule deleted successfully',
+  'issue_time_schedule.message.delete_confirm': 'Are you sure you want to delete this issue time schedule?',
+  'issue_time_schedule.message.no_data': 'No issue time schedules found',
+  
+  // Common actions for tables
+  'common.action': 'Action',
+  'common.detail': 'Detail',
+  'common.edit': 'Edit',
+  'common.delete': 'Delete',
+  'common.confirm_delete': 'Are you sure you want to delete this item?',
+  'common.yes': 'Yes',
+  'common.no': 'No',
+  'common.create': 'Create',
+  'common.cancel': 'Cancel',
+  'common.save': 'Save',
+  'common.search': 'Search',
+  'common.filter': 'Filter',
+  'common.export': 'Export',
+  'common.import': 'Import',
+  'common.refresh': 'Refresh',
+};

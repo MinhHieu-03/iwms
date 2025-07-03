@@ -10,7 +10,7 @@ import {
 } from "antd";
 import Dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
-import { PickingItem } from "./PickingDrawer";
+import { PickingItem } from "./issue_time_schedule/PickingDrawer";
 
 interface PickingItemModalProps {
   selectedItem: PickingItem | null;

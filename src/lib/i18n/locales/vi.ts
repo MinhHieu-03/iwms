@@ -4,6 +4,7 @@ import { en as vi_device } from './en_more/device'
 import { vn as vi_navbar } from './vn_more/navbar'
 import { vi as vi_inbound } from './vn_more/inbound'
 import { vi as vi_outbound } from './vn_more/outbound'
+import { vi as vi_issue_time_schedule } from './vn_more/issue_time_schedule'
 
 export const vi: Record<TranslationKey, string> = {
   ...vi_mission,
@@ -11,6 +12,7 @@ export const vi: Record<TranslationKey, string> = {
   ...vi_navbar,
   ...vi_inbound,
   ...vi_outbound,
+  ...vi_issue_time_schedule,
   // Common
   save_changes: 'Lưu thay đổi',
   cancel: 'Hủy',
