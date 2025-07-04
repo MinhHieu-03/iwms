@@ -7,104 +7,80 @@ import PickingItemModal from "../PickingItemModal";
 
 interface PickingItem {
   id: number;
-  section_c: string;
-  line_c: string;
+  section_c?: string;
+  line_c?: string;
   issord_no: string;
   issord_dtl_no: string;
   material_no: string;
   issue_qty: number;
-  issued_qty: number;
-  plan_dt: string;
+  issued_qty?: number;
+  inventory_qty: number;
+  plan_dt?: string;
+  inventory: {
+    _id: string;
+    sku: string;
+    product_name: string;
+    locationId: string;
+    locationCode: string;
+    store: Array<{
+      key: string;
+      qty: number;
+    }>;
+    status: string;
+    available: number;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  };
 }
 
 interface PickingDrawerProps {
   open: boolean;
+  missionData: any[]; // Replace with the actual type if available
   onClose: () => void;
   data?: PickingItem[];
 }
 
 const defaultData: PickingItem[] = [
- {
-      "id": 1,
-      "section_c": "2671",
-      "line_c": "SUBC",
-      "issord_no": "KANB1101",
-      "issord_dtl_no": "T011757",
-      "material_no": "62730380                  ",
-      "issue_qty": 200,
-      "issued_qty": 200,
-      "plan_dt": "2025-06-10T17:00:00.000Z",
-    },
-    {
-      "id": 2,
-      "section_c": "9855",
-      "line_c": "ASY1",
-      "issord_no": "KANB1101",
-      "issord_dtl_no": "T974613",
-      "material_no": "60988854                  ",
-      "issue_qty": 1000,
-      "issued_qty": 1000,
-      "plan_dt": "2025-06-10T17:00:00.000Z",
-    },
-    {
-      "id": 3,
-      "section_c": "9855",
-      "line_c": "ASY1",
-      "issord_no": "KANB1101",
-      "issord_dtl_no": "T974614",
-      "material_no": "60988953                  ",
-      "issue_qty": 700,
-      "issued_qty": 700,
-      "plan_dt": "2025-06-10T17:00:00.000Z",
-    },
-    {
-      "id": 4,
-      "section_c": "9855",
-      "line_c": "ASY1",
-      "issord_no": "KANB1101",
-      "issord_dtl_no": "T974615",
-      "material_no": "13107026                  ",
-      "issue_qty": 300,
-      "issued_qty": 300,
-      "plan_dt": "2025-06-10T17:00:00.000Z",
-    },
-    {
-      "id": 5,
-      "section_c": "9855",
-      "line_c": "ASY1",
-      "issord_no": "KANB1101",
-      "issord_dtl_no": "T974616",
-      "material_no": "65206995                  ",
-      "issue_qty": 400,
-      "issued_qty": 400,
-      "plan_dt": "2025-06-10T17:00:00.000Z",
-    },
-    {
-      "id": 6,
-      "section_c": "9855",
-      "line_c": "ASY1",
-      "issord_no": "KANB1101",
-      "issord_dtl_no": "T974617",
-      "material_no": "13107021                  ",
-      "issue_qty": 400,
-      "issued_qty": 400,
-      "plan_dt": "2025-06-10T17:00:00.000Z",
-    },
-    {
-      "id": 7,
-      "section_c": "9855",
-      "line_c": "ASY1",
-      "issord_no": "KANB1101",
-      "issord_dtl_no": "T974618",
-      "material_no": "69228992                  ",
-      "issue_qty": 300,
-      "issued_qty": 300,
-      "plan_dt": "2025-06-10T17:00:00.000Z",
-    },
+  {
+    "id": 17,
+    "material_no": "19004803                  ",
+    "issord_no": "KANB1101",
+    "issord_dtl_no": "T974628",
+    "issue_qty": 1000,
+    "inventory_qty": 14000,
+    "inventory": {
+      "_id": "68678a1cef7da51a1db6f05b",
+      "sku": "19004803",
+      "product_name": "test",
+      "locationId": "68678a1625a739200aa35f5a",
+      "locationCode": "A-02/02-02",
+      "store": [
+        {
+          "key": "Carton",
+          "qty": 1
+        },
+        {
+          "key": "Bag",
+          "qty": 14
+        },
+        {
+          "key": "Item",
+          "qty": 14000
+        }
+      ],
+      "status": "fill",
+      "available": 14000,
+      "createdAt": "2025-07-04T08:00:28.128Z",
+      "updatedAt": "2025-07-04T08:03:50.690Z",
+      "__v": 0
+    }
+  }
 ];
 
 const PickingDrawer: React.FC<PickingDrawerProps> = ({
   open,
+  missionData,
   onClose,
   data = [],
 }) => {
@@ -118,7 +94,10 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
     const listVal = defaultData.filter((item) =>
       item.material_no.toLowerCase().includes(searchText.toLowerCase()) ||
       item.issord_no.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.issord_dtl_no.toLowerCase().includes(searchText.toLowerCase())
+      item.issord_dtl_no.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.inventory.sku.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.inventory.product_name.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.inventory.locationCode.toLowerCase().includes(searchText.toLowerCase())
     );
 
     if (searchText && listVal.length > 0) {
@@ -175,7 +154,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
             autoFocus
             ref={skuRef}
             value={inputValue}
-            placeholder="Tìm kiếm theo mã vật liệu, số lệnh xuất hoặc số chi tiết..."
+            placeholder="Tìm kiếm theo SKU, tên sản phẩm, vị trí, mã vật liệu, số lệnh xuất..."
             prefix={<Search className="h-4 w-4 text-gray-400" />}
             onChange={(e) => {
               const value = e.target.value.trim();
@@ -197,7 +176,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
           />
           <Table
             columns={columns}
-            dataSource={filteredData}
+            dataSource={missionData}
             rowKey="issord_dtl_no"
             pagination={false}
             size="middle"
@@ -227,55 +206,80 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
 // Define columns for the Ant Design table
 const columns: ColumnsType<PickingItem> = [
   {
+    title: "SKU",
+    dataIndex: ["inventory", "sku"],
+    key: "sku",
+    width: 120,
+  },
+  {
+    title: "Tên sản phẩm",
+    dataIndex: ["inventory", "product_name"],
+    key: "product_name",
+    width: 150,
+  },
+  {
+    title: "Vị trí",
+    dataIndex: ["inventory", "locationCode"],
+    key: "locationCode",
+    width: 120,
+  },
+  {
     title: "Mã vật tư",
     dataIndex: "material_no",
     key: "material_no",
     render: (text) => text?.trim(),
+    width: 150,
   },
   {
     title: "Mã KIT",
     dataIndex: "issord_no",
     key: "issord_no",
+    width: 120,
   },
   {
     title: "Mã KIT dtl",
     dataIndex: "issord_dtl_no",
     key: "issord_dtl_no",
-  },
-  {
-    title: "Phân loại",
-    dataIndex: "section_c",
-    key: "section_c",
-    width: 100,
-  },
-  {
-    title: "Dây chuyền",
-    dataIndex: "line_c",
-    key: "line_c",
-    width: 100,
+    width: 120,
   },
   {
     title: "Số lượng yêu cầu",
     dataIndex: "issue_qty",
     key: "issue_qty",
-    width: 150,
+    width: 130,
   },
   {
-    title: "Số lượng đã xuất",
-    dataIndex: "issued_qty",
-    key: "issued_qty",
-    width: 150,
+    title: "Số lượng tồn kho",
+    dataIndex: "inventory_qty",
+    key: "inventory_qty",
+    width: 140,
     render: (text, record) => (
-      <span className={record.issued_qty < record.issue_qty ? "text-orange-500" : "text-green-600"}>
-        {text}
+      <span className={record.inventory_qty < record.issue_qty ? "text-red-500 font-medium" : "text-green-600"}>
+        {text?.toLocaleString()}
       </span>
     ),
   },
   {
-    title: "Thời gian kế hoạch",
-    dataIndex: "plan_dt",
-    key: "plan_dt",
-    render: (text) => Dayjs(text).format("YYYY-MM-DD HH:mm"),
+    title: "Trạng thái",
+    dataIndex: ["inventory", "status"],
+    key: "status",
+    width: 100,
+    render: (status) => (
+      <span className={`px-2 py-1 rounded text-xs font-medium ${
+        status === 'fill' ? 'bg-green-100 text-green-800' : 
+        status === 'empty' ? 'bg-red-100 text-red-800' : 
+        'bg-yellow-100 text-yellow-800'
+      }`}>
+        {status === 'fill' ? 'Đầy' : status === 'empty' ? 'Trống' : status}
+      </span>
+    ),
+  },
+  {
+    title: "Số lượng có sẵn",
+    dataIndex: ["inventory", "available"],
+    key: "available",
+    width: 140,
+    render: (text) => text?.toLocaleString(),
   },
 ];
 export default PickingDrawer;

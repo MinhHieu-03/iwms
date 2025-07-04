@@ -37,6 +37,7 @@ const IssueTimeScheduleTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const [showPickingModal, setShowPickingModal] = useState(null);
+  const [missionData, setDataMission] = useState([]);
   const [formEdit, setFormEdit] = useState<{
     isOpen: boolean;
     data: IssueTimeScheduleDataType | Record<string, unknown>;
@@ -234,6 +235,22 @@ const IssueTimeScheduleTable = () => {
     requestDataList();
   }, [requestDataList]);
 
+  const orderPicking = () => {
+    if (selectedRowKeys.length === 0) {
+      message.warning(
+        "Please select at least one item to create a picking order"
+      );
+      return;
+    }
+    apiClient.post(`issue-time-schedule/picking-order`, {
+      issue_order_no: selectedRowKeys,
+    }).then(({data}) => {
+      message.success("Picking order created successfully");
+      setDataMission(data.metaData);
+    })
+    setShowPickingModal(selectedRowKeys);
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -241,17 +258,17 @@ const IssueTimeScheduleTable = () => {
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span>📅</span>
-              {t(`${lang_key}.title`, "Lịch trình phát hành")}
+              {t(`${lang_key}.title`, "Quản lý KIT")}
             </div>
             <div className="flex gap-2">
               <Button
-                onClick={() => setShowPickingModal(selectedRowKeys)}
+                onClick={orderPicking}
                 className="gap-2"
                 disabled={selectedRowKeys.length === 0}
                 size="sm"
               >
                 <Plus className="h-4 w-4" />
-                Tạo lệnh bốc hàng
+                Tạo lệnh xuất hàng
               </Button>
               <Button
                 onClick={requestDataList}
@@ -334,6 +351,7 @@ const IssueTimeScheduleTable = () => {
 
       <PickingDrawer
         open={showPickingModal}
+        missionData={missionData}
         onClose={() => setShowPickingModal(null)}
       />
     </div>

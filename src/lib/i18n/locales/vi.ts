@@ -540,7 +540,7 @@ export const vi: Record<TranslationKey, string> = {
   'inventory.sku': 'Mã SKU',
   'inventory.product_name': 'Tên sản phẩm',
   'inventory.location_code': 'Mã vị trí',
-  'inventory.store_items': 'Các mặt hàng lưu trữ',
+  'inventory.store_items': 'Mô hình lưu trữ nhập kho',
   'inventory.total_items': 'Tổng số mặt hàng',
   'inventory.status': 'Trạng thái',
   'inventory.created_at': 'Ngày tạo',

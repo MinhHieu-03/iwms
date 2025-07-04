@@ -229,10 +229,10 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
       setCurrentField("qty");
       setValue("");
     } else if (current === "qty") {
-      const count = value/skuMaster.pcs_bag
+      const count = skuMaster? value/skuMaster?.pcs_bag: 0
       form.setFieldValue("quantity", value);
       form.setFieldValue("bag_quantity", count);
-      if (skuMaster.new_pk_style === 1) {
+      if (skuMaster?.new_pk_style === 1) {
         setCurrentField("bin");
       } else {
         setCurrentField("sku");
@@ -330,7 +330,7 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
               <Input placeholder="Enter Bin code" className="w-full" />
             </Form.Item>
             <Form.Item
-              label={`Số lượng túi ${skuMaster.pcs_bag ? `(mặc định ${skuMaster.pcs_bag}/Túi)`: ''}`}
+              label={`Số lượng túi ${skuMaster?.pcs_bag ? `(mặc định ${skuMaster?.pcs_bag}/Túi)`: ''}`}
               name="bag_quantity"
               rules={[
                 { required: true, message: "Please input quantity!" },
@@ -366,8 +366,8 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
         <div className=" p-4 bg-white rounded-lg shadow-sm">
           <div className="text-center">
             <p className="text-lg text-gray-600 font-semibold mb-2">
-              {skuMaster.new_pk_style === 2 ? `Để nguyên thùng carton ` : ''}
-              {skuMaster.new_pk_style === 1 ? `Bỏ vào thùng nhựa ` : ''}
+              {skuMaster?.new_pk_style === 2 ? `Để nguyên thùng carton ` : ''}
+              {skuMaster?.new_pk_style === 1 ? `Bỏ vào thùng nhựa ` : ''}
             </p>
             <Input
               ref={refAction}
