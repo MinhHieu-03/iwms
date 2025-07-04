@@ -22,6 +22,7 @@ import OperatorInbound from "./pages/OperatorInbound";
 import InboundManagement from "@/components/inbound_management";
 // import Outbound_pick_to_line from "@/components/outbound_pick_to_line";
 import OperatorOutbound from "./pages/OperatorOutbound";
+import Inventory from "./pages/Inventory";
 import Outbound from "./pages/outbound";
 import OutboundOdd from "./pages/outbound_odd";
 import OrderHistory from "./pages/OrderHistory";
@@ -88,6 +89,7 @@ function App() {
                             path="/inbound-outbound/history"
                             element={<OrderHistory />}
                           />
+                          <Route path="/inventory" element={<Inventory />} />
                           <Route path="/missions" element={<Missions />} />
                           <Route
                             path="/missions/templates"

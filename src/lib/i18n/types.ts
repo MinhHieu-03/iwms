@@ -586,4 +586,5 @@ export type TranslationKey =
   | 'rows'
   | 'columns'
   | 'rack'
+  | 'inventory'
   | 'row_prefix';

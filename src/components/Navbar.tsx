@@ -18,6 +18,7 @@ import {
   ChevronRight,
   Smartphone,
   FileText,
+  Package,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -93,6 +94,11 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           path: "/inbound-outbound",
           name: "inbound_outbound" as TranslationKey,
           icon: <Truck className="w-5 h-5" />,
+        },
+        {
+          path: "/inventory",
+          name: "inventory" as TranslationKey,
+          icon: <Package className="w-5 h-5" />,
         },
         {
           path: "/layout",

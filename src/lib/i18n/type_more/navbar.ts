@@ -4,6 +4,7 @@ export type TranslationKey =
     | '/inbound-outbound'
     | '/layout'
     | '/missions'
+    | "/inventory"
     | '/warehouse-settings'
     | '/warehouse-settings/layout'
     | '/warehouse-settings/storage'
