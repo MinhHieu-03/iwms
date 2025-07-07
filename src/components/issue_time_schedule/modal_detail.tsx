@@ -1,7 +1,21 @@
-import { Modal, Descriptions, Tag } from "antd";
+import { Drawer, Descriptions, Tag, Table, Spin } from "antd";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
+import { useState, useEffect } from "react";
 import { IssueTimeScheduleDataType } from "./const";
+import apiClient from "@/lib/axios";
+
+interface IssueDataDetail {
+  id: number;
+  section_c: string;
+  line_c: string;
+  issord_no: string;
+  issord_dtl_no: string;
+  material_no: string;
+  issue_qty: number;
+  issued_qty: number;
+  plan_dt: string;
+}
 
 interface ModalDetailProps {
   isOpen: boolean;
@@ -15,20 +29,105 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
   data,
 }) => {
   const { t } = useTranslation();
+  const [issueDataDetails, setIssueDataDetails] = useState<IssueDataDetail[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch additional issue data when modal opens and data is available
+  useEffect(() => {
+    const fetchIssueData = async () => {
+      if (isOpen && data?.issue_ord_no) {
+        setLoading(true);
+        try {
+          const {data: issueData} = await apiClient.get(`issue-data/issord/${data.issue_ord_no}`);
+          setIssueDataDetails(issueData.metaData || []);
+        } catch (error) {
+          console.error('Error fetching issue data:', error);
+          setIssueDataDetails([]);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchIssueData();
+  }, [isOpen, data?.issue_ord_no]);
 
   if (!data) return null;
 
+  // Table columns for issue data details
+  const issueDataColumns = [
+    {
+      title: t("issue_time_schedule.table.id", "ID"),
+      dataIndex: "id",
+      key: "id",
+      width: 60,
+    },
+    {
+      title: t("issue_time_schedule.table.section", "Section"),
+      dataIndex: "section_c",
+      key: "section_c",
+      width: 80,
+      render: (text: string) => <Tag color="blue">{text}</Tag>,
+    },
+    {
+      title: t("issue_time_schedule.table.line", "Line"),
+      dataIndex: "line_c",
+      key: "line_c",
+      width: 80,
+      render: (text: string) => <Tag color="orange">{text}</Tag>,
+    },
+    {
+      title: t("issue_time_schedule.table.issue_order_detail", "Issue Order Detail"),
+      dataIndex: "issord_dtl_no",
+      key: "issord_dtl_no",
+      width: 120,
+    },
+    {
+      title: t("issue_time_schedule.table.material_no", "Material Number"),
+      dataIndex: "material_no",
+      key: "material_no",
+      width: 150,
+      render: (text: string) => text?.trim(),
+    },
+    {
+      title: t("issue_time_schedule.table.issue_qty", "Issue Qty"),
+      dataIndex: "issue_qty",
+      key: "issue_qty",
+      width: 80,
+      align: "right" as const,
+    },
+    {
+      title: t("issue_time_schedule.table.issued_qty", "Issued Qty"),
+      dataIndex: "issued_qty",
+      key: "issued_qty",
+      width: 80,
+      align: "right" as const,
+    },
+    {
+      title: t("issue_time_schedule.table.plan_date", "Plan Date"),
+      dataIndex: "plan_dt",
+      key: "plan_dt",
+      width: 120,
+      render: (text: string) => (
+        <Tag color="geekblue">
+          {dayjs(text).format("YYYY-MM-DD")}
+        </Tag>
+      ),
+    },
+  ];
+
   return (
-    <Modal
+    <Drawer
       title={t("issue_time_schedule.modal.detail_title", "Issue Time Schedule Details")}
       open={isOpen}
-      onCancel={onCancel}
-      footer={null}
-      width={900}
+      onClose={onCancel}
+      placement="bottom"
+      height="95vh"
+      className="issue-detail-drawer"
     >
       <div className="space-y-6">
         <Descriptions
-          title="Basic Information"
+          title={t("issue_time_schedule.modal.basic_information", "Basic Information")}
           bordered
           size="small"
           column={2}
@@ -60,7 +159,7 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
         </Descriptions>
 
         <Descriptions
-          title="Time Information"
+          title={t("issue_time_schedule.modal.time_information", "Time Information")}
           bordered
           size="small"
           column={1}
@@ -83,7 +182,7 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
         </Descriptions>
 
         <Descriptions
-          title="System Information"
+          title={t("issue_time_schedule.modal.system_information", "System Information")}
           bordered
           size="small"
           column={2}
@@ -101,24 +200,46 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
 
         {/* Timeline comparison */}
         <div className="bg-gray-50 p-4 rounded">
-          <h4 className="font-semibold mb-3">Time Comparison</h4>
+          <h4 className="font-semibold mb-3">{t("issue_time_schedule.modal.time_comparison", "Time Comparison")}</h4>
           <div className="space-y-2">
             <div className="flex items-center gap-4">
-              <span className="w-24 text-sm font-medium">Issue Time:</span>
+              <span className="w-24 text-sm font-medium">{t("issue_time_schedule.modal.issue_time_label", "Issue Time")}:</span>
               <Tag color="red">{dayjs(data.time_issue).format("HH:mm")}</Tag>
             </div>
             <div className="flex items-center gap-4">
-              <span className="w-24 text-sm font-medium">Required Time:</span>
+              <span className="w-24 text-sm font-medium">{t("issue_time_schedule.modal.required_time_label", "Required Time")}:</span>
               <Tag color="lime">{dayjs(data.A_reqd_time).format("HH:mm")}</Tag>
             </div>
             <div className="flex items-center gap-4">
-              <span className="w-24 text-sm font-medium">Plan Issue:</span>
+              <span className="w-24 text-sm font-medium">{t("issue_time_schedule.modal.plan_issue_label", "Plan Issue")}:</span>
               <Tag color="cyan">{dayjs(data.plan_issue_dt).format("HH:mm")}</Tag>
             </div>
           </div>
         </div>
+
+        {/* Issue Data Details Table */}
+        <div>
+          <h4 className="font-semibold mb-3">
+            {t("issue_time_schedule.modal.issue_data_details", "Issue Data Details")}
+          </h4>
+          <Spin spinning={loading}>
+            <Table
+              columns={issueDataColumns}
+              dataSource={issueDataDetails}
+              rowKey="id"
+              size="small"
+              scroll={{ x: 800 }}
+              pagination={{
+                pageSize: 10,
+                showSizeChanger: true,
+                showTotal: (total, range) =>
+                  `${range[0]}-${range[1]} of ${total} items`,
+              }}
+            />
+          </Spin>
+        </div>
       </div>
-    </Modal>
+    </Drawer>
   );
 };
 

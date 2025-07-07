@@ -4,6 +4,7 @@ import { en as en_device } from './en_more/device'
 import { en as en_navbar } from './en_more/navbar'
 import { en as en_inbound } from './en_more/inbound'
 import { en as en_outbound } from './en_more/outbound'
+import { en as en_issue_time_schedule } from './en_more/issue_time_schedule'
 
 export const en: Record<TranslationKey, string> = {
   ...en_mission,
@@ -11,6 +12,7 @@ export const en: Record<TranslationKey, string> = {
   ...en_navbar,
   ...en_inbound,
   ...en_outbound,
+  ...en_issue_time_schedule,
   // Common
   save_changes: 'Lưu thay đổi',
   cancel: 'Cancel',
@@ -171,11 +173,8 @@ export const en: Record<TranslationKey, string> = {
   'common.row': 'Row',
   'btn.create_new': 'Create new',
   'btn.reload': 'Refresh',
-  'btn.save': 'Save',
-  'btn.cancel': 'Cancel',
   'btn.refresh': 'Refresh',
   'btn.delete_selected': 'Delete Selected',
-  'btn.edit': 'Edit',
   // Rack Management
   'rack.management': 'Rack Management',
   'rack.management.title': 'Rack Management',

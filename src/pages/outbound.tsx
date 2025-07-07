@@ -241,10 +241,10 @@ const OrdersTab: React.FC = () => {
   return (
     <div className="space-y-6">
       <Issue_time_schedule />
-      <PickingDrawer
+      {/* <PickingDrawer
         open={showPickingModal}
         onClose={() => setShowPickingModal(false)}
-      />
+      /> */}
     </div>
   );
 };
