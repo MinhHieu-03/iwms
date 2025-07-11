@@ -149,11 +149,25 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
     },
     {
       dataIndex: "status",
-      title: t(`${lang_key}.status`),
+      title: t(`common.status`),
       width: 100,
-      render: (value: string) => (
-        <Tag color={getStatusColor(value)}>{value}</Tag>
-      ),
+    render: (status: string) => {
+      const statusMap: Record<string, { text: string; color: string }> = {
+        wait_fill: { text: t("status.wait_fill"), color: "orange" },
+        fill: { text: t("status.fill"), color: "blue" },
+        in_progress: { text: t("status.in_progress"), color: "processing" },
+        completed: { text: t("status.completed"), color: "success" },
+        low_stock: { text: t("status.low_stock"), color: "warning" },
+        out_of_stock: { text: t("status.out_of_stock"), color: "error" },
+      };
+      
+      const statusInfo = statusMap[status] || { text: t("status.unknown"), color: "default" };
+      return (
+        <Tag color={statusInfo.color}>
+          {statusInfo.text}
+        </Tag>
+      );
+    },
     },
     {
       dataIndex: "createdAt",

@@ -138,7 +138,7 @@ const ModalAdd = ({
         form.setFields([
           {
             name: 'quantity',
-            errors: ['Quantity must be a valid number greater than 0'],
+            errors: ['Số lượng phải là số hợp lệ lớn hơn 0'],
           },
         ]);
         return;
@@ -148,7 +148,7 @@ const ModalAdd = ({
         form.setFields([
           {
             name: 'bag_quantity',
-            errors: ['Bag quantity must be a valid number greater than 0'],
+            errors: ['Số lượng túi phải là số hợp lệ lớn hơn 0'],
           },
         ]);
         return;
@@ -283,6 +283,7 @@ const ModalAdd = ({
       speechSynthesis.speak(utterance);
     }
   };
+  
 
   return (
     <Drawer
@@ -313,16 +314,16 @@ const ModalAdd = ({
             <Form.Item
               label={<span className="text-2xl font-bold">Mã vật tư</span>}
               name="sku"
-              rules={[{ required: true, message: "Please input SKU!" }]}
+              rules={[{ required: true, message: "Vui lòng nhập mã vật tư!" }]}
             >
-              <Input placeholder="Enter SKU" className="text-2xl font-bold h-16" style={{ fontSize: '24px' }} />
+              <Input placeholder="Nhập mã vật tư" className="text-2xl font-bold h-16" style={{ fontSize: '24px' }} />
             </Form.Item>
             <Form.Item
               label={<span className="text-2xl font-bold">Tên vật tư</span>}
               name="name"
-              rules={[{ required: true, message: "Please input SKU!" }]}
+              rules={[{ required: true, message: "Vui lòng nhập tên vật tư!" }]}
             >
-              <Input placeholder="Enter Name" className="text-2xl font-bold h-16" style={{ fontSize: '24px' }} />
+              <Input placeholder="Nhập tên vật tư" className="text-2xl font-bold h-16" style={{ fontSize: '24px' }} />
             </Form.Item>
           </div>
 
@@ -331,10 +332,10 @@ const ModalAdd = ({
               label={<span className="text-2xl font-bold">Phương pháp lưu trữ</span>}
               name="storeMethod"
               rules={[
-                { required: true, message: "Please select store method!" },
+                { required: true, message: "Vui lòng chọn phương pháp lưu trữ!" },
               ]}
             >
-              <Select placeholder="Select store method" loading={loading} className="text-2xl font-bold h-16" size="large" style={{ fontSize: '24px' }}>
+              <Select placeholder="Chọn phương pháp lưu trữ" loading={loading} className="text-2xl font-bold h-16" size="large" style={{ fontSize: '24px' }}>
                 {storeUnits?.map((method) => (
                   <Select.Option key={method} value={method} className="text-2xl font-bold" style={{ fontSize: '24px' }}>
                     {method}
@@ -352,10 +353,10 @@ const ModalAdd = ({
               label={<span className="text-2xl font-bold">Phương pháp đóng gói</span>}
               name="packingMethod"
               rules={[
-                { required: true, message: "Please select packing method!" },
+                { required: true, message: "Vui lòng chọn phương pháp đóng gói!" },
               ]}
             >
-              <Select placeholder="Select packing method" loading={loading} className="text-2xl font-bold h-16" size="large" style={{ fontSize: '24px' }}>
+              <Select placeholder="Chọn phương pháp đóng gói" loading={loading} className="text-2xl font-bold h-16" size="large" style={{ fontSize: '24px' }}>
                 {storageData?.map((method) => (
                   <Select.Option key={method} value={method} className="text-2xl font-bold" style={{ fontSize: '24px' }}>
                     {method}
@@ -372,22 +373,22 @@ const ModalAdd = ({
           </div>
           <div className="grid grid-cols-2 gap-8">
             <Form.Item label={<span className="text-2xl font-bold">Mã thùng</span>} name="bin_code">
-              <Input placeholder="Enter Bin code" className="w-full text-2xl font-bold h-16" style={{ fontSize: '24px' }} />
+              <Input placeholder="Nhập mã thùng" className="w-full text-2xl font-bold h-16" style={{ fontSize: '24px' }} />
             </Form.Item>
             <Form.Item
               label={<span className="text-2xl font-bold">{`Số lượng túi ${skuMaster?.pcs_bag ? `(mặc định ${skuMaster?.pcs_bag}/Túi)`: ''}`}</span>}
               name="bag_quantity"
               rules={[
-                { required: true, message: "Please input quantity!" },
+                { required: true, message: "Vui lòng nhập số lượng túi!" },
                 {
                   type: "number",
                   min: 1,
-                  message: "Quantity must be greater than 0!",
+                  message: "Số lượng phải lớn hơn 0!",
                 },
                 {
                   validator: (_, value) => {
                     if (value && isNaN(Number(value))) {
-                      return Promise.reject(new Error('Bag quantity must be a valid number!'));
+                      return Promise.reject(new Error('Số lượng túi phải là số hợp lệ!'));
                     }
                     return Promise.resolve();
                   },
@@ -409,16 +410,16 @@ const ModalAdd = ({
               label={<span className="text-2xl font-bold">Số lượng</span>}
               name="quantity"
               rules={[
-                { required: true, message: "Please input quantity!" },
+                { required: true, message: "Vui lòng nhập số lượng!" },
                 {
                   type: "number",
                   min: 1,
-                  message: "Quantity must be greater than 0!",
+                  message: "Số lượng phải lớn hơn 0!",
                 },
                 {
                   validator: (_, value) => {
                     if (value && isNaN(Number(value))) {
-                      return Promise.reject(new Error('Quantity must be a valid number!'));
+                      return Promise.reject(new Error('Số lượng phải là số hợp lệ!'));
                     }
                     return Promise.resolve();
                   },
@@ -426,7 +427,7 @@ const ModalAdd = ({
               ]}
             >
               <InputNumber 
-                placeholder="Enter quantity" 
+                placeholder="Nhập số lượng" 
                 className="w-full text-2xl font-bold h-16" 
                 size="large" 
                 style={{ fontSize: '24px' }}
@@ -441,12 +442,13 @@ const ModalAdd = ({
         <div className=" p-6 bg-white rounded-lg shadow-sm">
           <div className="text-center">
             <p className="text-4xl text-gray-600 font-bold mb-6">
-              {skuMaster?.new_pk_style === 2 ? `Để nguyên thùng carton ` : ''}
-              {skuMaster?.new_pk_style === 1 ? `Bỏ vào thùng nhựa ` : ''}
+              {/* {skuMaster?.new_pk_style === 2 ? `Để nguyên thùng carton ` : ''}
+              {skuMaster?.new_pk_style === 1 ? `Bỏ vào thùng nhựa ` : ''} */}
+              {mapMessage[current]}
             </p>
             <Input
               ref={refAction}
-              placeholder="Enter picking quantity or next action"
+              placeholder={mapMessage[current]}
               autoFocus
               className="text-center text-3xl font-bold h-20"
               size="large"
@@ -482,10 +484,10 @@ const ModalAdd = ({
                 size="large"
                 style={{ fontSize: '24px' }}
               >
-                Cancel
+                Hủy
               </Button>
               <Button onClick={() => handleSubmit()} type="primary" className="h-16 px-12 text-2xl font-bold" size="large" style={{ fontSize: '24px' }}>
-                Next
+                Tiếp theo
               </Button>
             </div>
           </div>
@@ -497,6 +499,12 @@ const ModalAdd = ({
 };
 
 export default ModalAdd;
+
+const mapMessage = {
+  sku: "Nhập mã vật tư",
+  qty: "Nhập số lượng",
+  bin: "Nhập mã thùng",
+}
 
 // const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
 
