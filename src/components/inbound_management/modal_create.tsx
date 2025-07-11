@@ -7,6 +7,36 @@ import { useTranslation } from "react-i18next";
 
 import { useEffect, useRef, useState } from "react";
 
+const text2void = (text, isVN = true) => {
+  if ("speechSynthesis" in window) {
+    const lang = isVN ? "vi-VN" : "en-US";
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = 0.9;
+    utterance.volume = 0.5;
+
+     // Lấy danh sách giọng
+    const voices = window.speechSynthesis.getVoices();
+
+    // Ưu tiên chọn giọng nam tiếng Việt nếu có
+    const vietnameseMaleVoice = voices.find(
+        voice => voice.lang === lang && /nam|male/i.test(voice.name)
+    );
+
+    // Nếu không có giọng nam, chọn bất kỳ giọng tiếng Việt nào
+    const vietnameseVoice = vietnameseMaleVoice || voices.find(voice => voice.lang === lang);
+
+    if (vietnameseVoice) {
+        utterance.voice = vietnameseVoice;
+        console.log("Dùng giọng:", vietnameseVoice.name);
+    } else {
+        console.warn("Không tìm thấy giọng tiếng Việt.");
+    }
+
+    speechSynthesis.speak(utterance);
+  }
+};
+
 type TAdd = {
   title: string;
   itemsRender?: TypeRenderForm[];
@@ -24,7 +54,6 @@ const ModalAdd = ({
   setIsOpen,
   type,
 }: TAdd) => {
-  
   const [form] = Form.useForm();
   const [masterData, setMasterData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -41,7 +70,7 @@ const ModalAdd = ({
     form.resetFields();
     setValue("");
     setSkuMaster({});
-  }
+  };
 
   // Fetch master data on component mount
   const fetchMasterData = async () => {
@@ -100,16 +129,12 @@ const ModalAdd = ({
         console.log("Item found in master data:", item);
       } else {
         if ("speechSynthesis" in window) {
-          const utterance = new SpeechSynthesisUtterance(`Vật tư Không hợp lệ`);
-      utterance.lang = 'vi-VN';
-          utterance.rate = 0.9;
-          utterance.volume = 0.5;
-          speechSynthesis.speak(utterance);
+          text2void(`Vật tư Không hợp lệ`);
         }
         form.setFields([
           {
-            name: 'sku',
-            errors: ['Mã vật tư không tồn tại trong dữ liệu'],
+            name: "sku",
+            errors: ["Mã vật tư không tồn tại trong dữ liệu"],
           },
         ]);
       }
@@ -129,39 +154,45 @@ const ModalAdd = ({
     try {
       // Validate the form before submitting
       await form.validateFields();
-      
+
       const values = form.getFieldsValue();
       console.log("Form submitted:", values);
       console.log("Master data available:", masterData);
-      
+
       // Additional validation for numeric fields
       if (isNaN(Number(values.quantity)) || Number(values.quantity) <= 0) {
         form.setFields([
           {
-            name: 'quantity',
-            errors: ['Số lượng phải là số hợp lệ lớn hơn 0'],
+            name: "quantity",
+            errors: ["Số lượng phải là số hợp lệ lớn hơn 0"],
           },
         ]);
         return;
       }
-      
-      if (isNaN(Number(values.bag_quantity)) || Number(values.bag_quantity) <= 0) {
+
+      if (
+        isNaN(Number(values.bag_quantity)) ||
+        Number(values.bag_quantity) <= 0
+      ) {
         form.setFields([
           {
-            name: 'bag_quantity',
-            errors: ['Số lượng túi phải là số hợp lệ lớn hơn 0'],
+            name: "bag_quantity",
+            errors: ["Số lượng túi phải là số hợp lệ lớn hơn 0"],
           },
         ]);
         return;
       }
-      
+
       const body = {
         product_name: values.name,
         sku: values.sku,
         store: [
           { key: values.storeMethod, qty: 1 },
           { key: values.packingMethod, qty: Number(values.bag_quantity) },
-          { key: storageData[storageData.length-1], qty: Number(values.quantity) },
+          {
+            key: storageData[storageData.length - 1],
+            qty: Number(values.quantity),
+          },
         ],
       };
       await apiClient.post("/inbound", body);
@@ -170,7 +201,7 @@ const ModalAdd = ({
       console.log("Form_values:", body);
     } catch (error) {
       console.error("Error during form submission:", error);
-      
+
       // If it's a validation error, don't proceed
       if (error.errorFields) {
         console.log("Validation errors:", error.errorFields);
@@ -252,7 +283,7 @@ const ModalAdd = ({
         // Voice feedback for invalid input
         if ("speechSynthesis" in window) {
           const utterance = new SpeechSynthesisUtterance(`Không hợp lệ`);
-      utterance.lang = 'vi-VN';
+          utterance.lang = "vi-VN";
           utterance.rate = 0.9;
           utterance.volume = 0.5;
           speechSynthesis.speak(utterance);
@@ -260,8 +291,8 @@ const ModalAdd = ({
         setValue("");
         return;
       }
-      
-      const count = skuMaster? Number(value)/skuMaster?.pcs_bag: 0
+
+      const count = skuMaster ? Number(value) / skuMaster?.pcs_bag : 0;
       form.setFieldValue("quantity", Number(value));
       form.setFieldValue("bag_quantity", count);
       if (skuMaster?.new_pk_style === 1) {
@@ -279,14 +310,9 @@ const ModalAdd = ({
     }
 
     if (value && "speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(`OK`);
-      utterance.lang = 'vi-VN';
-      utterance.rate = 0.9;
-      utterance.volume = 0.5;
-      speechSynthesis.speak(utterance);
+      text2void(`OK`, false);
     }
   };
-  
 
   return (
     <Drawer
@@ -303,200 +329,301 @@ const ModalAdd = ({
       footer={null}
       // width={600}
     >
-      
-    <div>
-      <div className="space-y-4 mt-5 bg-gray-50 p-4 rounded-lg">
-        {" "}
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          className="bg-white py-0 px-8 rounded-lg shadow-sm text-2xl font-bold"
-        >
-          <div className="grid grid-cols-2 gap-8">
-            <Form.Item
-              label={<span className="text-2xl font-bold">Mã vật tư</span>}
-              name="sku"
-              rules={[{ required: true, message: "Vui lòng nhập mã vật tư!" }]}
-            >
-              <Input placeholder="Nhập mã vật tư" className="text-2xl font-bold h-16" style={{ fontSize: '24px' }} />
-            </Form.Item>
-            <Form.Item
-              label={<span className="text-2xl font-bold">Tên vật tư</span>}
-              name="name"
-              rules={[{ required: true, message: "Vui lòng nhập tên vật tư!" }]}
-            >
-              <Input placeholder="Nhập tên vật tư" className="text-2xl font-bold h-16" style={{ fontSize: '24px' }} />
-            </Form.Item>
-          </div>
-
-          <div className="grid grid-cols-2 gap-8">
-            <Form.Item
-              label={<span className="text-2xl font-bold">Phương pháp lưu trữ</span>}
-              name="storeMethod"
-              rules={[
-                { required: true, message: "Vui lòng chọn phương pháp lưu trữ!" },
-              ]}
-            >
-              <Select placeholder="Chọn phương pháp lưu trữ" loading={loading} className="text-2xl font-bold h-16" size="large" style={{ fontSize: '24px' }}>
-                {storeUnits?.map((method) => (
-                  <Select.Option key={method} value={method} className="text-2xl font-bold" style={{ fontSize: '24px' }}>
-                    {method}
-                  </Select.Option>
-                )) || (
-                  <>
-                    <Select.Option value="bin" className="text-2xl font-bold" style={{ fontSize: '24px' }}>Bin</Select.Option>
-                    <Select.Option value="carton" className="text-2xl font-bold" style={{ fontSize: '24px' }}>Carton</Select.Option>
-                  </>
-                )}
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              label={<span className="text-2xl font-bold">Phương pháp đóng gói</span>}
-              name="packingMethod"
-              rules={[
-                { required: true, message: "Vui lòng chọn phương pháp đóng gói!" },
-              ]}
-            >
-              <Select placeholder="Chọn phương pháp đóng gói" loading={loading} className="text-2xl font-bold h-16" size="large" style={{ fontSize: '24px' }}>
-                {storageData?.map((method) => (
-                  <Select.Option key={method} value={method} className="text-2xl font-bold" style={{ fontSize: '24px' }}>
-                    {method}
-                  </Select.Option>
-                )) || (
-                  <>
-                    <Select.Option value="bin" className="text-2xl font-bold" style={{ fontSize: '24px' }}>Bin</Select.Option>
-                    <Select.Option value="carton" className="text-2xl font-bold" style={{ fontSize: '24px' }}>Carton</Select.Option>
-                    <Select.Option value="kit" className="text-2xl font-bold" style={{ fontSize: '24px' }}>Kit</Select.Option>
-                  </>
-                )}
-              </Select>
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-2 gap-8">
-            <Form.Item label={<span className="text-2xl font-bold">Mã thùng</span>} name="bin_code">
-              <Input placeholder="Nhập mã thùng" className="w-full text-2xl font-bold h-16" style={{ fontSize: '24px' }} />
-            </Form.Item>
-            <Form.Item
-              label={<span className="text-2xl font-bold">{`Số lượng túi ${skuMaster?.pcs_bag ? `(mặc định ${skuMaster?.pcs_bag}/Túi)`: ''}`}</span>}
-              name="bag_quantity"
-              rules={[
-                { required: true, message: "Vui lòng nhập số lượng túi!" },
-                {
-                  type: "number",
-                  min: 1,
-                  message: "Số lượng phải lớn hơn 0!",
-                },
-                {
-                  validator: (_, value) => {
-                    if (value && isNaN(Number(value))) {
-                      return Promise.reject(new Error('Số lượng túi phải là số hợp lệ!'));
-                    }
-                    return Promise.resolve();
-                  },
-                },
-              ]}
-            >
-              <InputNumber 
-                placeholder="Số lượng túi" 
-                className="w-full text-2xl font-bold h-16" 
-                size="large" 
-                style={{ fontSize: '24px' }}
-                parser={(value) => value ? value.replace(/\D/g, '') : ''}
-                formatter={(value) => value ? `${value}` : ''}
-              />
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-1 gap-8">
-            <Form.Item
-              label={<span className="text-2xl font-bold">Số lượng</span>}
-              name="quantity"
-              rules={[
-                { required: true, message: "Vui lòng nhập số lượng!" },
-                {
-                  type: "number",
-                  min: 1,
-                  message: "Số lượng phải lớn hơn 0!",
-                },
-                {
-                  validator: (_, value) => {
-                    if (value && isNaN(Number(value))) {
-                      return Promise.reject(new Error('Số lượng phải là số hợp lệ!'));
-                    }
-                    return Promise.resolve();
-                  },
-                },
-              ]}
-            >
-              <InputNumber 
-                placeholder="Nhập số lượng" 
-                className="w-full text-2xl font-bold h-16" 
-                size="large" 
-                style={{ fontSize: '24px' }}
-                parser={(value) => value ? value.replace(/\D/g, '') : ''}
-                formatter={(value) => value ? `${value}` : ''}
-              />
-            </Form.Item>
-          </div>
-        </Form>
-      </div>
-      <div className="space-y-4 mt-5 bg-gray-50 p-4 rounded-lg">
-        <div className=" p-6 bg-white rounded-lg shadow-sm">
-          <div className="text-center">
-            <p className="text-4xl text-gray-600 font-bold mb-6">
-              {/* {skuMaster?.new_pk_style === 2 ? `Để nguyên thùng carton ` : ''}
-              {skuMaster?.new_pk_style === 1 ? `Bỏ vào thùng nhựa ` : ''} */}
-              {mapMessage[current]}
-            </p>
-            <Input
-              ref={refAction}
-              placeholder={mapMessage[current]}
-              autoFocus
-              className="text-center text-3xl font-bold h-20"
-              size="large"
-              style={{ fontSize: '32px' }}
-              value={value}
-              onChange={handleAction}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  // handleAction(value)
-                  handleActionForm(value);
-                  // if (!isNaN(+value)) {
-                  //   form.setFieldValue("quantity", value);
-                  //   setValue("");
-                  //   // Voice feedback for SKU entry
-                  //   if (value && "speechSynthesis" in window) {
-                  //     const utterance = new SpeechSynthesisUtterance(`OK`);
-                  //     utterance.rate = 0.9;
-                  //     utterance.volume = 0.5;
-                  //     speechSynthesis.speak(utterance);
-                  //   }
-                  // }
-                }
-              }}
-            />
-            <div className="flex justify-center mt-8 gap-6">
-              <Button
-                onClick={() => {
-                  form.resetFields();
-                  handleClose();
-                }}
-                type="default"
-                className="h-16 px-12 text-2xl font-bold"
-                size="large"
-                style={{ fontSize: '24px' }}
+      <div>
+        <div className="space-y-4 mt-5 bg-gray-50 p-4 rounded-lg">
+          {" "}
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+            className="bg-white py-0 px-8 rounded-lg shadow-sm text-2xl font-bold"
+          >
+            <div className="grid grid-cols-2 gap-8">
+              <Form.Item
+                label={<span className="text-2xl font-bold">Mã vật tư</span>}
+                name="sku"
+                rules={[
+                  { required: true, message: "Vui lòng nhập mã vật tư!" },
+                ]}
               >
-                Hủy
-              </Button>
-              <Button onClick={() => handleSubmit()} type="primary" className="h-16 px-12 text-2xl font-bold" size="large" style={{ fontSize: '24px' }}>
-                Tiếp theo
-              </Button>
+                <Input
+                  placeholder="Nhập mã vật tư"
+                  className="text-2xl font-bold h-16"
+                  style={{ fontSize: "24px" }}
+                />
+              </Form.Item>
+              <Form.Item
+                label={<span className="text-2xl font-bold">Tên vật tư</span>}
+                name="name"
+                rules={[
+                  { required: true, message: "Vui lòng nhập tên vật tư!" },
+                ]}
+              >
+                <Input
+                  placeholder="Nhập tên vật tư"
+                  className="text-2xl font-bold h-16"
+                  style={{ fontSize: "24px" }}
+                />
+              </Form.Item>
+            </div>
+
+            <div className="grid grid-cols-2 gap-8">
+              <Form.Item
+                label={
+                  <span className="text-2xl font-bold">
+                    Phương pháp lưu trữ
+                  </span>
+                }
+                name="storeMethod"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng chọn phương pháp lưu trữ!",
+                  },
+                ]}
+              >
+                <Select
+                  placeholder="Chọn phương pháp lưu trữ"
+                  loading={loading}
+                  className="text-2xl font-bold h-16"
+                  size="large"
+                  style={{ fontSize: "24px" }}
+                >
+                  {storeUnits?.map((method) => (
+                    <Select.Option
+                      key={method}
+                      value={method}
+                      className="text-2xl font-bold"
+                      style={{ fontSize: "24px" }}
+                    >
+                      {method}
+                    </Select.Option>
+                  )) || (
+                    <>
+                      <Select.Option
+                        value="bin"
+                        className="text-2xl font-bold"
+                        style={{ fontSize: "24px" }}
+                      >
+                        Bin
+                      </Select.Option>
+                      <Select.Option
+                        value="carton"
+                        className="text-2xl font-bold"
+                        style={{ fontSize: "24px" }}
+                      >
+                        Carton
+                      </Select.Option>
+                    </>
+                  )}
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                label={
+                  <span className="text-2xl font-bold">
+                    Phương pháp đóng gói
+                  </span>
+                }
+                name="packingMethod"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng chọn phương pháp đóng gói!",
+                  },
+                ]}
+              >
+                <Select
+                  placeholder="Chọn phương pháp đóng gói"
+                  loading={loading}
+                  className="text-2xl font-bold h-16"
+                  size="large"
+                  style={{ fontSize: "24px" }}
+                >
+                  {storageData?.map((method) => (
+                    <Select.Option
+                      key={method}
+                      value={method}
+                      className="text-2xl font-bold"
+                      style={{ fontSize: "24px" }}
+                    >
+                      {method}
+                    </Select.Option>
+                  )) || (
+                    <>
+                      <Select.Option
+                        value="bin"
+                        className="text-2xl font-bold"
+                        style={{ fontSize: "24px" }}
+                      >
+                        Bin
+                      </Select.Option>
+                      <Select.Option
+                        value="carton"
+                        className="text-2xl font-bold"
+                        style={{ fontSize: "24px" }}
+                      >
+                        Carton
+                      </Select.Option>
+                      <Select.Option
+                        value="kit"
+                        className="text-2xl font-bold"
+                        style={{ fontSize: "24px" }}
+                      >
+                        Kit
+                      </Select.Option>
+                    </>
+                  )}
+                </Select>
+                
+              </Form.Item>
+            </div>
+            <div className="grid grid-cols-2 gap-8">
+              <Form.Item
+                label={<span className="text-2xl font-bold">Mã thùng</span>}
+                name="bin_code"
+              >
+                <Input
+                  placeholder="Nhập mã thùng"
+                  className="w-full text-2xl font-bold h-16"
+                  style={{ fontSize: "24px" }}
+                />
+              </Form.Item>
+              <Form.Item
+                label={
+                  <span className="text-2xl font-bold">{`Số lượng túi ${
+                    skuMaster?.pcs_bag
+                      ? `(mặc định ${skuMaster?.pcs_bag}/Túi)`
+                      : ""
+                  }`}</span>
+                }
+                name="bag_quantity"
+                rules={[
+                  { required: true, message: "Vui lòng nhập số lượng túi!" },
+                  {
+                    type: "number",
+                    min: 1,
+                    message: "Số lượng phải lớn hơn 0!",
+                  },
+                  {
+                    validator: (_, value) => {
+                      if (value && isNaN(Number(value))) {
+                        return Promise.reject(
+                          new Error("Số lượng túi phải là số hợp lệ!")
+                        );
+                      }
+                      return Promise.resolve();
+                    },
+                  },
+                ]}
+              >
+                <InputNumber
+                  placeholder="Số lượng túi"
+                  className="w-full text-2xl font-bold h-16"
+                  size="large"
+                  style={{ fontSize: "24px" }}
+                  parser={(value) => (value ? value.replace(/\D/g, "") : "")}
+                  formatter={(value) => (value ? `${value}` : "")}
+                />
+              </Form.Item>
+            </div>
+            <div className="grid grid-cols-1 gap-8">
+              <Form.Item
+                label={<span className="text-2xl font-bold">Số lượng</span>}
+                name="quantity"
+                rules={[
+                  { required: true, message: "Vui lòng nhập số lượng!" },
+                  {
+                    type: "number",
+                    min: 1,
+                    message: "Số lượng phải lớn hơn 0!",
+                  },
+                  {
+                    validator: (_, value) => {
+                      if (value && isNaN(Number(value))) {
+                        return Promise.reject(
+                          new Error("Số lượng phải là số hợp lệ!")
+                        );
+                      }
+                      return Promise.resolve();
+                    },
+                  },
+                ]}
+              >
+                <InputNumber
+                  placeholder="Nhập số lượng"
+                  className="w-full text-2xl font-bold h-16"
+                  size="large"
+                  style={{ fontSize: "24px" }}
+                  parser={(value) => (value ? value.replace(/\D/g, "") : "")}
+                  formatter={(value) => (value ? `${value}` : "")}
+                />
+              </Form.Item>
+            </div>
+          </Form>
+        </div>
+        <div className="space-y-4 mt-5 bg-gray-50 p-4 rounded-lg">
+          <div className=" p-6 bg-white rounded-lg shadow-sm">
+            <div className="text-center">
+              <p className="text-4xl text-gray-600 font-bold mb-6">
+                {/* {skuMaster?.new_pk_style === 2 ? `Để nguyên thùng carton ` : ''}
+              {skuMaster?.new_pk_style === 1 ? `Bỏ vào thùng nhựa ` : ''} */}
+                {mapMessage[current]}
+              </p>
+              <Input
+                ref={refAction}
+                placeholder={mapMessage[current]}
+                autoFocus
+                className="text-center text-3xl font-bold h-20"
+                size="large"
+                style={{ fontSize: "32px" }}
+                value={value}
+                onChange={handleAction}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    // handleAction(value)
+                    handleActionForm(value);
+                    // if (!isNaN(+value)) {
+                    //   form.setFieldValue("quantity", value);
+                    //   setValue("");
+                    //   // Voice feedback for SKU entry
+                    //   if (value && "speechSynthesis" in window) {
+                    //     const utterance = new SpeechSynthesisUtterance(`OK`);
+                    //     utterance.rate = 0.9;
+                    //     utterance.volume = 0.5;
+                    //     speechSynthesis.speak(utterance);
+                    //   }
+                    // }
+                  }
+                }}
+              />
+              <div className="flex justify-center mt-8 gap-6">
+                <Button
+                  onClick={() => {
+                    form.resetFields();
+                    handleClose();
+                  }}
+                  type="default"
+                  className="h-16 px-12 text-2xl font-bold"
+                  size="large"
+                  style={{ fontSize: "24px" }}
+                >
+                  Hủy
+                </Button>
+                <Button
+                  onClick={() => handleSubmit()}
+                  type="primary"
+                  className="h-16 px-12 text-2xl font-bold"
+                  size="large"
+                  style={{ fontSize: "24px" }}
+                >
+                  Tiếp theo
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </Drawer>
   );
 };
@@ -507,7 +634,7 @@ const mapMessage = {
   sku: "Nhập mã vật tư",
   qty: "Nhập số lượng",
   bin: "Nhập mã thùng",
-}
+};
 
 // const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
 
