@@ -20,7 +20,7 @@ const { t } = useTranslation();
   const handleTabChange = (value: string) => {
     navigate(`/team-settings/${value}`);
   };
-
+  return <User />
   return (
     <div className="space-y-6">
 
