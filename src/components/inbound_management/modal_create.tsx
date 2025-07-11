@@ -101,6 +101,7 @@ const ModalAdd = ({
       } else {
         if ("speechSynthesis" in window) {
           const utterance = new SpeechSynthesisUtterance(`Vật tư Không hợp lệ`);
+      utterance.lang = 'vi-VN';
           utterance.rate = 0.9;
           utterance.volume = 0.5;
           speechSynthesis.speak(utterance);
@@ -251,6 +252,7 @@ const ModalAdd = ({
         // Voice feedback for invalid input
         if ("speechSynthesis" in window) {
           const utterance = new SpeechSynthesisUtterance(`Không hợp lệ`);
+      utterance.lang = 'vi-VN';
           utterance.rate = 0.9;
           utterance.volume = 0.5;
           speechSynthesis.speak(utterance);
@@ -278,6 +280,7 @@ const ModalAdd = ({
 
     if (value && "speechSynthesis" in window) {
       const utterance = new SpeechSynthesisUtterance(`OK`);
+      utterance.lang = 'vi-VN';
       utterance.rate = 0.9;
       utterance.volume = 0.5;
       speechSynthesis.speak(utterance);
