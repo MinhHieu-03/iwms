@@ -398,6 +398,7 @@ export const vi: Record<TranslationKey, string> = {
   'btn.refresh': 'Làm mới',
   'btn.delete_selected': 'Xóa đã chọn',
   'btn.edit': 'Chỉnh sửa',
+  'btn.delete': 'Xóa',
   btn_create: 'Tạo mới',
   btn_edit: 'Chỉnh sửa',
   btn_delete: "Xóa",
