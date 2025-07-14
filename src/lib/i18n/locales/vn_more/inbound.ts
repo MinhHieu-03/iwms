@@ -20,7 +20,7 @@ export const vi: Record<TranslationKey, string> = {
   'inbound.store_items': 'Danh Sách Lưu Trữ',
   'inbound.store_key': 'Loại Lưu Trữ',
   'inbound.store_quantity': 'Số Lượng',
-  'inbound.pic': 'Người Phụ Trách',
+  'inbound.pic': 'Người Thực hiện',
   'inbound.sku': 'Mã vật tư',
   'inbound.origin': 'Phân loại',
   'inbound.product_name': 'Tên vật tư',

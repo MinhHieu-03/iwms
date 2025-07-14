@@ -18,3 +18,4 @@ export type TranslationKey =
     | '/notifications'
     | '/mission-setting'
     | '/help'
+    | '/oi/inbound'
