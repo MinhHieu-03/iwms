@@ -35,7 +35,7 @@ import OrderDetails from "./pages/OrderDetails";
 import Login from "./pages/Login";
 import MissionsTemplates from "./components/missions/MissionsTemplates";
 import MissionTemplate from "./components/mission_setting/mission_template";
-import EditMissionTemplate from "@/components/mission_setting/mission_template/update"
+import EditMissionTemplate from "@/components/mission_setting/mission_template/update";
 import DeviceTemplate from "./components/device/DeviceTemplate";
 import DeviceList from "./components/device/DeviceList";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -165,25 +165,37 @@ function App() {
                           />
                           {/*  */}
                           <Route path="/oi/outbound" element={<Outbound />} />
-                          <Route path="/oi/outbound-odd" element={<OutboundOdd />} />
-                          <Route path="/oi/inbound" element={<InboundManagement />} />
-                          <Route path="/oi/outbound-pick-to-line" element={<InboundManagement />} />
-                          {/* <Route
-                          path="/operator-interface/inbound"
-                          element={<OperatorInbound />}
-                        /> */}
                           <Route
-                          path={createRoute([...mission_template_route, "new"])}
-                          element={<TemplateEdit />}
-                        />
-                        <Route
-                          path={createRoute([...mission_template_route, ":id"])}
-                          element={<EditMissionTemplate />}
-                        />
-                        <Route
-                          path={createRoute(mission_template_route)}
-                          element={<MissionTemplate />}
-                        />
+                            path="/oi/outbound-odd"
+                            element={<OutboundOdd />}
+                          />
+                          <Route
+                            path="/oi/inbound"
+                            element={<InboundManagement />}
+                          />
+                          <Route
+                            path="/oi/outbound-pick-to-line"
+                            element={<InboundManagement />}
+                          />
+
+                          <Route
+                            path={createRoute([
+                              ...mission_template_route,
+                              "new",
+                            ])}
+                            element={<TemplateEdit />}
+                          />
+                          <Route
+                            path={createRoute([
+                              ...mission_template_route,
+                              ":id",
+                            ])}
+                            element={<EditMissionTemplate />}
+                          />
+                          <Route
+                            path={createRoute(mission_template_route)}
+                            element={<MissionTemplate />}
+                          />
                           <Route
                             path="/operator-interface/outbound"
                             element={<OperatorOutbound />}
@@ -197,6 +209,13 @@ function App() {
                       </Navbar>
                     </ProtectedRoute>
                   }
+                />
+                <Route path="/oi/outbound" element={<Outbound />} />
+                <Route path="/oi/outbound-odd" element={<OutboundOdd />} />
+                <Route path="/oi/inbound" element={<InboundManagement />} />
+                <Route
+                  path="/oi/outbound-pick-to-line"
+                  element={<InboundManagement />}
                 />
               </Routes>
               <Toaster />
