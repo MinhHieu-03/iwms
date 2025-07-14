@@ -210,7 +210,6 @@ export const renderEditForm: ({ t }) => TypeRenderForm[] = ({ t }) => {
         { value: "admin", label: t(`${lang_key}.role_admin`) },
         { value: "manager", label: t(`${lang_key}.role_manager`) },
         { value: "operator", label: t(`${lang_key}.role_operator`) },
-        { value: "viewer", label: t(`${lang_key}.role_viewer`) },
       ],
     },
     {
