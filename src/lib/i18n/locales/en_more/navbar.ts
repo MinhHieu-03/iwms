@@ -6,6 +6,7 @@ export const en: Record<TranslationKey, string> = {
     "/inbound-outbound": "Inbound/Outbound",
     "/layout": "Warehouse Layout",
     "/inventory": "Inventory",
+    "/oi/inbound": "OI Nhập Kho",
     "/missions": "Robot Missions",
     "/warehouse-settings": "Warehouse Settings",
     "/warehouse-settings/layout": "Layout Configuration",

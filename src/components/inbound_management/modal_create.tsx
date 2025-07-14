@@ -387,7 +387,7 @@ const ModalAdd = ({
                   loading={loading}
                   className="text-2xl font-bold h-16"
                   size="large"
-                  style={{ fontSize: "24px" }}
+                  style={{ fontSize: "30px", height: 64 }}
                 >
                   {storeUnits?.map((method) => (
                     <Select.Option
@@ -438,7 +438,7 @@ const ModalAdd = ({
                   loading={loading}
                   className="text-2xl font-bold h-16"
                   size="large"
-                  style={{ fontSize: "24px" }}
+                  style={{ fontSize: "24px",  height: 64 }}
                 >
                   {storageData?.map((method) => (
                     <Select.Option

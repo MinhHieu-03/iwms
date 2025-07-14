@@ -5,6 +5,7 @@ export const vn: Record<TranslationKey, string> = {
     "/operator-interface": "Giao Diện Vận Hành",
     "/inbound-outbound": "Nhập/Xuất Kho",
     "/layout": "Giám sát Kho",
+    "/oi/inbound": "OI Nhập Kho",
     "/inventory": "Quản lý kho hàng",
     "/missions": "Nhiệm Vụ Robot",
     "/warehouse-settings": "Cài Đặt Kho Hàng",
