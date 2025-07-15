@@ -83,7 +83,7 @@ export const RenderCol = ({ t, onCancel }: {onCancel: (data: DataType) =>void ; 
     render: (status: string) => {
       return (
         <Tag color={getStatusColor(status)}>
-          {status}
+          {t(`status.${status}`)}
         </Tag>
       );
     },
