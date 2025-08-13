@@ -346,8 +346,64 @@ const ModalAdd = ({
         }}
       >
         <div>
-          <div className="space-y-4 mt-5 bg-gray-50 p-4 rounded-lg">
-            {" "}
+          <div className="space-y-4  bg-gray-50 p-4 rounded-lg">
+            <div className="space-y-4  bg-gray-50 p-4 rounded-lg">
+              <div className=" p-6 bg-white rounded-lg shadow-sm">
+                <div className="text-center">
+                  <p className="text-4xl text-gray-600 font-bold mb-6">
+                    {mapMessage[current]}
+                  </p>
+                  <Input
+                    ref={refAction}
+                    placeholder={mapMessage[current]}
+                    autoFocus
+                    className="text-center text-3xl font-bold h-20"
+                    size="large"
+                    style={{ fontSize: "32px" }}
+                    value={value}
+                    onChange={handleAction}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        // handleAction(value)
+                        handleActionForm(value);
+                        // if (!isNaN(+value)) {
+                        //   form.setFieldValue("quantity", value);
+                        //   setValue("");
+                        //   // Voice feedback for SKU entry
+                        //   if (value && "speechSynthesis" in window) {
+                        //     const utterance = new SpeechSynthesisUtterance(`OK`);
+                        //     utterance.rate = 0.9;
+                        //     utterance.volume = 0.5;
+                        //     speechSynthesis.speak(utterance);
+                        //   }
+                        // }
+                      }
+                    }}
+                  />
+                  <div className="flex justify-center mt-8 gap-6">
+                    <Button
+                      onClick={() => {
+                        form.resetFields();
+                        handleClose();
+                      }}
+                      type="default"
+                      className="h-16 px-12 text-2xl font-bold"
+                      size="large"
+                    >
+                      Hủy
+                    </Button>
+                    <Button
+                      onClick={() => handleSubmit()}
+                      type="primary"
+                      className="h-16 px-12 text-2xl font-bold"
+                      size="large"
+                    >
+                      Tiếp theo
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>{" "}
             <Form
               form={form}
               layout="vertical"
@@ -365,7 +421,6 @@ const ModalAdd = ({
                   <Input
                     placeholder="Nhập mã vật tư"
                     className="text-2xl font-bold h-16"
-                    
                   />
                 </Form.Item>
                 <Form.Item
@@ -378,7 +433,6 @@ const ModalAdd = ({
                   <Input
                     placeholder="Nhập tên vật tư"
                     className="text-2xl font-bold h-16"
-                    
                   />
                 </Form.Item>
               </div>
@@ -403,15 +457,13 @@ const ModalAdd = ({
                     loading={loading}
                     className="text-2xl font-bold h-16"
                     size="large"
-                    style={{height: "64px"}}
-                    
+                    style={{ height: "64px" }}
                   >
                     {storeUnits?.map((method) => (
                       <Select.Option
                         key={method}
                         value={method}
                         className="text-2xl font-bold"
-                        
                       >
                         {method}
                       </Select.Option>
@@ -420,14 +472,12 @@ const ModalAdd = ({
                         <Select.Option
                           value="bin"
                           className="text-2xl font-bold"
-                          
                         >
                           Bin
                         </Select.Option>
                         <Select.Option
                           value="carton"
                           className="text-2xl font-bold"
-                          
                         >
                           Carton
                         </Select.Option>
@@ -455,14 +505,13 @@ const ModalAdd = ({
                     loading={loading}
                     className="text-2xl font-bold h-16"
                     size="large"
-                    style={{height: "64px"}}
+                    style={{ height: "64px" }}
                   >
                     {storageData?.map((method) => (
                       <Select.Option
                         key={method}
                         value={method}
                         className="text-2xl font-bold"
-                        
                       >
                         {method}
                       </Select.Option>
@@ -471,21 +520,18 @@ const ModalAdd = ({
                         <Select.Option
                           value="bin"
                           className="text-2xl font-bold"
-                          
                         >
                           Bin
                         </Select.Option>
                         <Select.Option
                           value="carton"
                           className="text-2xl font-bold"
-                          
                         >
                           Carton
                         </Select.Option>
                         <Select.Option
                           value="kit"
                           className="text-2xl font-bold"
-                          
                         >
                           Kit
                         </Select.Option>
@@ -502,7 +548,6 @@ const ModalAdd = ({
                   <Input
                     placeholder="Nhập mã thùng"
                     className="w-full text-2xl font-bold h-16"
-                    
                   />
                 </Form.Item>
                 <Form.Item
@@ -537,7 +582,6 @@ const ModalAdd = ({
                     placeholder="Số lượng túi"
                     className="w-full text-2xl font-bold h-16"
                     size="large"
-                    
                     parser={(value) => (value ? value.replace(/\D/g, "") : "")}
                     formatter={(value) => (value ? `${value}` : "")}
                   />
@@ -570,74 +614,12 @@ const ModalAdd = ({
                     placeholder="Nhập số lượng"
                     className="w-full text-2xl font-bold h-16"
                     size="large"
-                    
                     parser={(value) => (value ? value.replace(/\D/g, "") : "")}
                     formatter={(value) => (value ? `${value}` : "")}
                   />
                 </Form.Item>
               </div>
             </Form>
-          </div>
-          <div className="space-y-4 mt-5 bg-gray-50 p-4 rounded-lg">
-            <div className=" p-6 bg-white rounded-lg shadow-sm">
-              <div className="text-center">
-                <p className="text-4xl text-gray-600 font-bold mb-6">
-                  {/* {skuMaster?.new_pk_style === 2 ? `Để nguyên thùng carton ` : ''}
-              {skuMaster?.new_pk_style === 1 ? `Bỏ vào thùng nhựa ` : ''} */}
-                  {mapMessage[current]}
-                </p>
-                <Input
-                  ref={refAction}
-                  placeholder={mapMessage[current]}
-                  autoFocus
-                  className="text-center text-3xl font-bold h-20"
-                  size="large"
-                  style={{ fontSize: "32px" }}
-                  value={value}
-                  onChange={handleAction}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      // handleAction(value)
-                      handleActionForm(value);
-                      // if (!isNaN(+value)) {
-                      //   form.setFieldValue("quantity", value);
-                      //   setValue("");
-                      //   // Voice feedback for SKU entry
-                      //   if (value && "speechSynthesis" in window) {
-                      //     const utterance = new SpeechSynthesisUtterance(`OK`);
-                      //     utterance.rate = 0.9;
-                      //     utterance.volume = 0.5;
-                      //     speechSynthesis.speak(utterance);
-                      //   }
-                      // }
-                    }
-                  }}
-                />
-                <div className="flex justify-center mt-8 gap-6">
-                  <Button
-                    onClick={() => {
-                      form.resetFields();
-                      handleClose();
-                    }}
-                    type="default"
-                    className="h-16 px-12 text-2xl font-bold"
-                    size="large"
-                    
-                  >
-                    Hủy
-                  </Button>
-                  <Button
-                    onClick={() => handleSubmit()}
-                    type="primary"
-                    className="h-16 px-12 text-2xl font-bold"
-                    size="large"
-                    
-                  >
-                    Tiếp theo
-                  </Button>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </ConfigProvider>
@@ -658,3 +640,58 @@ const mapMessage = {
 //   return (
 //   );
 // };
+
+const fakeData = [
+  {
+    material_no: "9920631",
+    material_nm: "TEL86101-2 ",
+    material_tp: "Component",
+    pk_style: 1,
+    pk_style1: 1,
+    pk_style2: 1,
+    flg: 1,
+    flg1: 1, // 
+    data2: "data2",
+    data3: "data3",
+    comment: "comment",
+    user_id: "user_id",
+    ent_dt: "ent_dt",
+    upd_dt: "upd_dt"
+  },
+  {
+    material_no: "9920632",
+    material_nm: "TEL86101-2 ",
+    material_tp: "Component",
+    pk_style: 1,
+    pk_style1: 1000,
+    pk_style2: 2,
+    flg: 1,
+    flg1: 2, // 
+    data2: "data2",
+    data3: "data3",
+    comment: "comment",
+    user_id: "user_id",
+    ent_dt: "ent_dt",
+    upd_dt: "upd_dt"
+  },
+  {
+    material_no: "9920633",
+    material_nm: "TEL86101-3 ",
+    material_tp: "Component",
+    pk_style: 100,
+    pk_style1: 0,
+    pk_style2: 10,
+    flg: 1,
+    flg1: 3, // 
+    data2: "data2",
+    data3: "data3",
+    comment: "comment",
+    user_id: "user_id",
+    ent_dt: "ent_dt",
+    upd_dt: "upd_dt"
+  },
+]
+
+// flg1 1 là bỏ nguyên thùng
+// 2 mở thùng carton cho vào thùng nhựa => e cần biết bỏ tối đa bao nhiêu túi
+// 3 cho thùng carton vào thùng nhựa => e cần biết bỏ tối đa bao nhiêu thùng
