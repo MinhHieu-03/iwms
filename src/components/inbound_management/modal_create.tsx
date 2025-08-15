@@ -92,11 +92,17 @@ const ModalAdd = ({
 
   const sku = Form.useWatch('sku', form);
 
-  const handleClose = () => {
-    setIsOpen(false);
+  const reset = () => {
+    setCurrentField('sku');
     form.resetFields();
     setValue('');
     setSkuMaster({});
+    setListItem([]);
+  };
+
+  const handleClose = () => {
+    reset();
+    setIsOpen(false);
   };
 
   // Fetch master data on component mount
@@ -126,66 +132,49 @@ const ModalAdd = ({
       console.error('Error fetching storage data:', error);
     }
   };
-  useEffect(() => {
-    fetchMasterData();
-    fetchStorageData();
-  }, []);
-
-  useEffect(() => {
-    if (sku && masterData) {
-      setListItem([]);
-      form.setFieldsValue({
-        quantity: undefined,
-        bag_quantity: undefined,
-        bin_code: '',
-      });
-      const item = masterData[sku];
-      setSkuMaster(item);
-      if (item) {
-        if (item.new_pk_style == 2) {
-          form.setFieldsValue({
-            sku: item.material_no,
-            storeMethod: 'Carton',
-            packingMethod: 'Bag',
-            name: item.material_nm,
-            bin_code: item.material_no,
-          });
-        } else if (item.new_pk_style == 1) {
-          form.setFieldsValue({
-            sku: item.material_no,
-            storeMethod: 'Plastic Bin',
-            packingMethod: 'Bag',
-            name: item.material_nm,
-            bin_code: item.material_no,
-          });
-        }
-        console.log('Item found in master data:', item);
-      } else {
+  const handleSkuChange = (sku, masterData) => {
+    setListItem([]);
+    form.setFieldsValue({
+      quantity: undefined,
+      bag_quantity: undefined,
+      bin_code: '',
+    });
+    const item = masterData[sku];
+    setSkuMaster(item);
+    if (item) {
+      if (item.new_pk_style == 2) {
         form.setFieldsValue({
-          sku: '',
+          sku: item.material_no,
+          storeMethod: 'Carton',
+          packingMethod: 'Bag',
+          name: item.material_nm,
+          bin_code: item.material_no,
         });
-        if ('speechSynthesis' in window) {
-          text2void(`Vật tư Không hợp lệ`);
-        }
-        // form.setFields([
-        //   {
-        //     name: 'sku',
-        //     errors: ['Mã vật tư không tồn tại trong dữ liệu'],
-        //   },
-        // ]);
+      } else if (item.new_pk_style == 1) {
+        form.setFieldsValue({
+          sku: item.material_no,
+          storeMethod: 'Plastic Bin',
+          packingMethod: 'Bag',
+          name: item.material_nm,
+          bin_code: item.material_no,
+        });
       }
+      console.log('Item found in master data:', item);
+    } else {
+      form.setFieldsValue({
+        sku: '',
+      });
+      if ('speechSynthesis' in window) {
+        text2void(`Vật tư Không hợp lệ`);
+      }
+      // form.setFields([
+      //   {
+      //     name: 'sku',
+      //     errors: ['Mã vật tư không tồn tại trong dữ liệu'],
+      //   },
+      // ]);
     }
-  }, [sku, masterData]);
-
-  // useEffect(() => {
-  //   if (selectedItem) {
-  //     form.setFieldsValue({
-  //       sku: selectedItem.sku,
-  //       quantity: selectedItem.quantity?.split(" / ")?.[0] || "",
-  //     });
-  //   }
-  // }, [selectedItem, form]);
-
+  };
   const handleSubmit = async () => {
     try {
       // Validate the form before submitting
@@ -196,30 +185,15 @@ const ModalAdd = ({
       console.log('Master data available:', masterData);
 
       // Additional validation for numeric fields
-      if (isNaN(Number(values.quantity)) || Number(values.quantity) <= 0) {
-        form.setFields([
-          {
-            name: 'quantity',
-            errors: ['Số lượng phải là số hợp lệ lớn hơn 0'],
-          },
-        ]);
-        return;
-      }
-      form.resetFields();
-      setListItem([])
-      // if (
-      //   isNaN(Number(values.bag_quantity)) ||
-      //   Number(values.bag_quantity) <= 0
-      // ) {
+      // if (isNaN(Number(values.quantity)) || Number(values.quantity) <= 0) {
       //   form.setFields([
       //     {
-      //       name: 'bag_quantity',
-      //       errors: ['Số lượng túi phải là số hợp lệ lớn hơn 0'],
+      //       name: 'quantity',
+      //       errors: ['Số lượng phải là số hợp lệ lớn hơn 0'],
       //     },
       //   ]);
       //   return;
       // }
-
       const body = {
         product_name: values.name,
         sku: values.sku,
@@ -233,9 +207,7 @@ const ModalAdd = ({
         ],
       };
       // await apiClient.post('/inbound', body);
-      form.resetFields();
-      // Handle form submission here
-      console.log('Form_values:', body);
+      reset();
     } catch (error) {
       console.error('Error during form submission:', error);
 
@@ -247,87 +219,42 @@ const ModalAdd = ({
     }
   };
 
-  useEffect(() => {
-    const currentRef = refAction.current;
-    if (currentRef) {
-      currentRef.focus();
-    }
-
-    return () => {
-      // Cleanup to prevent focusing on unmounted components
-      if (currentRef && document.activeElement === currentRef) {
-        (document.activeElement as HTMLElement).blur();
-      }
-    };
-  }, []);
-
   const handleAction = (e) => {
     const value = e.target.value.trim();
     setValue(value);
-    return 1;
-    // ==========
-    if (
-      value === '' ||
-      (/^\d{0,4}-?\d{0,4}$/.test(value) && value.length === 9)
-    ) {
-      form.setFieldValue('sku', value);
-
-      // Voice feedback for SKU entry
-      if (value && 'speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(`OK`);
-        utterance.rate = 0.9;
-        utterance.volume = 0.5;
-        speechSynthesis.speak(utterance);
-      }
-
-      setValue('');
-    } else if (value === 'OK') {
-      // Voice feedback for SKU entry
-      if (value && 'speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(`Next`);
-        utterance.rate = 0.9;
-        utterance.volume = 0.5;
-        speechSynthesis.speak(utterance);
-      }
-      // handleClose();
-      form.resetFields();
-      return;
-    } else if (value === 'Cancel') {
-      // setCurrent(0);
-      if (value && 'speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(`Cancel`);
-        utterance.rate = 0.9;
-        utterance.volume = 0.5;
-        speechSynthesis.speak(utterance);
-      }
-    }
   };
 
-  const handleActionForm = (value) => {
+  const handleActionEnter = (value) => {
     if (value === 'OK') {
-      form.resetFields();
+      handleSubmit();
       return;
     } else if (value === 'Cancel') {
       // setCurrent(0);
-      form.resetFields();
+      handleClose();
       return;
-    } else if (!isNaN(value) && value.length < 5) {
+    } else if (
+      !isNaN(value) &&
+      form.getFieldValue('sku') &&
+      value.length != 6
+    ) {
       // is number
+      console.log('ddd', listItem.length, skuMaster?.pk_style2);
+      if (listItem.length === skuMaster?.pk_style2 - 1) {
+        setCurrentField('bin');
+      }
+
       if (listItem.length >= skuMaster?.pk_style2) {
         text2void(`Quá số lượng cho phép`);
-      setValue('');
+        setValue('');
         return;
       }
-      // const count = skuMaster ? Number(value) / skuMaster?.pk_style1 : 0;
       const oldValue = form.getFieldValue('quantity') || 0;
       form.setFieldValue('quantity', +oldValue + Number(value));
-      // form.setFieldValue('bag_quantity', count);
-        setListItem((prev) => [
-          ...prev,
-          {
-            sku: sku,
-            quantity: Number(value),
-          // bag_quantity: skuMaster ? Number(value) / skuMaster?.pk_style1 : 0,
+      setListItem((prev) => [
+        ...prev,
+        {
+          sku: sku,
+          quantity: Number(value),
         },
       ]);
       setValue('');
@@ -355,43 +282,27 @@ const ModalAdd = ({
     if (value && 'speechSynthesis' in window) {
       text2void(`OK`, false);
     }
-
-    // else if (current === 'sku') {
-    //   form.setFieldValue('sku', value);
-    //   setCurrentField('qty');
-    //   setValue('');
-    // } else if (current === 'qty') {
-    //   // Validate if value is a number
-    //   if (isNaN(Number(value)) || Number(value) <= 0) {
-    //     // Voice feedback for invalid input
-    //     if ('speechSynthesis' in window) {
-    //       const utterance = new SpeechSynthesisUtterance(`Không hợp lệ`);
-    //       utterance.lang = 'vi-VN';
-    //       utterance.rate = 0.9;
-    //       utterance.volume = 0.5;
-    //       speechSynthesis.speak(utterance);
-    //     }
-    //     setValue('');
-    //     return;
-    //   }
-
-    //   const count = skuMaster ? Number(value) / skuMaster?.pk_style1 : 0;
-    //   form.setFieldValue('quantity', Number(value));
-    //   form.setFieldValue('bag_quantity', count);
-    //   if (skuMaster?.new_pk_style === 1) {
-    //     setCurrentField('bin');
-    //   } else {
-    //     setCurrentField('sku');
-    //     // handleSubmit();
-    //   }
-    //   setValue('');
-    // } else if (current === 'bin') {
-    //   form.setFieldValue('bin_code', value);
-    //   setCurrentField('sku');
-    //   setValue('');
-    //   handleSubmit();
-    // }
   };
+  useEffect(() => {
+    if (sku && masterData) {
+      handleSkuChange(sku, masterData);
+    }
+  }, [sku, masterData]);
+
+  useEffect(() => {
+    fetchMasterData();
+    fetchStorageData();
+    const currentRef = refAction.current;
+    if (currentRef) {
+      currentRef.focus();
+    }
+    return () => {
+      // Cleanup to prevent focusing on unmounted components
+      if (currentRef && document.activeElement === currentRef) {
+        (document.activeElement as HTMLElement).blur();
+      }
+    };
+  }, []);
 
   return (
     <Drawer
@@ -400,10 +311,7 @@ const ModalAdd = ({
       placement='bottom'
       height={'95vh'}
       onClose={() => {
-        form.resetFields();
-        setIsOpen(false);
-        setValue('');
-        setCurrentField('sku');
+        handleClose();
       }}
       footer={null}
       // width={600}
@@ -435,8 +343,8 @@ const ModalAdd = ({
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         // handleAction(value)
-                        console.log('handleActionForm', value);
-                        handleActionForm(value);
+                        console.log('handleActionEnter', value);
+                        handleActionEnter(value);
                         // if (!isNaN(+value)) {
                         //   form.setFieldValue("quantity", value);
                         //   setValue("");
@@ -451,27 +359,6 @@ const ModalAdd = ({
                       }
                     }}
                   />
-                  <div className='flex justify-center mt-8 gap-6'>
-                    <Button
-                      onClick={() => {
-                        form.resetFields();
-                        handleClose();
-                      }}
-                      type='default'
-                      className='h-16 px-12 text-2xl font-bold'
-                      size='large'
-                    >
-                      Hủy
-                    </Button>
-                    <Button
-                      onClick={() => handleSubmit()}
-                      type='primary'
-                      className='h-16 px-12 text-2xl font-bold'
-                      size='large'
-                    >
-                      Tiếp theo
-                    </Button>
-                  </div>
                 </div>
               </div>{' '}
               <Form
@@ -487,9 +374,9 @@ const ModalAdd = ({
                       <span className='text-2xl font-bold'>Mã vật tư</span>
                     }
                     name='sku'
-                    rules={[
-                      { required: true, message: 'Vui lòng nhập mã vật tư!' },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: 'Vui lòng nhập mã vật tư!' },
+                    // ]}
                   >
                     <Input
                       // placeholder='Nhập mã vật tư'
@@ -506,24 +393,24 @@ const ModalAdd = ({
                       </span>
                     }
                     name='quantity'
-                    rules={[
-                      { required: true, message: 'Vui lòng nhập số lượng!' },
-                      {
-                        type: 'number',
-                        min: 1,
-                        message: 'Số lượng phải lớn hơn 0!',
-                      },
-                      {
-                        validator: (_, value) => {
-                          if (value && isNaN(Number(value))) {
-                            return Promise.reject(
-                              new Error('Số lượng phải là số hợp lệ!')
-                            );
-                          }
-                          return Promise.resolve();
-                        },
-                      },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: 'Vui lòng nhập số lượng!' },
+                    //   {
+                    //     type: 'number',
+                    //     min: 1,
+                    //     message: 'Số lượng phải lớn hơn 0!',
+                    //   },
+                    //   {
+                    //     validator: (_, value) => {
+                    //       if (value && isNaN(Number(value))) {
+                    //         return Promise.reject(
+                    //           new Error('Số lượng phải là số hợp lệ!')
+                    //         );
+                    //       }
+                    //       return Promise.resolve();
+                    //     },
+                    //   },
+                    // ]}
                   >
                     <InputNumber
                       // placeholder='Nhập số lượng'
@@ -701,14 +588,19 @@ const ModalAdd = ({
             </div>
             <div className='flex-1 space-y-4  bg-gray-50 p-4 rounded-lg'>
               {skuMaster ? (
-                <div
-                  className={`p-6 rounded-lg border-2 shadow-lg ${getActionColor(
-                    skuMaster?.flg1
-                  )}`}
-                >
-                  <Typography.Title level={3} className='text-center mb-0'>
-                    {mapAction[skuMaster?.flg1]}
+                <div>
+                  <Typography.Title level={5} className='text-center mb-0'>
+                    Kiểu vật tư
                   </Typography.Title>
+                  <div
+                    className={`p-6 rounded-lg border-2 shadow-lg ${getActionColor(
+                      skuMaster?.flg1
+                    )}`}
+                  >
+                    <Typography.Title level={3} className='text-center mb-0'>
+                      {mapAction[skuMaster?.flg1]}
+                    </Typography.Title>
+                  </div>
                 </div>
               ) : null}
               {sku && !skuMaster ? (
@@ -723,39 +615,41 @@ const ModalAdd = ({
                   Danh sách đã quét
                 </Typography.Title>
                 <div className='max-h-96 overflow-y-auto'>
-                  {listItem.length > 0 ? (
-                    <div className='space-y-2'>
-                      {listItem.map((item, index) => (
-                        <div
-                          key={index}
-                          className='flex justify-between items-center p-3 bg-gray-50 rounded-lg border'
-                        >
-                          <div className='flex flex-col'>
-                            <span className='text-lg font-bold text-gray-800'>
-                              {item.sku}
-                            </span>
-                            <span className='text-sm text-gray-600'>
-                              Số lượng: {item.quantity}
-                            </span>
+                  {
+                    listItem.length > 0 ? (
+                      <div className='space-y-2'>
+                        {listItem.map((item, index) => (
+                          <div
+                            key={index}
+                            className='flex justify-between items-center p-3 bg-gray-50 rounded-lg border'
+                          >
+                            <div className='flex flex-col'>
+                              <span className='text-lg font-bold text-gray-800'>
+                                {item.sku}
+                              </span>
+                              <span className='text-sm text-gray-600'>
+                                Số lượng: {item.quantity}
+                              </span>
+                            </div>
+                            <div className='text-lg font-bold text-blue-600'>
+                              #{index + 1}
+                            </div>
                           </div>
-                          <div className='text-lg font-bold text-blue-600'>
-                            #{index + 1}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : ( null
+                        ))}
+                      </div>
+                    ) : null
                     // <div className='text-center text-gray-500 py-8'>
                     //   <p className='text-lg'>Chưa có vật tư nào được quét</p>
                     // </div>
-                  )}
+                  }
                 </div>
                 {listItem.length > 0 && (
                   <div className='mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200'>
                     <div className='text-center'>
                       <span className='text-lg font-bold text-blue-800'>
                         Tổng số lượng:{' '}
-                        {listItem.reduce((sum, item) => sum + item.quantity, 0)} | {listItem.length} / {skuMaster?.pk_style2}
+                        {listItem.reduce((sum, item) => sum + item.quantity, 0)}{' '}
+                        | {listItem.length} / {skuMaster?.pk_style2}
                       </span>
                     </div>
                   </div>
@@ -763,7 +657,29 @@ const ModalAdd = ({
               </div>
             </div>
           </div>
+
+          <div className='flex justify-center mt-8 gap-6'>
+            <Button
+              onClick={() => {
+                handleClose();
+              }}
+              type='default'
+              className='h-16 px-12 text-2xl font-bold'
+              size='large'
+            >
+              Hủy
+            </Button>
+            <Button
+              onClick={() => handleSubmit()}
+              type='primary'
+              className='h-16 px-12 text-2xl font-bold'
+              size='large'
+            >
+              OK
+            </Button>
+          </div>
         </div>
+        9920631
       </ConfigProvider>
     </Drawer>
   );
