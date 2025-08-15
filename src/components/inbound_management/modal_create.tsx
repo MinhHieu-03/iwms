@@ -261,7 +261,7 @@ const ModalAdd = ({
     } else if (value.startsWith('BIN')) {
       // is Bin ocode
       form.setFieldValue('bin_code', value);
-      // setCurrentField('sku');
+      setCurrentField('bt');
       setValue('');
     } else {
       const oldSKU = form.getFieldValue('sku');
@@ -333,7 +333,7 @@ const ModalAdd = ({
                   </p>
                   <Input
                     ref={refAction}
-                    placeholder={mapMessage[current]}
+                    placeholder={"Trỏ chuột vào đây để quét dữ liệu"}
                     autoFocus
                     className='text-center text-3xl font-bold h-15'
                     size='large'
@@ -343,7 +343,6 @@ const ModalAdd = ({
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         // handleAction(value)
-                        console.log('handleActionEnter', value);
                         handleActionEnter(value);
                         // if (!isNaN(+value)) {
                         //   form.setFieldValue("quantity", value);
@@ -691,6 +690,7 @@ const mapMessage = {
   sku: 'Nhập mã vật tư',
   qty: 'Nhập số lượng',
   bin: 'Nhập mã thùng',
+  bt: 'Đặt thùng lên băng tải',
 };
 
 // const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
