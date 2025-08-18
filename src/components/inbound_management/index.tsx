@@ -2,9 +2,13 @@ import {
   ReloadOutlined,
   DeleteOutlined,
   UploadOutlined,
+  LoginOutlined,
+  LockFilled,
+  UserOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import type { UploadProps } from "antd";
-import { message, Table, Modal, Upload } from "antd";
+import { message, Table, Modal, Avatar } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState, useCallback } from "react";
@@ -14,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import BasePagination from "@/components/ui/antd-pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import apiClient from "@/lib/axios";
-
+import { z } from "zod";
 import {
   domain,
   lang_key,
@@ -25,7 +29,28 @@ import {
 } from "./const";
 import ModalAdd from "./modal_create";
 import ModalEdit from "./modal_update";
-
+import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { login, logout } from "@/store/authSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "../ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { AvatarFallback, AvatarImage } from "../ui/avatar";
 const { list, create, update, upload, download, remove } = domain;
 
 const InboundManagement = () => {
@@ -59,6 +84,7 @@ const InboundManagement = () => {
   const [dataList, setDataList] = useState<DataType[]>([]);
   const [dataRole, setDataRole] = useState<unknown[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   const requestDataList = useCallback(async () => {
     try {
@@ -152,8 +178,13 @@ const InboundManagement = () => {
   }, [t]);
 
   useEffect(() => {
-    requestDataList();
-  }, [requestDataList]);
+    if (isAuthenticated) {
+      requestDataList();
+    } else {
+      setDataList([]);
+      setTotal(0);
+    }
+  }, [requestDataList, isAuthenticated]);
 
   const handleReload = () => {
     requestDataList();
@@ -229,6 +260,11 @@ const InboundManagement = () => {
   );
 };
 
+const formSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
 const Header = ({
   setIsOpen,
   requestDataList,
@@ -237,6 +273,53 @@ const Header = ({
   onDelete,
 }) => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const { toast } = useToast();
+  const { isAuthenticated, loading, error } = useAppSelector(
+    (state) => state.auth
+  );
+  const [isOpenForm, setIsOpenForm] = useState(false);
+  const [user, setUser] = useState({
+    name: "",
+    avatar: "",
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  const handleLogin = async (values: z.infer<typeof formSchema>) => {
+    const resultAction = await dispatch(
+      login({
+        username: values.username,
+        password: values.password,
+      })
+    );
+    console.log("resultAction", resultAction);
+    setIsOpenForm(false);
+
+    if (login.fulfilled.match(resultAction)) {
+      setUser(resultAction.payload.user);
+      toast({
+        title: "Login successful",
+        description: "Welcome back!",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Login failed",
+        description: error,
+        variant: "destructive",
+      });
+    }
+  }, [error, toast]);
 
   const uploadProps: UploadProps = {
     name: "file",
@@ -320,11 +403,78 @@ const Header = ({
             <ReloadOutlined />
             {t("btn.reload")}
           </Button>
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="ml-2" variant="outline">
+                  <UserOutlined />
+                  {user?.name || ""}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <div className="flex flex-col space-y-1 p-2">
+                  <p className="text-sm font-medium">{user?.name || ""}</p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => dispatch(logout())}>
+                  <LogoutOutlined className="mr-2 h-4 w-4" />
+                  <span className="text-red-500">{t("logout")}</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button
+              className="ml-2"
+              onClick={() => setIsOpenForm(true)}
+              variant="default"
+            >
+              <UserOutlined />
+              Login
+            </Button>
+          )}
         </div>
       </div>
+      <Modal
+        open={isOpenForm}
+        onCancel={() => setIsOpenForm(false)}
+        footer={null}
+      >
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter username" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="••••••••" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Logging in..." : "Log in"}
+            </Button>
+          </form>
+        </Form>
+      </Modal>
     </CardHeader>
   );
 };
 
 export default InboundManagement;
-
