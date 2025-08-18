@@ -165,7 +165,7 @@ const ModalAdd = ({
         sku: '',
       });
       if ('speechSynthesis' in window) {
-        text2void(`Vật tư Không hợp lệ`);
+        text2void(`Không hợp lệ`);
       }
       // form.setFields([
       //   {
@@ -269,10 +269,10 @@ const ModalAdd = ({
         form.setFieldValue('sku', value);
         setCurrentField('qty');
       } else if (oldSKU !== value) {
-        text2void(`Vật tư không hợp lệ `);
+        text2void(`Không hợp lệ `);
         notification.error({
-          message: 'SKU không hợp lệ',
-          description: 'Vui lòng kiểm tra lại SKU',
+          message: 'không hợp lệ',
+          description: 'Vui lòng kiểm tra lại',
         });
         return;
       }
@@ -609,11 +609,11 @@ const ModalAdd = ({
                   </Typography.Title>
                 </div>
               ) : null}
-              <div className='bg-white p-4 rounded-lg shadow-sm'>
+              <div className='bg-white p-4 rounded-lg shadow-sm '>
                 <Typography.Title level={4} className='text-center mb-4'>
                   Danh sách đã quét
                 </Typography.Title>
-                <div className='max-h-96 overflow-y-auto'>
+                <div className='max-h-[30vh] overflow-y-auto'>
                   {
                     listItem.length > 0 ? (
                       <div className='space-y-2'>
@@ -678,7 +678,7 @@ const ModalAdd = ({
             </Button>
           </div>
         </div>
-        9920631
+        {/* 9920631 */}
       </ConfigProvider>
     </Drawer>
   );
