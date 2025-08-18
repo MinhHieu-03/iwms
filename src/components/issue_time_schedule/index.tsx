@@ -27,7 +27,7 @@ import PickingDrawer from "./PickingDrawer";
 
 const { list, create, update, remove } = domain;
 
-const IssueTimeScheduleTable = () => {
+const IssueTimeScheduleTable = ({ setDataMerge, setCurrent }) => {
   const { t } = useTranslation();
   const [pageInfo, setPageInfo] = useState({ page: 1, perPage: 10 });
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -246,9 +246,11 @@ const IssueTimeScheduleTable = () => {
       issue_order_no: selectedRowKeys,
     }).then(({data}) => {
       message.success("Picking order created successfully");
-      setDataMission(data.metaData);
+      setDataMerge(data.metaData);
+      setCurrent(1)
+      // setDataMission(data.metaData);
     })
-    setShowPickingModal(selectedRowKeys);
+    // setShowPickingModal(selectedRowKeys);
   };
 
   return (

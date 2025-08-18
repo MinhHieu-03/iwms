@@ -1,13 +1,9 @@
 import React, { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
-import { Package, Play, Search } from "lucide-react";
-import PickingDrawer from "@/components/issue_time_schedule/PickingDrawer";
-import { Input, Table as AntTable } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import { Steps } from "antd";
 import Issue_time_schedule from "@/components/issue_time_schedule";
+import MergeKitTable from "@/components/issue_time_schedule/merge_kit";
+import MissionList from "@/components/issue_time_schedule/mission_list";
+import OIOutbound from "@/components/issue_time_schedule/oi_outbound";
 
 // Data interface for the new format
 interface OutboundData {
@@ -67,184 +63,51 @@ const mockOutboundData: OutboundData[] = [
 ];
 
 const OrdersTab: React.FC = () => {
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
-  const [showPickingModal, setShowPickingModal] = useState(false);
-  const [searchText, setSearchText] = useState("");
-
-  // Filter data based on search text
-  const filteredData = mockOutboundData.filter(
-    (item) =>
-      item.issue_ord_no.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.section_c.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.fact_c.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  // Define columns for Ant Design Table
-  const columns: ColumnsType<OutboundData> = [
-    {
-      title: "Section",
-      dataIndex: "section_c",
-      key: "section_c",
-      width: 100,
-      sorter: (a, b) => a.section_c.localeCompare(b.section_c),
-    },
-    {
-      title: "Factory",
-      dataIndex: "fact_c",
-      key: "fact_c",
-      width: 100,
-    },
-    {
-      title: "Line",
-      dataIndex: "line_c",
-      key: "line_c",
-      width: 100,
-    },
-    {
-      title: "Product No.",
-      dataIndex: "prod_no",
-      key: "prod_no",
-      width: 120,
-    },
-    {
-      title: "Customer Desc 1",
-      dataIndex: "cusdesch_cd1",
-      key: "cusdesch_cd1",
-      width: 120,
-    },
-    {
-      title: "Customer Desc 2",
-      dataIndex: "cusdesch_cd2",
-      key: "cusdesch_cd2",
-      width: 120,
-    },
-    {
-      title: "Internal Desc",
-      dataIndex: "intdesch_cd",
-      key: "intdesch_cd",
-      width: 120,
-    },
-    {
-      title: "Issue Order No.",
-      dataIndex: "issue_ord_no",
-      key: "issue_ord_no",
-      width: 150,
-      render: (text) => <span className="font-medium">{text}</span>,
-    },
-    {
-      title: "Plan Issue Date",
-      dataIndex: "plan_issue_dt",
-      key: "plan_issue_dt",
-      width: 150,
-      render: (date) => new Date(date).toLocaleDateString(),
-      sorter: (a, b) =>
-        new Date(a.plan_issue_dt).getTime() -
-        new Date(b.plan_issue_dt).getTime(),
-    },
-    {
-      title: "Required Time",
-      dataIndex: "A_reqd_time",
-      key: "A_reqd_time",
-      width: 150,
-      render: (date) => new Date(date).toLocaleString(),
-    },
-    {
-      title: "Issue Time",
-      dataIndex: "time_issue",
-      key: "time_issue",
-      width: 150,
-      render: (date) => new Date(date).toLocaleString(),
-    },
-    {
-      title: "User ID",
-      dataIndex: "userid",
-      key: "userid",
-      width: 100,
-    },
-    {
-      title: "Entry Date",
-      dataIndex: "ent_dt",
-      key: "ent_dt",
-      width: 150,
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "Update Date",
-      dataIndex: "upd_dt",
-      key: "upd_dt",
-      width: 150,
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-  ];
-
-  // Row selection configuration
-  const rowSelection = {
-    selectedRowKeys: selectedOrders,
-    onChange: (selectedRowKeys: React.Key[]) => {
-      setSelectedOrders(selectedRowKeys as string[]);
-    },
-    onSelectAll: (
-      selected: boolean,
-      selectedRows: OutboundData[],
-      changeRows: OutboundData[]
-    ) => {
-      if (selected) {
-        setSelectedOrders(filteredData.map((item) => item.key));
-      } else {
-        setSelectedOrders([]);
-      }
-    },
+  const [current, setCurrent] = useState(0);
+  const onChange = (value: number) => {
+    setCurrent(value);
   };
 
-  const handleStartPicking = () => {
-    if (selectedOrders.length === 0) {
-      toast({
-        title: "No Orders Selected",
-        description: "Please select at least one order to start picking",
-        variant: "destructive",
-      });
-      return;
-    }
-    setShowPickingModal(true);
-
-    toast({
-      title: "Picking Started",
-      description: `Started picking for ${selectedOrders.length} order(s)`,
-    });
-    setSelectedOrders([]);
-  };
-
-  const handleStartPacking = () => {
-    if (selectedOrders.length === 0) {
-      toast({
-        title: "No Orders Selected",
-        description: "Please select at least one order to start packing",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Packing Started",
-      description: `Started packing for ${selectedOrders.length} order(s)`,
-    });
-    setSelectedOrders([]);
-  };
-
-  const handleOrderClick = (record: OutboundData) => {
-    // Handle row click - you can navigate or perform other actions
-    console.log("Clicked row:", record);
-  };
-
+  const [dataMerge, setDataMerge] = useState([]);
   return (
     <div className="space-y-6">
-      <Issue_time_schedule />
-      {/* <PickingDrawer
-        open={showPickingModal}
-        onClose={() => setShowPickingModal(false)}
-      /> */}
+      <Steps
+        type="navigation"
+        // size=""
+        current={current}
+        onChange={onChange}
+        className="site-navigation-steps"
+        items={[
+          {
+            title: "Danh sách Kit",
+            // subTitle: "00:00:05",
+            // status: 'finish',
+            description: "Quản lý kit vật tư.",
+          },
+          {
+            title: "Danh sách gộp vật tư",
+            // subTitle: "00:01:02",
+            // status: 'process',
+            description: "Quản lý danh sách gộp vật tư.",
+          },
+          {
+            title: "Mission",
+            // subTitle: "waiting for longlong time",
+            // status: 'wait',
+            description: "Quản lý nhiệm vụ robot",
+          },
+          {
+            title: "Step 3",
+            subTitle: "waiting for longlong time",
+            // status: 'wait',
+            description: "This is a description.",
+          },
+        ]}
+      />
+      {current === 0 ? <Issue_time_schedule setCurrent={setCurrent} setDataMerge={setDataMerge} />: null}
+      {current === 1 ? <MergeKitTable missionData={dataMerge} />: null}
+      {current === 2 ? <MissionList missionData={dataMerge} />: null}
+      {current === 3 ? <OIOutbound />: null}
     </div>
   );
 };
