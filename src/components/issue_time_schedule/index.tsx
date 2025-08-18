@@ -24,6 +24,7 @@ import ModalAdd, { type FormValues } from "./modal_create";
 import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
 import ModalDetail from "./modal_detail";
 import PickingDrawer from "./PickingDrawer";
+import createDummyData from "@/lib/dummyData";
 
 const { list, create, update, remove } = domain;
 
@@ -235,22 +236,25 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent }) => {
     requestDataList();
   }, [requestDataList]);
 
-  const orderPicking = () => {
+  const orderPicking = async () => {
     if (selectedRowKeys.length === 0) {
       message.warning(
         "Please select at least one item to create a picking order"
       );
       return;
     }
-    apiClient.post(`issue-time-schedule/picking-order`, {
-      issue_order_no: selectedRowKeys,
-    }).then(({data}) => {
-      message.success("Picking order created successfully");
-      setDataMerge(data.metaData);
-      setCurrent(1)
-      // setDataMission(data.metaData);
-    })
-    // setShowPickingModal(selectedRowKeys);
+    // apiClient.post(`issue-time-schedule/picking-order`, {
+    //   issue_order_no: selectedRowKeys,
+    // }).then(({data}) => {
+    //   message.success("Picking order created successfully");
+    //   setDataMerge(data.metaData);
+    //   setCurrent(1)
+    // })
+    const issueData = await createDummyData({
+      kit_no: selectedRowKeys,
+    });
+    setDataMerge(issueData.metaData);
+    setCurrent(1);
   };
 
   return (
