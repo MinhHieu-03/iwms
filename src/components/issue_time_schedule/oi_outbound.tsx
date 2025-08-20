@@ -20,8 +20,8 @@ interface PickingItemModalProps {
 }
 
 const PickingItemModal: React.FC<PickingItemModalProps> = ({
-  selectedItem,
-  onClose,
+  selectedItem = {},
+  onClose = () => {},
 }) => {
   console.log("PickingItemModal --------", selectedItem);
   const [current, setCurrent] = useState(0);
@@ -125,18 +125,15 @@ const SplitOrder = ({ selectedItem, setCurrent, handleClose }) => {
   };
   return (
     <div className="space-y-4 mt-5 bg-gray-50 p-4 rounded-lg">
-      
-          <p className="text-lg text-gray-600 font-semibold mb-2">
-            Next Action
-          </p>
-          <Input
-            ref={refAction}
-            placeholder="Enter picking quantity or next action"
-            autoFocus
-            className="text-center"
-            value={value}
-            onChange={handleAction}
-          />
+      <p className="text-lg text-gray-600 font-semibold mb-2">Next Action</p>
+      <Input
+        ref={refAction}
+        placeholder="Enter picking quantity or next action"
+        autoFocus
+        className="text-center"
+        value={value}
+        onChange={handleAction}
+      />
       <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
         <div className="text-center">
           <p className="text-lg text-gray-600 mb-2">Quantity to Pick</p>

@@ -28,7 +28,7 @@ import createDummyData from "@/lib/dummyData";
 
 const { list, create, update, remove } = domain;
 
-const IssueTimeScheduleTable = ({ setDataMerge, setCurrent }) => {
+const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
   const { t } = useTranslation();
   const [pageInfo, setPageInfo] = useState({ page: 1, perPage: 10 });
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -199,8 +199,17 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent }) => {
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[]) => {
+      if (selectedRowKeys.length > 4) {
+        message.warning("You can only select up to 4 items");
+        return;
+      }
       setSelectedRowKeys(selectedRowKeys);
     },
+    getCheckboxProps: (record: IssueTimeScheduleDataType) => ({
+      disabled:
+        selectedRowKeys.length >= 4 &&
+        !selectedRowKeys.includes(record.issue_ord_no),
+    }),
   };
 
   const handleBulkDelete = () => {
@@ -250,6 +259,9 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent }) => {
     //   setDataMerge(data.metaData);
     //   setCurrent(1)
     // })
+    setKitData(
+      dataList.filter((item) => selectedRowKeys.includes(item.issue_ord_no))
+    );
     const issueData = await createDummyData({
       kit_no: selectedRowKeys,
     });

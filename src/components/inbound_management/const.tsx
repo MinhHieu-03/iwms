@@ -12,7 +12,7 @@ export interface DataType {
   origin: string;
   product_name: string;
   destination: string;
-  status: "wait_fill" | "new" | "pending" | "done";
+  status: "wait_fill" | "new" | "pending" | "done" | "fill";
   location: string;
   inventory: {
     _id: string;
@@ -127,6 +127,9 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
       dataIndex: "destination",
       title: t(`${lang_key}.destination`),
       width: 150,
+      render: (text, record) => (
+        <span>{record.status === "fill" ? text : ""}</span>
+      ),
     },
     // {
     //   dataIndex: ["inventory", "locationCode"],

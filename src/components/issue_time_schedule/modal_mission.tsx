@@ -2,114 +2,87 @@ import { Drawer, Descriptions, Tag, Table, Spin } from "antd";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
-import { IssueTimeScheduleDataType } from "./const";
-import apiClient from "@/lib/axios";
-import createDummyData from "@/lib/dummyData";
-
-interface IssueDataDetail {
-  id: number;
-  section_c: string;
-  line_c: string;
-  issord_no: string;
-  issord_dtl_no: string;
-  material_no: string;
-  issue_qty: number;
-  issued_qty: number;
-  plan_dt: string;
-}
 
 interface ModalDetailProps {
   isOpen: boolean;
   onCancel: () => void;
-  data: IssueTimeScheduleDataType | null;
+  data: any;
 }
 
-const ModalDetail: React.FC<ModalDetailProps> = ({
+const ModalMission: React.FC<ModalDetailProps> = ({
   isOpen,
   onCancel,
   data,
 }) => {
   const { t } = useTranslation();
-  const [issueDataDetails, setIssueDataDetails] = useState<IssueDataDetail[]>(
-    []
-  );
   const [loading, setLoading] = useState(false);
 
-  // Fetch additional issue data when modal opens and data is available
-  useEffect(() => {
-    const fetchIssueData = async () => {
-      if (isOpen && data?.issue_ord_no) {
-        setLoading(true);
-        try {
-          // const { data: issueData } = await apiClient.get(
-          //   `issue-data/issord/${data.issue_ord_no}`
-          // );
-          const issueData = await createDummyData({
-            kit_no: [data.issue_ord_no],
-          });
-          setIssueDataDetails(
-            issueData.metaData as unknown as IssueDataDetail[]
-          );
-        } catch (error) {
-          console.error("Error fetching issue data:", error);
-          setIssueDataDetails([]);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchIssueData();
-  }, [isOpen, data?.issue_ord_no]);
+  console.log("data", data);
 
   if (!data) return null;
 
-  // Table columns for issue data details
+  const splitedData = data.reduce((acc: any[], record: any) => {
+    const existingIndex = acc.findIndex(
+      (item) =>
+        item.line_c === record.line_c && item.material_no === record.material_no
+    );
+    if (existingIndex >= 0) {
+      acc[existingIndex].issue_qty += record.issue_qty;
+      if (!acc[existingIndex].kit_no.includes(record.kit_no)) {
+        acc[existingIndex].kit_no = [
+          ...(Array.isArray(acc[existingIndex].kit_no)
+            ? acc[existingIndex].kit_no
+            : [acc[existingIndex].kit_no]),
+          record.kit_no,
+        ];
+      }
+      if (record.issued_qty) {
+        acc[existingIndex].issued_qty =
+          (acc[existingIndex].issued_qty || 0) + record.issued_qty;
+      }
+    } else {
+      acc.push({ ...record });
+    }
+    return acc;
+  }, []);
+
   const issueDataColumns = [
     {
-      title: t("issue_time_schedule.table.id", "STT"),
-      dataIndex: "STT",
-      key: "STT",
-      width: 60,
-      render: (text: string, record: IssueDataDetail, index: number) =>
-        index + 1,
-    },
-    // {
-    //   title: t("issue_time_schedule.table.section", "Section"),
-    //   dataIndex: "section_c",
-    //   key: "section_c",
-    //   width: 80,
-    //   render: (text: string) => <Tag color="blue">{text}</Tag>,
-    // },
-    // {
-    //   title: t("issue_time_schedule.table.line", "Line"),
-    //   dataIndex: "line_c",
-    //   key: "line_c",
-    //   width: 80,
-    //   render: (text: string) => <Tag color="orange">{text}</Tag>,
-    // },
-    // {
-    //   title: t(
-    //     "issue_time_schedule.table.issue_order_detail",
-    //     "Issue Order Detail"
-    //   ),
-    //   dataIndex: "issord_dtl_no",
-    //   key: "issord_dtl_no",
-    //   width: 120,
-    // },
-    {
-      title: t("issue_time_schedule.table.material_no", "Material Number"),
-      dataIndex: "material_no",
-      key: "material_no",
-      width: 150,
-      render: (text: string) => text?.trim(),
-    },
-    {
-      title: t("issue_time_schedule.table.material_name", "Material Name"),
+      title: "Tên sản phẩm",
       dataIndex: "material_name",
       key: "material_name",
       width: 150,
-      render: (text: string) => text?.trim(),
+    },
+    {
+      title: "Vị trí",
+      dataIndex: "line_c",
+      key: "line_c",
+      width: 120,
+    },
+    {
+      title: "Mã vật tư",
+      dataIndex: "material_no",
+      key: "material_no",
+      render: (text) => text?.trim(),
+      width: 150,
+    },
+    {
+      title: "Mã KIT",
+      dataIndex: "kit_no",
+      key: "kit_no",
+      render: (text: string | string[]) => {
+        if (Array.isArray(text)) {
+          return text.join(", ");
+        }
+        return text;
+      },
+      width: 120,
+    },
+    {
+      title: "Mã KIT dtl",
+      dataIndex: "issord_dtl_no",
+      key: "issord_dtl_no",
+      width: 120,
     },
     {
       title: "Đơn vị",
@@ -118,36 +91,56 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
       width: 100,
     },
     {
-      title: t("issue_time_schedule.table.issue_qty", "Issue Qty"),
+      title: "Số lượng yêu cầu",
       dataIndex: "issue_qty",
       key: "issue_qty",
-      width: 80,
-      align: "right" as const,
+      width: 130,
     },
     {
-      title: t("issue_time_schedule.table.issued_qty", "Issued Qty"),
+      title: "Số lượng tồn kho",
       dataIndex: "issued_qty",
       key: "issued_qty",
-      width: 80,
-      align: "right" as const,
+      width: 140,
+      render: (text, record) => (
+        <span
+          className={
+            record.inventory_qty < record.issue_qty
+              ? "text-red-500 font-medium"
+              : "text-green-600"
+          }
+        >
+          {text?.toLocaleString()}
+        </span>
+      ),
     },
-    // {
-    //   title: t("issue_time_schedule.table.plan_date", "Plan Date"),
-    //   dataIndex: "plan_dt",
-    //   key: "plan_dt",
-    //   width: 120,
-    //   render: (text: string) => (
-    //     <Tag color="geekblue">{dayjs(text).format("YYYY-MM-DD")}</Tag>
-    //   ),
-    // },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      width: 100,
+      render: (status) => (
+        <span
+          className={`px-2 py-1 rounded text-xs font-medium ${
+            status === "fill"
+              ? "bg-green-100 text-green-800"
+              : status === "empty"
+              ? "bg-red-100 text-red-800"
+              : "bg-yellow-100 text-yellow-800"
+          }`}
+        >
+          {status === "fill"
+            ? "Đầy"
+            : status === "empty"
+            ? "Trống"
+            : "Đang xử lí"}
+        </span>
+      ),
+    },
   ];
 
   return (
     <Drawer
-      title={t(
-        "issue_time_schedule.modal.detail_title",
-        "Issue Time Schedule Details"
-      )}
+      title={"Danh sách nhiệm vụ"}
       open={isOpen}
       onClose={onCancel}
       placement="bottom"
@@ -324,7 +317,7 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
           <Spin spinning={loading}>
             <Table
               columns={issueDataColumns}
-              dataSource={issueDataDetails}
+              dataSource={splitedData}
               rowKey="id"
               size="small"
               scroll={{ x: 800 }}
@@ -342,4 +335,4 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
   );
 };
 
-export default ModalDetail;
+export default ModalMission;

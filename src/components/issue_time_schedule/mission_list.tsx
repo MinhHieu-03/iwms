@@ -4,9 +4,13 @@ import { Drawer, Table, Input } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Search } from "lucide-react";
 import PickingItemModal from "../PickingItemModal";
-import { Button } from "@/components/ui/button";
+import { Button } from "antd";
 import BasePagination from "@/components/ui/antd-pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import dayjs from "dayjs";
+import { t } from "i18next";
+import ModalMergeKit from "./modal_merge_kit";
+import ModalMission from "./modal_mission";
 
 interface PickingItem {
   id: number;
@@ -42,14 +46,45 @@ interface PickingItem {
 
 interface PickingDrawerProps {
   missionData: any[]; // Replace with the actual type if available
+  kitData: any[];
 }
 
-const PickingDrawer: React.FC<PickingDrawerProps> = ({ missionData }) => {
+const PickingDrawer: React.FC<PickingDrawerProps> = ({
+  missionData,
+  kitData,
+}) => {
   const [searchText, setSearchText] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [selectedItem, setSelectedItem] = useState<PickingItem | null>(null);
   const [actionValue, setActionValue] = useState("");
   const skuRef = React.useRef(null);
+  const [modalDetail, setModalDetail] = useState<{
+    isOpenMission: boolean;
+    isOpenMerge: boolean;
+    data: any;
+  }>({
+    isOpenMission: false,
+    isOpenMerge: false,
+    data: null,
+  });
+
+  console.log("missionData", missionData);
+
+  console.log("kitData", kitData);
+
+  const pickingData =
+    kitData.length > 0
+      ? [
+          {
+            picking_no: kitData.map((item) => item.issue_ord_no).join("_"),
+            issue_orders: kitData.map((item) => item.issue_ord_no),
+            A_reqd_time: kitData.map((item) => item.A_reqd_time),
+            plan_issue_dt: kitData.map((item) => item.plan_issue_dt),
+            time_issue: kitData.map((item) => item.time_issue),
+            status: "In Progress",
+          },
+        ]
+      : [];
 
   const splitedData = missionData.reduce((acc: any[], record: any) => {
     const existingIndex = acc.findIndex(
@@ -85,6 +120,140 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ missionData }) => {
       }, 500);
     }
   }, [selectedItem]);
+
+  const onOpenModal = (record: any, type: "mission" | "merge") => {
+    console.log("record", record);
+    setModalDetail({
+      isOpenMission: type === "mission",
+      isOpenMerge: type === "merge",
+      data: missionData.filter((item) =>
+        record.issue_orders.includes(item.kit_no)
+      ),
+    });
+  };
+
+  const lang_key = "issue_time_schedule.table";
+
+  // Define columns for the Ant Design table
+  const columns: ColumnsType<any> = [
+    {
+      title: "Picking NO",
+      dataIndex: "picking_no",
+      key: "picking_no",
+      width: 150,
+    },
+    {
+      title: "Issue Orders",
+      dataIndex: "issue_orders",
+      key: "issue_orders",
+      width: 120,
+      render: (text) => (
+        <div className="space-y-1">
+          {text.map((item, index) => (
+            <div key={index} className="text-sm">
+              {item}
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: t(`${lang_key}.required_time`),
+      dataIndex: "A_reqd_time",
+      key: "A_reqd_time",
+      width: 150,
+      render: (date) => (
+        <div className="space-y-1">
+          {date.map((item, index) => (
+            <div key={index} className="text-sm">
+              {dayjs(item).format("YYYY-MM-DD HH:mm")}
+            </div>
+          ))}
+        </div>
+      ),
+      sorter: (a, b) =>
+        dayjs(a.A_reqd_time).unix() - dayjs(b.A_reqd_time).unix(),
+    },
+    {
+      title: t(`${lang_key}.plan_issue_date`),
+      dataIndex: "plan_issue_dt",
+      key: "plan_issue_dt",
+      width: 150,
+      render: (date) => (
+        <div className="space-y-1">
+          {date.map((item, index) => (
+            <div key={index} className="text-sm">
+              {dayjs(item).format("YYYY-MM-DD HH:mm")}
+            </div>
+          ))}
+        </div>
+      ),
+      sorter: (a, b) =>
+        dayjs(a.plan_issue_dt).unix() - dayjs(b.plan_issue_dt).unix(),
+    },
+    {
+      title: t(`${lang_key}.issue_time`),
+      dataIndex: "time_issue",
+      key: "time_issue",
+      width: 150,
+      render: (date) => (
+        <div className="space-y-1">
+          {date.map((item, index) => (
+            <div key={index} className="text-sm">
+              {dayjs(item).format("YYYY-MM-DD HH:mm")}
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      width: 100,
+      render: (status) => (
+        <span
+          className={`px-2 py-1 rounded text-xs font-medium ${
+            status === "fill"
+              ? "bg-green-100 text-green-800"
+              : status === "empty"
+              ? "bg-red-100 text-red-800"
+              : "bg-yellow-100 text-yellow-800"
+          }`}
+        >
+          {status === "fill"
+            ? "Đầy"
+            : status === "empty"
+            ? "Trống"
+            : "Đang xử lí"}
+        </span>
+      ),
+    },
+    {
+      title: "Action",
+      dataIndex: "issord_dtl_no",
+      key: "issord_dtl_no",
+      render: (_, record) => (
+        <div className="flex items-center gap-2">
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => onOpenModal(record, "merge")}
+          >
+            Kit Merge
+          </Button>
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => onOpenModal(record, "mission")}
+          >
+            Mission
+          </Button>
+        </div>
+      ),
+      width: 100,
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -141,7 +310,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ missionData }) => {
         />
         <Table
           columns={columns}
-          dataSource={splitedData}
+          dataSource={pickingData}
           rowKey="issord_dtl_no"
           pagination={false}
           size="middle"
@@ -153,101 +322,25 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ missionData }) => {
           })}
         />
       </Card>
+
+      <ModalMission
+        isOpen={modalDetail.isOpenMission}
+        onCancel={() =>
+          setModalDetail((prev) => ({ ...prev, isOpenMission: false }))
+        }
+        data={modalDetail.data}
+      />
+
+      <ModalMergeKit
+        isOpen={modalDetail.isOpenMerge}
+        onCancel={() =>
+          setModalDetail((prev) => ({ ...prev, isOpenMerge: false }))
+        }
+        data={modalDetail.data}
+      />
     </div>
   );
 };
 
-// Define columns for the Ant Design table
-const columns: ColumnsType<PickingItem> = [
-  {
-    title: "Tên sản phẩm",
-    dataIndex: "material_name",
-    key: "material_name",
-    width: 150,
-  },
-  {
-    title: "Vị trí",
-    dataIndex: "line_c",
-    key: "line_c",
-    width: 120,
-  },
-  {
-    title: "Mã vật tư",
-    dataIndex: "material_no",
-    key: "material_no",
-    render: (text) => text?.trim(),
-    width: 150,
-  },
-  {
-    title: "Mã KIT",
-    dataIndex: "kit_no",
-    key: "kit_no",
-    render: (text: string | string[]) => {
-      if (Array.isArray(text)) {
-        return text.join(", ");
-      }
-      return text;
-    },
-    width: 120,
-  },
-  {
-    title: "Mã KIT dtl",
-    dataIndex: "issord_dtl_no",
-    key: "issord_dtl_no",
-    width: 120,
-  },
-  {
-    title: "Đơn vị",
-    dataIndex: "unit",
-    key: "unit",
-    width: 100,
-  },
-  {
-    title: "Số lượng yêu cầu",
-    dataIndex: "issue_qty",
-    key: "issue_qty",
-    width: 130,
-  },
-  {
-    title: "Số lượng tồn kho",
-    dataIndex: "issued_qty",
-    key: "issued_qty",
-    width: 140,
-    render: (text, record) => (
-      <span
-        className={
-          record.inventory_qty < record.issue_qty
-            ? "text-red-500 font-medium"
-            : "text-green-600"
-        }
-      >
-        {text?.toLocaleString()}
-      </span>
-    ),
-  },
-  {
-    title: "Trạng thái",
-    dataIndex: "status",
-    key: "status",
-    width: 100,
-    render: (status) => (
-      <span
-        className={`px-2 py-1 rounded text-xs font-medium ${
-          status === "fill"
-            ? "bg-green-100 text-green-800"
-            : status === "empty"
-            ? "bg-red-100 text-red-800"
-            : "bg-yellow-100 text-yellow-800"
-        }`}
-      >
-        {status === "fill"
-          ? "Đầy"
-          : status === "empty"
-          ? "Trống"
-          : "Đang xử lí"}
-      </span>
-    ),
-  },
-];
 export default PickingDrawer;
 export type { PickingItem, PickingDrawerProps };

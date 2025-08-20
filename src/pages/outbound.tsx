@@ -69,6 +69,8 @@ const OrdersTab: React.FC = () => {
   };
 
   const [dataMerge, setDataMerge] = useState([]);
+  const [kitData, setKitData] = useState([]);
+
   return (
     <div className="space-y-6">
       <Steps
@@ -85,29 +87,27 @@ const OrdersTab: React.FC = () => {
             description: "Quản lý kit vật tư.",
           },
           {
-            title: "Danh sách gộp vật tư",
-            // subTitle: "00:01:02",
-            // status: 'process',
-            description: "Quản lý danh sách gộp vật tư.",
-          },
-          {
-            title: "Mission",
-            // subTitle: "waiting for longlong time",
+            title: "Step 2",
             // status: 'wait',
-            description: "Quản lý nhiệm vụ robot",
+            description: "This is a description.",
           },
           {
             title: "Step 3",
-            subTitle: "waiting for longlong time",
-            // status: 'wait',
             description: "This is a description.",
           },
         ]}
       />
-      {current === 0 ? <Issue_time_schedule setCurrent={setCurrent} setDataMerge={setDataMerge} />: null}
-      {current === 1 ? <MergeKitTable missionData={dataMerge} />: null}
-      {current === 2 ? <MissionList missionData={dataMerge} />: null}
-      {current === 3 ? <OIOutbound />: null}
+      {current === 0 ? (
+        <Issue_time_schedule
+          setCurrent={setCurrent}
+          setDataMerge={setDataMerge}
+          setKitData={setKitData}
+        />
+      ) : null}
+      {current === 1 ? <OIOutbound /> : null}
+      {current === 2 ? (
+        <MissionList missionData={dataMerge} kitData={kitData} />
+      ) : null}
     </div>
   );
 };

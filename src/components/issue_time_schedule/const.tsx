@@ -31,12 +31,12 @@ export const domain = {
 
 export const lang_key = "issue_time_schedule.table";
 
-export const RenderCol = ({ 
-  t, 
+export const RenderCol = ({
+  t,
   onEdit,
   onDelete,
-  onDetail
-}: { 
+  onDetail,
+}: {
   t: (key: string) => string;
   onEdit: (record: IssueTimeScheduleDataType) => void;
   onDelete: (id: string) => void;
@@ -93,19 +93,21 @@ export const RenderCol = ({
     render: (text) => <span className="font-medium text-blue-600">{text}</span>,
   },
   {
-    title: t(`${lang_key}.plan_issue_date`),
-    dataIndex: "plan_issue_dt",
-    key: "plan_issue_dt",
-    width: 150,
-    render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
-    sorter: (a, b) => dayjs(a.plan_issue_dt).unix() - dayjs(b.plan_issue_dt).unix(),
-  },
-  {
     title: t(`${lang_key}.required_time`),
     dataIndex: "A_reqd_time",
     key: "A_reqd_time",
     width: 150,
     render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
+    sorter: (a, b) => dayjs(a.A_reqd_time).unix() - dayjs(b.A_reqd_time).unix(),
+  },
+  {
+    title: t(`${lang_key}.plan_issue_date`),
+    dataIndex: "plan_issue_dt",
+    key: "plan_issue_dt",
+    width: 150,
+    render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
+    sorter: (a, b) =>
+      dayjs(a.plan_issue_dt).unix() - dayjs(b.plan_issue_dt).unix(),
   },
   {
     title: t(`${lang_key}.issue_time`),
@@ -138,14 +140,10 @@ export const RenderCol = ({
     title: t("common.action"),
     key: "action",
     fixed: "right",
-    width: 150,
+    width: 100,
     render: (_, record) => (
-      <div className="flex gap-2">
-        <Button
-          type="primary"
-          size="small"
-          onClick={() => onDetail(record)}
-        >
+      <div className="flex items-center justify-center gap-2">
+        <Button type="primary" size="small" onClick={() => onDetail(record)}>
           {t("common.detail")}
         </Button>
         {/* <Button
@@ -188,7 +186,7 @@ export const mockData: IssueTimeScheduleDataType[] = [
     time_issue: "2025-06-10T06:00:00.000Z",
     userid: "Job",
     ent_dt: "2025-06-10T17:00:00.000Z",
-    upd_dt: "2025-06-10T17:00:00.000Z"
+    upd_dt: "2025-06-10T17:00:00.000Z",
   },
   {
     key: "2",
@@ -206,7 +204,7 @@ export const mockData: IssueTimeScheduleDataType[] = [
     time_issue: "2025-06-11T06:00:00.000Z",
     userid: "Job",
     ent_dt: "2025-06-11T17:00:00.000Z",
-    upd_dt: "2025-06-11T17:00:00.000Z"
+    upd_dt: "2025-06-11T17:00:00.000Z",
   },
   {
     key: "3",
@@ -224,6 +222,6 @@ export const mockData: IssueTimeScheduleDataType[] = [
     time_issue: "2025-06-12T06:00:00.000Z",
     userid: "Admin",
     ent_dt: "2025-06-12T17:00:00.000Z",
-    upd_dt: "2025-06-12T17:00:00.000Z"
-  }
+    upd_dt: "2025-06-12T17:00:00.000Z",
+  },
 ];
