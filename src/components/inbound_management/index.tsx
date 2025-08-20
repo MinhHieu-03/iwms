@@ -279,10 +279,9 @@ const Header = ({
     (state) => state.auth
   );
   const [isOpenForm, setIsOpenForm] = useState(false);
-  const [user, setUser] = useState({
-    name: "",
-    avatar: "",
-  });
+  const [user, setUser] = useState<any>(
+    JSON.parse(localStorage.getItem("user") || "{}")
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -429,7 +428,7 @@ const Header = ({
               variant="default"
             >
               <UserOutlined />
-              Login
+              {t("login")}
             </Button>
           )}
         </div>
@@ -446,9 +445,9 @@ const Header = ({
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>{t("username")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter username" {...field} />
+                    <Input placeholder={t("username")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -459,16 +458,20 @@ const Header = ({
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>{t("password")}</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input
+                      type="password"
+                      placeholder={t("password")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Logging in..." : "Log in"}
+              {loading ? t("loading") : t("login")}
             </Button>
           </form>
         </Form>

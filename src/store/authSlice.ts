@@ -1,5 +1,5 @@
-import apiClient from '@/lib/axios';
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import apiClient from "@/lib/axios";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -9,7 +9,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  isAuthenticated: localStorage.getItem('isLoggedIn') === 'true',
+  isAuthenticated: localStorage.getItem("isLoggedIn") === "true",
   loading: false,
   error: null,
   user: {},
@@ -22,39 +22,44 @@ interface LoginCredentials {
 
 // Async thunk for login
 export const login = createAsyncThunk(
-  'auth/login',
+  "auth/login",
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
-      const {username, password} = credentials;
-      const {data} = await apiClient.post('/auth/login', {name: username, password});
-      const {metaData, msg} = data;
-      console.log('Login response:', metaData.access_token);
+      const { username, password } = credentials;
+      const { data } = await apiClient.post("/auth/login", {
+        name: username,
+        password,
+      });
+      const { metaData, msg } = data;
+      console.log("Login response:", metaData.access_token);
       if (metaData && metaData.access_token) {
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('access_token', metaData.access_token);
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("access_token", metaData.access_token);
+        localStorage.setItem("user", JSON.stringify(metaData.user));
         return metaData;
       } else {
-        return rejectWithValue('Invalid username or password');
+        return rejectWithValue("Invalid username or password");
       }
     } catch (error) {
-      console.error('Login error:', error);
-      return rejectWithValue('Login failed. Please try again.');
+      console.error("Login error:", error);
+      return rejectWithValue("Login failed. Please try again.");
     }
   }
 );
 
 // Async thunk for logout
 export const logout = createAsyncThunk(
-  'auth/logout',
+  "auth/logout",
   async (_, { dispatch }) => {
-    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("user");
     // Navigate to login page - we'll handle this in the component
     return true;
   }
 );
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     // You can add additional reducers here if needed
@@ -67,7 +72,6 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(login.fulfilled, (state) => {
-        console.log('Login successful___', state);
         state.isAuthenticated = true;
         state.loading = false;
         state.user = state.user || {};

@@ -118,11 +118,11 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
       title: t(`${lang_key}.product_name`),
       width: 150,
     },
-    {
-      dataIndex: "origin",
-      title: t(`${lang_key}.origin`),
-      width: 100,
-    },
+    // {
+    //   dataIndex: "origin",
+    //   title: t(`${lang_key}.origin`),
+    //   width: 100,
+    // },
     {
       dataIndex: "destination",
       title: t(`${lang_key}.destination`),
@@ -151,23 +151,22 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
       dataIndex: "status",
       title: t(`common.status`),
       width: 100,
-    render: (status: string) => {
-      const statusMap: Record<string, { text: string; color: string }> = {
-        wait_fill: { text: t("status.wait_fill"), color: "orange" },
-        fill: { text: t("status.fill"), color: "blue" },
-        in_progress: { text: t("status.in_progress"), color: "processing" },
-        completed: { text: t("status.completed"), color: "success" },
-        low_stock: { text: t("status.low_stock"), color: "warning" },
-        out_of_stock: { text: t("status.out_of_stock"), color: "error" },
-      };
-      
-      const statusInfo = statusMap[status] || { text: t("status.unknown"), color: "default" };
-      return (
-        <Tag color={statusInfo.color}>
-          {statusInfo.text}
-        </Tag>
-      );
-    },
+      render: (status: string) => {
+        const statusMap: Record<string, { text: string; color: string }> = {
+          wait_fill: { text: t("status.wait_fill"), color: "orange" },
+          fill: { text: t("status.fill"), color: "blue" },
+          in_progress: { text: t("status.in_progress"), color: "processing" },
+          completed: { text: t("status.completed"), color: "success" },
+          low_stock: { text: t("status.low_stock"), color: "warning" },
+          out_of_stock: { text: t("status.out_of_stock"), color: "error" },
+        };
+
+        const statusInfo = statusMap[status] || {
+          text: t("status.unknown"),
+          color: "default",
+        };
+        return <Tag color={statusInfo.color}>{statusInfo.text}</Tag>;
+      },
     },
     {
       dataIndex: "createdAt",
@@ -184,54 +183,95 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
   ];
 };
 
-export const renderCreateForm = (dataRole: unknown, dataList: unknown, t: (key: string) => string) => {
+export const renderCreateForm = (
+  dataRole: unknown,
+  dataList: unknown,
+  t: (key: string) => string
+) => {
   return [
     {
       label: t(`${lang_key}.sku`),
       name: "sku",
-      rules: [{ required: true, message: t(`${lang_key}.validation.sku_required`) }],
+      rules: [
+        { required: true, message: t(`${lang_key}.validation.sku_required`) },
+      ],
     },
     {
       label: t(`${lang_key}.quantity`),
       name: "quantity",
       type: "number",
-      rules: [{ required: true, message: t(`${lang_key}.validation.quantity_required`) }],
+      rules: [
+        {
+          required: true,
+          message: t(`${lang_key}.validation.quantity_required`),
+        },
+      ],
     },
     {
       label: t(`${lang_key}.store_method`),
       name: "storeMethod",
       type: "select",
       items: getStoreMethodOptions(t),
-      rules: [{ required: true, message: t(`${lang_key}.validation.store_method_required`) }],
+      rules: [
+        {
+          required: true,
+          message: t(`${lang_key}.validation.store_method_required`),
+        },
+      ],
     },
     {
       label: t(`${lang_key}.packing_method`),
       name: "packingMethod",
       type: "select",
       items: getPackingMethodOptions(t),
-      rules: [{ required: true, message: t(`${lang_key}.validation.packing_method_required`) }],
+      rules: [
+        {
+          required: true,
+          message: t(`${lang_key}.validation.packing_method_required`),
+        },
+      ],
     },
     {
       label: t(`${lang_key}.bin_code`),
       name: "bin_code",
-      rules: [{ required: true, message: t(`${lang_key}.validation.bin_code_required`) }],
+      rules: [
+        {
+          required: true,
+          message: t(`${lang_key}.validation.bin_code_required`),
+        },
+      ],
     },
     {
       label: t(`${lang_key}.supplier`),
       name: "supplier",
-      rules: [{ required: true, message: t(`${lang_key}.validation.supplier_required`) }],
+      rules: [
+        {
+          required: true,
+          message: t(`${lang_key}.validation.supplier_required`),
+        },
+      ],
     },
     {
       label: t(`${lang_key}.invoice_code`),
       name: "invoice_code",
-      rules: [{ required: true, message: t(`${lang_key}.validation.invoice_code_required`) }],
+      rules: [
+        {
+          required: true,
+          message: t(`${lang_key}.validation.invoice_code_required`),
+        },
+      ],
     },
     {
       label: t(`${lang_key}.status`),
       name: "status",
       type: "select",
       items: getStatusOptions(t),
-      rules: [{ required: true, message: t(`${lang_key}.validation.status_required`) }],
+      rules: [
+        {
+          required: true,
+          message: t(`${lang_key}.validation.status_required`),
+        },
+      ],
     },
     {
       label: t(`${lang_key}.note`),
@@ -240,7 +280,10 @@ export const renderCreateForm = (dataRole: unknown, dataList: unknown, t: (key: 
   ];
 };
 
-export const renderEditForm = (dataRole: unknown, t: (key: string) => string) => {
+export const renderEditForm = (
+  dataRole: unknown,
+  t: (key: string) => string
+) => {
   return [
     {
       label: t(`${lang_key}.sku`),
