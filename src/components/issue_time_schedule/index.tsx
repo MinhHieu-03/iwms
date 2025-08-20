@@ -24,7 +24,7 @@ import ModalAdd, { type FormValues } from "./modal_create";
 import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
 import ModalDetail from "./modal_detail";
 import PickingDrawer from "./PickingDrawer";
-import createDummyData from "@/lib/dummyData";
+import { createDummyData, creatKitData } from "@/lib/dummyData";
 
 const { list, create, update, remove } = domain;
 
@@ -75,12 +75,17 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
       setLoading(true);
       // Try API first, fallback to mock data if it fails
       try {
-        const { data } = await apiClient.post(list, {
-          limit: pageInfo.perPage,
-          page: pageInfo.page,
-        });
+        // const { data } = await apiClient.post(list, {
+        //   limit: pageInfo.perPage,
+        //   page: pageInfo.page,
+        // });
+        // setDataList(data.metaData);
+        // setTotal(data.total);
+
+        const data = await creatKitData();
+
         setDataList(data.metaData);
-        setTotal(data.total);
+        setTotal(data.metaData.length);
       } catch (apiError) {
         console.warn("API not available, using mock data:", apiError);
         // Using mock data as fallback
@@ -262,10 +267,21 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
     setKitData(
       dataList.filter((item) => selectedRowKeys.includes(item.issue_ord_no))
     );
-    const issueData = await createDummyData({
-      kit_no: selectedRowKeys,
-    });
-    setDataMerge(issueData.metaData);
+    let issueData = [];
+    await Promise.all(
+      selectedRowKeys.map(async (keyItem) => {
+        const data = await createDummyData({
+          issue_ord_no: keyItem,
+        });
+        issueData.push(
+          ...data.metaData.map((item) => ({
+            ...item,
+            issue_ord_no: keyItem,
+          }))
+        );
+      })
+    );
+    setDataMerge(issueData);
     setCurrent(1);
   };
 

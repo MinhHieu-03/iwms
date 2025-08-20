@@ -43,6 +43,19 @@ export const RenderCol = ({
   onDetail: (record: IssueTimeScheduleDataType) => void;
 }): ColumnsType<IssueTimeScheduleDataType> => [
   {
+    title: t(`${lang_key}.issue_order_no`),
+    dataIndex: "issue_ord_no",
+    key: "issue_ord_no",
+    width: 100,
+    render: (text) => <span className="font-medium text-blue-600">{text}</span>,
+  },
+  // {
+  //   title: t(`${lang_key}.factory`),
+  //   dataIndex: "fact_c",
+  //   key: "fact_c",
+  //   width: 100,
+  // },
+  {
     title: t(`${lang_key}.section`),
     dataIndex: "section_c",
     key: "section_c",
@@ -50,23 +63,17 @@ export const RenderCol = ({
     sorter: (a, b) => a.section_c.localeCompare(b.section_c),
   },
   {
-    title: t(`${lang_key}.factory`),
-    dataIndex: "fact_c",
-    key: "fact_c",
-    width: 100,
-  },
-  {
     title: t(`${lang_key}.line`),
     dataIndex: "line_c",
     key: "line_c",
     width: 100,
   },
-  {
-    title: t(`${lang_key}.product_no`),
-    dataIndex: "prod_no",
-    key: "prod_no",
-    width: 120,
-  },
+  // {
+  //   title: t(`${lang_key}.product_no`),
+  //   dataIndex: "prod_no",
+  //   key: "prod_no",
+  //   width: 120,
+  // },
   // {
   //   title: t(`${lang_key}.customer_desc_1`),
   //   dataIndex: "cusdesch_cd1",
@@ -85,12 +92,13 @@ export const RenderCol = ({
   //   key: "intdesch_cd",
   //   width: 120,
   // },
+
   {
-    title: t(`${lang_key}.issue_order_no`),
-    dataIndex: "issue_ord_no",
-    key: "issue_ord_no",
+    title: t(`${lang_key}.issue_time`),
+    dataIndex: "time_issue",
+    key: "time_issue",
     width: 150,
-    render: (text) => <span className="font-medium text-blue-600">{text}</span>,
+    render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
   },
   {
     title: t(`${lang_key}.required_time`),
@@ -110,11 +118,27 @@ export const RenderCol = ({
       dayjs(a.plan_issue_dt).unix() - dayjs(b.plan_issue_dt).unix(),
   },
   {
-    title: t(`${lang_key}.issue_time`),
-    dataIndex: "time_issue",
-    key: "time_issue",
-    width: 150,
-    render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
+    title: t(`${lang_key}.status`),
+    dataIndex: "status",
+    key: "status",
+    width: 100,
+    render: (status) => (
+      <span
+        className={`px-2 py-1 rounded text-xs font-medium ${
+          status === "fill"
+            ? "bg-green-100 text-green-800"
+            : status === "empty"
+            ? "bg-red-100 text-red-800"
+            : "bg-yellow-100 text-yellow-800"
+        }`}
+      >
+        {status === "fill"
+          ? "Đã xuất"
+          : status === "empty"
+          ? "Trống"
+          : "Đang xuất"}
+      </span>
+    ),
   },
   // {
   //   title: t(`${lang_key}.user_id`),

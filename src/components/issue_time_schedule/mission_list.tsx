@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import { t } from "i18next";
 import ModalMergeKit from "./modal_merge_kit";
 import ModalMission from "./modal_mission";
+import { creatMissionData } from "@/lib/dummyData";
 
 interface PickingItem {
   id: number;
@@ -20,7 +21,7 @@ interface PickingItem {
   issord_dtl_no: string;
   material_no: string;
   material_name: string;
-  kit_no: string;
+  issue_ord_no: string;
   unit: string;
   issue_qty: number;
   issued_qty?: number;
@@ -58,19 +59,9 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
   const [selectedItem, setSelectedItem] = useState<PickingItem | null>(null);
   const [actionValue, setActionValue] = useState("");
   const skuRef = React.useRef(null);
-  const [modalDetail, setModalDetail] = useState<{
-    isOpenMission: boolean;
-    isOpenMerge: boolean;
-    data: any;
-  }>({
-    isOpenMission: false,
-    isOpenMerge: false,
-    data: null,
-  });
-
-  console.log("missionData", missionData);
-
-  console.log("kitData", kitData);
+  const [isOpenMission, setIsOpenMission] = useState(false);
+  const [isOpenMerge, setIsOpenMerge] = useState(false);
+  const [modalData, setModalData] = useState<any>(null);
 
   const pickingData =
     kitData.length > 0
@@ -86,31 +77,6 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
         ]
       : [];
 
-  const splitedData = missionData.reduce((acc: any[], record: any) => {
-    const existingIndex = acc.findIndex(
-      (item) =>
-        item.line_c === record.line_c && item.material_no === record.material_no
-    );
-    if (existingIndex >= 0) {
-      acc[existingIndex].issue_qty += record.issue_qty;
-      if (!acc[existingIndex].kit_no.includes(record.kit_no)) {
-        acc[existingIndex].kit_no = [
-          ...(Array.isArray(acc[existingIndex].kit_no)
-            ? acc[existingIndex].kit_no
-            : [acc[existingIndex].kit_no]),
-          record.kit_no,
-        ];
-      }
-      if (record.issued_qty) {
-        acc[existingIndex].issued_qty =
-          (acc[existingIndex].issued_qty || 0) + record.issued_qty;
-      }
-    } else {
-      acc.push({ ...record });
-    }
-    return acc;
-  }, []);
-
   useEffect(() => {
     // console.log('dndd__', !selectedItem)
     if (!selectedItem) {
@@ -121,15 +87,19 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
     }
   }, [selectedItem]);
 
-  const onOpenModal = (record: any, type: "mission" | "merge") => {
-    console.log("record", record);
-    setModalDetail({
-      isOpenMission: type === "mission",
-      isOpenMerge: type === "merge",
-      data: missionData.filter((item) =>
-        record.issue_orders.includes(item.kit_no)
-      ),
-    });
+  const onOpenMergeModal = (record: any) => {
+    setModalData(
+      missionData.filter((item) =>
+        record.issue_orders.includes(item.issue_ord_no)
+      )
+    );
+    setIsOpenMerge(true);
+  };
+
+  const onOpenMissionModal = async (record: any) => {
+    const data = await creatMissionData();
+    setModalData(data.metaData);
+    setIsOpenMission(true);
   };
 
   const lang_key = "issue_time_schedule.table";
@@ -238,14 +208,14 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
           <Button
             type="primary"
             size="small"
-            onClick={() => onOpenModal(record, "merge")}
+            onClick={() => onOpenMergeModal(record)}
           >
             Kit Merge
           </Button>
           <Button
             type="primary"
             size="small"
-            onClick={() => onOpenModal(record, "mission")}
+            onClick={() => onOpenMissionModal(record)}
           >
             Mission
           </Button>
@@ -311,7 +281,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
         <Table
           columns={columns}
           dataSource={pickingData}
-          rowKey="issord_dtl_no"
+          rowKey="picking_no"
           pagination={false}
           size="middle"
           onRow={(record) => ({
@@ -323,21 +293,21 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
         />
       </Card>
 
-      <ModalMission
-        isOpen={modalDetail.isOpenMission}
-        onCancel={() =>
-          setModalDetail((prev) => ({ ...prev, isOpenMission: false }))
-        }
-        data={modalDetail.data}
-      />
+      {isOpenMission && (
+        <ModalMission
+          isOpen={isOpenMission}
+          onCancel={() => setIsOpenMission(false)}
+          data={modalData}
+        />
+      )}
 
-      <ModalMergeKit
-        isOpen={modalDetail.isOpenMerge}
-        onCancel={() =>
-          setModalDetail((prev) => ({ ...prev, isOpenMerge: false }))
-        }
-        data={modalDetail.data}
-      />
+      {isOpenMerge && (
+        <ModalMergeKit
+          isOpen={isOpenMerge}
+          onCancel={() => setIsOpenMerge(false)}
+          data={modalData}
+        />
+      )}
     </div>
   );
 };

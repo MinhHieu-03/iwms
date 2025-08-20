@@ -17,101 +17,135 @@ const ModalMission: React.FC<ModalDetailProps> = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
-  console.log("data", data);
-
   if (!data) return null;
 
-  const splitedData = data.reduce((acc: any[], record: any) => {
-    const existingIndex = acc.findIndex(
-      (item) =>
-        item.line_c === record.line_c && item.material_no === record.material_no
-    );
-    if (existingIndex >= 0) {
-      acc[existingIndex].issue_qty += record.issue_qty;
-      if (!acc[existingIndex].kit_no.includes(record.kit_no)) {
-        acc[existingIndex].kit_no = [
-          ...(Array.isArray(acc[existingIndex].kit_no)
-            ? acc[existingIndex].kit_no
-            : [acc[existingIndex].kit_no]),
-          record.kit_no,
-        ];
-      }
-      if (record.issued_qty) {
-        acc[existingIndex].issued_qty =
-          (acc[existingIndex].issued_qty || 0) + record.issued_qty;
-      }
-    } else {
-      acc.push({ ...record });
-    }
-    return acc;
-  }, []);
+  //   const splitedData = data.reduce((acc: any[], record: any) => {
+  //     const existingIndex = acc.findIndex(
+  //       (item) =>
+  //         item.line_c === record.line_c && item.material_no === record.material_no
+  //     );
+  //     if (existingIndex >= 0) {
+  //       acc[existingIndex].issue_qty += record.issue_qty;
+  //       if (!acc[existingIndex].issue_ord_no.includes(record.issue_ord_no)) {
+  //         acc[existingIndex].issue_ord_no = [
+  //           ...(Array.isArray(acc[existingIndex].issue_ord_no)
+  //             ? acc[existingIndex].issue_ord_no
+  //             : [acc[existingIndex].issue_ord_no]),
+  //           record.issue_ord_no,
+  //         ];
+  //       }
+  //       if (record.issued_qty) {
+  //         acc[existingIndex].issued_qty =
+  //           (acc[existingIndex].issued_qty || 0) + record.issued_qty;
+  //       }
+  //     } else {
+  //       acc.push({ ...record });
+  //     }
+  //     return acc;
+  //   }, []);
 
   const issueDataColumns = [
+    // {
+    //   title: "Tên sản phẩm",
+    //   dataIndex: "material_name",
+    //   key: "material_name",
+    //   width: 150,
+    // },
     {
-      title: "Tên sản phẩm",
-      dataIndex: "material_name",
-      key: "material_name",
+      title: "Mã nhiệm vụ",
+      dataIndex: "mission_no",
+      key: "mission_no",
       width: 150,
     },
     {
-      title: "Vị trí",
-      dataIndex: "line_c",
-      key: "line_c",
-      width: 120,
+      title: "Mã thùng",
+      dataIndex: "package_no",
+      key: "package_no",
+      width: 100,
     },
+    // {
+    //   title: "Vị trí",
+    //   dataIndex: "line_c",
+    //   key: "line_c",
+    //   width: 120,
+    // },
     {
       title: "Mã vật tư",
       dataIndex: "material_no",
       key: "material_no",
       render: (text) => text?.trim(),
-      width: 150,
-    },
-    {
-      title: "Mã KIT",
-      dataIndex: "kit_no",
-      key: "kit_no",
-      render: (text: string | string[]) => {
-        if (Array.isArray(text)) {
-          return text.join(", ");
-        }
-        return text;
-      },
       width: 120,
     },
+    // {
+    //   title: "Mã KIT",
+    //   dataIndex: "issue_ord_no",
+    //   key: "issue_ord_no",
+    //   render: (text: string | string[]) => {
+    //     if (Array.isArray(text)) {
+    //       return text.join(", ");
+    //     }
+    //     return text;
+    //   },
+    //   width: 120,
+    // },
+    // {
+    //   title: "Mã KIT dtl",
+    //   dataIndex: "issord_dtl_no",
+    //   key: "issord_dtl_no",
+    //   width: 120,
+    // },
+    // {
+    //   title: "Đơn vị",
+    //   dataIndex: "unit",
+    //   key: "unit",
+    //   width: 100,
+    // },
     {
-      title: "Mã KIT dtl",
-      dataIndex: "issord_dtl_no",
-      key: "issord_dtl_no",
-      width: 120,
+      title: "Số lượng",
+      dataIndex: "quantity",
+      key: "quantity",
+      width: 100,
     },
+    // {
+    //   title: "Số lượng tồn kho",
+    //   dataIndex: "issued_qty",
+    //   key: "issued_qty",
+    //   width: 140,
+    //   render: (text, record) => (
+    //     <span
+    //       className={
+    //         record.inventory_qty < record.issue_qty
+    //           ? "text-red-500 font-medium"
+    //           : "text-green-600"
+    //       }
+    //     >
+    //       {text?.toLocaleString()}
+    //     </span>
+    //   ),
+    // },
     {
-      title: "Đơn vị",
-      dataIndex: "unit",
-      key: "unit",
+      title: "Vị trí cấp",
+      dataIndex: "supply_loc",
+      key: "supply_loc",
       width: 100,
     },
     {
-      title: "Số lượng yêu cầu",
-      dataIndex: "issue_qty",
-      key: "issue_qty",
-      width: 130,
+      title: "Vị trí nhận",
+      dataIndex: "receive_loc",
+      key: "receive_loc",
+      width: 100,
     },
     {
-      title: "Số lượng tồn kho",
-      dataIndex: "issued_qty",
-      key: "issued_qty",
-      width: 140,
-      render: (text, record) => (
-        <span
-          className={
-            record.inventory_qty < record.issue_qty
-              ? "text-red-500 font-medium"
-              : "text-green-600"
-          }
-        >
-          {text?.toLocaleString()}
-        </span>
-      ),
+      title: "Robot",
+      dataIndex: "robot_no",
+      key: "robot_no",
+      width: 100,
+    },
+    {
+      title: "ETA",
+      dataIndex: "eta",
+      key: "eta",
+      width: 100,
     },
     {
       title: "Trạng thái",
@@ -317,8 +351,8 @@ const ModalMission: React.FC<ModalDetailProps> = ({
           <Spin spinning={loading}>
             <Table
               columns={issueDataColumns}
-              dataSource={splitedData}
-              rowKey="id"
+              dataSource={data}
+              rowKey="mission_no"
               size="small"
               scroll={{ x: 800 }}
               pagination={{

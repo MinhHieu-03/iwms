@@ -17,8 +17,6 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
-  console.log("data", data);
-
   if (!data) return null;
 
   const mergeData = data.reduce((acc: any[], record: any) => {
@@ -27,12 +25,12 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
     );
     if (existingIndex >= 0) {
       acc[existingIndex].issue_qty += record.issue_qty;
-      if (!acc[existingIndex].kit_no.includes(record.kit_no)) {
-        acc[existingIndex].kit_no = [
-          ...(Array.isArray(acc[existingIndex].kit_no)
-            ? acc[existingIndex].kit_no
-            : [acc[existingIndex].kit_no]),
-          record.kit_no,
+      if (!acc[existingIndex].issue_ord_no.includes(record.issue_ord_no)) {
+        acc[existingIndex].issue_ord_no = [
+          ...(Array.isArray(acc[existingIndex].issue_ord_no)
+            ? acc[existingIndex].issue_ord_no
+            : [acc[existingIndex].issue_ord_no]),
+          record.issue_ord_no,
         ];
       }
       if (record.issued_qty) {
@@ -74,11 +72,9 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
     },
     {
       title: "Mã KIT",
-      dataIndex: "kit_no",
-      key: "kit_no",
+      dataIndex: "issue_ord_no",
+      key: "issue_ord_no",
       render: (text: string | string[]) => {
-        console.log("text", text);
-
         if (Array.isArray(text)) {
           return text.join(", ");
         }
@@ -303,7 +299,7 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
             <Table
               columns={issueDataColumns}
               dataSource={mergeData}
-              rowKey="id"
+              rowKey="material_no"
               size="small"
               scroll={{ x: 800 }}
               pagination={{

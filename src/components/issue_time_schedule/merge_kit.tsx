@@ -16,7 +16,7 @@ interface PickingItem {
   issord_dtl_no: string;
   material_no: string;
   material_name: string;
-  kit_no: string | string[];
+  issue_ord_no: string | string[];
   unit: string;
   issue_qty: number;
   issued_qty?: number;
@@ -65,12 +65,12 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
     );
     if (existingIndex >= 0) {
       acc[existingIndex].issue_qty += record.issue_qty;
-      if (!acc[existingIndex].kit_no.includes(record.kit_no)) {
-        acc[existingIndex].kit_no = [
-          ...(Array.isArray(acc[existingIndex].kit_no)
-            ? acc[existingIndex].kit_no
-            : [acc[existingIndex].kit_no]),
-          record.kit_no,
+      if (!acc[existingIndex].issue_ord_no.includes(record.issue_ord_no)) {
+        acc[existingIndex].issue_ord_no = [
+          ...(Array.isArray(acc[existingIndex].issue_ord_no)
+            ? acc[existingIndex].issue_ord_no
+            : [acc[existingIndex].issue_ord_no]),
+          record.issue_ord_no,
         ];
       }
       if (record.issued_qty) {
@@ -204,8 +204,8 @@ const columns: ColumnsType<PickingItem> = [
   },
   {
     title: "Mã KIT",
-    dataIndex: "kit_no",
-    key: "kit_no",
+    dataIndex: "issue_ord_no",
+    key: "issue_ord_no",
     render: (text: string | string[]) => {
       console.log("text", text);
 
