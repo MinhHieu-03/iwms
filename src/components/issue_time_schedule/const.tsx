@@ -73,12 +73,6 @@ export const RenderCol = ({
       </span>
     ),
   },
-  // {
-  //   title: t(`${lang_key}.factory`),
-  //   dataIndex: "fact_c",
-  //   key: "fact_c",
-  //   width: 100,
-  // },
   {
     title: t(`${lang_key}.section`),
     dataIndex: "section_c",
@@ -92,31 +86,6 @@ export const RenderCol = ({
     key: "line_c",
     width: 60,
   },
-  // {
-  //   title: t(`${lang_key}.product_no`),
-  //   dataIndex: "prod_no",
-  //   key: "prod_no",
-  //   width: 120,
-  // },
-  // {
-  //   title: t(`${lang_key}.customer_desc_1`),
-  //   dataIndex: "cusdesch_cd1",
-  //   key: "cusdesch_cd1",
-  //   width: 120,
-  // },
-  // {
-  //   title: t(`${lang_key}.customer_desc_2`),
-  //   dataIndex: "cusdesch_cd2",
-  //   key: "cusdesch_cd2",
-  //   width: 120,
-  // },
-  // {
-  //   title: t(`${lang_key}.internal_desc`),
-  //   dataIndex: "intdesch_cd",
-  //   key: "intdesch_cd",
-  //   width: 120,
-  // },
-
   {
     title: t(`${lang_key}.issue_time`),
     dataIndex: "time_issue",
@@ -141,26 +110,6 @@ export const RenderCol = ({
     sorter: (a, b) =>
       dayjs(a.plan_issue_dt).unix() - dayjs(b.plan_issue_dt).unix(),
   },
-  // {
-  //   title: t(`${lang_key}.user_id`),
-  //   dataIndex: "userid",
-  //   key: "userid",
-  //   width: 100,
-  // },
-  // {
-  //   title: t(`${lang_key}.entry_date`),
-  //   dataIndex: "ent_dt",
-  //   key: "ent_dt",
-  //   width: 150,
-  //   render: (date) => dayjs(date).format("YYYY-MM-DD"),
-  // },
-  // {
-  //   title: t(`${lang_key}.update_date`),
-  //   dataIndex: "upd_dt",
-  //   key: "upd_dt",
-  //   width: 150,
-  //   render: (date) => dayjs(date).format("YYYY-MM-DD"),
-  // },
   {
     title: t("common.action"),
     key: "action",

@@ -4,7 +4,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { message, Table, Modal, Input } from "antd";
-import { Plus } from "lucide-react";
+import { Eye, Plus } from "lucide-react";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -24,6 +24,7 @@ import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
 import ModalDetail from "./modal_detail";
 import PickingDrawer from "./PickingDrawer";
 import { createDummyData, creatKitData } from "@/lib/dummyData";
+import ModalOI from "./modal_oi";
 
 const { list, create, update, remove } = domain;
 
@@ -34,10 +35,15 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState<number>(0);
   const [dataList, setDataList] = useState<IssueTimeScheduleDataType[]>([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>(
+    localStorage.getItem("selectedRowKeys")
+      ? JSON.parse(localStorage.getItem("selectedRowKeys") || "[]")
+      : []
+  );
   const [searchText, setSearchText] = useState<string>("");
   const [showPickingModal, setShowPickingModal] = useState(null);
   const [missionData, setDataMission] = useState([]);
+  const [isOpenOI, setIsOpenOI] = useState<boolean>(false);
   const [formEdit, setFormEdit] = useState<{
     isOpen: boolean;
     data: IssueTimeScheduleDataType | Record<string, unknown>;
@@ -53,6 +59,9 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
     isOpen: false,
     data: null,
   });
+  let rowInProgress = localStorage.getItem("selectedRowKeys")
+    ? JSON.parse(localStorage.getItem("selectedRowKeys") || "[]")
+    : [];
 
   // Filter data based on search text
   const filteredData = useMemo(() => {
@@ -72,7 +81,6 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
   const requestDataList = useCallback(async () => {
     try {
       setLoading(true);
-      setSelectedRowKeys([]);
       // Try API first, fallback to mock data if it fails
       try {
         // const { data } = await apiClient.post(list, {
@@ -84,6 +92,11 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
 
         const data = await creatKitData();
 
+        setSelectedRowKeys(
+          localStorage.getItem("selectedRowKeys")
+            ? JSON.parse(localStorage.getItem("selectedRowKeys") || "[]")
+            : []
+        );
         setDataList(data.metaData);
         setTotal(data.metaData.length);
       } catch (apiError) {
@@ -219,8 +232,9 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
     },
     getCheckboxProps: (record: IssueTimeScheduleDataType) => ({
       disabled:
-        selectedRowKeys.length >= 4 &&
-        !selectedRowKeys.includes(record.issue_ord_no),
+        (selectedRowKeys.length >= 4 &&
+          !selectedRowKeys.includes(record.issue_ord_no)) ||
+        rowInProgress.includes(record.issue_ord_no),
     }),
   };
 
@@ -257,20 +271,16 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
     requestDataList();
   }, [requestDataList]);
 
+  console.log("selectedRowKeys", selectedRowKeys);
+
   const orderPicking = async () => {
+    setIsOpenOI(true);
     if (selectedRowKeys.length === 0) {
       message.warning(
         "Please select at least one item to create a picking order"
       );
       return;
     }
-    // apiClient.post(`issue-time-schedule/picking-order`, {
-    //   issue_order_no: selectedRowKeys,
-    // }).then(({data}) => {
-    //   message.success("Picking order created successfully");
-    //   setDataMerge(data.metaData);
-    //   setCurrent(1)
-    // })
     setKitData(
       dataList.filter((item) => selectedRowKeys.includes(item.issue_ord_no))
     );
@@ -289,7 +299,7 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
       })
     );
     setDataMerge(issueData);
-    setCurrent(1);
+    localStorage.setItem("selectedRowKeys", JSON.stringify(selectedRowKeys));
   };
 
   return (
@@ -302,10 +312,38 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
               {t(`${lang_key}.title`, "Quản lý KIT")}
             </div>
             <div className="flex gap-2">
+              <button
+                className="bg-gray-300 text-sm rounded-md px-2 py-1"
+                onClick={() => {
+                  localStorage.removeItem("selectedRowKeys");
+                  requestDataList();
+                }}
+              >
+                clear<span className="text-red-500">*</span>
+              </button>
+              <Button
+                onClick={() => {
+                  if (rowInProgress.length !== 0) {
+                    setIsOpenOI(true);
+                  } else if (selectedRowKeys.length === 4) {
+                    message.warning(
+                      "Please complete the current picking order before creating a new one"
+                    );
+                  }
+                }}
+                className="gap-2"
+                disabled={rowInProgress.length === 0}
+                size="sm"
+              >
+                <Eye className="h-4 w-4" />
+                Show OI
+              </Button>
               <Button
                 onClick={orderPicking}
                 className="gap-2"
-                disabled={selectedRowKeys.length === 0}
+                disabled={
+                  selectedRowKeys.length === 0 || rowInProgress.length === 4
+                }
                 size="sm"
               >
                 <Plus className="h-4 w-4" />
@@ -395,6 +433,8 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
         missionData={missionData}
         onClose={() => setShowPickingModal(null)}
       />
+
+      <ModalOI isOpen={isOpenOI} selectedItem={{}} setIsOpen={setIsOpenOI} />
     </div>
   );
 };

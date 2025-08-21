@@ -47,6 +47,7 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
           const issueData = await createDummyData({
             issue_ord_no: [data.issue_ord_no],
           });
+          console.log("issueData", issueData);
           if (data.status === "fill") {
             issueData.metaData.forEach((item) => {
               item.issued_qty = item.issue_qty;
@@ -87,29 +88,6 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
       render: (text: string, record: IssueDataDetail, index: number) =>
         index + 1,
     },
-    // {
-    //   title: t("issue_time_schedule.table.section", "Section"),
-    //   dataIndex: "section_c",
-    //   key: "section_c",
-    //   width: 80,
-    //   render: (text: string) => <Tag color="blue">{text}</Tag>,
-    // },
-    // {
-    //   title: t("issue_time_schedule.table.line", "Line"),
-    //   dataIndex: "line_c",
-    //   key: "line_c",
-    //   width: 80,
-    //   render: (text: string) => <Tag color="orange">{text}</Tag>,
-    // },
-    // {
-    //   title: t(
-    //     "issue_time_schedule.table.issue_order_detail",
-    //     "Issue Order Detail"
-    //   ),
-    //   dataIndex: "issord_dtl_no",
-    //   key: "issord_dtl_no",
-    //   width: 120,
-    // },
     {
       title: t("issue_time_schedule.modal.material_no"),
       dataIndex: "material_no",
@@ -182,42 +160,8 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
           >
             <Tag color="blue">{data.section_c}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.factory", "Factory")}
-          >
-            <Tag color="green">{data.fact_c}</Tag>
-          </Descriptions.Item>
           <Descriptions.Item label={t("issue_time_schedule.form.line", "Line")}>
             <Tag color="orange">{data.line_c}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.product_no", "Product Number")}
-          >
-            <Tag color="purple">{data.prod_no}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t(
-              "issue_time_schedule.form.customer_desc_1",
-              "Customer Description 1"
-            )}
-          >
-            {data.cusdesch_cd1}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t(
-              "issue_time_schedule.form.customer_desc_2",
-              "Customer Description 2"
-            )}
-          >
-            {data.cusdesch_cd2}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t(
-              "issue_time_schedule.form.internal_desc",
-              "Internal Description"
-            )}
-          >
-            {data.intdesch_cd}
           </Descriptions.Item>
           <Descriptions.Item
             label={t(
@@ -265,66 +209,6 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
             </Tag>
           </Descriptions.Item>
         </Descriptions>
-
-        <Descriptions
-          title={t(
-            "issue_time_schedule.modal.system_information",
-            "System Information"
-          )}
-          bordered
-          size="small"
-          column={2}
-        >
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.user_id", "User ID")}
-          >
-            <Tag color="default">{data.userid}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.entry_date", "Entry Date")}
-          >
-            {dayjs(data.ent_dt).format("YYYY-MM-DD")}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.update_date", "Update Date")}
-            span={2}
-          >
-            {dayjs(data.upd_dt).format("YYYY-MM-DD HH:mm:ss")}
-          </Descriptions.Item>
-        </Descriptions>
-
-        {/* Timeline comparison */}
-        <div className="bg-gray-50 p-4 rounded">
-          <h4 className="font-semibold mb-3">
-            {t("issue_time_schedule.modal.time_comparison", "Time Comparison")}
-          </h4>
-          <div className="space-y-2">
-            <div key="issue-time" className="flex items-center gap-4">
-              <span className="w-24 text-sm font-medium">
-                {t("issue_time_schedule.modal.issue_time_label", "Issue Time")}:
-              </span>
-              <Tag color="red">{dayjs(data.time_issue).format("HH:mm")}</Tag>
-            </div>
-            <div key="required-time" className="flex items-center gap-4">
-              <span className="w-24 text-sm font-medium">
-                {t(
-                  "issue_time_schedule.modal.required_time_label",
-                  "Required Time"
-                )}
-                :
-              </span>
-              <Tag color="lime">{dayjs(data.A_reqd_time).format("HH:mm")}</Tag>
-            </div>
-            <div key="plan-issue" className="flex items-center gap-4">
-              <span className="w-24 text-sm font-medium">
-                {t("issue_time_schedule.modal.plan_issue_label", "Plan Issue")}:
-              </span>
-              <Tag color="cyan">
-                {dayjs(data.plan_issue_dt).format("HH:mm")}
-              </Tag>
-            </div>
-          </div>
-        </div>
 
         {/* Issue Data Details Table */}
         <div>
