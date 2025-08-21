@@ -18,7 +18,6 @@ import {
   lang_key,
   RenderCol,
   IssueTimeScheduleDataType,
-  mockData,
 } from "./const";
 import ModalAdd, { type FormValues } from "./modal_create";
 import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
@@ -73,6 +72,7 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
   const requestDataList = useCallback(async () => {
     try {
       setLoading(true);
+      setSelectedRowKeys([]);
       // Try API first, fallback to mock data if it fails
       try {
         // const { data } = await apiClient.post(list, {
@@ -89,15 +89,11 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
       } catch (apiError) {
         console.warn("API not available, using mock data:", apiError);
         // Using mock data as fallback
-        setDataList(mockData);
-        setTotal(mockData.length);
       }
     } catch (error) {
       console.error(error);
       message.error(t("common.error.fetch_data"));
       // Fallback to mock data on error
-      setDataList(mockData);
-      setTotal(mockData.length);
     } finally {
       setLoading(false);
     }
@@ -184,6 +180,7 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
   };
 
   const _handleDetail = (record: IssueTimeScheduleDataType) => {
+    console.log("record", record);
     setDetailModal({
       isOpen: true,
       data: record,
@@ -202,6 +199,16 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
   );
 
   const rowSelection = {
+    columnTitle: (
+      <div className="flex flex-col items-center">
+        <span className="text-md">
+          {t("issue_time_schedule.table.selected")}
+        </span>
+        <span className="text-xs text-gray-500">
+          {selectedRowKeys.length}/4
+        </span>
+      </div>
+    ),
     selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[]) => {
       if (selectedRowKeys.length > 4) {
