@@ -47,6 +47,15 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
           const issueData = await createDummyData({
             issue_ord_no: [data.issue_ord_no],
           });
+          if (data.status === "fill") {
+            issueData.metaData.forEach((item) => {
+              item.issued_qty = item.issue_qty;
+            });
+          } else if (data.status === "in progress") {
+            issueData.metaData.forEach((item) => {
+              item.issued_qty = Math.floor(Math.random() * item.issue_qty);
+            });
+          }
           setIssueDataDetails(
             issueData.metaData as unknown as IssueDataDetail[]
           );

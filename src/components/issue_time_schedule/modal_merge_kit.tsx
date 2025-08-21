@@ -48,7 +48,7 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
       title: t("issue_time_schedule.table.id", "STT"),
       dataIndex: "STT",
       key: "STT",
-      width: 60,
+      width: 30,
       render: (text: string, record: any, index: number) => index + 1,
     },
     {
@@ -92,19 +92,19 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
       title: "Đơn vị",
       dataIndex: "unit",
       key: "unit",
-      width: 100,
+      width: 80,
     },
     {
       title: "Số lượng yêu cầu",
       dataIndex: "issue_qty",
       key: "issue_qty",
-      width: 130,
+      width: 120,
     },
     {
       title: "Số lượng tồn kho",
       dataIndex: "issued_qty",
       key: "issued_qty",
-      width: 140,
+      width: 120,
       render: (text, record) => (
         <span
           className={

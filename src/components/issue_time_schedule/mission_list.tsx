@@ -96,9 +96,8 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
     setIsOpenMerge(true);
   };
 
-  const onOpenMissionModal = async (record: any) => {
-    const data = await creatMissionData();
-    setModalData(data.metaData);
+  const onOpenMissionModal = (record: any) => {
+    setModalData(record);
     setIsOpenMission(true);
   };
 

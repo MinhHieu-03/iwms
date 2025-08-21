@@ -2,11 +2,25 @@ import { Drawer, Descriptions, Tag, Table, Spin } from "antd";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
+import { creatMissionData } from "@/lib/dummyData";
 
 interface ModalDetailProps {
   isOpen: boolean;
   onCancel: () => void;
-  data: any;
+  data?: any;
+}
+
+interface MissionData {
+  _id: string;
+  mission_no: string;
+  package_no: string;
+  material_no: string;
+  quantity: number;
+  supply_loc: string;
+  receive_loc: string;
+  robot_no: string;
+  eta: string;
+  status: string;
 }
 
 const ModalMission: React.FC<ModalDetailProps> = ({
@@ -16,8 +30,16 @@ const ModalMission: React.FC<ModalDetailProps> = ({
 }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [missionData, setMissionData] = useState<MissionData[]>([]);
 
-  if (!data) return null;
+  const fetchData = async () => {
+    const data = await creatMissionData();
+    setMissionData(data.metaData);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   //   const splitedData = data.reduce((acc: any[], record: any) => {
   //     const existingIndex = acc.findIndex(
@@ -45,12 +67,6 @@ const ModalMission: React.FC<ModalDetailProps> = ({
   //   }, []);
 
   const issueDataColumns = [
-    // {
-    //   title: "Tên sản phẩm",
-    //   dataIndex: "material_name",
-    //   key: "material_name",
-    //   width: 150,
-    // },
     {
       title: "Mã nhiệm vụ",
       dataIndex: "mission_no",
@@ -63,12 +79,6 @@ const ModalMission: React.FC<ModalDetailProps> = ({
       key: "package_no",
       width: 100,
     },
-    // {
-    //   title: "Vị trí",
-    //   dataIndex: "line_c",
-    //   key: "line_c",
-    //   width: 120,
-    // },
     {
       title: "Mã vật tư",
       dataIndex: "material_no",
@@ -76,53 +86,12 @@ const ModalMission: React.FC<ModalDetailProps> = ({
       render: (text) => text?.trim(),
       width: 120,
     },
-    // {
-    //   title: "Mã KIT",
-    //   dataIndex: "issue_ord_no",
-    //   key: "issue_ord_no",
-    //   render: (text: string | string[]) => {
-    //     if (Array.isArray(text)) {
-    //       return text.join(", ");
-    //     }
-    //     return text;
-    //   },
-    //   width: 120,
-    // },
-    // {
-    //   title: "Mã KIT dtl",
-    //   dataIndex: "issord_dtl_no",
-    //   key: "issord_dtl_no",
-    //   width: 120,
-    // },
-    // {
-    //   title: "Đơn vị",
-    //   dataIndex: "unit",
-    //   key: "unit",
-    //   width: 100,
-    // },
     {
       title: "Số lượng",
       dataIndex: "quantity",
       key: "quantity",
       width: 100,
     },
-    // {
-    //   title: "Số lượng tồn kho",
-    //   dataIndex: "issued_qty",
-    //   key: "issued_qty",
-    //   width: 140,
-    //   render: (text, record) => (
-    //     <span
-    //       className={
-    //         record.inventory_qty < record.issue_qty
-    //           ? "text-red-500 font-medium"
-    //           : "text-green-600"
-    //       }
-    //     >
-    //       {text?.toLocaleString()}
-    //     </span>
-    //   ),
-    // },
     {
       title: "Vị trí cấp",
       dataIndex: "supply_loc",
@@ -194,20 +163,20 @@ const ModalMission: React.FC<ModalDetailProps> = ({
           <Descriptions.Item
             label={t("issue_time_schedule.form.section", "Section")}
           >
-            <Tag color="blue">{data.section_c}</Tag>
+            <Tag color="blue">{data?.section_c}</Tag>
           </Descriptions.Item>
           <Descriptions.Item
             label={t("issue_time_schedule.form.factory", "Factory")}
           >
-            <Tag color="green">{data.fact_c}</Tag>
+            <Tag color="green">{data?.fact_c}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label={t("issue_time_schedule.form.line", "Line")}>
-            <Tag color="orange">{data.line_c}</Tag>
+            <Tag color="orange">{data?.line_c}</Tag>
           </Descriptions.Item>
           <Descriptions.Item
             label={t("issue_time_schedule.form.product_no", "Product Number")}
           >
-            <Tag color="purple">{data.prod_no}</Tag>
+            <Tag color="purple">{data?.prod_no}</Tag>
           </Descriptions.Item>
           <Descriptions.Item
             label={t(
@@ -215,7 +184,7 @@ const ModalMission: React.FC<ModalDetailProps> = ({
               "Customer Description 1"
             )}
           >
-            {data.cusdesch_cd1}
+            {data?.cusdesch_cd1}
           </Descriptions.Item>
           <Descriptions.Item
             label={t(
@@ -223,7 +192,7 @@ const ModalMission: React.FC<ModalDetailProps> = ({
               "Customer Description 2"
             )}
           >
-            {data.cusdesch_cd2}
+            {data?.cusdesch_cd2}
           </Descriptions.Item>
           <Descriptions.Item
             label={t(
@@ -231,7 +200,7 @@ const ModalMission: React.FC<ModalDetailProps> = ({
               "Internal Description"
             )}
           >
-            {data.intdesch_cd}
+            {data?.intdesch_cd}
           </Descriptions.Item>
           <Descriptions.Item
             label={t(
@@ -240,7 +209,7 @@ const ModalMission: React.FC<ModalDetailProps> = ({
             )}
           >
             <span className="font-medium text-blue-600">
-              {data.issue_ord_no}
+              {data?.issue_ord_no}
             </span>
           </Descriptions.Item>
         </Descriptions>
@@ -261,21 +230,21 @@ const ModalMission: React.FC<ModalDetailProps> = ({
             )}
           >
             <Tag color="cyan">
-              {dayjs(data.plan_issue_dt).format("YYYY-MM-DD HH:mm:ss")}
+              {dayjs(data?.plan_issue_dt).format("YYYY-MM-DD HH:mm:ss")}
             </Tag>
           </Descriptions.Item>
           <Descriptions.Item
             label={t("issue_time_schedule.form.required_time", "Required Time")}
           >
             <Tag color="lime">
-              {dayjs(data.A_reqd_time).format("YYYY-MM-DD HH:mm:ss")}
+              {dayjs(data?.A_reqd_time).format("YYYY-MM-DD HH:mm:ss")}
             </Tag>
           </Descriptions.Item>
           <Descriptions.Item
             label={t("issue_time_schedule.form.issue_time", "Issue Time")}
           >
             <Tag color="red">
-              {dayjs(data.time_issue).format("YYYY-MM-DD HH:mm:ss")}
+              {dayjs(data?.time_issue).format("YYYY-MM-DD HH:mm:ss")}
             </Tag>
           </Descriptions.Item>
         </Descriptions>
@@ -292,12 +261,12 @@ const ModalMission: React.FC<ModalDetailProps> = ({
           <Descriptions.Item
             label={t("issue_time_schedule.form.user_id", "User ID")}
           >
-            <Tag color="default">{data.userid}</Tag>
+            <Tag color="default">{data?.userid}</Tag>
           </Descriptions.Item>
           <Descriptions.Item
             label={t("issue_time_schedule.form.entry_date", "Entry Date")}
           >
-            {dayjs(data.ent_dt).format("YYYY-MM-DD")}
+            {dayjs(data?.ent_dt).format("YYYY-MM-DD")}
           </Descriptions.Item>
           <Descriptions.Item
             label={t("issue_time_schedule.form.update_date", "Update Date")}
@@ -317,7 +286,7 @@ const ModalMission: React.FC<ModalDetailProps> = ({
               <span className="w-24 text-sm font-medium">
                 {t("issue_time_schedule.modal.issue_time_label", "Issue Time")}:
               </span>
-              <Tag color="red">{dayjs(data.time_issue).format("HH:mm")}</Tag>
+              <Tag color="red">{dayjs(data?.time_issue).format("HH:mm")}</Tag>
             </div>
             <div className="flex items-center gap-4">
               <span className="w-24 text-sm font-medium">
@@ -327,14 +296,14 @@ const ModalMission: React.FC<ModalDetailProps> = ({
                 )}
                 :
               </span>
-              <Tag color="lime">{dayjs(data.A_reqd_time).format("HH:mm")}</Tag>
+              <Tag color="lime">{dayjs(data?.A_reqd_time).format("HH:mm")}</Tag>
             </div>
             <div className="flex items-center gap-4">
               <span className="w-24 text-sm font-medium">
                 {t("issue_time_schedule.modal.plan_issue_label", "Plan Issue")}:
               </span>
               <Tag color="cyan">
-                {dayjs(data.plan_issue_dt).format("HH:mm")}
+                {dayjs(data?.plan_issue_dt).format("HH:mm")}
               </Tag>
             </div>
           </div>
@@ -351,7 +320,7 @@ const ModalMission: React.FC<ModalDetailProps> = ({
           <Spin spinning={loading}>
             <Table
               columns={issueDataColumns}
-              dataSource={data}
+              dataSource={missionData}
               rowKey="mission_no"
               size="small"
               scroll={{ x: 800 }}
