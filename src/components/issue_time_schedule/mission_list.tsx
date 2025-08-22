@@ -209,14 +209,14 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
             size="small"
             onClick={() => onOpenMergeModal(record)}
           >
-            Kit Merge
+            {t("common.detail")}
           </Button>
           <Button
             type="primary"
             size="small"
             onClick={() => onOpenMissionModal(record)}
           >
-            Mission
+            {t("btn.mission")}
           </Button>
         </div>
       ),
