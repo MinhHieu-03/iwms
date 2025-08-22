@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
 import WarehouseLayout from "./pages/WarehouseLayout";
@@ -222,7 +222,7 @@ function App() {
             </div>
           </Router>
         </LanguageProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </Provider>
   );
