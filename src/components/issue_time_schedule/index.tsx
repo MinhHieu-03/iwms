@@ -336,7 +336,7 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
                 size="sm"
               >
                 <Eye className="h-4 w-4" />
-                Show OI
+                {t("btn.show_OI")}
               </Button>
               <Button
                 onClick={orderPicking}
@@ -347,7 +347,7 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
                 size="sm"
               >
                 <Plus className="h-4 w-4" />
-                Tạo lệnh xuất hàng
+                {t("btn.create_outbound")}
               </Button>
               <Button
                 onClick={requestDataList}

@@ -16,7 +16,11 @@ export type TranslationKey =
   | issue_time_schedule_key
 
   // Storage Model Configuration
+  | "btn.show_OI"
+  | "btn.create_outbound"
   | "btn.create"
+  | "btn.mission"
+  | "btn.detail"
   | "storage_hierarchy"
   | "storage_hierarchy_visualization"
   | "storage_master_data"
@@ -577,6 +581,13 @@ export type TranslationKey =
   | "status.wait_fill"
   | "status.wait_outbound"
   | "status.configured"
+  | "status.in_progress"
+  | "status.new"
+  | "status.completed"
+  | "status.cancelled"
+  | "status.unknown"
+  | "status.low_stock"
+  | "status.out_of_stock"
 
   // Warehouse Content Component
   | "sku_config"

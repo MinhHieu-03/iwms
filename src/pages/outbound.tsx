@@ -82,7 +82,7 @@ const OrdersTab: React.FC = () => {
         items={[
           {
             key: "0",
-            label: "Danh sách Kit",
+            label: "OI Cấp & Xuất hàng chẵn",
           },
           {
             key: "1",

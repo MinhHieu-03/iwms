@@ -406,13 +406,13 @@ export const vi: Record<TranslationKey, string> = {
   "btn.create": "Tạo mới",
   "btn.cancel": "Hủy",
   "btn.refresh": "Làm mới",
+  "btn.create_outbound": "Tạo lệnh xuất hàng",
+  "btn.show_OI": "Truy cập OI thao tác",
   "btn.delete_selected": "Xóa đã chọn",
   "btn.edit": "Chỉnh sửa",
   "btn.delete": "Xóa",
-  btn_create: "Tạo mới",
-  btn_edit: "Chỉnh sửa",
-  btn_delete: "Xóa",
-  btn_cancel: "Hủy",
+  "btn.mission": "Tiến độ cấp hàng",
+  "btn.detail": "Chi tiết",
 
   // Common actions and messages
   "common.name": "Tên",
@@ -549,6 +549,7 @@ export const vi: Record<TranslationKey, string> = {
   "status.configured": "Đã cấu hình",
   "status.low_stock": "Sắp hết hàng",
   "status.out_of_stock": "Hết hàng",
+  "status.new": "Mới",
 
   // Inventory Management
   "inventory.title": "Quản lý kho hàng",
