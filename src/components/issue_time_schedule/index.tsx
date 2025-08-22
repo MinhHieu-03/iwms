@@ -4,7 +4,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { message, Table, Modal, Input } from "antd";
-import { Plus } from "lucide-react";
+import { Eye, Plus } from "lucide-react";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -18,27 +18,32 @@ import {
   lang_key,
   RenderCol,
   IssueTimeScheduleDataType,
-  mockData,
 } from "./const";
 import ModalAdd, { type FormValues } from "./modal_create";
 import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
 import ModalDetail from "./modal_detail";
 import PickingDrawer from "./PickingDrawer";
-import createDummyData from "@/lib/dummyData";
+import { createDummyData, creatKitData } from "@/lib/dummyData";
+import ModalOI from "./modal_oi";
 
 const { list, create, update, remove } = domain;
 
-const IssueTimeScheduleTable = ({ setDataMerge, setCurrent }) => {
+const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
   const { t } = useTranslation();
   const [pageInfo, setPageInfo] = useState({ page: 1, perPage: 10 });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState<number>(0);
   const [dataList, setDataList] = useState<IssueTimeScheduleDataType[]>([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>(
+    localStorage.getItem("selectedRowKeys")
+      ? JSON.parse(localStorage.getItem("selectedRowKeys") || "[]")
+      : []
+  );
   const [searchText, setSearchText] = useState<string>("");
   const [showPickingModal, setShowPickingModal] = useState(null);
   const [missionData, setDataMission] = useState([]);
+  const [isOpenOI, setIsOpenOI] = useState<boolean>(false);
   const [formEdit, setFormEdit] = useState<{
     isOpen: boolean;
     data: IssueTimeScheduleDataType | Record<string, unknown>;
@@ -54,6 +59,9 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent }) => {
     isOpen: false,
     data: null,
   });
+  let rowInProgress = localStorage.getItem("selectedRowKeys")
+    ? JSON.parse(localStorage.getItem("selectedRowKeys") || "[]")
+    : [];
 
   // Filter data based on search text
   const filteredData = useMemo(() => {
@@ -75,24 +83,30 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent }) => {
       setLoading(true);
       // Try API first, fallback to mock data if it fails
       try {
-        const { data } = await apiClient.post(list, {
-          limit: pageInfo.perPage,
-          page: pageInfo.page,
-        });
+        // const { data } = await apiClient.post(list, {
+        //   limit: pageInfo.perPage,
+        //   page: pageInfo.page,
+        // });
+        // setDataList(data.metaData);
+        // setTotal(data.total);
+
+        const data = await creatKitData();
+
+        setSelectedRowKeys(
+          localStorage.getItem("selectedRowKeys")
+            ? JSON.parse(localStorage.getItem("selectedRowKeys") || "[]")
+            : []
+        );
         setDataList(data.metaData);
-        setTotal(data.total);
+        setTotal(data.metaData.length);
       } catch (apiError) {
         console.warn("API not available, using mock data:", apiError);
         // Using mock data as fallback
-        setDataList(mockData);
-        setTotal(mockData.length);
       }
     } catch (error) {
       console.error(error);
       message.error(t("common.error.fetch_data"));
       // Fallback to mock data on error
-      setDataList(mockData);
-      setTotal(mockData.length);
     } finally {
       setLoading(false);
     }
@@ -179,6 +193,7 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent }) => {
   };
 
   const _handleDetail = (record: IssueTimeScheduleDataType) => {
+    console.log("record", record);
     setDetailModal({
       isOpen: true,
       data: record,
@@ -197,10 +212,30 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent }) => {
   );
 
   const rowSelection = {
+    columnTitle: (
+      <div className="flex flex-col items-center">
+        <span className="text-md">
+          {t("issue_time_schedule.table.selected")}
+        </span>
+        <span className="text-xs text-gray-500">
+          {selectedRowKeys.length}/4
+        </span>
+      </div>
+    ),
     selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[]) => {
+      if (selectedRowKeys.length > 4) {
+        message.warning("You can only select up to 4 items");
+        return;
+      }
       setSelectedRowKeys(selectedRowKeys);
     },
+    getCheckboxProps: (record: IssueTimeScheduleDataType) => ({
+      disabled:
+        (selectedRowKeys.length >= 4 &&
+          !selectedRowKeys.includes(record.issue_ord_no)) ||
+        rowInProgress.includes(record.issue_ord_no),
+    }),
   };
 
   const handleBulkDelete = () => {
@@ -236,25 +271,35 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent }) => {
     requestDataList();
   }, [requestDataList]);
 
+  console.log("selectedRowKeys", selectedRowKeys);
+
   const orderPicking = async () => {
+    setIsOpenOI(true);
     if (selectedRowKeys.length === 0) {
       message.warning(
         "Please select at least one item to create a picking order"
       );
       return;
     }
-    // apiClient.post(`issue-time-schedule/picking-order`, {
-    //   issue_order_no: selectedRowKeys,
-    // }).then(({data}) => {
-    //   message.success("Picking order created successfully");
-    //   setDataMerge(data.metaData);
-    //   setCurrent(1)
-    // })
-    const issueData = await createDummyData({
-      kit_no: selectedRowKeys,
-    });
-    setDataMerge(issueData.metaData);
-    setCurrent(1);
+    setKitData(
+      dataList.filter((item) => selectedRowKeys.includes(item.issue_ord_no))
+    );
+    let issueData = [];
+    await Promise.all(
+      selectedRowKeys.map(async (keyItem) => {
+        const data = await createDummyData({
+          issue_ord_no: keyItem,
+        });
+        issueData.push(
+          ...data.metaData.map((item) => ({
+            ...item,
+            issue_ord_no: keyItem,
+          }))
+        );
+      })
+    );
+    setDataMerge(issueData);
+    localStorage.setItem("selectedRowKeys", JSON.stringify(selectedRowKeys));
   };
 
   return (
@@ -267,10 +312,38 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent }) => {
               {t(`${lang_key}.title`, "Quản lý KIT")}
             </div>
             <div className="flex gap-2">
+              <button
+                className="bg-gray-300 text-sm rounded-md px-2 py-1"
+                onClick={() => {
+                  localStorage.removeItem("selectedRowKeys");
+                  requestDataList();
+                }}
+              >
+                clear<span className="text-red-500">*</span>
+              </button>
+              <Button
+                onClick={() => {
+                  if (rowInProgress.length !== 0) {
+                    setIsOpenOI(true);
+                  } else if (selectedRowKeys.length === 4) {
+                    message.warning(
+                      "Please complete the current picking order before creating a new one"
+                    );
+                  }
+                }}
+                className="gap-2"
+                disabled={rowInProgress.length === 0}
+                size="sm"
+              >
+                <Eye className="h-4 w-4" />
+                Show OI
+              </Button>
               <Button
                 onClick={orderPicking}
                 className="gap-2"
-                disabled={selectedRowKeys.length === 0}
+                disabled={
+                  selectedRowKeys.length === 0 || rowInProgress.length === 4
+                }
                 size="sm"
               >
                 <Plus className="h-4 w-4" />
@@ -360,6 +433,8 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent }) => {
         missionData={missionData}
         onClose={() => setShowPickingModal(null)}
       />
+
+      <ModalOI isOpen={isOpenOI} selectedItem={{}} setIsOpen={setIsOpenOI} />
     </div>
   );
 };

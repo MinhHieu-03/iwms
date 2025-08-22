@@ -19,6 +19,7 @@ export interface IssueTimeScheduleDataType {
   userid: string;
   ent_dt: string;
   upd_dt: string;
+  status: string;
 }
 
 export const domain = {
@@ -31,121 +32,92 @@ export const domain = {
 
 export const lang_key = "issue_time_schedule.table";
 
-export const RenderCol = ({ 
-  t, 
+export const RenderCol = ({
+  t,
   onEdit,
   onDelete,
-  onDetail
-}: { 
+  onDetail,
+}: {
   t: (key: string) => string;
   onEdit: (record: IssueTimeScheduleDataType) => void;
   onDelete: (id: string) => void;
   onDetail: (record: IssueTimeScheduleDataType) => void;
 }): ColumnsType<IssueTimeScheduleDataType> => [
   {
+    title: t(`${lang_key}.issue_order_no`),
+    dataIndex: "issue_ord_no",
+    key: "issue_ord_no",
+    width: 60,
+    render: (text) => <span className="font-medium text-blue-600">{text}</span>,
+  },
+  {
+    title: t(`${lang_key}.status`),
+    dataIndex: "status",
+    key: "status",
+    width: 60,
+    render: (status) => (
+      <span
+        className={`px-2 py-1 rounded text-xs font-medium ${
+          status === "fill"
+            ? "bg-green-100 text-green-800"
+            : status === "in progress"
+            ? "bg-yellow-100 text-yellow-800"
+            : "bg-red-100 text-red-800"
+        }`}
+      >
+        {status === "fill"
+          ? "Đã xuất"
+          : status === "in progress"
+          ? "Đang xuất"
+          : "Mới"}
+      </span>
+    ),
+  },
+  {
     title: t(`${lang_key}.section`),
     dataIndex: "section_c",
     key: "section_c",
-    width: 100,
+    width: 60,
     sorter: (a, b) => a.section_c.localeCompare(b.section_c),
-  },
-  {
-    title: t(`${lang_key}.factory`),
-    dataIndex: "fact_c",
-    key: "fact_c",
-    width: 100,
   },
   {
     title: t(`${lang_key}.line`),
     dataIndex: "line_c",
     key: "line_c",
-    width: 100,
-  },
-  {
-    title: t(`${lang_key}.product_no`),
-    dataIndex: "prod_no",
-    key: "prod_no",
-    width: 120,
-  },
-  // {
-  //   title: t(`${lang_key}.customer_desc_1`),
-  //   dataIndex: "cusdesch_cd1",
-  //   key: "cusdesch_cd1",
-  //   width: 120,
-  // },
-  // {
-  //   title: t(`${lang_key}.customer_desc_2`),
-  //   dataIndex: "cusdesch_cd2",
-  //   key: "cusdesch_cd2",
-  //   width: 120,
-  // },
-  // {
-  //   title: t(`${lang_key}.internal_desc`),
-  //   dataIndex: "intdesch_cd",
-  //   key: "intdesch_cd",
-  //   width: 120,
-  // },
-  {
-    title: t(`${lang_key}.issue_order_no`),
-    dataIndex: "issue_ord_no",
-    key: "issue_ord_no",
-    width: 150,
-    render: (text) => <span className="font-medium text-blue-600">{text}</span>,
-  },
-  {
-    title: t(`${lang_key}.plan_issue_date`),
-    dataIndex: "plan_issue_dt",
-    key: "plan_issue_dt",
-    width: 150,
-    render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
-    sorter: (a, b) => dayjs(a.plan_issue_dt).unix() - dayjs(b.plan_issue_dt).unix(),
-  },
-  {
-    title: t(`${lang_key}.required_time`),
-    dataIndex: "A_reqd_time",
-    key: "A_reqd_time",
-    width: 150,
-    render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
+    width: 60,
   },
   {
     title: t(`${lang_key}.issue_time`),
     dataIndex: "time_issue",
     key: "time_issue",
-    width: 150,
+    width: 100,
     render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
   },
-  // {
-  //   title: t(`${lang_key}.user_id`),
-  //   dataIndex: "userid",
-  //   key: "userid",
-  //   width: 100,
-  // },
-  // {
-  //   title: t(`${lang_key}.entry_date`),
-  //   dataIndex: "ent_dt",
-  //   key: "ent_dt",
-  //   width: 150,
-  //   render: (date) => dayjs(date).format("YYYY-MM-DD"),
-  // },
-  // {
-  //   title: t(`${lang_key}.update_date`),
-  //   dataIndex: "upd_dt",
-  //   key: "upd_dt",
-  //   width: 150,
-  //   render: (date) => dayjs(date).format("YYYY-MM-DD"),
-  // },
+  {
+    title: t(`${lang_key}.required_time`),
+    dataIndex: "A_reqd_time",
+    key: "A_reqd_time",
+    width: 100,
+    render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
+    sorter: (a, b) => dayjs(a.A_reqd_time).unix() - dayjs(b.A_reqd_time).unix(),
+  },
+  {
+    title: t(`${lang_key}.plan_issue_date`),
+    dataIndex: "plan_issue_dt",
+    key: "plan_issue_dt",
+    width: 100,
+    render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
+    sorter: (a, b) =>
+      dayjs(a.plan_issue_dt).unix() - dayjs(b.plan_issue_dt).unix(),
+  },
   {
     title: t("common.action"),
     key: "action",
     fixed: "right",
-    width: 150,
+    width: 80,
     render: (_, record) => (
-      <div className="flex gap-2">
-        <Button
-          type="primary"
-          size="small"
-          onClick={() => onDetail(record)}
-        >
+      <div className="flex items-center justify-center gap-2">
+        <Button type="primary" size="small" onClick={() => onDetail(record)}>
           {t("common.detail")}
         </Button>
         {/* <Button
@@ -168,62 +140,4 @@ export const RenderCol = ({
       </div>
     ),
   },
-];
-
-// Mock data for development/testing
-export const mockData: IssueTimeScheduleDataType[] = [
-  {
-    key: "1",
-    _id: "1",
-    section_c: "9855",
-    fact_c: "ASY1",
-    line_c: "ASY1",
-    prod_no: "Common",
-    cusdesch_cd1: "00",
-    cusdesch_cd2: "00",
-    intdesch_cd: "02",
-    issue_ord_no: "KANB1101",
-    plan_issue_dt: "2025-06-10T17:00:00.000Z",
-    A_reqd_time: "2025-06-10T09:00:00.000Z",
-    time_issue: "2025-06-10T06:00:00.000Z",
-    userid: "Job",
-    ent_dt: "2025-06-10T17:00:00.000Z",
-    upd_dt: "2025-06-10T17:00:00.000Z"
-  },
-  {
-    key: "2",
-    _id: "2",
-    section_c: "9856",
-    fact_c: "ASY2",
-    line_c: "ASY2",
-    prod_no: "Common",
-    cusdesch_cd1: "01",
-    cusdesch_cd2: "01",
-    intdesch_cd: "03",
-    issue_ord_no: "KANB1102",
-    plan_issue_dt: "2025-06-11T17:00:00.000Z",
-    A_reqd_time: "2025-06-11T09:00:00.000Z",
-    time_issue: "2025-06-11T06:00:00.000Z",
-    userid: "Job",
-    ent_dt: "2025-06-11T17:00:00.000Z",
-    upd_dt: "2025-06-11T17:00:00.000Z"
-  },
-  {
-    key: "3",
-    _id: "3",
-    section_c: "9857",
-    fact_c: "ASY3",
-    line_c: "ASY3",
-    prod_no: "Premium",
-    cusdesch_cd1: "02",
-    cusdesch_cd2: "02",
-    intdesch_cd: "04",
-    issue_ord_no: "KANB1103",
-    plan_issue_dt: "2025-06-12T17:00:00.000Z",
-    A_reqd_time: "2025-06-12T09:00:00.000Z",
-    time_issue: "2025-06-12T06:00:00.000Z",
-    userid: "Admin",
-    ent_dt: "2025-06-12T17:00:00.000Z",
-    upd_dt: "2025-06-12T17:00:00.000Z"
-  }
 ];

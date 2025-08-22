@@ -1,75 +1,57 @@
-import {
-  Modal,
-  Input,
-  Button,
-  Steps,
-  StepProps,
-  Form,
-  Select,
-  InputNumber,
-} from "antd";
-import Dayjs from "dayjs";
-import { useEffect, useRef, useState } from "react";
-import { PickingItem } from "./issue_time_schedule/PickingDrawer";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Form, Input, InputNumber, Modal, Select } from "antd";
+import { Dayjs } from "dayjs";
 
-interface PickingItemModalProps {
-  selectedItem: PickingItem | null;
-  onClose: () => void;
-  actionValue: string;
-  setActionValue: (value: string) => void;
-}
+const ModalOI: React.FC<any> = ({ isOpen, selectedItem = {}, setIsOpen }) => {
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
 
-const PickingItemModal: React.FC<PickingItemModalProps> = ({
-  selectedItem = {},
-  onClose = () => {},
-}) => {
-  console.log("PickingItemModal --------", selectedItem);
-  const [current, setCurrent] = useState(0);
-  const handleClose = () => {
-    setCurrent(0);
-    onClose();
+  const handleOkButton = () => {
+    currentPage === 0 ? setCurrentPage(1) : setIsOpen(false);
   };
 
-  const items: StepProps[] = [
-    {
-      title: "Outbound",
-      description: "Outbound information",
-    },
-    {
-      title: "Inbound",
-      description: "Back to the warehouse",
-    },
-  ];
+  const handleCancelButton = () => {
+    currentPage === 1 ? setCurrentPage(0) : setIsOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsOpen(false);
+    setCurrentPage(0);
+  };
 
   return (
-    <div>
-      {current === 0 ? (
+    <Modal
+      width={1000}
+      title="Title"
+      open={isOpen}
+      onOk={handleOkButton}
+      okText="Next"
+      confirmLoading={confirmLoading}
+      cancelButtonProps={{
+        onClick: handleCancelButton,
+      }}
+      onCancel={handleCancel}
+    >
+      {currentPage === 0 && (
         <SplitOrder
           selectedItem={selectedItem}
-          setCurrent={setCurrent}
-          handleClose={handleClose}
+          setCurrentPage={setCurrentPage}
         />
-      ) : null}
-      {current === 1 ? (
-        <Inbound
-          selectedItem={selectedItem}
-          setCurrent={setCurrent}
-          handleClose={handleClose}
-        />
-      ) : null}
-    </div>
+      )}
+      {currentPage === 1 && (
+        <Inbound selectedItem={selectedItem} setCurrentPage={setCurrentPage} />
+      )}
+    </Modal>
   );
 };
 
-export default PickingItemModal;
-
-const SplitOrder = ({ selectedItem, setCurrent, handleClose }) => {
-  console.log("SplitOrder --------", selectedItem);
+const SplitOrder: React.FC<any> = ({ selectedItem, setCurrentPage }) => {
   const refAction = useRef(null);
   const [value, setValue] = useState("");
   const [current, total] = selectedItem?.quantity
     ?.split(" / ")
     .map((num) => parseInt(num, 10)) || [0, 0];
+
   if (refAction?.current) {
     console.log("refAction.current");
     refAction.current.focus();
@@ -77,6 +59,7 @@ const SplitOrder = ({ selectedItem, setCurrent, handleClose }) => {
       refAction.current.focus();
     }, 500);
   }
+
   useEffect(() => {
     const currentRef = refAction.current;
     console.log("currentRef", currentRef);
@@ -94,7 +77,8 @@ const SplitOrder = ({ selectedItem, setCurrent, handleClose }) => {
         (document.activeElement as HTMLElement).blur();
       }
     };
-  }, [selectedItem, setCurrent]);
+  }, [selectedItem, setCurrentPage]);
+
   useEffect(() => {
     const currentRef = refAction.current;
     if (selectedItem && currentRef) {
@@ -116,16 +100,18 @@ const SplitOrder = ({ selectedItem, setCurrent, handleClose }) => {
     const value = e.target.value.trim();
     setValue(value);
     if (value === "OK") {
-      setCurrent(1);
+      setCurrentPage(1);
       return;
     } else if (value === "cancel") {
-      setCurrent(0); // Reset to Outbound step
-      handleClose();
+      setCurrentPage(0); // Reset to Outbound step
     }
   };
+
   return (
-    <div className="space-y-4 mt-5 bg-gray-50 p-4 rounded-lg">
-      <p className="text-lg text-gray-600 font-semibold mb-2">Next Action</p>
+    <div>
+      <p className="text-lg text-gray-600 font-semibold mb-2 text-center">
+        Next Action
+      </p>
       <Input
         ref={refAction}
         placeholder="Enter picking quantity or next action"
@@ -134,62 +120,43 @@ const SplitOrder = ({ selectedItem, setCurrent, handleClose }) => {
         value={value}
         onChange={handleAction}
       />
-      <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-        <div className="text-center">
-          <p className="text-lg text-gray-600 mb-2">Quantity to Pick</p>
-          <div className="flex items-center justify-center gap-2">
-            <span className="text-3xl font-bold text-blue-600">{current}</span>
-            <span className="text-xl text-gray-400">from</span>
-            <span className="text-3xl font-bold text-gray-600">{total}</span>
-          </div>
+
+      <div className="my-4">
+        <p className="text-lg text-gray-600 text-center">Quantity to Pick</p>
+        <div className="flex items-center justify-center gap-2">
+          <span className="text-3xl font-bold text-blue-600">{current}</span>
+          <span className="text-xl text-gray-400">from</span>
+          <span className="text-3xl font-bold text-gray-600">{total}</span>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="col-span-2 grid grid-cols-2 gap-4 mb-4">
-          <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
-            <p className="text-sm text-blue-600 font-medium">Order</p>
-            <p className="text-2xl font-bold text-blue-700 tracking-wider">
-              {selectedItem?.order || "Item order"}
-            </p>
-          </div>
-          <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
-            <p className="text-sm text-blue-600 font-medium">SKU</p>
-            <p className="text-2xl font-bold text-blue-700 tracking-wider">
-              {selectedItem?.sku || "SKU"}
-            </p>
-          </div>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500">Conveyor Time</p>
-          <p className="font-medium">
-            {Dayjs(selectedItem?.conveyor).format("HH:mm:ss") ||
-              "Conveyor Time"}
+
+      <div className="grid grid-cols-2 gap-4 my-4 mb-8">
+        <div className="bg-blue-50 p-3 rounded-md border border-blue-100 text-center">
+          <p className="text-sm text-blue-600 font-medium">Order</p>
+          <p className="text-2xl font-bold text-blue-700 tracking-wider">
+            {selectedItem?.order || "Item order"}
           </p>
         </div>
-        <div>
-          <p className="text-sm text-gray-500">Order Time</p>
-          <p className="font-medium">
-            {Dayjs(selectedItem?.ordered).format("HH:mm:ss") || "Order Time"}
+        <div className="bg-blue-50 p-3 rounded-md border border-blue-100 text-center">
+          <p className="text-sm text-blue-600 font-medium">SKU</p>
+          <p className="text-2xl font-bold text-blue-700 tracking-wider">
+            {selectedItem?.sku || "Item sku"}
           </p>
         </div>
-      </div>
-      <div className="mt-6 p-4 bg-white rounded-lg shadow-sm">
         <div className="text-center">
-          <div className="flex justify-center mt-4 gap-3">
-            <Button onClick={() => handleClose()} type="default">
-              Cancel
-            </Button>
-            <Button onClick={() => setCurrent(1)} type="primary">
-              Next
-            </Button>
-          </div>
+          <p className="text-md text-gray-500">Conveyor Time</p>
+          <p className="font-medium">{"Conveyor Time"}</p>
+        </div>
+        <div className="text-center">
+          <p className="text-md text-gray-500">Order Time</p>
+          <p className="font-medium">{"Order Time"}</p>
         </div>
       </div>
     </div>
   );
 };
 
-const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
+const Inbound = ({ selectedItem, setCurrentPage }) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -226,10 +193,9 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
     const value = e.target.value.trim();
     setValue(value);
     if (value === "OK") {
-      handleClose();
       return;
     } else if (value === "Cancel") {
-      setCurrent(0);
+      setCurrentPage(0);
     } else if (
       value === "" ||
       (/^\d{0,4}-?\d{0,4}$/.test(value) && value.length === 9)
@@ -319,7 +285,7 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
           </div>
         </Form>
       </div>
-      <div className="space-y-4 mt-5 bg-gray-50 p-4 rounded-lg">
+      <div className="space-y-4 mt-4 bg-gray-50 p-4 rounded-lg">
         <div className=" p-4 bg-white rounded-lg shadow-sm">
           <div className="text-center">
             <p className="text-lg text-gray-600 font-semibold mb-2">
@@ -333,17 +299,11 @@ const Inbound = ({ selectedItem, setCurrent, handleClose }) => {
               value={value}
               onChange={handleAction}
             />
-            <div className="flex justify-center mt-4 gap-3">
-              <Button onClick={() => setCurrent(0)} type="default">
-                Cancel
-              </Button>
-              <Button onClick={() => handleClose()} type="primary">
-                Next
-              </Button>
-            </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+export default ModalOI;
