@@ -24,7 +24,8 @@ import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
 import ModalDetail from "./modal_detail";
 import PickingDrawer from "./PickingDrawer";
 import { createDummyData, creatKitData } from "@/lib/dummyData";
-import ModalOI from "./modal_oi";
+import DrawerOI from "./modal_oi";
+import KitManagementHeader from "./KitManagementHeader";
 
 const { list, create, update, remove } = domain;
 
@@ -36,8 +37,8 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
   const [total, setTotal] = useState<number>(0);
   const [dataList, setDataList] = useState<IssueTimeScheduleDataType[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>(
-    localStorage.getItem("selectedRowKeys")
-      ? JSON.parse(localStorage.getItem("selectedRowKeys") || "[]")
+    sessionStorage.getItem("activeKit")
+      ? JSON.parse(sessionStorage.getItem("activeKit") || "[]")
       : []
   );
   const [searchText, setSearchText] = useState<string>("");
@@ -59,8 +60,8 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
     isOpen: false,
     data: null,
   });
-  let rowInProgress = localStorage.getItem("selectedRowKeys")
-    ? JSON.parse(localStorage.getItem("selectedRowKeys") || "[]")
+  let rowInProgress = sessionStorage.getItem("activeKit")
+    ? JSON.parse(sessionStorage.getItem("activeKit") || "[]")
     : [];
 
   // Filter data based on search text
@@ -91,13 +92,17 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
         // setTotal(data.total);
 
         const data = await creatKitData();
-
-        setSelectedRowKeys(
-          localStorage.getItem("selectedRowKeys")
-            ? JSON.parse(localStorage.getItem("selectedRowKeys") || "[]")
-            : []
+        const activeKit = sessionStorage.getItem("activeKit");
+        const activeElement = activeKit ? JSON.parse(activeKit) : [];
+        setSelectedRowKeys(activeElement);
+        setDataList(
+          data.metaData.map((i) => {
+            if (activeElement.includes(i.issue_ord_no)) {
+              return { ...i, status: "in progress", key: i._id };
+            }
+            return { ...i, key: i._id };
+          })
         );
-        setDataList(data.metaData);
         setTotal(data.metaData.length);
       } catch (apiError) {
         console.warn("API not available, using mock data:", apiError);
@@ -193,7 +198,6 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
   };
 
   const _handleDetail = (record: IssueTimeScheduleDataType) => {
-    console.log("record", record);
     setDetailModal({
       isOpen: true,
       data: record,
@@ -269,6 +273,9 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
 
   useEffect(() => {
     requestDataList();
+    window.addEventListener("beforeunload", () => {
+      sessionStorage.clear();
+    });
   }, [requestDataList]);
 
   console.log("selectedRowKeys", selectedRowKeys);
@@ -299,70 +306,30 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
       })
     );
     setDataMerge(issueData);
-    localStorage.setItem("selectedRowKeys", JSON.stringify(selectedRowKeys));
+    sessionStorage.setItem("activeKit", JSON.stringify(selectedRowKeys));
   };
+
+  useEffect(() => {
+    const selectedRowKeys = sessionStorage.getItem("activeKit");
+    if (selectedRowKeys) {
+      setSelectedRowKeys(JSON.parse(selectedRowKeys));
+    }
+  }, []);
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span>📅</span>
-              {t(`${lang_key}.title`, "Quản lý KIT")}
-            </div>
-            <div className="flex gap-2">
-              <button
-                className="bg-gray-300 text-sm rounded-md px-2 py-1"
-                onClick={() => {
-                  localStorage.removeItem("selectedRowKeys");
-                  requestDataList();
-                }}
-              >
-                clear<span className="text-red-500">*</span>
-              </button>
-              <Button
-                onClick={() => {
-                  if (rowInProgress.length !== 0) {
-                    setIsOpenOI(true);
-                  } else if (selectedRowKeys.length === 4) {
-                    message.warning(
-                      "Please complete the current picking order before creating a new one"
-                    );
-                  }
-                }}
-                className="gap-2"
-                disabled={rowInProgress.length === 0}
-                size="sm"
-              >
-                <Eye className="h-4 w-4" />
-                Show OI
-              </Button>
-              <Button
-                onClick={orderPicking}
-                className="gap-2"
-                disabled={
-                  selectedRowKeys.length === 0 || rowInProgress.length === 4
-                }
-                size="sm"
-              >
-                <Plus className="h-4 w-4" />
-                Tạo lệnh xuất hàng
-              </Button>
-              <Button
-                onClick={requestDataList}
-                variant="outline"
-                size="sm"
-                className="gap-2"
-              >
-                <ReloadOutlined className="h-4 w-4" />
-                {t("btn.refresh")}
-              </Button>
-            </div>
-          </CardTitle>
+          <KitManagementHeader
+            selectedRowKeysLength={selectedRowKeys.length}
+            rowInProgressLength={rowInProgress.length}
+            onAccessOI={() => setIsOpenOI(true)}
+            onCreateOrder={orderPicking}
+            onRefresh={requestDataList}
+          />
         </CardHeader>
         <CardContent>
-          <div className="mb-4 flex gap-4">
+          <div className="mb-4 flex gap-4 items-center">
             <Input
               placeholder="Search by order number, section, factory, line, product..."
               prefix={<SearchOutlined className="text-gray-400" />}
@@ -371,6 +338,11 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
               style={{ width: "400px" }}
               allowClear
             />
+            <span>
+              {rowInProgress.length
+                ? `${rowInProgress.length} kit đang xử lý`
+                : ""}
+            </span>
           </div>
 
           <Table
@@ -434,7 +406,7 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
         onClose={() => setShowPickingModal(null)}
       />
 
-      <ModalOI isOpen={isOpenOI} selectedItem={{}} setIsOpen={setIsOpenOI} />
+      <DrawerOI isOpen={isOpenOI} selectedItem={{}} setIsOpen={setIsOpenOI} />
     </div>
   );
 };

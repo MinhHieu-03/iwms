@@ -3,6 +3,7 @@ import { Steps, Tabs } from "antd";
 import Issue_time_schedule from "@/components/issue_time_schedule";
 import MissionList from "@/components/issue_time_schedule/mission_list";
 import OIOutbound from "@/components/issue_time_schedule/oi_outbound";
+import OutboundHeader from "@/components/OutboundHeader";
 
 // Data interface for the new format
 interface OutboundData {
@@ -69,9 +70,19 @@ const OrdersTab: React.FC = () => {
 
   const [dataMerge, setDataMerge] = useState([]);
   const [kitData, setKitData] = useState([]);
+  const [selectedGate, setSelectedGate] = useState("1");
+
+  const handleGateChange = (gate: string) => {
+    setSelectedGate(gate);
+    console.log("Gate changed to:", gate);
+  };
 
   return (
     <div className="space-y-2">
+      <OutboundHeader 
+        selectedGate={selectedGate}
+        onGateChange={handleGateChange}
+      />
       <Tabs
         type="card"
         size="large"
@@ -82,7 +93,7 @@ const OrdersTab: React.FC = () => {
         items={[
           {
             key: "0",
-            label: "Danh sách Kit",
+            label: "OI cấp & Xuất hàng chẵn",
           },
           {
             key: "1",

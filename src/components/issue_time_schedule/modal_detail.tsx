@@ -148,18 +148,18 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
       <div className="space-y-6">
         <Descriptions
           title={t(
-            "issue_time_schedule.modal.basic_information",
-            "Basic Information"
+            "issue_time_schedule.modal.order_information",
+            "Order Information"
           )}
           bordered
           size="small"
           column={2}
         >
-          <Descriptions.Item
+          {/* <Descriptions.Item
             label={t("issue_time_schedule.form.section", "Section")}
           >
             <Tag color="blue">{data.section_c}</Tag>
-          </Descriptions.Item>
+          </Descriptions.Item> */}
           <Descriptions.Item label={t("issue_time_schedule.form.line", "Line")}>
             <Tag color="orange">{data.line_c}</Tag>
           </Descriptions.Item>
@@ -173,17 +173,11 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
               {data.issue_ord_no}
             </span>
           </Descriptions.Item>
-        </Descriptions>
-
-        <Descriptions
-          title={t(
-            "issue_time_schedule.modal.time_information",
-            "Time Information"
-          )}
-          bordered
-          size="small"
-          column={1}
-        >
+          <Descriptions.Item label="Tổng số vật tư">
+            <Tag color="green">
+              {issueDataDetails.length} vật tư
+            </Tag>
+          </Descriptions.Item>
           <Descriptions.Item
             label={t(
               "issue_time_schedule.form.plan_issue_date",
@@ -212,12 +206,9 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
 
         {/* Issue Data Details Table */}
         <div>
-          <h4 className="font-semibold mb-3">
-            {t(
-              "issue_time_schedule.modal.issue_data_details",
-              "Issue Data Details"
-            )}
-          </h4>
+          <h3 className="font-semibold mb-3">
+            Danh sách vật tư
+          </h3>
           <Spin spinning={loading}>
             <Table
               columns={issueDataColumns}

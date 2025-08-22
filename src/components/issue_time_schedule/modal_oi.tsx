@@ -1,8 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Form, Input, InputNumber, Modal, Select } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  Drawer,
+  Select,
+  Typography,
+} from "antd";
 import { Dayjs } from "dayjs";
 
-const ModalOI: React.FC<any> = ({ isOpen, selectedItem = {}, setIsOpen }) => {
+const DrawerOI: React.FC<any> = ({ isOpen, selectedItem = {}, setIsOpen }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -20,17 +28,26 @@ const ModalOI: React.FC<any> = ({ isOpen, selectedItem = {}, setIsOpen }) => {
   };
 
   return (
-    <Modal
-      width={1000}
-      title="Title"
+    <Drawer
+      title="OI Processing"
       open={isOpen}
-      onOk={handleOkButton}
-      okText="Next"
-      confirmLoading={confirmLoading}
-      cancelButtonProps={{
-        onClick: handleCancelButton,
-      }}
-      onCancel={handleCancel}
+      onClose={handleCancel}
+      height={"95vh"}
+      placement="bottom"
+      footer={
+        <div style={{ textAlign: "right" }}>
+          <Button style={{ marginRight: 8 }} onClick={handleCancelButton}>
+            {currentPage === 1 ? "Back" : "Cancel"}
+          </Button>
+          <Button
+            type="primary"
+            onClick={handleOkButton}
+            loading={confirmLoading}
+          >
+            {currentPage === 0 ? "Next" : "Complete"}
+          </Button>
+        </div>
+      }
     >
       {currentPage === 0 && (
         <SplitOrder
@@ -41,7 +58,7 @@ const ModalOI: React.FC<any> = ({ isOpen, selectedItem = {}, setIsOpen }) => {
       {currentPage === 1 && (
         <Inbound selectedItem={selectedItem} setCurrentPage={setCurrentPage} />
       )}
-    </Modal>
+    </Drawer>
   );
 };
 
@@ -52,13 +69,11 @@ const SplitOrder: React.FC<any> = ({ selectedItem, setCurrentPage }) => {
     ?.split(" / ")
     .map((num) => parseInt(num, 10)) || [0, 0];
 
-  if (refAction?.current) {
-    console.log("refAction.current");
-    refAction.current.focus();
+  const handleFocus = () => {
     setTimeout(() => {
-      refAction.current.focus();
+      refAction?.current?.focus();
     }, 500);
-  }
+  };
 
   useEffect(() => {
     const currentRef = refAction.current;
@@ -108,48 +123,68 @@ const SplitOrder: React.FC<any> = ({ selectedItem, setCurrentPage }) => {
   };
 
   return (
-    <div>
-      <p className="text-lg text-gray-600 font-semibold mb-2 text-center">
-        Next Action
-      </p>
-      <Input
-        ref={refAction}
-        placeholder="Enter picking quantity or next action"
-        autoFocus
-        className="text-center"
-        value={value}
-        onChange={handleAction}
-      />
+    <div className="flex gap-4">
+      <div className="flex-1 bg-gray-50 p-4 rounded-lg ">
+        <p className="text-4xl text-gray-900 font-extrabold mb-4 text-center">
+          Nhập mã thùng
+        </p>
+        <Input
+          ref={refAction}
+          placeholder="Trỏ chuột vào đây để nhập dữ liệu"
+          autoFocus
+          onBlur={handleFocus}
+          className="text-center text-3xl font-bold h-15"
+          value={value}
+          size="large"
+          onChange={handleAction}
+        />
 
-      <div className="my-4">
-        <p className="text-lg text-gray-600 text-center">Quantity to Pick</p>
-        <div className="flex items-center justify-center gap-2">
-          <span className="text-3xl font-bold text-blue-600">{current}</span>
-          <span className="text-xl text-gray-400">from</span>
-          <span className="text-3xl font-bold text-gray-600">{total}</span>
+        {/* <div className="my-4">
+          <p className="text-lg text-gray-600 text-center">Quantity to Pick</p>
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-3xl font-bold text-blue-600">{current}</span>
+            <span className="text-xl text-gray-400">from</span>
+            <span className="text-3xl font-bold text-gray-600">{total}</span>
+          </div>
+        </div> */}
+
+        <div className="grid grid-cols-2 gap-4 my-4 mb-8">
+          <div className="bg-blue-50 p-3 rounded-md border border-blue-100 text-center">
+            <p className="text-sm text-blue-600 font-medium">Order</p>
+            <p className="text-2xl font-bold text-blue-700 tracking-wider">
+              {selectedItem?.order || "Item order"}
+            </p>
+          </div>
+          <div className="bg-blue-50 p-3 rounded-md border border-blue-100 text-center">
+            <p className="text-sm text-blue-600 font-medium">SKU</p>
+            <p className="text-2xl font-bold text-blue-700 tracking-wider">
+              {selectedItem?.sku || "Item sku"}
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-md text-gray-500">Conveyor Time</p>
+            <p className="font-medium">{"Conveyor Time"}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-md text-gray-500">Order Time</p>
+            <p className="font-medium">{"Order Time"}</p>
+          </div>
         </div>
       </div>
-
-      <div className="grid grid-cols-2 gap-4 my-4 mb-8">
-        <div className="bg-blue-50 p-3 rounded-md border border-blue-100 text-center">
-          <p className="text-sm text-blue-600 font-medium">Order</p>
-          <p className="text-2xl font-bold text-blue-700 tracking-wider">
-            {selectedItem?.order || "Item order"}
+      <div className="flex-1 bg-gray-50 p-4 rounded-lg">
+        <div>
+          <p className="text-4xl text-gray-900 font-extrabold mb-4 text-center">
+            Chỉ thị lấy vật tư
           </p>
-        </div>
-        <div className="bg-blue-50 p-3 rounded-md border border-blue-100 text-center">
-          <p className="text-sm text-blue-600 font-medium">SKU</p>
-          <p className="text-2xl font-bold text-blue-700 tracking-wider">
-            {selectedItem?.sku || "Item sku"}
-          </p>
-        </div>
-        <div className="text-center">
-          <p className="text-md text-gray-500">Conveyor Time</p>
-          <p className="font-medium">{"Conveyor Time"}</p>
-        </div>
-        <div className="text-center">
-          <p className="text-md text-gray-500">Order Time</p>
-          <p className="font-medium">{"Order Time"}</p>
+          <div
+            className={`p-6 rounded-lg border-2 shadow-lg bg-blue-200 border-blue-400 text-blue-800`}
+          >
+            <div className="flex items-center justify-center gap-2">
+            <span className="text-3xl font-bold text-blue-600">{current}</span>
+            <span className="text-xl text-gray-400">from</span>
+            <span className="text-3xl font-bold text-gray-600">{total}</span>
+          </div>
+          </div>
         </div>
       </div>
     </div>
@@ -306,4 +341,4 @@ const Inbound = ({ selectedItem, setCurrentPage }) => {
   );
 };
 
-export default ModalOI;
+export default DrawerOI;
