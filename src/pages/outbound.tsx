@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Steps } from "antd";
+import { Steps, Tabs } from "antd";
 import Issue_time_schedule from "@/components/issue_time_schedule";
-import MergeKitTable from "@/components/issue_time_schedule/merge_kit";
 import MissionList from "@/components/issue_time_schedule/mission_list";
 import OIOutbound from "@/components/issue_time_schedule/oi_outbound";
 
@@ -64,38 +63,37 @@ const mockOutboundData: OutboundData[] = [
 
 const OrdersTab: React.FC = () => {
   const [current, setCurrent] = useState(0);
-  const onChange = (value: number) => {
-    setCurrent(value);
-  };
+  // const onChange = (value: number) => {
+  //   setCurrent(value);
+  // };
 
   const [dataMerge, setDataMerge] = useState([]);
   const [kitData, setKitData] = useState([]);
 
   return (
-    <div className="space-y-6">
-      <Steps
-        type="navigation"
-        // size=""
-        current={current}
-        onChange={onChange}
-        className="site-navigation-steps"
+    <div className="space-y-2">
+      <Tabs
+        type="card"
+        size="large"
+        defaultActiveKey="1"
+        className="site-navigation-steps full-width-tabs tall-tabs colorful-tabs"
+        tabBarGutter={0}
+        activeKey={current.toString()}
         items={[
           {
-            title: "Danh sách Kit",
-            // subTitle: "00:00:05",
-            // status: 'finish',
-            description: "Quản lý kit vật tư.",
+            key: "0",
+            label: "Danh sách Kit",
           },
           {
-            title: "Step 2",
-            // status: 'wait',
-            description: "This is a description.",
+            key: "1",
+            label: "Danh sách Kit gộp",
           },
-          {
-            title: "Step 3",
-            description: "This is a description.",
-          },
+          // {
+          //   key: "2",
+          //   label: "Step 3",
+          // },
         ]}
+        onChange={(key) => setCurrent(Number(key))}
       />
       {current === 0 ? (
         <Issue_time_schedule
@@ -104,8 +102,8 @@ const OrdersTab: React.FC = () => {
           setKitData={setKitData}
         />
       ) : null}
-      {current === 1 ? <OIOutbound /> : null}
-      {current === 2 ? (
+      {/* {current === 1 ? <OIOutbound /> : null} */}
+      {current === 1 ? (
         <MissionList missionData={dataMerge} kitData={kitData} />
       ) : null}
     </div>

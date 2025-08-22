@@ -50,7 +50,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { AvatarFallback, AvatarImage } from "../ui/avatar";
 const { list, create, update, upload, download, remove } = domain;
 
 const InboundManagement = () => {

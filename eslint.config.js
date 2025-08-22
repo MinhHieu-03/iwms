@@ -24,6 +24,44 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       "@typescript-eslint/no-unused-vars": "off",
+      
+      // Code Quality Rules
+      "no-console": "warn",
+      "no-debugger": "error",
+      "no-unused-expressions": "error",
+      "prefer-const": "error",
+      "no-var": "error",
+      
+      // TypeScript Rules
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/prefer-nullish-coalescing": "error",
+      "@typescript-eslint/prefer-optional-chain": "error",
+      "@typescript-eslint/no-non-null-assertion": "warn",
+      
+      // Import Rules (you'll need eslint-plugin-import)
+      // "import/order": ["error", { "groups": ["builtin", "external", "internal"] }],
+      
+      // React Rules
+      "react-hooks/exhaustive-deps": "warn",
+      
+      // Custom naming conventions
+      "@typescript-eslint/naming-convention": [
+        "error",
+        {
+          "selector": "interface",
+          "format": ["PascalCase"],
+          "prefix": ["I"]
+        },
+        {
+          "selector": "typeAlias",
+          "format": ["PascalCase"]
+        },
+        {
+          "selector": "variable",
+          "format": ["camelCase", "UPPER_CASE", "PascalCase"]
+        }
+      ],
     },
   }
 );
