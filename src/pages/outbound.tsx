@@ -108,9 +108,10 @@ const OrdersTab: React.FC = () => {
       />
       {current === 0 ? (
         <Issue_time_schedule
-          setCurrent={setCurrent}
+          // setCurrent={setCurrent}
           setDataMerge={setDataMerge}
           setKitData={setKitData}
+          missionData={dataMerge}
         />
       ) : null}
       {/* {current === 1 ? <OIOutbound /> : null} */}

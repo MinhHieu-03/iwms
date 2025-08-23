@@ -29,7 +29,7 @@ import KitManagementHeader from "./KitManagementHeader";
 
 const { list, create, update, remove } = domain;
 
-const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
+const IssueTimeScheduleTable = ({ setDataMerge, missionData, setKitData }) => {
   const { t } = useTranslation();
   const [pageInfo, setPageInfo] = useState({ page: 1, perPage: 10 });
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -43,7 +43,7 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
   );
   const [searchText, setSearchText] = useState<string>("");
   const [showPickingModal, setShowPickingModal] = useState(null);
-  const [missionData, setDataMission] = useState([]);
+  // const [missionData, setDataMission] = useState([]);
   const [isOpenOI, setIsOpenOI] = useState<boolean>(false);
   const [formEdit, setFormEdit] = useState<{
     isOpen: boolean;
@@ -306,6 +306,8 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
       })
     );
     setDataMerge(issueData);
+    console.log("___issueData", issueData);
+    // setDataMission(issueData);
     sessionStorage.setItem("activeKit", JSON.stringify(selectedRowKeys));
   };
 
@@ -406,7 +408,8 @@ const IssueTimeScheduleTable = ({ setDataMerge, setCurrent, setKitData }) => {
         onClose={() => setShowPickingModal(null)}
       />
 
-      <DrawerOI isOpen={isOpenOI} selectedItem={{}} setIsOpen={setIsOpenOI} />
+      <DrawerOI isOpen={isOpenOI} selectedItem={{}} setIsOpen={setIsOpenOI}
+        missionData={missionData} />
     </div>
   );
 };

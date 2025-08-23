@@ -8,11 +8,13 @@ import {
   Select,
   Typography,
 } from "antd";
-import { Dayjs } from "dayjs";
+import { creatMissionData } from "@/lib/dummyData";
 
-const DrawerOI: React.FC<any> = ({ isOpen, selectedItem = {}, setIsOpen }) => {
+const DrawerOI: React.FC<any> = ({ isOpen, selectedItem = {}, setIsOpen, missionData }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+
+  const [currentBox, setCurrentBox] = useState<any>({});
 
   const handleOkButton = () => {
     currentPage === 0 ? setCurrentPage(1) : setIsOpen(false);
@@ -52,17 +54,35 @@ const DrawerOI: React.FC<any> = ({ isOpen, selectedItem = {}, setIsOpen }) => {
       {currentPage === 0 && (
         <SplitOrder
           selectedItem={selectedItem}
+          boxFounded={currentBox}
           setCurrentPage={setCurrentPage}
+          missionData={missionData}
+          setCurrentBox={setCurrentBox}
         />
       )}
       {currentPage === 1 && (
-        <Inbound selectedItem={selectedItem} setCurrentPage={setCurrentPage} />
+        <Inbound selectedItem={selectedItem} setCurrentPage={setCurrentPage} 
+          boxFounded={currentBox} />
       )}
     </Drawer>
   );
 };
 
-const SplitOrder: React.FC<any> = ({ selectedItem, setCurrentPage }) => {
+const SplitOrder: React.FC<any> = ({ selectedItem, setCurrentPage, setCurrentBox, boxFounded }) => {
+
+  const [missionData, setMissionData] = useState<any[]>([]);
+  // const [boxFounded, setBoxFounded] = useState<any>({});
+
+  const fetchData = async () => {
+    const data = await creatMissionData();
+    console.log('ata.metaData', data.metaData)
+    setMissionData(data.metaData);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const refAction = useRef(null);
   const [value, setValue] = useState("");
   const [current, total] = selectedItem?.quantity
@@ -114,13 +134,20 @@ const SplitOrder: React.FC<any> = ({ selectedItem, setCurrentPage }) => {
   const handleAction = (e) => {
     const value = e.target.value.trim();
     setValue(value);
-    if (value === "OK") {
-      setCurrentPage(1);
-      return;
-    } else if (value === "cancel") {
-      setCurrentPage(0); // Reset to Outbound step
-    }
+    // if (value === "OK") {
+    //   setCurrentPage(1);
+    //   return;
+    // } else if (value === "cancel") {
+    //   setCurrentPage(0); // Reset to Outbound step
+    // }
+    // console.log('___adf', missionData)
   };
+  const handleInputEnter = value => {
+    const boxFounded = missionData.find(item => item.package_no === value);
+    console.log('___package_no', boxFounded);
+    // setBoxFounded(boxFounded);
+    setCurrentBox(boxFounded);
+  }
 
   return (
     <div className="flex gap-4">
@@ -137,6 +164,11 @@ const SplitOrder: React.FC<any> = ({ selectedItem, setCurrentPage }) => {
           value={value}
           size="large"
           onChange={handleAction}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleInputEnter(value);
+              }
+            }}
         />
 
         {/* <div className="my-4">
@@ -162,13 +194,29 @@ const SplitOrder: React.FC<any> = ({ selectedItem, setCurrentPage }) => {
             </p>
           </div>
           <div className="text-center">
-            <p className="text-md text-gray-500">Conveyor Time</p>
-            <p className="font-medium">{"Conveyor Time"}</p>
+            <p className="text-md text-gray-500">Package No</p>
+            <p className="font-medium text-lg">{boxFounded?.package_no || "Not scanned"}</p>
           </div>
           <div className="text-center">
-            <p className="text-md text-gray-500">Order Time</p>
-            <p className="font-medium">{"Order Time"}</p>
+            <p className="text-md text-gray-500">Material No</p>
+            <p className="font-medium text-lg">{boxFounded?.material_no || "Not available"}</p>
           </div>
+          <div className="text-center">
+            <p className="text-md text-gray-500">Quantity</p>
+            <p className="font-medium text-lg">{boxFounded?.quantity || "0"}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-md text-gray-500">Supply Location</p>
+            <p className="font-medium text-lg">{boxFounded?.supply_loc || "Not assigned"}</p>
+          </div>
+          {/* <div className="text-center">
+            <p className="text-md text-gray-500">Robot No</p>
+            <p className="font-medium text-lg">{boxFounded?.robot_no || "Not assigned"}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-md text-gray-500">ETA</p>
+            <p className="font-medium text-lg">{boxFounded?.eta || "Not available"}</p>
+          </div> */}
         </div>
       </div>
       <div className="flex-1 bg-gray-50 p-4 rounded-lg">
@@ -180,10 +228,40 @@ const SplitOrder: React.FC<any> = ({ selectedItem, setCurrentPage }) => {
             className={`p-6 rounded-lg border-2 shadow-lg bg-blue-200 border-blue-400 text-blue-800`}
           >
             <div className="flex items-center justify-center gap-2">
-            <span className="text-3xl font-bold text-blue-600">{current}</span>
+            <span className="text-3xl font-bold text-blue-600">{boxFounded.quantity}</span>
             <span className="text-xl text-gray-400">from</span>
-            <span className="text-3xl font-bold text-gray-600">{total}</span>
+            <span className="text-3xl font-bold text-gray-600">{boxFounded.available_quantity}</span>
           </div>
+          </div>
+        </div>
+        <div>
+          <p className="text-lg text-gray-900 font-semibold mb-4 text-center">
+            Kit Information
+          </p>
+          <div className="bg-white p-4 rounded-lg border shadow-sm">
+            <div className="space-y-2">
+              {boxFounded?.kit && Object.entries(boxFounded.kit).map(([kitCode, quantity]) => (
+                <div key={kitCode} className="flex justify-between items-center p-2 bg-gray-50 rounded border">
+                  <span className="font-medium text-gray-700">{kitCode}</span>
+                  <span className="font-bold text-blue-600">{String(quantity)}</span>
+                </div>
+              ))}
+              {!boxFounded?.kit && (
+                <div className="text-center text-gray-500 py-4">
+                  No kit data available
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        <div>
+          <p className="text-lg text-gray-900 font-semibold mb-4 text-center">
+            Current Box Data (Debug)
+          </p>
+          <div className="bg-white p-4 rounded-lg border shadow-sm">
+            <pre className="text-sm text-gray-700 whitespace-pre-wrap overflow-auto max-h-60">
+              {JSON.stringify(boxFounded, null, 2)}
+            </pre>
           </div>
         </div>
       </div>
@@ -191,9 +269,9 @@ const SplitOrder: React.FC<any> = ({ selectedItem, setCurrentPage }) => {
   );
 };
 
-const Inbound = ({ selectedItem, setCurrentPage }) => {
+const Inbound = ({ selectedItem, setCurrentPage, boxFounded }) => {
   const [form] = Form.useForm();
-
+  const [showInput, setShowInput] = useState(true); 
   useEffect(() => {
     if (selectedItem) {
       form.setFieldsValue({
@@ -240,103 +318,93 @@ const Inbound = ({ selectedItem, setCurrentPage }) => {
     }
   };
 
+  useEffect(() => {
+    setShowInput(((boxFounded?.available_quantity || 0) - (boxFounded?.quantity || 0)) !== 0);
+  }, [boxFounded]);
+
   return (
     <div>
-      <div className="space-y-4 mt-5 bg-gray-50 p-4 rounded-lg">
-        {" "}
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          className="bg-white p-6 rounded-lg shadow-sm"
-        >
-          <div className="grid grid-cols-2 gap-4">
-            <Form.Item
-              label="SKU"
-              name="sku"
-              rules={[{ required: true, message: "Please input SKU!" }]}
-            >
-              <Input placeholder="Enter SKU" />
-            </Form.Item>
-
-            <Form.Item
-              label="Quantity"
-              name="quantity"
-              rules={[
-                { required: true, message: "Please input quantity!" },
-                {
-                  type: "number",
-                  min: 1,
-                  message: "Quantity must be greater than 0!",
-                },
-              ]}
-            >
-              <InputNumber placeholder="Enter quantity" className="w-full" />
-            </Form.Item>
+      <div className="space-y-6 mt-5 bg-gray-50 p-6 rounded-lg">
+        <div className="bg-white p-6 rounded-lg border shadow-sm">
+          <p className="text-3xl text-gray-900 font-bold mb-6 text-center">
+            Current Box Found Data
+          </p>
+          
+          {/* Remaining Quantity Input */}
+          <div className="mb-6">
+            <label className="block text-3xl font-bold text-gray-700 mb-6">
+              Remaining Quantity
+            </label>
+            {!showInput? (
+              <div className="space-y-4">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
+                  <p className="text-5xl font-bold text-red-600">Xử lý thùng rỗng</p>
+                </div>
+                <Button 
+                  type="primary" 
+                  danger
+                  className="w-full text-2xl"
+                  style={{ height: '80px' }}
+                  onClick={() => setShowInput(true)}
+                >
+                  Quay lại giao diện nhập số lượng
+                </Button>
+              </div>
+            ) : (
+              <Input
+                type="number"
+                value={(boxFounded?.available_quantity || 0) - (boxFounded?.quantity || 0)}
+                className="w-full text-4xl font-bold text-center"
+                style={{ height: '80px' }}
+                placeholder="Remaining quantity"
+                readOnly
+              />
+            )}
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <Form.Item
-              label="Store Method"
-              name="storeMethod"
-              rules={[
-                { required: true, message: "Please select store method!" },
-              ]}
-            >
-              <Select placeholder="Select store method">
-                <Select.Option value="bin">Bin</Select.Option>
-                <Select.Option value="carton">Carton</Select.Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              label="Packing Method"
-              name="packingMethod"
-              rules={[
-                { required: true, message: "Please select packing method!" },
-              ]}
-            >
-              <Select placeholder="Select packing method">
-                <Select.Option value="bin">Bin</Select.Option>
-                <Select.Option value="carton">Carton</Select.Option>
-                <Select.Option value="kit">Kit</Select.Option>
-              </Select>
-            </Form.Item>
+          
+          <div className="grid grid-cols-2 gap-6">
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <p className="text-lg text-gray-500 mb-2">Package No</p>
+              <p className="font-bold text-2xl">{boxFounded?.package_no || "Not scanned"}</p>
+            </div>
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <p className="text-lg text-gray-500 mb-2">Material No</p>
+              <p className="font-bold text-2xl">{boxFounded?.material_no || "Not available"}</p>
+            </div>
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <p className="text-lg text-gray-500 mb-2">Quantity</p>
+              <p className="font-bold text-2xl">{boxFounded?.quantity || "0"}</p>
+            </div>
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <p className="text-lg text-gray-500 mb-2">Supply Location</p>
+              <p className="font-bold text-2xl">{boxFounded?.supply_loc || "Not assigned"}</p>
+            </div>
           </div>
-          <div className="grid grid-cols-1">
-            <Form.Item
-              label="Bin code"
-              name="binCode"
-              rules={[
-                { required: true, message: "Please select packing method!" },
-              ]}
-            >
-              <Select placeholder="Select packing method">
-                <Select.Option value="bin">Bin</Select.Option>
-                <Select.Option value="carton">Carton</Select.Option>
-                <Select.Option value="kit">Kit</Select.Option>
-              </Select>
-            </Form.Item>
-          </div>
-        </Form>
-      </div>
-      <div className="space-y-4 mt-4 bg-gray-50 p-4 rounded-lg">
-        <div className=" p-4 bg-white rounded-lg shadow-sm">
-          <div className="text-center">
-            <p className="text-lg text-gray-600 font-semibold mb-2">
-              Next Action
-            </p>
-            <Input
-              ref={refAction}
-              placeholder="Enter picking quantity or next action"
-              autoFocus
-              className="text-center"
-              value={value}
-              onChange={handleAction}
-            />
-          </div>
+          
+          {/* Kit Information */}
+          {boxFounded?.kit && (
+            <div className="mt-6">
+              <p className="text-2xl text-gray-700 font-bold mb-4">Kit Details:</p>
+              <div className="space-y-3">
+                {Object.entries(boxFounded.kit).map(([kitCode, quantity]) => (
+                  <div key={kitCode} className="flex justify-between items-center p-4 bg-gray-50 rounded border">
+                    <span className="font-bold text-xl text-gray-700">{kitCode}</span>
+                    <span className="font-bold text-xl text-blue-600">{String(quantity)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Full JSON Debug */}
+          {/* <div className="mt-4">
+            <p className="text-md text-gray-700 font-medium mb-2">Complete Data (Debug):</p>
+            <pre className="text-xs text-gray-600 bg-gray-100 p-2 rounded overflow-auto max-h-40">
+              {JSON.stringify(boxFounded, null, 2)}
+            </pre>
+          </div> */}
         </div>
-      </div>
+    </div>
     </div>
   );
 };

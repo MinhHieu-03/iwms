@@ -62,6 +62,8 @@ const kitData = {
       userid: "Job",
       ent_dt: "2025-06-10T17:00:00.000Z",
       upd_dt: "2025-06-10T17:00:00.000Z",
+      available: true,
+      available_quantity: 25,
     },
     {
       section_c: "9856",
@@ -79,6 +81,8 @@ const kitData = {
       userid: "Job",
       ent_dt: "2025-06-10T17:00:00.000Z",
       upd_dt: "2025-06-10T17:00:00.000Z",
+      available: false,
+      available_quantity: 5,
     },
     {
       section_c: "9851",
@@ -227,6 +231,8 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      available: true,
+      available_quantity: 250,
     },
     {
       material_no: "68019571",
@@ -234,6 +240,8 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      available: true,
+      available_quantity: 180,
     },
     {
       material_no: "68019572",
@@ -241,6 +249,8 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      available: false,
+      available_quantity: 100,
     },
     {
       material_no: "68019573",
@@ -248,6 +258,8 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      available: true,
+      available_quantity: 120,
     },
     {
       material_no: "68019574",
@@ -255,6 +267,8 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      available: false,
+      available_quantity: 200,
     },
     {
       material_no: "68019575",
@@ -262,6 +276,8 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      available: true,
+      available_quantity: 300,
     },
     {
       material_no: "71075366",
@@ -1050,12 +1066,18 @@ const missionData = {
       mission_no: "M-2024-0014",
       package_no: "T01",
       material_no: "68019570",
-      quantity: 100,
+      quantity: 150,
       supply_loc: "C01-03",
       receive_loc: "Dock B",
       robot_no: "R001",
       eta: "44 min",
       status: "Done",
+      available: true,
+      kit: {
+        "K365005": 100,
+        "68019571": 50,
+      },
+      available_quantity: 500,
     },
     {
       mission_no: "M-2024-0015",
@@ -1067,6 +1089,12 @@ const missionData = {
       robot_no: "R002",
       eta: "18 min",
       status: null,
+      available: true,
+      kit: {
+        "K363827": 80,
+        "68019572": 70,
+      },
+      available_quantity: 200,
     },
     {
       mission_no: "M-2024-0016",
@@ -1078,6 +1106,12 @@ const missionData = {
       robot_no: "R003",
       eta: "19 min",
       status: null,
+      available: false,
+      kit: {
+        "K365101": 120,
+        "68019573": 80,
+      },
+      available_quantity: 200,
     },
     {
       mission_no: "M-2024-0017",
@@ -1089,6 +1123,12 @@ const missionData = {
       robot_no: "R004",
       eta: "20 min",
       status: null,
+      available: true,
+      kit: {
+        "K365102": 150,
+        "68019574": 50,
+      },
+      available_quantity: 300,
     },
     {
       mission_no: "M-2024-0018",
@@ -1100,6 +1140,12 @@ const missionData = {
       robot_no: "R005",
       eta: "21 min",
       status: null,
+      available: false,
+      kit: {
+        "K365103": 100,
+        "68019575": 100,
+      },
+      available_quantity: 200,
     },
     {
       mission_no: "M-2024-0019",
@@ -1107,10 +1153,16 @@ const missionData = {
       material_no: "68019574",
       quantity: 300,
       supply_loc: "C01-08",
-      receive_loc: "Dock B",
+      receive_loc: "Dock C",
       robot_no: "R006",
-      eta: "22 min",
+      eta: "25 min",
       status: null,
+      available: true,
+      kit: {
+        "K365104": 200,
+        "71075366": 100,
+      },
+      available_quantity: 300,
     },
     {
       mission_no: "M-2024-0020",
@@ -1122,6 +1174,12 @@ const missionData = {
       robot_no: "R007",
       eta: "23 min",
       status: null,
+      available: false,
+      kit: {
+        "K365105": 180,
+        "80109326": 120,
+      },
+      available_quantity: 300,
     },
     {
       mission_no: "M-2024-0021",
@@ -1133,6 +1191,12 @@ const missionData = {
       robot_no: "R001",
       eta: "24 min",
       status: null,
+      available: true,
+      kit: {
+        "K365106": 150,
+        "1090325": 150,
+      },
+      available_quantity: 300,
     },
     {
       mission_no: "M-2024-0022",
@@ -1144,6 +1208,12 @@ const missionData = {
       robot_no: "R002",
       eta: "25 min",
       status: null,
+      available: false,
+      kit: {
+        "K365107": 60,
+        "1090326": 40,
+      },
+      available_quantity: 100,
     },
     {
       mission_no: "M-2024-0023",
@@ -1155,6 +1225,12 @@ const missionData = {
       robot_no: "R003",
       eta: "26 min",
       status: null,
+      available: true,
+      kit: {
+        "K365108": 70,
+        "40109254": 30,
+      },
+      available_quantity: 100,
     },
     {
       mission_no: "M-2024-0024",
@@ -1166,6 +1242,12 @@ const missionData = {
       robot_no: "R004",
       eta: "27 min",
       status: null,
+      available: false,
+      kit: {
+        "K365101": 50,
+        "40109241": 50,
+      },
+      available_quantity: 100,
     },
     {
       mission_no: "M-2024-0025",
@@ -1177,6 +1259,12 @@ const missionData = {
       robot_no: "R005",
       eta: "28 min",
       status: null,
+      available: true,
+      kit: {
+        "K365102": 80,
+        "40109262": 20,
+      },
+      available_quantity: 100,
     },
     {
       mission_no: "M-2024-0026",
@@ -1188,6 +1276,12 @@ const missionData = {
       robot_no: "R006",
       eta: "29 min",
       status: null,
+      available: true,
+      kit: {
+        "K365103": 75,
+        "40109229": 25,
+      },
+      available_quantity: 100,
     },
     {
       mission_no: "M-2024-0027",
@@ -1199,6 +1293,12 @@ const missionData = {
       robot_no: "R007",
       eta: "30 min",
       status: null,
+      available: false,
+      kit: {
+        "K365104": 60,
+        "40109640": 40,
+      },
+      available_quantity: 100,
     },
     {
       mission_no: "M-2024-0028",
@@ -1210,6 +1310,12 @@ const missionData = {
       robot_no: "R001",
       eta: "31 min",
       status: null,
+      available: true,
+      kit: {
+        "K365105": 50,
+        "40109622": 50,
+      },
+      available_quantity: 100,
     },
     {
       mission_no: "M-2024-0029",
@@ -1221,6 +1327,12 @@ const missionData = {
       robot_no: "R002",
       eta: "32 min",
       status: null,
+      available: false,
+      kit: {
+        "K365106": 80,
+        "13104879": 20,
+      },
+      available_quantity: 100,
     },
     {
       mission_no: "M-2024-0030",
