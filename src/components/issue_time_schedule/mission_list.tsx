@@ -230,29 +230,8 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">Danh sách nhiệm vụ</div>
-            {/* <div className="flex gap-2">
-              <Button
-                onClick={orderPicking}
-                className="gap-2"
-                disabled={selectedRowKeys.length === 0}
-                size="sm"
-              >
-                <Plus className="h-4 w-4" />
-                Tạo lệnh xuất hàng
-              </Button>
-              <Button
-                onClick={requestDataList}
-                variant="outline"
-                size="sm"
-                className="gap-2"
-              >
-                <ReloadOutlined className="h-4 w-4" />
-                {t("btn.refresh")}
-              </Button>
-            </div> */}
           </CardTitle>
         </CardHeader>
-        {/* <h3 className="text-lg font-semibold">Danh sách vật phẩm cần lấy</h3> */}
         <Input
           autoFocus
           ref={skuRef}

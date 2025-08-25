@@ -237,12 +237,6 @@ const columns: ColumnsType<PickingItem> = [
     width: 120,
   },
   {
-    title: "Mã KIT dtl",
-    dataIndex: "issord_dtl_no",
-    key: "issord_dtl_no",
-    width: 120,
-  },
-  {
     title: "Số lượng yêu cầu",
     dataIndex: "issue_qty",
     key: "issue_qty",

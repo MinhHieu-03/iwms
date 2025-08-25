@@ -83,12 +83,6 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
       width: 120,
     },
     {
-      title: "Mã KIT dtl",
-      dataIndex: "issord_dtl_no",
-      key: "issord_dtl_no",
-      width: 120,
-    },
-    {
       title: "Đơn vị",
       dataIndex: "unit",
       key: "unit",

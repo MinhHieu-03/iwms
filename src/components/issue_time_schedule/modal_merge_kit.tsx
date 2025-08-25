@@ -83,12 +83,6 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
       width: 120,
     },
     {
-      title: "Mã KIT dtl",
-      dataIndex: "issord_dtl_no",
-      key: "issord_dtl_no",
-      width: 120,
-    },
-    {
       title: "Đơn vị",
       dataIndex: "unit",
       key: "unit",
@@ -129,164 +123,32 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
       className="issue-detail-drawer"
     >
       <div className="space-y-6">
-        <Descriptions
-          title={t(
-            "issue_time_schedule.modal.basic_information",
-            "Basic Information"
-          )}
-          bordered
-          size="small"
-          column={2}
-        >
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.section", "Section")}
-          >
-            <Tag color="blue">{data.section_c}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.factory", "Factory")}
-          >
-            <Tag color="green">{data.fact_c}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label={t("issue_time_schedule.form.line", "Line")}>
-            <Tag color="orange">{data.line_c}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.product_no", "Product Number")}
-          >
-            <Tag color="purple">{data.prod_no}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t(
-              "issue_time_schedule.form.customer_desc_1",
-              "Customer Description 1"
-            )}
-          >
-            {data.cusdesch_cd1}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t(
-              "issue_time_schedule.form.customer_desc_2",
-              "Customer Description 2"
-            )}
-          >
-            {data.cusdesch_cd2}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t(
-              "issue_time_schedule.form.internal_desc",
-              "Internal Description"
-            )}
-          >
-            {data.intdesch_cd}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t(
-              "issue_time_schedule.form.issue_order_no",
-              "Issue Order Number"
-            )}
-          >
-            <span className="font-medium text-blue-600">
-              {data.issue_ord_no}
-            </span>
-          </Descriptions.Item>
-        </Descriptions>
-
-        <Descriptions
-          title={t(
-            "issue_time_schedule.modal.time_information",
-            "Time Information"
-          )}
-          bordered
-          size="small"
-          column={1}
-        >
-          <Descriptions.Item
-            label={t(
-              "issue_time_schedule.form.plan_issue_date",
-              "Plan Issue Date"
-            )}
-          >
-            <Tag color="cyan">
-              {dayjs(data.plan_issue_dt).format("YYYY-MM-DD HH:mm:ss")}
-            </Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.required_time", "Required Time")}
-          >
-            <Tag color="lime">
-              {dayjs(data.A_reqd_time).format("YYYY-MM-DD HH:mm:ss")}
-            </Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.issue_time", "Issue Time")}
-          >
-            <Tag color="red">
-              {dayjs(data.time_issue).format("YYYY-MM-DD HH:mm:ss")}
-            </Tag>
-          </Descriptions.Item>
-        </Descriptions>
-
-        <Descriptions
-          title={t(
-            "issue_time_schedule.modal.system_information",
-            "System Information"
-          )}
-          bordered
-          size="small"
-          column={2}
-        >
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.user_id", "User ID")}
-          >
-            <Tag color="default">{data.userid}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.entry_date", "Entry Date")}
-          >
-            {dayjs(data.ent_dt).format("YYYY-MM-DD")}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.update_date", "Update Date")}
-            span={2}
-          >
-            {dayjs(data.upd_dt).format("YYYY-MM-DD HH:mm:ss")}
-          </Descriptions.Item>
-        </Descriptions>
-
-        {/* Timeline comparison */}
-        <div className="bg-gray-50 p-4 rounded">
-          <h4 className="font-semibold mb-3">
-            {t("issue_time_schedule.modal.time_comparison", "Time Comparison")}
-          </h4>
-          <div className="space-y-2">
-            <div className="flex items-center gap-4">
-              <span className="w-24 text-sm font-medium">
-                {t("issue_time_schedule.modal.issue_time_label", "Issue Time")}:
-              </span>
-              <Tag color="red">{dayjs(data.time_issue).format("HH:mm")}</Tag>
+        {/* Assumption Information Section */}
+        <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+          {/* Summary Statistics */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="text-center">
+                <div className="text-lg font-bold text-blue-600">
+                  {new Set(mergeData.flatMap(item => 
+                    Array.isArray(item.issue_ord_no) ? item.issue_ord_no : [item.issue_ord_no]
+                  )).size}
+                </div>
+                <div className="text-gray-600">Tổng số KIT</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-green-600">
+                  {mergeData.length}
+                </div>
+                <div className="text-gray-600">Tổng loại vật tư</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-purple-600">
+                  {mergeData.filter(item => (item.issued_qty || 0) >= (item.issue_qty || 0)).length}
+                </div>
+                <div className="text-gray-600">Đã hoàn thành</div>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="w-24 text-sm font-medium">
-                {t(
-                  "issue_time_schedule.modal.required_time_label",
-                  "Required Time"
-                )}
-                :
-              </span>
-              <Tag color="lime">{dayjs(data.A_reqd_time).format("HH:mm")}</Tag>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="w-24 text-sm font-medium">
-                {t("issue_time_schedule.modal.plan_issue_label", "Plan Issue")}:
-              </span>
-              <Tag color="cyan">
-                {dayjs(data.plan_issue_dt).format("HH:mm")}
-              </Tag>
-            </div>
-          </div>
         </div>
-
         {/* Issue Data Details Table */}
         <div>
           <h4 className="font-semibold mb-3">

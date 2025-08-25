@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
 import { creatMissionData } from "@/lib/dummyData";
+import { render } from "@react-three/fiber";
 
 interface ModalDetailProps {
   isOpen: boolean;
@@ -74,10 +75,11 @@ const ModalMission: React.FC<ModalDetailProps> = ({
       width: 150,
     },
     {
-      title: "Mã thùng",
-      dataIndex: "package_no",
-      key: "package_no",
-      width: 100,
+      title: "loại nhiệm vụ",
+      dataIndex: "mission_type",
+      key: "mission_type",
+      width: 150,
+      render: (text) => text?.trim() || "Xuất kho",
     },
     {
       title: "Mã vật tư",
@@ -312,10 +314,7 @@ const ModalMission: React.FC<ModalDetailProps> = ({
         {/* Issue Data Details Table */}
         <div>
           <h4 className="font-semibold mb-3">
-            {t(
-              "issue_time_schedule.modal.issue_data_details",
-              "Issue Data Details"
-            )}
+            Danh sách nhiệm vụ kit gộp
           </h4>
           <Spin spinning={loading}>
             <Table

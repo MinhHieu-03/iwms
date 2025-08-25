@@ -257,7 +257,7 @@ const ModalAdd = ({
         },
       ]);
       setValue('');
-    } else if (value.startsWith('BIN')) {
+    } else if (value.startsWith('B')) {
       // is Bin ocode
       form.setFieldValue('bin_code', value);
       setCurrentField('bt');
