@@ -222,13 +222,13 @@ const IssueTimeScheduleTable = ({ setDataMerge, missionData, setKitData }) => {
           {t("issue_time_schedule.table.selected")}
         </span>
         <span className="text-xs text-gray-500">
-          {selectedRowKeys.length}/4
+          {selectedRowKeys.length}/40
         </span>
       </div>
     ),
     selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[]) => {
-      if (selectedRowKeys.length > 4) {
+      if (selectedRowKeys.length > 40) {
         message.warning("You can only select up to 4 items");
         return;
       }
@@ -236,7 +236,7 @@ const IssueTimeScheduleTable = ({ setDataMerge, missionData, setKitData }) => {
     },
     getCheckboxProps: (record: IssueTimeScheduleDataType) => ({
       disabled:
-        (selectedRowKeys.length >= 4 &&
+        (selectedRowKeys.length >= 40 &&
           !selectedRowKeys.includes(record.issue_ord_no)) ||
         rowInProgress.includes(record.issue_ord_no),
     }),
