@@ -1075,7 +1075,7 @@ const missionData = {
       available: true,
       kit: {
         "K365005": 100,
-        "68019571": 50,
+        "K365006": 100,
       },
       available_quantity: 500,
     },
@@ -1092,7 +1092,7 @@ const missionData = {
       available: true,
       kit: {
         "K363827": 80,
-        "68019572": 70,
+        "K365007": 100,
       },
       available_quantity: 200,
     },
@@ -1109,7 +1109,7 @@ const missionData = {
       available: false,
       kit: {
         "K365101": 120,
-        "68019573": 80,
+        "K365008": 100,
       },
       available_quantity: 200,
     },
@@ -1126,7 +1126,7 @@ const missionData = {
       available: true,
       kit: {
         "K365102": 150,
-        "68019574": 50,
+        "K365009": 100,
       },
       available_quantity: 300,
     },
@@ -1143,7 +1143,7 @@ const missionData = {
       available: false,
       kit: {
         "K365103": 100,
-        "68019575": 100,
+        "K365010": 100,
       },
       available_quantity: 200,
     },
@@ -1160,7 +1160,7 @@ const missionData = {
       available: true,
       kit: {
         "K365104": 200,
-        "71075366": 100,
+        "K365011": 100,
       },
       available_quantity: 300,
     },
@@ -1177,7 +1177,7 @@ const missionData = {
       available: false,
       kit: {
         "K365105": 180,
-        "80109326": 120,
+        "K365012": 100,
       },
       available_quantity: 300,
     },
@@ -1194,7 +1194,7 @@ const missionData = {
       available: true,
       kit: {
         "K365106": 150,
-        "1090325": 150,
+        "K365013": 100,
       },
       available_quantity: 300,
     },
@@ -1211,7 +1211,7 @@ const missionData = {
       available: false,
       kit: {
         "K365107": 60,
-        "1090326": 40,
+        "K365014": 100,
       },
       available_quantity: 100,
     },
@@ -1228,7 +1228,7 @@ const missionData = {
       available: true,
       kit: {
         "K365108": 70,
-        "40109254": 30,
+        "K365015": 100,
       },
       available_quantity: 100,
     },
@@ -1245,7 +1245,7 @@ const missionData = {
       available: false,
       kit: {
         "K365101": 50,
-        "40109241": 50,
+        "K365016": 100,
       },
       available_quantity: 100,
     },
@@ -1262,7 +1262,7 @@ const missionData = {
       available: true,
       kit: {
         "K365102": 80,
-        "40109262": 20,
+        "K365017": 100,
       },
       available_quantity: 100,
     },
