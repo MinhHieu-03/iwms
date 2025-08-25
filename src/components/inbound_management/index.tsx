@@ -376,7 +376,7 @@ const Header = ({
         className="flex items-center justify-between"
         style={{ padding: "10px 0" }}
       >
-        <CardTitle>{t(lang_key)}</CardTitle>
+        <CardTitle>Yêu cầu nhập kho</CardTitle>
         <div className="flex items-center">
           <Button onClick={() => setIsOpen(true)} variant="default">
             <Plus className="mr-2 h-4 w-4" />
@@ -399,7 +399,7 @@ const Header = ({
           </Button> */}
           <Button className="ml-2" onClick={handleReload} variant="outline">
             <ReloadOutlined />
-            {t("btn.reload")}
+            Làm mới
           </Button>
           {isAuthenticated ? (
             <DropdownMenu>

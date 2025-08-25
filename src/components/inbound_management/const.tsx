@@ -105,19 +105,19 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
   return [
     {
       dataIndex: "pic",
-      title: t(`${lang_key}.pic`),
+      title: "Công nhân",
       width: 100,
     },
     {
       dataIndex: "sku",
-      title: t(`${lang_key}.sku`),
+      title: 'Mã vật tư',
       width: 120,
     },
-    {
-      dataIndex: "product_name",
-      title: t(`${lang_key}.product_name`),
-      width: 150,
-    },
+    // {
+    //   dataIndex: "product_name",
+    //   title: t(`${lang_key}.product_name`),
+    //   width: 150,
+    // },
     // {
     //   dataIndex: "origin",
     //   title: t(`${lang_key}.origin`),
@@ -125,34 +125,34 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
     // },
     {
       dataIndex: "destination",
-      title: t(`${lang_key}.destination`),
+      title: "Vị trí lưu kho",
       width: 150,
       render: (text, record) => (
         <span>{record.status === "fill" ? text : ""}</span>
       ),
     },
+    {
+      dataIndex: "bin",
+      title: "Mã thùng",
+      width: 120,
+    },
     // {
-    //   dataIndex: ["inventory", "locationCode"],
-    //   title: t(`${lang_key}.location_code`),
-    //   width: 120,
+    //   dataIndex: ["inventory", "store"],
+    //   title: t(`${lang_key}.store_info`),
+    //   width: 200,
+    //   render: (store: Array<{ key: string; qty: number }>) => (
+    //     <div>
+    //       {store?.map((item, index) => (
+    //         <Tag key={index} color="blue">
+    //           {item.key}: {item.qty}
+    //         </Tag>
+    //       ))}
+    //     </div>
+    //   ),
     // },
     {
-      dataIndex: ["inventory", "store"],
-      title: t(`${lang_key}.store_info`),
-      width: 200,
-      render: (store: Array<{ key: string; qty: number }>) => (
-        <div>
-          {store?.map((item, index) => (
-            <Tag key={index} color="blue">
-              {item.key}: {item.qty}
-            </Tag>
-          ))}
-        </div>
-      ),
-    },
-    {
       dataIndex: "status",
-      title: t(`common.status`),
+      title: "Trạng thái",
       width: 100,
       render: (status: string) => {
         const statusMap: Record<string, { text: string; color: string }> = {
@@ -173,16 +173,16 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
     },
     {
       dataIndex: "createdAt",
-      title: t(`${lang_key}.created_at`),
+      title: "Ngày tạo",
       width: 150,
       render: (value: string) => new Date(value).toLocaleString(),
     },
-    {
-      dataIndex: "updatedAt",
-      title: t(`${lang_key}.updated_at`),
-      width: 150,
-      render: (value: string) => new Date(value).toLocaleString(),
-    },
+    // {
+    //   dataIndex: "updatedAt",
+    //   title: t(`${lang_key}.updated_at`),
+    //   width: 150,
+    //   render: (value: string) => new Date(value).toLocaleString(),
+    // },
   ];
 };
 
