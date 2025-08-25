@@ -72,6 +72,33 @@ export const vi = {
   "issue_time_schedule.message.no_data":
     "Không tìm thấy lịch trình thời gian xuất",
 
+  // OI Modal specific translations
+  "issue_time_schedule.oi_modal.title": "Xử lý OI",
+  "issue_time_schedule.oi_modal.back": "Quay lại",
+  "issue_time_schedule.oi_modal.cancel": "Hủy",
+  "issue_time_schedule.oi_modal.next": "Tiếp theo",
+  "issue_time_schedule.oi_modal.complete": "Hoàn thành",
+  "issue_time_schedule.oi_modal.enter_box_code": "Nhập mã thùng",
+  "issue_time_schedule.oi_modal.input_placeholder": "Trỏ chuột vào đây để nhập dữ liệu",
+  "issue_time_schedule.oi_modal.order": "Đơn hàng",
+  "issue_time_schedule.oi_modal.sku": "SKU",
+  "issue_time_schedule.oi_modal.package_no": "Mã thùng",
+  "issue_time_schedule.oi_modal.material_no": "Mã vật tư",
+  "issue_time_schedule.oi_modal.quantity": "Số lượng",
+  "issue_time_schedule.oi_modal.supply_location": "Vị trí cung cấp",
+  "issue_time_schedule.oi_modal.not_scanned": "Chưa quét",
+  "issue_time_schedule.oi_modal.not_available": "Không có sẵn",
+  "issue_time_schedule.oi_modal.not_assigned": "Chưa được phân công",
+  "issue_time_schedule.oi_modal.material_picking_instruction": "Chỉ thị lấy vật tư",
+  "issue_time_schedule.oi_modal.from": "từ",
+  "issue_time_schedule.oi_modal.kit_information": "Thông tin Kit",
+  "issue_time_schedule.oi_modal.no_kit_data": "Không có dữ liệu kit",
+  "issue_time_schedule.oi_modal.current_box_data_debug": "Dữ liệu thùng hiện tại (Debug)",
+  "issue_time_schedule.oi_modal.remaining_quantity": "Số lượng còn lại",
+  "issue_time_schedule.oi_modal.empty_box_processing": "Xử lý thùng rỗng",
+  "issue_time_schedule.oi_modal.return_to_quantity_input": "Quay lại giao diện nhập số lượng",
+  "issue_time_schedule.oi_modal.kit_details": "Chi tiết Kit",
+
   // Common actions for tables
   "common.action": "Hành động",
   "common.detail": "Chi tiết",
