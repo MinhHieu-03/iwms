@@ -265,7 +265,6 @@ const ModalAdd = ({
     } else {
       if (!oldSKU) {
         form.setFieldValue('sku', value);
-        setCurrentField('qty');
       } else if (oldSKU !== value) {
         text2void(`Không hợp lệ `);
         notification.error({
@@ -274,6 +273,7 @@ const ModalAdd = ({
         });
         return;
       }
+      setCurrentField('qty');
       setValue('');
     }
 
