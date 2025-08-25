@@ -1,235 +1,122 @@
 import React, { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
-import { Package, Play, PackageCheck, Search } from "lucide-react";
-import { mockOrders, type Order } from "@/data/operatorData";
-import { Input } from "antd";
+import { Steps, Tabs } from "antd";
+import Issue_time_schedule from "@/components/outbound_odd";
+import MissionList from "@/components/outbound_odd/mission_list";
+import OutboundHeader from "@/components/OutboundHeader";
 
-import PickingDrawer from "@/components/odd_outbound/OddPickingDrawer";
+// Data interface for the new format
+interface OutboundData {
+  key: string;
+  section_c: string;
+  fact_c: string;
+  line_c: string;
+  prod_no: string;
+  cusdesch_cd1: string;
+  cusdesch_cd2: string;
+  intdesch_cd: string;
+  issue_ord_no: string;
+  plan_issue_dt: string;
+  A_reqd_time: string;
+  time_issue: string;
+  userid: string;
+  ent_dt: string;
+  upd_dt: string;
+}
+
+// Mock data with the specified format
+const mockOutboundData: OutboundData[] = [
+  {
+    key: "1",
+    section_c: "9855",
+    fact_c: "ASY1",
+    line_c: "ASY1",
+    prod_no: "Common",
+    cusdesch_cd1: "00",
+    cusdesch_cd2: "00",
+    intdesch_cd: "02",
+    issue_ord_no: "KANB1101",
+    plan_issue_dt: "2025-06-10T17:00:00.000Z",
+    A_reqd_time: "2025-06-10T09:00:00.000Z",
+    time_issue: "2025-06-10T06:00:00.000Z",
+    userid: "Job",
+    ent_dt: "2025-06-10T17:00:00.000Z",
+    upd_dt: "2025-06-10T17:00:00.000Z",
+  },
+  {
+    key: "2",
+    section_c: "9856",
+    fact_c: "ASY2",
+    line_c: "ASY2",
+    prod_no: "Common",
+    cusdesch_cd1: "01",
+    cusdesch_cd2: "01",
+    intdesch_cd: "03",
+    issue_ord_no: "KANB1102",
+    plan_issue_dt: "2025-06-11T17:00:00.000Z",
+    A_reqd_time: "2025-06-11T09:00:00.000Z",
+    time_issue: "2025-06-11T06:00:00.000Z",
+    userid: "Job",
+    ent_dt: "2025-06-11T17:00:00.000Z",
+    upd_dt: "2025-06-11T17:00:00.000Z",
+  },
+];
 
 const OrdersTab: React.FC = () => {
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
-  const [showPickingModal, setShowPickingModal] = useState(false);
-  const [searchText, setSearchText] = useState('');
+  const [current, setCurrent] = useState(0);
+  // const onChange = (value: number) => {
+  //   setCurrent(value);
+  // };
 
-  const filteredOrders = mockOrders.filter(order => 
-    order.orderNumber.toLowerCase().includes(searchText.toLowerCase()) ||
-    order.customer.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const [dataMerge, setDataMerge] = useState([]);
+  const [kitData, setKitData] = useState([]);
+  const [selectedGate, setSelectedGate] = useState("1");
 
-  const handleOrderSelect = (orderId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedOrders(prev => [...prev, orderId]);
-    } else {
-      setSelectedOrders(prev => prev.filter(id => id !== orderId));
-    }
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedOrders(filteredOrders.map(order => order.id));
-    } else {
-      setSelectedOrders([]);
-    }
-  };
-
-  const handleStartPicking = () => {
-    if (selectedOrders.length === 0) {
-      toast({
-        title: "No Orders Selected",
-        description: "Please select at least one order to start picking",
-        variant: "destructive",
-      });
-      return;
-    }
-    setShowPickingModal(true);
-
-    toast({
-      title: "Picking Started",
-      description: `Started picking for ${selectedOrders.length} order(s)`,
-    });
-    setSelectedOrders([]);
-  };
-
-  const handleStartPacking = () => {
-    if (selectedOrders.length === 0) {
-      toast({
-        title: "No Orders Selected", 
-        description: "Please select at least one order to start packing",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Packing Started",
-      description: `Started packing for ${selectedOrders.length} order(s)`,
-    });
-    setSelectedOrders([]);
-  };
-
-  const handleOrderClick = (orderId: string) => {
-    // navigate(`/operator-interface/order/${orderId}`);
-    // setSelectedOrders(filteredOrders.map(order => order.id));
-  };
-
-  const getPriorityBadge = (priority: Order['priority']) => {
-    const variants = {
-      low: "secondary",
-      medium: "default", 
-      high: "destructive",
-      urgent: "destructive"
-    } as const;
-
-    const colors = {
-      low: "bg-gray-100 text-gray-800",
-      medium: "bg-blue-100 text-blue-800",
-      high: "bg-orange-100 text-orange-800", 
-      urgent: "bg-red-100 text-red-800"
-    };
-
-    return (
-      <Badge variant={variants[priority]} className={colors[priority]}>
-        {priority.toUpperCase()}
-      </Badge>
-    );
-  };
-
-  const getStatusBadge = (status: Order['status']) => {
-    const variants = {
-      pending: "secondary",
-      picking: "default",
-      packing: "default", 
-      ready: "secondary",
-      shipped: "secondary"
-    } as const;
-
-    const colors = {
-      pending: "bg-gray-100 text-gray-800",
-      picking: "bg-blue-100 text-blue-800",
-      packing: "bg-orange-100 text-orange-800",
-      ready: "bg-green-100 text-green-800",
-      shipped: "bg-green-100 text-green-800"
-    };
-
-    return (
-      <Badge variant={variants[status] || "secondary"} className={colors[status]}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </Badge>
-    );
+  const handleGateChange = (gate: string) => {
+    setSelectedGate(gate);
+    console.log("Gate changed to:", gate);
   };
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Package className="h-5 w-5" />
-              Orders to Process
-            </div>
-            <div className="flex gap-2">
-              <Button 
-                onClick={handleStartPicking}
-                disabled={selectedOrders.length === 0}
-                className="gap-2"
-              >
-                <Play className="h-4 w-4" />
-                Start Picking
-              </Button>
-              <Button 
-                onClick={handleStartPacking}
-                disabled={selectedOrders.length === 0}
-                variant="outline"
-                className="gap-2"
-              >
-                <PackageCheck className="h-4 w-4" />
-                Start Packing
-              </Button>
-            </div>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-4">
-            <Input
-              placeholder="Search orders..."
-              prefix={<Search className="h-4 w-4 text-gray-400" />}
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              style={{ width: '300px' }}
-            />
-          </div>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12">                    <Checkbox
-                      checked={selectedOrders.length === filteredOrders.length && filteredOrders.length > 0}
-                      onCheckedChange={handleSelectAll}
-                    />
-                  </TableHead>
-                  <TableHead>Order #</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Priority</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Items</TableHead>
-                  <TableHead>Due Date</TableHead>
-                  <TableHead>Created</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredOrders.map((order) => (
-                  <TableRow 
-                    key={order.id}
-                    className="cursor-pointer hover:bg-muted/50"
-                    onClick={() => handleOrderClick(order.id)}
-                  >
-                    <TableCell onClick={(e) => e.stopPropagation()}>
-                      <Checkbox
-                        checked={selectedOrders.includes(order.id)}
-                        onCheckedChange={(checked) => 
-                          handleOrderSelect(order.id, checked as boolean)
-                        }
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">{order.orderNumber}</TableCell>
-                    <TableCell>{order.customer}</TableCell>
-                    <TableCell>{getPriorityBadge(order.priority)}</TableCell>
-                    <TableCell>{getStatusBadge(order.status)}</TableCell>
-                    <TableCell>{order.totalItems}</TableCell>
-                    <TableCell>
-                      {new Date(order.dueDate).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(order.createdAt).toLocaleDateString()}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Picking Drawer Component */}
-      <PickingDrawer
-        open={showPickingModal}
-        onClose={() => setShowPickingModal(false)}
+    <div className="space-y-2">
+      <OutboundHeader 
+        selectedGate={selectedGate}
+        onGateChange={handleGateChange}
       />
+      <Tabs
+        type="card"
+        size="large"
+        defaultActiveKey="1"
+        className="site-navigation-steps full-width-tabs tall-tabs colorful-tabs"
+        tabBarGutter={0}
+        activeKey={current.toString()}
+        items={[
+          {
+            key: "0",
+            label: "OI Cấp & Xuất hàng chẵn",
+          },
+          {
+            key: "1",
+            label: "Danh sách Kit gộp",
+          },
+          // {
+          //   key: "2",
+          //   label: "Step 3",
+          // },
+        ]}
+        onChange={(key) => setCurrent(Number(key))}
+      />
+      {current === 0 ? (
+        <Issue_time_schedule
+          // setCurrent={setCurrent}
+          setDataMerge={setDataMerge}
+          setKitData={setKitData}
+          missionData={dataMerge}
+        />
+      ) : null}
+      {/* {current === 1 ? <OIOutbound /> : null} */}
+      {current === 1 ? (
+        <MissionList missionData={dataMerge} kitData={kitData} />
+      ) : null}
     </div>
   );
 };

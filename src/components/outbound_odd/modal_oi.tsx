@@ -38,7 +38,7 @@ const DrawerOI: React.FC<any> = ({
 
   return (
     <Drawer
-      // title={t('issue_time_schedule.oi_modal.title')}
+      title={t('issue_time_schedule.oi_modal.title')}
       open={isOpen}
       onClose={handleCancel}
       height={'95vh'}
@@ -213,34 +213,28 @@ const SplitOrder: React.FC<any> = ({
               {selectedItem?.sku || "Item sku"}
             </p>
           </div> */}
-          {boxFounded?.package_no ? (
-            <>
-              <div className='text-center'>
-                <p className='text-xl text-gray-500 font-semibold'>Mã thùng</p>
-                <p className='font-bold text-2xl'>
-                  {boxFounded?.package_no || 'Not scanned'}
-                </p>
-              </div>
-              <div className='text-center'>
-                <p className='text-xl text-gray-500 font-semibold'>Mã vật tư</p>
-                <p className='font-bold text-2xl'>
-                  {boxFounded?.material_no || 'Not available'}
-                </p>
-              </div>
-              <div className='text-center'>
-                <p className='text-xl text-gray-500 font-semibold'>Số lượng</p>
-                <p className='font-bold text-2xl'>
-                  {boxFounded?.quantity || '0'}
-                </p>
-              </div>
-              <div className='text-center'>
-                <p className='text-xl text-gray-500 font-semibold'>Mã vị trí</p>
-                <p className='font-bold text-2xl'>
-                  {boxFounded?.supply_loc || 'Not assigned'}
-                </p>
-              </div>
-            </>
-          ) : null}
+          <div className='text-center'>
+            <p className='text-xl text-gray-500 font-semibold'>Mã thùng</p>
+            <p className='font-bold text-2xl'>
+              {boxFounded?.package_no || 'Not scanned'}
+            </p>
+          </div>
+          <div className='text-center'>
+            <p className='text-xl text-gray-500 font-semibold'>Mã vật tư</p>
+            <p className='font-bold text-2xl'>
+              {boxFounded?.material_no || 'Not available'}
+            </p>
+          </div>
+          <div className='text-center'>
+            <p className='text-xl text-gray-500 font-semibold'>Số lượng</p>
+            <p className='font-bold text-2xl'>{boxFounded?.quantity || '0'}</p>
+          </div>
+          <div className='text-center'>
+            <p className='text-xl text-gray-500 font-semibold'>Mã vị trí</p>
+            <p className='font-bold text-2xl'>
+              {boxFounded?.supply_loc || 'Not assigned'}
+            </p>
+          </div>
           {/* <div className="text-center">
             <p className="text-md text-gray-500">Robot No</p>
             <p className="font-medium text-lg">{boxFounded?.robot_no || "Not assigned"}</p>
@@ -263,7 +257,7 @@ const SplitOrder: React.FC<any> = ({
               <span className='text-3xl font-bold text-blue-600'>
                 {boxFounded.quantity}
               </span>
-              <span className='text-xl text-gray-400'>/</span>
+              <span className='text-xl text-gray-400'>from</span>
               <span className='text-3xl font-bold text-gray-600'>
                 {boxFounded.available_quantity}
               </span>
@@ -272,7 +266,7 @@ const SplitOrder: React.FC<any> = ({
         </div>
         <div>
           <p className='text-3xl text-gray-900 font-bold mb-6 text-center mt-10'>
-            Thông tin Kit
+            Kit Information
           </p>
           <div className='bg-white p-6 rounded-lg border shadow-sm'>
             <div className='space-y-4'>
@@ -292,7 +286,7 @@ const SplitOrder: React.FC<any> = ({
                 ))}
               {!boxFounded?.kit && (
                 <div className='text-center text-gray-500 py-6'>
-                  <span className='text-xl'></span>
+                  <span className='text-xl'>No kit data available</span>
                 </div>
               )}
             </div>
