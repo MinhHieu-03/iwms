@@ -242,7 +242,7 @@ const InboundManagement = () => {
         />
       </CardContent>
       <ModalAdd
-        title={t("inbound.create")}
+        title={"OI nhập kho"}
         itemsRender={renderCreateForm(dataRole, dataList, t)}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -380,7 +380,7 @@ const Header = ({
         <div className="flex items-center">
           <Button onClick={() => setIsOpen(true)} variant="default">
             <Plus className="mr-2 h-4 w-4" />
-            {t("btn.create_new")}
+            OI nhập kho
           </Button>
           {selectedRowKeys.length > 0 && (
             <Button onClick={onDelete} variant="destructive" className="ml-2">
