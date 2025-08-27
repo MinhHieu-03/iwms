@@ -268,8 +268,8 @@ const ModalMission: React.FC<ModalDetailProps> = ({
               size='small'
               scroll={{ x: 1400 }}
               pagination={{
-                pageSize: 10,
-                showSizeChanger: true,
+                pageSize: 20,
+                // showSizeChanger: true,
                 showTotal: (total, range) =>
                   `${range[0]}-${range[1]} of ${total} items`,
               }}

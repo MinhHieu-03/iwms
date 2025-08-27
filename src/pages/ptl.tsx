@@ -193,13 +193,13 @@ const SplitOrder: React.FC<any> = ({}) => {
       <div className='mt-6'>
         <div className='grid grid-cols-4 gap-4'>
           {/* Kit 1 */}
-          <TrolleyKit ptlDataShow={ptlDataShow.filter(item => item.issue_ord_no === 'K365005')} title='K365005' kit='Xe 1' />
+          <TrolleyKit ptlDataShow={ptlDataShow.filter(item => item.issue_ord_no === 'K365005')} title='K365005' kit='Kit 1' />
           {/* Kit 2 */}
-          <TrolleyKit ptlDataShow={ptlDataShow.filter(item => item.issue_ord_no === 'K365006')} title='K365006' kit='Xe 2' />
+          <TrolleyKit ptlDataShow={ptlDataShow.filter(item => item.issue_ord_no === 'K365006')} title='K365006' kit='Kit 2' />
           {/* Kit 3 */}
-          <TrolleyKit ptlDataShow={ptlDataShow.filter(item => item.issue_ord_no === 'K365007')} title='K365007' kit='Xe 3' />
+          <TrolleyKit ptlDataShow={ptlDataShow.filter(item => item.issue_ord_no === 'K365007')} title='K365007' kit='Kit 3' />
           {/* Kit 4 */}
-          <TrolleyKit ptlDataShow={ptlDataShow.filter(item => item.issue_ord_no === 'K365043')} title='K365043' kit='Xe 4' />
+          <TrolleyKit ptlDataShow={ptlDataShow.filter(item => item.issue_ord_no === 'K365043')} title='K365043' kit='Kit 4' />
         </div>
       </div>
     </div>

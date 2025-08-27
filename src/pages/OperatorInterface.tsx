@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,63 +46,96 @@ const OperatorInterface = () => {
                       <ArrowDown className="h-8 w-8 text-green-600" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900">OI Nhập kho</h3>
+                      <h3 className="text-xl font-semibold text-gray-900">
+                        OI Nhập kho
+                      </h3>
                       <p className="text-gray-600 mt-1">
-                        Process incoming shipments and manage inbound
+                        Quản lý nhập kho và kiểm soát hàng hóa
                       </p>
                       <div className="flex items-center mt-3 text-green-600">
                         <Package className="h-4 w-4 mr-2" />
-                        <span className="text-sm font-medium">Đi đến OI nhập kho</span>
+                        <span className="text-sm font-medium">
+                          Đi đến OI nhập kho
+                        </span>
                       </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             </Link>
-
-            <Link to="/oi/outbound">
-              <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 border-2 hover:border-purple-300">
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-purple-100 p-3 rounded-lg">
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 border-2 hover:border-purple-300">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="flex-1">
+                    <div className="bg-purple-100 p-3 rounded-lg flex">
                       <ArrowUp className="h-8 w-8 text-purple-600" />
+                      <h3 className="text-xl font-semibold text-gray-900 ml-5">
+                        OI Xuất kho hàng chẵn
+                      </h3>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900">OI Pick tổng</h3>
-                      <p className="text-gray-600 mt-1">
-                        Standard outbound operations and order processing
-                      </p>
-                      <div className="flex items-center mt-3 text-purple-600">
-                        <Truck className="h-4 w-4 mr-2" />
-                        <span className="text-sm font-medium">Đi đến OI Pick tổng</span>
-                      </div>
+                    <div className="flex gap-2 mt-3">
+                      <Link to="/oi/outbound" className="flex-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-purple-600 border-purple-300 hover:bg-purple-50"
+                        >
+                          <Package className="h-4 w-4 mr-2" />
+                          Pick tổng
+                        </Button>
+                      </Link>
+                      <Link to="/oi/outbound-plt" className="flex-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-purple-600 border-purple-300 hover:bg-purple-50"
+                        >
+                          <Truck className="h-4 w-4 mr-2" />
+                          Chia lẻ
+                        </Button>
+                      </Link>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </Link>
+                </div>
+              </CardContent>
+            </Card>
 
-            <Link to="/oi/outbound-odd">
-              <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 border-2 hover:border-blue-300">
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-blue-100 p-3 rounded-lg">
-                      <ArrowUp className="h-8 w-8 text-blue-600" />
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 border-2 hover:border-purple-300">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="flex-1">
+                    <div className="bg-purple-100 p-3 rounded-lg flex">
+                      <ArrowUp className="h-8 w-8 text-purple-600" />
+                      <h3 className="text-xl font-semibold text-gray-900 ml-5">
+                        OI Xuất kho hàng lẻ
+                      </h3>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900">OI Pick lẻ</h3>
-                      <p className="text-gray-600 mt-1">
-                        Special outbound operations and expedited processing
-                      </p>
-                      <div className="flex items-center mt-3 text-blue-600">
-                        <Truck className="h-4 w-4 mr-2" />
-                        <span className="text-sm font-medium">Đi đến OI Pick lẻ</span>
-                      </div>
+                    <div className="flex gap-2 mt-3">
+                      <Link to="/oi/outbound-odd" className="flex-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-purple-600 border-purple-300 hover:bg-purple-50"
+                        >
+                          <Package className="h-4 w-4 mr-2" />
+                          Pick tổng
+                        </Button>
+                      </Link>
+                      <Link to="/oi/outbound-odd-ptl" className="flex-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-purple-600 border-purple-300 hover:bg-purple-50"
+                        >
+                          <Truck className="h-4 w-4 mr-2" />
+                          Chia lẻ
+                        </Button>
+                      </Link>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </Link>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Legacy Tabs (commented out for now, can be removed later) */}

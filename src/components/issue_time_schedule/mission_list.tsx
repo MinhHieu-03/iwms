@@ -299,7 +299,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
                 return (
                   <div key={locationId} className="border rounded-lg p-4">
                     <h3 className="font-semibold text-lg mb-3">
-                      Xe {locationId}
+                      Kit {locationId}
                     </h3>
                     <div className="space-y-2">
                       <div className="text-sm p-2 bg-gray-50 rounded">
