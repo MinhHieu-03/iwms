@@ -270,6 +270,40 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
           })}
         />
       </Card>
+      <div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Vị trí theo tên bộ kit</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map((locationId) => {
+                const dataKit = kitData[locationId-1] || {}
+                return (
+                  <div key={locationId} className="border rounded-lg p-4">
+                    <h3 className="font-semibold text-lg mb-3">Xe {locationId}</h3>
+                    <div className="space-y-2">
+                      
+                          <div className="text-sm p-2 bg-gray-50 rounded">
+                            <div className="font-medium">
+                              {dataKit.issue_ord_no}
+                            </div>
+                            {dataKit.material_no && (
+                              <div className="text-gray-600">Vật liệu: {dataKit.material_no}</div>
+                            )}
+                            {dataKit.issue_qty && (
+                              <div className="text-gray-600">Số lượng: {dataKit.issue_qty}</div>
+                            )}
+                          </div>
+                  
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {isOpenMission && (
         <ModalMission

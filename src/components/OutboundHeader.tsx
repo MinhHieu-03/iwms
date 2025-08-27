@@ -13,12 +13,14 @@ import { login, logout } from "@/store/authSlice";
 
 interface OutboundHeaderProps {
   selectedGate?: string;
+  title?: string;
   onGateChange?: (gate: string) => void;
 }
 
 const OutboundHeader: React.FC<OutboundHeaderProps> = ({
   selectedGate = "1",
-  onGateChange
+  onGateChange,
+  title = "Quản lý xuất kho"
 }) => {
   const dispatch = useAppDispatch();
   const { isAuthenticated, loading, user } = useAppSelector((state) => state.auth);
@@ -105,7 +107,7 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
           {/* Left section - Title */}
           <div className="flex items-center">
             <h1 className="text-xl font-bold text-gray-800">
-              Outbound Management
+              {title || "Xuất kho"}
             </h1>
           </div>
 

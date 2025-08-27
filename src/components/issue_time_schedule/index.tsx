@@ -29,7 +29,7 @@ import KitManagementHeader from "./KitManagementHeader";
 
 const { list, create, update, remove } = domain;
 
-const IssueTimeScheduleTable = ({ setDataMerge, missionData, setKitData }) => {
+const IssueTimeScheduleTable = ({ setCurrent, setDataMerge, missionData, setKitData }) => {
   const { t } = useTranslation();
   const [pageInfo, setPageInfo] = useState({ page: 1, perPage: 10 });
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -281,7 +281,7 @@ const IssueTimeScheduleTable = ({ setDataMerge, missionData, setKitData }) => {
   console.log("selectedRowKeys", selectedRowKeys);
 
   const orderPicking = async () => {
-    setIsOpenOI(true);
+    // setIsOpenOI(true);
     if (selectedRowKeys.length === 0) {
       message.warning(
         "Please select at least one item to create a picking order"
@@ -309,6 +309,7 @@ const IssueTimeScheduleTable = ({ setDataMerge, missionData, setKitData }) => {
     console.log("___issueData", issueData);
     // setDataMission(issueData);
     sessionStorage.setItem("activeKit", JSON.stringify(selectedRowKeys));
+    setCurrent(1);
   };
 
   useEffect(() => {

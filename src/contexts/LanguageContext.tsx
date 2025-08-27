@@ -18,7 +18,7 @@ type LanguageContextType = {
 export const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<SupportedLanguages>('en');
+  const [language, setLanguage] = useState<SupportedLanguages>('vi');
   const [themeSettings, setThemeSettings] = useState<ThemeSettings>({
     darkMode: false
   });
@@ -31,6 +31,10 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const savedLanguage = localStorage.getItem('language');
     if (savedLanguage === 'en' || savedLanguage === 'vi') {
       setLanguage(savedLanguage as SupportedLanguages);
+    } else {
+      // Set default language to Vietnamese if no saved language
+      setLanguage('vi');
+      localStorage.setItem('language', 'vi');
     }
 
     // Load theme settings from localStorage on initialization

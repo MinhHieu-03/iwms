@@ -25,6 +25,7 @@ import OperatorOutbound from "./pages/OperatorOutbound";
 import Inventory from "./pages/Inventory";
 import Outbound from "./pages/outbound";
 import OutboundOdd from "./pages/outbound_odd";
+import Ptl from "./pages/ptl";
 import OrderHistory from "./pages/OrderHistory";
 import NotFound from "./pages/NotFound";
 import UserEdit from "./pages/team/UserEdit";
@@ -39,6 +40,7 @@ import EditMissionTemplate from "@/components/mission_setting/mission_template/u
 import DeviceTemplate from "./components/device/DeviceTemplate";
 import DeviceList from "./components/device/DeviceList";
 import ProtectedRoute from "./components/ProtectedRoute";
+
 import { LanguageProvider } from "./contexts/LanguageProvider";
 import { Provider } from "react-redux";
 import { store } from "./store";
@@ -214,8 +216,8 @@ function App() {
                 <Route path="/oi/outbound-odd" element={<OutboundOdd />} />
                 <Route path="/oi/inbound" element={<InboundManagement />} />
                 <Route
-                  path="/oi/outbound-pick-to-line"
-                  element={<InboundManagement />}
+                  path="/oi/outbound-ptl"
+                  element={<Ptl />}
                 />
               </Routes>
               <Toaster />
