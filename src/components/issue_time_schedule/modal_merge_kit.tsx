@@ -1,4 +1,4 @@
-import { Drawer, Descriptions, Tag, Table, Spin } from "antd";
+import { Drawer, Descriptions, Tag, Table, Spin, Checkbox } from "antd";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
@@ -16,32 +16,16 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
 }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [showInsufficientOnly, setShowInsufficientOnly] = useState(false);
 
   if (!data) return null;
 
-  const mergeData = data.reduce((acc: any[], record: any) => {
-    const existingIndex = acc.findIndex(
-      (item) => item.material_no === record.material_no
-    );
-    if (existingIndex >= 0) {
-      acc[existingIndex].issue_qty += record.issue_qty;
-      if (!acc[existingIndex].issue_ord_no.includes(record.issue_ord_no)) {
-        acc[existingIndex].issue_ord_no = [
-          ...(Array.isArray(acc[existingIndex].issue_ord_no)
-            ? acc[existingIndex].issue_ord_no
-            : [acc[existingIndex].issue_ord_no]),
-          record.issue_ord_no,
-        ];
-      }
-      if (record.issued_qty) {
-        acc[existingIndex].issued_qty =
-          (acc[existingIndex].issued_qty || 0) + record.issued_qty;
-      }
-    } else {
-      acc.push({ ...record });
-    }
-    return acc;
-  }, []);
+  const mergeData = data;
+
+  // Filter data based on insufficient inventory
+  const filteredData = showInsufficientOnly 
+    ? mergeData.filter(item => (item.inventory_qty || 0) < (item.issue_qty || 0))
+    : mergeData;
 
   const issueDataColumns = [
     {
@@ -94,10 +78,27 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
       key: "issue_qty",
       width: 120,
     },
+    // {
+    //   title: "Số lượng đã cấp",
+    //   dataIndex: "issued_qty",
+    //   key: "issued_qty",
+    //   width: 100,
+    //   render: (text, record) => (
+    //     <span
+    //       className={
+    //         record.issued_qty < record.issue_qty
+    //           ? "text-red-500 font-medium"
+    //           : "text-green-600"
+    //       }
+    //     >
+    //       {text?.toLocaleString()}
+    //     </span>
+    //   ),
+    // },
     {
       title: "Số lượng tồn kho",
-      dataIndex: "issued_qty",
-      key: "issued_qty",
+      dataIndex: "inventory_qty",
+      key: "inventory_qty",
       width: 120,
       render: (text, record) => (
         <span
@@ -126,41 +127,61 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
         {/* Assumption Information Section */}
         <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
           {/* Summary Statistics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
               <div className="text-center">
                 <div className="text-lg font-bold text-blue-600">
-                  {new Set(mergeData.flatMap(item => 
+                  {new Set(filteredData.flatMap(item => 
                     Array.isArray(item.issue_ord_no) ? item.issue_ord_no : [item.issue_ord_no]
                   )).size}
                 </div>
-                <div className="text-gray-600">Tổng số KIT</div>
+                <div className="text-gray-600">
+                  {showInsufficientOnly ? "KIT thiếu vật tư" : "Tổng số KIT"}
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold text-green-600">
-                  {mergeData.length}
+                  {filteredData.length}
                 </div>
-                <div className="text-gray-600">Tổng loại vật tư</div>
+                <div className="text-gray-600">
+                  {showInsufficientOnly ? "Vật tư thiếu tồn kho" : "Tổng loại vật tư"}
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold text-purple-600">
-                  {mergeData.filter(item => (item.issued_qty || 0) >= (item.issue_qty || 0)).length}
+                  {filteredData.filter(item => (item.issued_qty || 0) >= (item.issue_qty || 0)).length}
                 </div>
                 <div className="text-gray-600">Đã hoàn thành</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-red-600">
+                  {filteredData.filter(item => (item.issue_qty || 0) > (item.inventory_qty || 0)).length}
+                </div>
+                <div className="text-gray-600">Thiếu tồn kho</div>
               </div>
             </div>
         </div>
         {/* Issue Data Details Table */}
         <div>
-          <h4 className="font-semibold mb-3">
-            {t(
-              "issue_time_schedule.modal.issue_data_details",
-              "Issue Data Details"
-            )}
-          </h4>
+          <div className="flex justify-between items-center mb-3">
+            <h4 className="font-semibold">
+              {t(
+                "issue_time_schedule.modal.issue_data_details",
+                "Issue Data Details"
+              )}
+            </h4>
+            <Checkbox
+              checked={showInsufficientOnly}
+              onChange={(e) => setShowInsufficientOnly(e.target.checked)}
+              className="text-red-600"
+            >
+              <span className="text-red-600">Chỉ hiển thị vật tư không đủ tồn kho</span>
+            </Checkbox>
+          </div>
+          {/*  */}
           <Spin spinning={loading}>
             <Table
               columns={issueDataColumns}
-              dataSource={mergeData}
+              dataSource={filteredData}
               rowKey="material_no"
               size="small"
               scroll={{ x: 800 }}

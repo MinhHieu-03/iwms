@@ -12,6 +12,7 @@ import { t } from "i18next";
 import ModalMergeKit from "./modal_merge_kit";
 import ModalMission from "./modal_mission";
 import { creatMissionData } from "@/lib/dummyData";
+import DrawerOI from "./modal_oi";
 
 interface PickingItem {
   id: number;
@@ -54,6 +55,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
   missionData,
   kitData,
 }) => {
+  const [isOpenOI, setIsOpenOI] = useState<boolean>(false);
   const [searchText, setSearchText] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [selectedItem, setSelectedItem] = useState<PickingItem | null>(null);
@@ -63,8 +65,8 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
   const [isOpenMerge, setIsOpenMerge] = useState(false);
   const [modalData, setModalData] = useState<any>(null);
 
-  const pickingData =
-    kitData.length > 0
+  const pickingData = useMemo(() => {
+    return kitData.length > 0
       ? [
           {
             picking_no: kitData.map((item) => item.issue_ord_no).join("_"),
@@ -76,6 +78,38 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
           },
         ]
       : [];
+  }, [kitData]);
+
+  const mergeData = useMemo(() => {
+    const record = pickingData[0];
+    const listMaterial = missionData?.filter((item) =>
+      record?.issue_orders?.includes(item.issue_ord_no)
+    );
+    if (!listMaterial?.length) return [];
+    return listMaterial.reduce((acc: any[], record: any) => {
+      const existingIndex = acc.findIndex(
+        (item) => item.material_no === record.material_no
+      );
+      if (existingIndex >= 0) {
+        acc[existingIndex].issue_qty += record.issue_qty;
+        if (!acc[existingIndex].issue_ord_no.includes(record.issue_ord_no)) {
+          acc[existingIndex].issue_ord_no = [
+            ...(Array.isArray(acc[existingIndex].issue_ord_no)
+              ? acc[existingIndex].issue_ord_no
+              : [acc[existingIndex].issue_ord_no]),
+            record.issue_ord_no,
+          ];
+        }
+        if (record.issued_qty) {
+          acc[existingIndex].issued_qty =
+            (acc[existingIndex].issued_qty || 0) + record.issued_qty;
+        }
+      } else {
+        acc.push({ ...record });
+      }
+      return acc;
+    }, []);
+  }, [missionData, pickingData]);
 
   useEffect(() => {
     // console.log('dndd__', !selectedItem)
@@ -199,6 +233,23 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
       ),
     },
     {
+      title: "Thiếu vật tư ",
+      dataIndex: "status",
+      key: "status",
+      width: 100,
+      render: (status) => (
+        <span
+          className={`px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800`}
+        >
+          {
+            mergeData.filter(
+              (item) => (item.issue_qty || 0) > (item.inventory_qty || 0)
+            ).length
+          }
+        </span>
+      ),
+    },
+    {
       title: "Action",
       dataIndex: "issord_dtl_no",
       key: "issord_dtl_no",
@@ -218,6 +269,16 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
           >
             {t("btn.mission")}
           </Button>
+
+          <Button
+            type="primary"
+            onClick={() => setIsOpenOI(true)}
+            className="gap-2"
+            //   disabled={rowInProgressLength === 0}
+            size="small"
+          >
+            Truy cập OI thao tác
+          </Button>
         </div>
       ),
       width: 100,
@@ -226,6 +287,44 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
 
   return (
     <div className="space-y-6">
+      <div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Vị trí theo tên bộ kit</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map((locationId) => {
+                const dataKit = kitData[locationId - 1] || {};
+                return (
+                  <div key={locationId} className="border rounded-lg p-4">
+                    <h3 className="font-semibold text-lg mb-3">
+                      Xe {locationId}
+                    </h3>
+                    <div className="space-y-2">
+                      <div className="text-sm p-2 bg-gray-50 rounded">
+                        <div className="font-medium">
+                          {dataKit.issue_ord_no}
+                        </div>
+                        {dataKit.material_no && (
+                          <div className="text-gray-600">
+                            Vật liệu: {dataKit.material_no}
+                          </div>
+                        )}
+                        {dataKit.issue_qty && (
+                          <div className="text-gray-600">
+                            Số lượng: {dataKit.issue_qty}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -270,40 +369,6 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
           })}
         />
       </Card>
-      <div>
-        <Card>
-          <CardHeader>
-            <CardTitle>Vị trí theo tên bộ kit</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((locationId) => {
-                const dataKit = kitData[locationId-1] || {}
-                return (
-                  <div key={locationId} className="border rounded-lg p-4">
-                    <h3 className="font-semibold text-lg mb-3">Xe {locationId}</h3>
-                    <div className="space-y-2">
-                      
-                          <div className="text-sm p-2 bg-gray-50 rounded">
-                            <div className="font-medium">
-                              {dataKit.issue_ord_no}
-                            </div>
-                            {dataKit.material_no && (
-                              <div className="text-gray-600">Vật liệu: {dataKit.material_no}</div>
-                            )}
-                            {dataKit.issue_qty && (
-                              <div className="text-gray-600">Số lượng: {dataKit.issue_qty}</div>
-                            )}
-                          </div>
-                  
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       {isOpenMission && (
         <ModalMission
@@ -317,9 +382,16 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
         <ModalMergeKit
           isOpen={isOpenMerge}
           onCancel={() => setIsOpenMerge(false)}
-          data={modalData}
+          data={mergeData}
         />
       )}
+      
+      <DrawerOI
+        isOpen={isOpenOI}
+        selectedItem={{}}
+        setIsOpen={setIsOpenOI}
+        missionData={missionData}
+      />
     </div>
   );
 };

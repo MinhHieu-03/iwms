@@ -24,12 +24,16 @@ import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
 import ModalDetail from "./modal_detail";
 import PickingDrawer from "./PickingDrawer";
 import { createDummyData, creatKitData } from "@/lib/dummyData";
-import DrawerOI from "./modal_oi";
 import KitManagementHeader from "./KitManagementHeader";
 
 const { list, create, update, remove } = domain;
 
-const IssueTimeScheduleTable = ({ setCurrent, setDataMerge, missionData, setKitData }) => {
+const IssueTimeScheduleTable = ({
+  setCurrent,
+  setDataMerge,
+  missionData,
+  setKitData,
+}) => {
   const { t } = useTranslation();
   const [pageInfo, setPageInfo] = useState({ page: 1, perPage: 10 });
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -234,12 +238,15 @@ const IssueTimeScheduleTable = ({ setCurrent, setDataMerge, missionData, setKitD
       }
       setSelectedRowKeys(selectedRowKeys);
     },
-    getCheckboxProps: (record: IssueTimeScheduleDataType) => ({
-      disabled:
-        (selectedRowKeys.length >= 4 &&
-          !selectedRowKeys.includes(record.issue_ord_no)) ||
-        rowInProgress.includes(record.issue_ord_no),
-    }),
+    getCheckboxProps: (record: IssueTimeScheduleDataType) => {
+      const activeKit = sessionStorage.getItem("activeKit");
+      return {
+        disabled:
+          activeKit || (selectedRowKeys.length >= 4 &&
+            !selectedRowKeys.includes(record.issue_ord_no)) ||
+          rowInProgress.includes(record.issue_ord_no),
+      };
+    },
   };
 
   const handleBulkDelete = () => {
@@ -409,8 +416,6 @@ const IssueTimeScheduleTable = ({ setCurrent, setDataMerge, missionData, setKitD
         onClose={() => setShowPickingModal(null)}
       />
 
-      <DrawerOI isOpen={isOpenOI} selectedItem={{}} setIsOpen={setIsOpenOI}
-        missionData={missionData} />
     </div>
   );
 };

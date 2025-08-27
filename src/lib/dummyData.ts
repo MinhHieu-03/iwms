@@ -233,6 +233,7 @@ const dummyData1 = {
       issued_qty: 0,
       available: true,
       available_quantity: 250,
+      inventory_qty: 320,
     },
     {
       material_no: "68019571",
@@ -242,6 +243,7 @@ const dummyData1 = {
       issued_qty: 0,
       available: true,
       available_quantity: 180,
+      inventory_qty: 280,
     },
     {
       material_no: "68019572",
@@ -251,6 +253,7 @@ const dummyData1 = {
       issued_qty: 0,
       available: false,
       available_quantity: 100,
+      inventory_qty: 150,
     },
     {
       material_no: "68019573",
@@ -260,6 +263,7 @@ const dummyData1 = {
       issued_qty: 0,
       available: true,
       available_quantity: 120,
+      inventory_qty: 200,
     },
     {
       material_no: "68019574",
@@ -269,6 +273,7 @@ const dummyData1 = {
       issued_qty: 0,
       available: false,
       available_quantity: 200,
+      inventory_qty: 250,
     },
     {
       material_no: "68019575",
@@ -278,6 +283,7 @@ const dummyData1 = {
       issued_qty: 0,
       available: true,
       available_quantity: 300,
+      inventory_qty: 400,
     },
     {
       material_no: "71075366",
@@ -285,6 +291,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 350,
     },
     {
       material_no: "71075367",
@@ -292,6 +299,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 290,
     },
     {
       material_no: "80109376",
@@ -299,6 +307,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 310,
     },
     {
       material_no: "80109377",
@@ -306,6 +315,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 270,
     },
     {
       material_no: "80109378",
@@ -313,6 +323,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 400,
       issued_qty: 0,
+      inventory_qty: 500,
     },
     {
       material_no: "80109379",
@@ -320,6 +331,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 400,
       issued_qty: 0,
+      inventory_qty: 480,
     },
     {
       material_no: "68045210",
@@ -327,6 +339,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 260,
     },
     {
       material_no: "68045211",
@@ -334,6 +347,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 240,
     },
     {
       material_no: "68045212",
@@ -341,6 +355,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 300,
     },
     {
       material_no: "68045220",
@@ -348,6 +363,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 220,
     },
     {
       material_no: "80109456",
@@ -355,6 +371,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 330,
     },
     {
       material_no: "80109457",
@@ -362,6 +379,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 285,
     },
     {
       material_no: "80209084",
@@ -369,6 +387,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 340,
     },
     {
       material_no: "80209085",
@@ -376,6 +395,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 275,
     },
     {
       material_no: "6189161",
@@ -383,6 +403,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 320,
     },
     {
       material_no: "6189160",
@@ -390,6 +411,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 180,
     },
     {
       material_no: "6810073",
@@ -397,6 +419,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 160,
     },
     {
       material_no: "6810075",
@@ -404,6 +427,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 140,
     },
     {
       material_no: "6810073",
@@ -411,6 +435,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 250,
     },
     {
       material_no: "6810075",
@@ -418,6 +443,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 230,
     },
     {
       material_no: "6810075",
@@ -425,6 +451,7 @@ const dummyData1 = {
       unit: "E",
       issue_qty: 200,
       issued_qty: 0,
+      inventory_qty: 210,
     },
   ],
 };
@@ -437,6 +464,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 180,
     },
     {
       material_no: "68019571",
@@ -444,6 +472,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 160,
     },
     {
       material_no: "68019572",
@@ -451,6 +480,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 140,
     },
     {
       material_no: "68019573",
@@ -458,6 +488,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 170,
     },
     {
       material_no: "68019574",
@@ -465,6 +496,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 190,
     },
     {
       material_no: "68019575",
@@ -472,6 +504,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 210,
     },
     {
       material_no: "71075366",
@@ -479,6 +512,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 150,
     },
     {
       material_no: "80109326",
@@ -486,6 +520,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 130,
     },
     {
       material_no: "1090325",
@@ -493,6 +528,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 120,
     },
     {
       material_no: "1090326",
@@ -500,6 +536,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 135,
     },
     {
       material_no: "40109254",
@@ -507,6 +544,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 165,
     },
     {
       material_no: "40109241",
@@ -514,6 +552,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 145,
     },
     {
       material_no: "40109262",
@@ -521,6 +560,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 155,
     },
     {
       material_no: "40109229",
@@ -528,6 +568,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 125,
     },
     {
       material_no: "40109640",
@@ -535,6 +576,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 175,
     },
     {
       material_no: "40109622",
@@ -542,6 +584,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 140,
     },
     {
       material_no: "13104879",
@@ -549,6 +592,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 125,
       issued_qty: 0,
+      inventory_qty: 200,
     },
     {
       material_no: "57101866",
@@ -556,6 +600,7 @@ const dummyData2 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 160,
     },
   ],
 };
@@ -790,6 +835,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 200,
     },
     {
       material_no: "68019571",
@@ -797,6 +843,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 180,
     },
     {
       material_no: "68019572",
@@ -804,6 +851,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 150,
     },
     {
       material_no: "68019573",
@@ -811,6 +859,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 220,
     },
     {
       material_no: "68019574",
@@ -818,6 +867,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 300,
     },
     {
       material_no: "68019575",
@@ -825,6 +875,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 250,
     },
     {
       material_no: "71075366",
@@ -832,6 +883,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 280,
     },
     {
       material_no: "80109326",
@@ -839,6 +891,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 160,
     },
     {
       material_no: "1090325",
@@ -846,6 +899,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 120,
     },
     {
       material_no: "1090326",
@@ -853,6 +907,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 140,
     },
     {
       material_no: "40109254",
@@ -860,6 +915,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 190,
     },
     {
       material_no: "40109241",
@@ -867,6 +923,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 210,
     },
     {
       material_no: "40109262",
@@ -874,6 +931,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 175,
     },
     {
       material_no: "40109229",
@@ -881,6 +939,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 130,
     },
     {
       material_no: "40109640",
@@ -888,6 +947,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 200,
     },
     {
       material_no: "40109622",
@@ -895,6 +955,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 155,
     },
     {
       material_no: "13104879",
@@ -902,6 +963,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 125,
       issued_qty: 0,
+      inventory_qty: 240,
     },
     {
       material_no: "57101866",
@@ -909,6 +971,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 185,
     },
     {
       material_no: "80109327",
@@ -916,6 +979,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 170,
     },
     {
       material_no: "80109328",
@@ -923,6 +987,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 195,
     },
     {
       material_no: "80109329",
@@ -930,6 +995,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 225,
     },
     {
       material_no: "80109330",
@@ -937,6 +1003,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 165,
     },
     {
       material_no: "80109331",
@@ -944,6 +1011,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 190,
     },
     {
       material_no: "80109332",
@@ -951,6 +1019,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 145,
     },
     {
       material_no: "80109333",
@@ -958,6 +1027,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 205,
     },
     {
       material_no: "80109334",
@@ -965,6 +1035,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 230,
     },
     {
       material_no: "80109335",
@@ -972,6 +1043,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 175,
     },
     {
       material_no: "80109336",
@@ -979,6 +1051,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 210,
     },
     {
       material_no: "80109337",
@@ -986,6 +1059,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 160,
     },
     {
       material_no: "80109338",
@@ -993,6 +1067,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 185,
     },
     {
       material_no: "80109339",
@@ -1000,6 +1075,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 215,
     },
     {
       material_no: "80109340",
@@ -1007,6 +1083,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 140,
     },
     {
       material_no: "80109341",
@@ -1014,6 +1091,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 195,
     },
     {
       material_no: "80109342",
@@ -1021,6 +1099,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 180,
     },
     {
       material_no: "80109343",
@@ -1028,6 +1107,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 220,
     },
     {
       material_no: "80109344",
@@ -1035,6 +1115,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 155,
     },
     {
       material_no: "80109345",
@@ -1042,6 +1123,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 200,
     },
     {
       material_no: "80109346",
@@ -1049,6 +1131,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 165,
     },
     {
       material_no: "80109347",
@@ -1056,6 +1139,7 @@ const dummyData4 = {
       unit: "E",
       issue_qty: 100,
       issued_qty: 0,
+      inventory_qty: 190,
     },
   ],
 };
@@ -1071,7 +1155,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R001",
       eta: "44 min",
-      status: "Done",
+      status: "done",
       available: true,
       kit: {
         "K365005": 100,
@@ -1088,7 +1172,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R002",
       eta: "18 min",
-      status: null,
+      status: "running",
       available: true,
       kit: {
         "K363827": 80,
@@ -1105,7 +1189,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R003",
       eta: "19 min",
-      status: null,
+      status: "new",
       available: false,
       kit: {
         "K365101": 120,
@@ -1122,7 +1206,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R004",
       eta: "20 min",
-      status: null,
+      status: "error",
       available: true,
       kit: {
         "K365102": 150,
@@ -1139,7 +1223,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R005",
       eta: "21 min",
-      status: null,
+      status: "running",
       available: false,
       kit: {
         "K365103": 100,
@@ -1156,7 +1240,7 @@ const missionData = {
       receive_loc: "Dock C",
       robot_no: "R006",
       eta: "25 min",
-      status: null,
+      status: "new",
       available: true,
       kit: {
         "K365104": 200,
@@ -1173,7 +1257,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R007",
       eta: "23 min",
-      status: null,
+      status: "done",
       available: false,
       kit: {
         "K365105": 180,
@@ -1190,7 +1274,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R001",
       eta: "24 min",
-      status: null,
+      status: "running",
       available: true,
       kit: {
         "K365106": 150,
@@ -1207,7 +1291,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R002",
       eta: "25 min",
-      status: null,
+      status: "error",
       available: false,
       kit: {
         "K365107": 60,
@@ -1224,7 +1308,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R003",
       eta: "26 min",
-      status: null,
+      status: "new",
       available: true,
       kit: {
         "K365108": 70,
@@ -1241,7 +1325,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R004",
       eta: "27 min",
-      status: null,
+      status: "running",
       available: false,
       kit: {
         "K365101": 50,
@@ -1258,7 +1342,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R005",
       eta: "28 min",
-      status: null,
+      status: "done",
       available: true,
       kit: {
         "K365102": 80,
@@ -1275,7 +1359,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R006",
       eta: "29 min",
-      status: null,
+      status: "new",
       available: true,
       kit: {
         "K365103": 75,
@@ -1292,7 +1376,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R007",
       eta: "30 min",
-      status: null,
+      status: "running",
       available: false,
       kit: {
         "K365104": 60,
@@ -1309,7 +1393,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R001",
       eta: "31 min",
-      status: null,
+      status: "error",
       available: true,
       kit: {
         "K365105": 50,
@@ -1326,7 +1410,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R002",
       eta: "32 min",
-      status: null,
+      status: "done",
       available: false,
       kit: {
         "K365106": 80,
@@ -1343,7 +1427,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R003",
       eta: "33 min",
-      status: null,
+      status: "new",
     },
     {
       mission_no: "M-2024-0031",
@@ -1354,7 +1438,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R004",
       eta: "34 min",
-      status: null,
+      status: "running",
     },
     {
       mission_no: "M-2024-0032",
@@ -1365,7 +1449,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R005",
       eta: "35 min",
-      status: null,
+      status: "error",
     },
     {
       mission_no: "M-2024-0033",
@@ -1376,7 +1460,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R006",
       eta: "36 min",
-      status: null,
+      status: "new",
     },
     {
       mission_no: "M-2024-0034",
@@ -1387,7 +1471,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R007",
       eta: "37 min",
-      status: null,
+      status: "done",
     },
     {
       mission_no: "M-2024-0035",
@@ -1398,7 +1482,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R001",
       eta: "38 min",
-      status: null,
+      status: "running",
     },
     {
       mission_no: "M-2024-0036",
@@ -1409,7 +1493,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R002",
       eta: "39 min",
-      status: null,
+      status: "new",
     },
     {
       mission_no: "M-2024-0037",
@@ -1420,7 +1504,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R003",
       eta: "40 min",
-      status: null,
+      status: "error",
     },
     {
       mission_no: "M-2024-0038",
@@ -1431,7 +1515,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R004",
       eta: "41 min",
-      status: null,
+      status: "done",
     },
     {
       mission_no: "M-2024-0039",
@@ -1442,7 +1526,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R005",
       eta: "42 min",
-      status: null,
+      status: "running",
     },
     {
       mission_no: "M-2024-0040",
@@ -1453,7 +1537,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R006",
       eta: "43 min",
-      status: null,
+      status: "new",
     },
     {
       mission_no: "M-2024-0041",
@@ -1464,7 +1548,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R007",
       eta: "44 min",
-      status: null,
+      status: "running",
     },
     {
       mission_no: "M-2024-0042",
@@ -1475,7 +1559,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R001",
       eta: "45 min",
-      status: null,
+      status: "error",
     },
     {
       mission_no: "M-2024-0043",
@@ -1486,7 +1570,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R002",
       eta: "46 min",
-      status: null,
+      status: "done",
     },
     {
       mission_no: "M-2024-0044",
@@ -1497,7 +1581,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R003",
       eta: "47 min",
-      status: null,
+      status: "new",
     },
     {
       mission_no: "M-2024-0045",
@@ -1508,7 +1592,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R004",
       eta: "48 min",
-      status: null,
+      status: "running",
     },
     {
       mission_no: "M-2024-0046",
@@ -1519,7 +1603,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R005",
       eta: "49 min",
-      status: null,
+      status: "error",
     },
     {
       mission_no: "M-2024-0047",
@@ -1530,7 +1614,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R006",
       eta: "50 min",
-      status: null,
+      status: "new",
     },
     {
       mission_no: "M-2024-0048",
@@ -1541,7 +1625,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: "R007",
       eta: "51 min",
-      status: null,
+      status: "done",
     },
     {
       mission_no: "M-2024-0049",
@@ -1552,7 +1636,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: null,
       eta: "52 min",
-      status: null,
+      status: "running",
     },
     {
       mission_no: "M-2024-0050",
@@ -1563,7 +1647,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: null,
       eta: "53 min",
-      status: null,
+      status: "new",
     },
     {
       mission_no: "M-2024-0051",
@@ -1574,7 +1658,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: null,
       eta: "54 min",
-      status: null,
+      status: "error",
     },
     {
       mission_no: "M-2024-0052",
@@ -1585,7 +1669,7 @@ const missionData = {
       receive_loc: "Dock B",
       robot_no: null,
       eta: "55 min",
-      status: null,
+      status: "done",
     },
   ],
 };

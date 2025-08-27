@@ -28,7 +28,7 @@ const KitManagementHeader = ({
         Quản lý KIT chờ xuất hàng
       </div>
       <div className="flex gap-2">
-        <Button
+        {/* <Button
           onClick={onAccessOI}
           className="gap-2"
         //   disabled={rowInProgressLength === 0}
@@ -36,7 +36,7 @@ const KitManagementHeader = ({
         >
           <Eye className="h-4 w-4" />
           Truy cập OI thao tác
-        </Button>
+        </Button> */}
         <Button
           onClick={onCreateOrder}
           className="gap-2"
