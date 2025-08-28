@@ -21,54 +21,40 @@ const OperatorInterface = () => {
     <div className="space-y-6">
       <Card>
         <CardContent className="pt-6">
-          {/* <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <p className="text-muted-foreground">
-                {t('current_location')}: {t('dock')} {selectedDock}
-              </p>
-
-              <Button 
-                onClick={toggleShift} 
-                className={shiftStarted ? "bg-red-500 hover:bg-red-600" : "bg-green-600 hover:bg-green-700"}
-              >
-                {shiftStarted ? t('end_shift') : t('start_shift')}
-              </Button>
-            </div>
-          </div> */}
-
-          {/* Grid View for OI Links */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-            <Link to="/oi/inbound">
-              <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 border-2 hover:border-green-300">
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-green-100 p-3 rounded-lg">
-                      <ArrowDown className="h-8 w-8 text-green-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900">
-                        OI Nhập kho
-                      </h3>
-                      <p className="text-gray-600 mt-1">
-                        Quản lý nhập kho và kiểm soát hàng hóa
-                      </p>
-                      <div className="flex items-center mt-3 text-green-600">
-                        <Package className="h-4 w-4 mr-2" />
-                        <span className="text-sm font-medium">
-                          Đi đến OI nhập kho
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-            <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 border-2 hover:border-purple-300">
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 border-2 hover:border-primary">
               <CardContent className="p-6">
                 <div className="flex items-center space-x-4">
                   <div className="flex-1">
-                    <div className="bg-purple-100 p-3 rounded-lg flex">
-                      <ArrowUp className="h-8 w-8 text-purple-600" />
+                    <div className="bg-primary/10 p-3 rounded-lg flex">
+                      <ArrowDown className="h-8 w-8 text-primary" />
+                      <h3 className="text-xl font-semibold text-gray-900 ml-5">
+                        OI Nhập kho
+                      </h3>
+                    </div>
+                    <div className="flex gap-2 mt-3">
+                      <Link to="/oi/inbound" className="flex-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-primary border-primary/20 hover:bg-primary/10"
+                        >
+                          <Truck className="h-4 w-4 mr-2" />
+                          OI nhập kho
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 border-2 hover:border-primary">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="flex-1">
+                    <div className="bg-primary/10 p-3 rounded-lg flex">
+                      <ArrowUp className="h-8 w-8 text-primary" />
                       <h3 className="text-xl font-semibold text-gray-900 ml-5">
                         OI Xuất kho hàng chẵn
                       </h3>
@@ -78,7 +64,7 @@ const OperatorInterface = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full text-purple-600 border-purple-300 hover:bg-purple-50"
+                          className="w-full text-primary border-primary/20 hover:bg-primary/10"
                         >
                           <Package className="h-4 w-4 mr-2" />
                           Pick tổng
@@ -88,7 +74,7 @@ const OperatorInterface = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full text-purple-600 border-purple-300 hover:bg-purple-50"
+                          className="w-full text-primary border-primary/20 hover:bg-primary/10"
                         >
                           <Truck className="h-4 w-4 mr-2" />
                           Chia lẻ
@@ -100,12 +86,12 @@ const OperatorInterface = () => {
               </CardContent>
             </Card>
 
-            <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 border-2 hover:border-purple-300">
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 border-2 hover:border-primary">
               <CardContent className="p-6">
                 <div className="flex items-center space-x-4">
                   <div className="flex-1">
-                    <div className="bg-purple-100 p-3 rounded-lg flex">
-                      <ArrowUp className="h-8 w-8 text-purple-600" />
+                    <div className="bg-primary/10 p-3 rounded-lg flex">
+                      <ArrowUp className="h-8 w-8 text-primary" />
                       <h3 className="text-xl font-semibold text-gray-900 ml-5">
                         OI Xuất kho hàng lẻ
                       </h3>
@@ -115,7 +101,7 @@ const OperatorInterface = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full text-purple-600 border-purple-300 hover:bg-purple-50"
+                          className="w-full text-primary border-primary/20 hover:bg-primary/10"
                         >
                           <Package className="h-4 w-4 mr-2" />
                           Pick tổng
@@ -125,7 +111,7 @@ const OperatorInterface = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full text-purple-600 border-purple-300 hover:bg-purple-50"
+                          className="w-full text-primary border-primary/20 hover:bg-primary/10"
                         >
                           <Truck className="h-4 w-4 mr-2" />
                           Chia lẻ
