@@ -20,7 +20,7 @@ interface OutboundHeaderProps {
 const OutboundHeader: React.FC<OutboundHeaderProps> = ({
   selectedGate = "1",
   onGateChange,
-  title = "Quản lý xuất kho"
+  title = "Quản lý xuất kho hàng chẵn"
 }) => {
   const dispatch = useAppDispatch();
   const { isAuthenticated, loading, user } = useAppSelector((state) => state.auth);
@@ -139,16 +139,16 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <Building2 className="h-5 w-5 text-gray-500" />
-                <span className="text-sm font-medium text-gray-700">Gate:</span>
+                <span className="text-sm font-medium text-gray-700">Cửa ra:</span>
               </div>
               <Select value={currentGate} onValueChange={handleGateChange}>
                 <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Gate" />
+                  <SelectValue placeholder="Cửa ra" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">Gate 1</SelectItem>
-                  <SelectItem value="2">Gate 2</SelectItem>
-                  <SelectItem value="3">Gate 3</SelectItem>
+                  <SelectItem value="1">Cửa ra 1</SelectItem>
+                  <SelectItem value="2">Cửa ra 2</SelectItem>
+                  <SelectItem value="3">Cửa ra 3</SelectItem>
                 </SelectContent>
               </Select>
               {/* <Badge variant="outline" className="text-blue-600 border-blue-200">
@@ -163,7 +163,7 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
                 <DialogTrigger asChild>
                   <Button variant="outline" className="flex items-center gap-2">
                     <LogIn className="h-4 w-4" />
-                    Sign In
+                    đăng nhập
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-md">
@@ -175,22 +175,22 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
                   </DialogHeader>
                   <div className="space-y-4 pt-4">
                     <div className="space-y-2">
-                      <Label htmlFor="username">Username</Label>
+                      <Label htmlFor="username">Tên đăng nhập</Label>
                       <Input
                         id="username"
                         type="text"
-                        placeholder="Enter your username"
+                        placeholder="Nhập tên đăng nhập của bạn"
                         value={loginForm.username}
                         onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
                         onKeyPress={handleKeyPress}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="password">Password</Label>
+                      <Label htmlFor="password">Mật khẩu</Label>
                       <Input
                         id="password"
                         type="password"
-                        placeholder="Enter your password"
+                        placeholder="Nhập mật khẩu của bạn"
                         value={loginForm.password}
                         onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                         onKeyPress={handleKeyPress}
@@ -201,14 +201,14 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
                         variant="outline" 
                         onClick={() => handleModalClose(false)}
                       >
-                        Cancel
+                        Hủy
                       </Button>
                       <Button 
                         onClick={handleLogin}
                         disabled={loading || !loginForm.username || !loginForm.password}
                         className="min-w-[100px]"
                       >
-                        {loading ? "Signing in..." : "Sign In"}
+                        {loading ? "Đang đăng nhập..." : "Đăng nhập"}
                       </Button>
                     </div>
                   </div>
@@ -237,7 +237,7 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
                   className="text-red-600 hover:text-red-700 hover:bg-red-50"
                 >
                   <LogOut className="h-4 w-4 mr-1" />
-                  Logout
+                  Đăng xuất
                 </Button>
               </div>
             )}

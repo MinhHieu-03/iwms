@@ -3,10 +3,13 @@ import {
   DeleteOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { message, Table, Modal, Input } from "antd";
-import { Eye, Plus } from "lucide-react";
+import { message, Table, Modal, Input, Select as AntSelect, DatePicker } from "antd";
+
+const { RangePicker } = DatePicker;
+import { Eye, Plus, Filter, X } from "lucide-react";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import dayjs, { Dayjs } from "dayjs";
 
 import { Button } from "@/components/ui/button";
 import BasePagination from "@/components/ui/antd-pagination";
@@ -49,6 +52,14 @@ const IssueTimeScheduleTable = ({
   const [showPickingModal, setShowPickingModal] = useState(null);
   // const [missionData, setDataMission] = useState([]);
   const [isOpenOI, setIsOpenOI] = useState<boolean>(false);
+  
+  // Filter states
+  const [filters, setFilters] = useState({
+    status: null as string | null,
+    timeIssueRange: null as [Dayjs, Dayjs] | null,
+    aReqdTimeRange: null as [Dayjs, Dayjs] | null,
+  });
+  const [showFilters, setShowFilters] = useState(false);
   const [formEdit, setFormEdit] = useState<{
     isOpen: boolean;
     data: IssueTimeScheduleDataType | Record<string, unknown>;
@@ -68,20 +79,50 @@ const IssueTimeScheduleTable = ({
     ? JSON.parse(sessionStorage.getItem("activeKit") || "[]")
     : [];
 
-  // Filter data based on search text
+  // Filter data based on search text and filters
   const filteredData = useMemo(() => {
-    if (!searchText) return dataList;
+    let filtered = dataList;
 
-    return dataList.filter(
-      (item) =>
-        item.issue_ord_no.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.section_c.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.fact_c.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.line_c.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.prod_no.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.userid.toLowerCase().includes(searchText.toLowerCase())
-    );
-  }, [dataList, searchText]);
+    // Apply text search filter
+    if (searchText) {
+      filtered = filtered.filter(
+        (item) =>
+          item.issue_ord_no.toLowerCase().includes(searchText.toLowerCase()) ||
+          item.section_c.toLowerCase().includes(searchText.toLowerCase()) ||
+          item.fact_c.toLowerCase().includes(searchText.toLowerCase()) ||
+          item.line_c.toLowerCase().includes(searchText.toLowerCase()) ||
+          item.prod_no.toLowerCase().includes(searchText.toLowerCase()) ||
+          item.userid.toLowerCase().includes(searchText.toLowerCase())
+      );
+    }
+
+    // Apply status filter
+    if (filters.status) {
+      filtered = filtered.filter((item) => item.status === filters.status);
+    }
+
+    // Apply time_issue date range filter
+    if (filters.timeIssueRange) {
+      filtered = filtered.filter((item) => {
+        const itemDate = dayjs(item.time_issue);
+        const [startDate, endDate] = filters.timeIssueRange;
+        
+        return itemDate.isAfter(startDate.startOf('day')) && itemDate.isBefore(endDate.endOf('day'));
+      });
+    }
+
+    // Apply A_reqd_time date range filter
+    if (filters.aReqdTimeRange) {
+      filtered = filtered.filter((item) => {
+        const itemDate = dayjs(item.A_reqd_time);
+        const [startDate, endDate] = filters.aReqdTimeRange;
+        
+        return itemDate.isAfter(startDate.startOf('day')) && itemDate.isBefore(endDate.endOf('day'));
+      });
+    }
+
+    return filtered;
+  }, [dataList, searchText, filters]);
 
   const requestDataList = useCallback(async () => {
     try {
@@ -208,6 +249,26 @@ const IssueTimeScheduleTable = ({
     });
   };
 
+  // Clear all filters
+  const clearFilters = () => {
+    setFilters({
+      status: null,
+      timeIssueRange: null,
+      aReqdTimeRange: null,
+    });
+    setSearchText("");
+  };
+
+  // Check if any filters are active
+  const hasActiveFilters = useMemo(() => {
+    return (
+      searchText ||
+      filters.status ||
+      filters.timeIssueRange ||
+      filters.aReqdTimeRange
+    );
+  }, [searchText, filters]);
+
   const columns = useMemo(
     () =>
       RenderCol({
@@ -242,7 +303,8 @@ const IssueTimeScheduleTable = ({
       const activeKit = sessionStorage.getItem("activeKit");
       return {
         disabled:
-          activeKit || (selectedRowKeys.length >= 4 &&
+          activeKit ||
+          (selectedRowKeys.length >= 4 &&
             !selectedRowKeys.includes(record.issue_ord_no)) ||
           rowInProgress.includes(record.issue_ord_no),
       };
@@ -339,23 +401,112 @@ const IssueTimeScheduleTable = ({
           />
         </CardHeader>
         <CardContent>
-          <div className="mb-4 flex gap-4 items-center">
-            <Input
-              placeholder="Search by order number, section, factory, line, product..."
-              prefix={<SearchOutlined className="text-gray-400" />}
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              style={{ width: "400px" }}
-              allowClear
-            />
-            <span>
-              {rowInProgress.length
-                ? `${rowInProgress.length} kit đang xử lý`
-                : ""}
-            </span>
-          </div>
+          <div className="mb-4 space-y-4">
+            {/* Search and Filter Toggle Row */}
+            <div className="flex gap-4 justify-between items-center">
+              <span className="">
+                {rowInProgress.length
+                  ? `${rowInProgress.length} kit đang xử lý`
+                  : ""}
+              </span>
+              <div className="flex gap-2 items-center">
+                <Input
+                  placeholder="Search by order number, section, factory, line, product..."
+                  prefix={<SearchOutlined className="text-gray-400" />}
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  style={{ width: "400px" }}
+                  allowClear
+                />
+                <Button
+                  onClick={() => setShowFilters(!showFilters)}
+                  variant={showFilters ? "default" : "outline"}
+                >
+                  <Filter size={16} className="mr-1" />
+                  Filters
+                </Button>
+                {hasActiveFilters && (
+                  <Button
+                    onClick={clearFilters}
+                    variant="ghost"
+                    size="sm"
+                    title="Clear all filters"
+                  >
+                    <X size={16} />
+                    Clear
+                  </Button>
+                )}
+              </div>
+            </div>
 
-          <Table
+            {/* Filter Panel */}
+            {showFilters && (
+              <div className="bg-gray-50 p-4 rounded-lg border">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Status Filter */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Status</label>
+                    <AntSelect
+                      placeholder="Filter by status"
+                      value={filters.status}
+                      onChange={(value) => setFilters(prev => ({ ...prev, status: value }))}
+                      allowClear
+                      style={{ width: "100%" }}
+                    >
+                      <AntSelect.Option value="fill">Đã xuất</AntSelect.Option>
+                      <AntSelect.Option value="in progress">Đang xuất</AntSelect.Option>
+                      <AntSelect.Option value="new">Mới</AntSelect.Option>
+                    </AntSelect>
+                  </div>
+
+                  {/* Issue Time Range */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Issue Time Range</label>
+                    <RangePicker
+                      placeholder={["From date", "To date"]}
+                      value={filters.timeIssueRange}
+                      onChange={(dates) => setFilters(prev => ({ ...prev, timeIssueRange: dates }))}
+                      style={{ width: "100%" }}
+                      showTime
+                      format="YYYY-MM-DD HH:mm"
+                    />
+                  </div>
+
+                  {/* Required Time Range */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Required Time Range</label>
+                    <RangePicker
+                      placeholder={["From date", "To date"]}
+                      value={filters.aReqdTimeRange}
+                      onChange={(dates) => setFilters(prev => ({ ...prev, aReqdTimeRange: dates }))}
+                      style={{ width: "100%" }}
+                      showTime
+                      format="YYYY-MM-DD HH:mm"
+                    />
+                  </div>
+                </div>
+
+                {/* Filter Summary */}
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <div className="flex items-center justify-between text-sm text-gray-600">
+                    <span>
+                      Showing {filteredData.length} of {dataList.length} records
+                    </span>
+                    {hasActiveFilters && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={clearFilters}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        Reset all filters
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>          <Table
             columns={columns}
             dataSource={filteredData}
             rowSelection={rowSelection}
@@ -371,7 +522,7 @@ const IssueTimeScheduleTable = ({
             <BasePagination
               current={pageInfo.page}
               pageSize={pageInfo.perPage}
-              total={total}
+              total={filteredData.length}
               onChange={(page, pageSize) => {
                 setPageInfo({ page, perPage: pageSize });
               }}
@@ -415,7 +566,6 @@ const IssueTimeScheduleTable = ({
         missionData={missionData}
         onClose={() => setShowPickingModal(null)}
       />
-
     </div>
   );
 };

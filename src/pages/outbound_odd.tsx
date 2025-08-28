@@ -96,7 +96,7 @@ const OrdersTab: React.FC = () => {
           },
           {
             key: "1",
-            label: "Danh sách Kit gộp",
+            label: "Danh sách Kit gộp lẻ",
           },
           // {
           //   key: "2",

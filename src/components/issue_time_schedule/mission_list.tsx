@@ -146,7 +146,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
       width: 150,
     },
     {
-      title: "Issue Orders",
+      title: "Kit NO",
       dataIndex: "issue_orders",
       key: "issue_orders",
       width: 120,
@@ -328,7 +328,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">Danh sách nhiệm vụ</div>
+            <div className="flex items-center gap-2">Danh sách Kit gộp chẵn</div>
           </CardTitle>
         </CardHeader>
         <Input

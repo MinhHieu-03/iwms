@@ -40,7 +40,7 @@ const OrdersTab: React.FC = () => {
       <OutboundHeader
         selectedGate={selectedGate}
         onGateChange={handleGateChange}
-        title='Quản lý chia lẻ'
+        title='OI chia lẻ hàng chẵn'
       />
       <Card>
         <SplitOrder />

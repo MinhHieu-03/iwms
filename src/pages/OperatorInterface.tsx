@@ -84,7 +84,7 @@ const OperatorInterface = () => {
                           Pick tổng
                         </Button>
                       </Link>
-                      <Link to="/oi/outbound-plt" className="flex-1">
+                      <Link to="/oi/outbound-ptl" className="flex-1">
                         <Button
                           variant="outline"
                           size="sm"

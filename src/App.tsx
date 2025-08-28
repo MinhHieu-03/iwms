@@ -26,6 +26,7 @@ import Inventory from "./pages/Inventory";
 import Outbound from "./pages/outbound";
 import OutboundOdd from "./pages/outbound_odd";
 import Ptl from "./pages/ptl";
+import OddPtl from "./pages/odd_ptl";
 import OrderHistory from "./pages/OrderHistory";
 import NotFound from "./pages/NotFound";
 import UserEdit from "./pages/team/UserEdit";
@@ -166,19 +167,19 @@ function App() {
                             element={<OperatorInterface />}
                           />
                           {/*  */}
-                          <Route path="/oi/outbound" element={<Outbound />} />
+                          {/* <Route path="/oi/outbound" element={<Outbound />} />
                           <Route
                             path="/oi/outbound-odd"
                             element={<OutboundOdd />}
-                          />
-                          <Route
+                          /> */}
+                          {/* <Route
                             path="/oi/inbound"
                             element={<InboundManagement />}
                           />
                           <Route
                             path="/oi/outbound-pick-to-line"
                             element={<InboundManagement />}
-                          />
+                          /> */}
 
                           <Route
                             path={createRoute([
@@ -218,6 +219,10 @@ function App() {
                 <Route
                   path="/oi/outbound-ptl"
                   element={<Ptl />}
+                />
+                <Route
+                  path="/oi/outbound-odd-ptl"
+                  element={<OddPtl />}
                 />
               </Routes>
               <Toaster />
