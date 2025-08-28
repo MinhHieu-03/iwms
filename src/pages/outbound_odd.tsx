@@ -81,6 +81,7 @@ const OrdersTab: React.FC = () => {
       <OutboundHeader 
         selectedGate={selectedGate}
         onGateChange={handleGateChange}
+        title="Quản lý xuất kho hàng lẻ"
       />
       <Tabs
         type="card"

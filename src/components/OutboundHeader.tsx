@@ -20,7 +20,7 @@ interface OutboundHeaderProps {
 const OutboundHeader: React.FC<OutboundHeaderProps> = ({
   selectedGate = "1",
   onGateChange,
-  title = "Quản lý xuất kho hàng chẵn"
+  title = ""
 }) => {
   const dispatch = useAppDispatch();
   const { isAuthenticated, loading, user } = useAppSelector((state) => state.auth);
@@ -107,7 +107,7 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
           {/* Left section - Title */}
           <div className="flex items-center">
             <h1 className="text-xl font-bold text-gray-800">
-              {title || "Xuất kho"}
+              {title}
             </h1>
           </div>
 
