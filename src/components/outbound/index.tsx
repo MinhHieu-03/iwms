@@ -3,7 +3,14 @@ import {
   DeleteOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { message, Table, Modal, Input, Select as AntSelect, DatePicker } from "antd";
+import {
+  message,
+  Table,
+  Modal,
+  Input,
+  Select as AntSelect,
+  DatePicker,
+} from "antd";
 
 const { RangePicker } = DatePicker;
 import { Eye, Plus, Filter, X } from "lucide-react";
@@ -52,7 +59,7 @@ const IssueTimeScheduleTable = ({
   const [showPickingModal, setShowPickingModal] = useState(null);
   // const [missionData, setDataMission] = useState([]);
   const [isOpenOI, setIsOpenOI] = useState<boolean>(false);
-  
+
   // Filter states
   const [filters, setFilters] = useState({
     status: null as string | null,
@@ -106,8 +113,11 @@ const IssueTimeScheduleTable = ({
       filtered = filtered.filter((item) => {
         const itemDate = dayjs(item.time_issue);
         const [startDate, endDate] = filters.timeIssueRange;
-        
-        return itemDate.isAfter(startDate.startOf('day')) && itemDate.isBefore(endDate.endOf('day'));
+
+        return (
+          itemDate.isAfter(startDate.startOf("day")) &&
+          itemDate.isBefore(endDate.endOf("day"))
+        );
       });
     }
 
@@ -116,8 +126,11 @@ const IssueTimeScheduleTable = ({
       filtered = filtered.filter((item) => {
         const itemDate = dayjs(item.A_reqd_time);
         const [startDate, endDate] = filters.aReqdTimeRange;
-        
-        return itemDate.isAfter(startDate.startOf('day')) && itemDate.isBefore(endDate.endOf('day'));
+
+        return (
+          itemDate.isAfter(startDate.startOf("day")) &&
+          itemDate.isBefore(endDate.endOf("day"))
+        );
       });
     }
 
@@ -423,7 +436,7 @@ const IssueTimeScheduleTable = ({
                   variant={showFilters ? "default" : "outline"}
                 >
                   <Filter size={16} className="mr-1" />
-                  Filters
+                  Bộ lọc
                 </Button>
                 {hasActiveFilters && (
                   <Button
@@ -445,27 +458,40 @@ const IssueTimeScheduleTable = ({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Status Filter */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">Trạng thái</label>
+                    <label className="block text-sm font-medium mb-2">
+                      Trạng thái
+                    </label>
                     <AntSelect
                       placeholder="Lọc theo trạng thái"
                       value={filters.status}
-                      onChange={(value) => setFilters(prev => ({ ...prev, status: value }))}
+                      onChange={(value) =>
+                        setFilters((prev) => ({ ...prev, status: value }))
+                      }
                       allowClear
                       style={{ width: "100%" }}
                     >
                       <AntSelect.Option value="fill">Đã xuất</AntSelect.Option>
-                      <AntSelect.Option value="in progress">Đang xuất</AntSelect.Option>
+                      <AntSelect.Option value="in progress">
+                        Đang xuất
+                      </AntSelect.Option>
                       <AntSelect.Option value="new">Mới</AntSelect.Option>
                     </AntSelect>
                   </div>
 
                   {/* Issue Time Range */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">Giờ bắt đầu cần cấp</label>
+                    <label className="block text-sm font-medium mb-2">
+                      Giờ bắt đầu cần cấp
+                    </label>
                     <RangePicker
                       placeholder={["Từ ngày", "Đến ngày"]}
                       value={filters.timeIssueRange}
-                      onChange={(dates) => setFilters(prev => ({ ...prev, timeIssueRange: dates }))}
+                      onChange={(dates) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          timeIssueRange: dates,
+                        }))
+                      }
                       style={{ width: "100%" }}
                       showTime
                       format="YYYY-MM-DD HH:mm"
@@ -474,11 +500,18 @@ const IssueTimeScheduleTable = ({
 
                   {/* Required Time Range */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">Giờ cần có mặt ở nhà máy</label>
+                    <label className="block text-sm font-medium mb-2">
+                      Giờ cần có mặt ở nhà máy
+                    </label>
                     <RangePicker
                       placeholder={["From date", "To date"]}
                       value={filters.aReqdTimeRange}
-                      onChange={(dates) => setFilters(prev => ({ ...prev, aReqdTimeRange: dates }))}
+                      onChange={(dates) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          aReqdTimeRange: dates,
+                        }))
+                      }
                       style={{ width: "100%" }}
                       showTime
                       format="YYYY-MM-DD HH:mm"
@@ -506,7 +539,8 @@ const IssueTimeScheduleTable = ({
                 </div>
               </div>
             )}
-          </div>          <Table
+          </div>{" "}
+          <Table
             columns={columns}
             dataSource={filteredData}
             rowSelection={rowSelection}
@@ -517,7 +551,6 @@ const IssueTimeScheduleTable = ({
             bordered
             rowKey="issue_ord_no"
           />
-
           <div className="mt-4 flex justify-end">
             <BasePagination
               current={pageInfo.page}

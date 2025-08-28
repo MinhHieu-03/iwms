@@ -120,7 +120,7 @@ const SplitOrder: React.FC<any> = ({}) => {
   }, [sku, ptlData]);
 
   const handleInputEnter = (value) => {
-    if (value && value.length === 8) {
+    if (value && value.length >= 6) {
       setSku(value);
       const boxFounded = missionData.find((item) => item.material_no === value);
       setCurrentBox(boxFounded);
@@ -208,7 +208,7 @@ const SplitOrder: React.FC<any> = ({}) => {
 
 x1_g1: [
   {
-    material_no: '68019570',
+    material_no: '9920712',
     ptl_qty: 100,
     picked_qty: 0,
     station: 'SA01',
@@ -221,38 +221,42 @@ const ptlFakeData = [
   {
     id: '1',
     issue_ord_no: 'K365005',
-    material_no: '68019570',
+    material_no: '9920712',
     ptl_qty: 100,
     picked_qty: 0,
     station: 'SA01',
+    group: 'Nhóm SA 01',
     box_tp: 'Ca bé',
     trolley_tp: 'Xe bé',
   },
   {
     id: '2',
     issue_ord_no: 'K365005',
-    material_no: '68019570',
+    material_no: '9920712',
     ptl_qty: 200,
     station: 'SA02',
+    group: 'Nhóm SA 02',
     box_tp: 'Ca to',
     trolley_tp: 'Xe bé',
   },
   {
     id: '3',
     issue_ord_no: 'K365006',
-    material_no: '68019570',
+    material_no: '9920712',
     ptl_qty: 100,
     station: 'SD02',
     box_tp: 'Ca to',
+    group: 'Nhóm SD 03',
     trolley_tp: 'Xe to',
   },
   {
     id: '4',
     issue_ord_no: 'K365006',
-    material_no: '68019570',
+    material_no: '9920712',
     ptl_qty: 100,
     station: 'SD03',
     box_tp: 'Ca to',
+    group: 'Nhóm SD 04',
     trolley_tp: 'Xe to',
   },
   {
@@ -434,7 +438,7 @@ const TrolleyKit = ({ ptlDataShow, title, kit }) => {
                 key={item.id}
                 className={`${item.picked_qty === item.ptl_qty ? "bg-green-100" : "bg-gray-50"} mb-2 p-2 rounded border flex justify-between text-xl`}
               >
-                <div className=' text-gray-600 '>{item.station}</div>
+                <div className=' text-gray-600 '>{item.group}</div>
                 <div className=''>
                   {item.picked_qty || 0}/{item.ptl_qty}
                 </div>
@@ -449,7 +453,7 @@ const TrolleyKit = ({ ptlDataShow, title, kit }) => {
                 key={item.id}
                 className={`${item.picked_qty === item.ptl_qty ? "bg-green-100" : "bg-gray-50"} mb-2 p-2 rounded border flex justify-between text-xl`}
               >
-                <div className=' text-gray-600 '>{item.station}</div>
+                <div className=' text-gray-600 '>{item.group}</div>
                 <div className=''>
                   {item.picked_qty || 0}/{item.ptl_qty}
                 </div>

@@ -73,7 +73,7 @@ const kitData = {
       cusdesch_cd1: "00",
       cusdesch_cd2: "00",
       intdesch_cd: "02",
-      issue_ord_no: "K363827",
+      issue_ord_no: "K365006",
       plan_issue_dt: "2025-03-08",
       A_reqd_time: "2025-03-08T12:30:00.000Z",
       time_issue: "2025-03-08T10:34:02.000Z",
@@ -92,7 +92,7 @@ const kitData = {
       cusdesch_cd1: "00",
       cusdesch_cd2: "00",
       intdesch_cd: "02",
-      issue_ord_no: "K365101",
+      issue_ord_no: "K365007",
       plan_issue_dt: "2025-03-08",
       A_reqd_time: "2025-03-08T12:15:00.000Z",
       time_issue: "2025-03-08T10:05:00.000Z",
@@ -109,7 +109,7 @@ const kitData = {
       cusdesch_cd1: "00",
       cusdesch_cd2: "00",
       intdesch_cd: "02",
-      issue_ord_no: "K365102",
+      issue_ord_no: "K365008",
       plan_issue_dt: "2025-03-08",
       A_reqd_time: "2025-03-08T12:40:00.000Z",
       time_issue: "2025-03-08T10:32:00.000Z",
@@ -226,7 +226,7 @@ const kitData = {
 const dummyData1 = {
   metaData: [
     {
-      material_no: "68019570",
+      material_no: "9920712",
       material_name: "CLMP8271-12.00F",
       unit: "E",
       issue_qty: 100,
@@ -459,7 +459,7 @@ const dummyData1 = {
 const dummyData2 = {
   metaData: [
     {
-      material_no: "68019570",
+      material_no: "9920712",
       material_name: "CLMP8271-12.00F",
       unit: "E",
       issue_qty: 100,
@@ -830,7 +830,7 @@ const dummyData3 = {
 const dummyData4 = {
   metaData: [
     {
-      material_no: "68019570",
+      material_no: "9920712",
       material_name: "CLMP8271-12.00F",
       unit: "E",
       issue_qty: 100,
@@ -1149,8 +1149,8 @@ const missionData = {
     {
       mission_no: "M-2024-0014",
       package_no: "B000001",
-      material_no: "68019570",
-      quantity: 150,
+      material_no: "9920712",
+      quantity: 200,
       supply_loc: "C01-03",
       receive_loc: "Dock B",
       robot_no: "R001",
@@ -1166,7 +1166,7 @@ const missionData = {
     {
       mission_no: "M-2024-0015",
       package_no: "B000002",
-      material_no: "68019570",
+      material_no: "9920712",
       quantity: 150,
       supply_loc: "C01-04",
       receive_loc: "Dock B",

@@ -120,7 +120,7 @@ const SplitOrder: React.FC<any> = ({}) => {
   }, [sku, ptlData]);
 
   const handleInputEnter = (value) => {
-    if (value && value.length === 8) {
+    if (value && value.length > 6) {
       setSku(value);
       const boxFounded = missionData.find((item) => item.material_no === value);
       setCurrentBox(boxFounded);
@@ -202,7 +202,7 @@ const SplitOrder: React.FC<any> = ({}) => {
 
 x1_g1: [
   {
-    material_no: "68019570",
+    material_no: "9920712",
     ptl_qty: 100,
     picked_qty: 0,
     station: "SA01",
@@ -215,7 +215,7 @@ const ptlFakeData = [
   {
     id: "1",
     issue_ord_no: "K365015",
-    material_no: "68019570",
+    material_no: "9920712",
     ptl_qty: 15,
     picked_qty: 0,
     station: "SA01",
@@ -225,7 +225,7 @@ const ptlFakeData = [
   {
     id: "2",
     issue_ord_no: "K365005",
-    material_no: "68019570",
+    material_no: "9920712",
     ptl_qty: 25,
     station: "SA02",
     box_tp: "Ca to",
@@ -234,7 +234,7 @@ const ptlFakeData = [
   {
     id: "3",
     issue_ord_no: "K365006",
-    material_no: "68019570",
+    material_no: "9920712",
     ptl_qty: 45,
     station: "SD02",
     box_tp: "Ca to",
@@ -243,7 +243,7 @@ const ptlFakeData = [
   {
     id: "4",
     issue_ord_no: "K365026",
-    material_no: "68019570",
+    material_no: "9920712",
     ptl_qty: 35,
     station: "SD03",
     box_tp: "Ca to",
@@ -252,7 +252,7 @@ const ptlFakeData = [
   {
     id: "5",
     issue_ord_no: "K365026",
-    material_no: "68019570",
+    material_no: "9920712",
     ptl_qty: 30,
     station: "SD03",
     box_tp: "Ca to",

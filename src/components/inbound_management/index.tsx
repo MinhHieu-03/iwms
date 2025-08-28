@@ -50,6 +50,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import OutboundHeader from "@/components/OutboundHeader";
 const { list, create, update, upload, download, remove } = domain;
 
 const InboundManagement = () => {
@@ -248,13 +249,6 @@ const InboundManagement = () => {
         setIsOpen={setIsOpen}
         _handleFinish={_handleFinish}
       />
-      {/* <ModalEdit
-        title={t("inbound_management.edit_inbound")}
-        itemsRender={renderEditForm(dataRole, t)}
-        formEdit={formEdit}
-        setFormEdit={setFormEdit}
-        _handleFinish={_handleUpdateFinish}
-      /> */}
     </Card>
   );
 };
@@ -370,112 +364,85 @@ const Header = ({
     }
   };
 
+  const [selectedGate, setSelectedGate] = useState("1");
   return (
-    <CardHeader>
-      <div
-        className="flex items-center justify-between"
-        style={{ padding: "10px 0" }}
-      >
-        <CardTitle>Yêu cầu nhập kho</CardTitle>
-        <div className="flex items-center">
-          <Button onClick={() => setIsOpen(true)} variant="default">
-            <Plus className="mr-2 h-4 w-4" />
-            OI nhập kho
-          </Button>
-          {selectedRowKeys.length > 0 && (
-            <Button onClick={onDelete} variant="destructive" className="ml-2">
-              <DeleteOutlined className="mr-2" />
-              {t("btn.delete")} ({selectedRowKeys.length})
+    <div>
+      <OutboundHeader
+        selectedGate={selectedGate}
+        onGateChange={setSelectedGate}
+        title="Quản lý nhập kho"
+      />
+      <CardHeader>
+        <div
+          className="flex items-center justify-between"
+          style={{ paddingBottom: "10px" }}
+        >
+          <CardTitle>Yêu cầu nhập kho</CardTitle>
+          <div className="flex items-center">
+            <Button onClick={() => setIsOpen(true)} variant="default">
+              <Plus className="mr-2 h-4 w-4" />
+              OI nhập kho
             </Button>
-          )}
-          {/* <Upload {...uploadProps}>
-            <Button className="ml-2" variant="outline">
-              <UploadOutlined />
-              {t("btn.import")}
+            {selectedRowKeys.length > 0 && (
+              <Button onClick={onDelete} variant="destructive" className="ml-2">
+                <DeleteOutlined className="mr-2" />
+                {t("btn.delete")} ({selectedRowKeys.length})
+              </Button>
+            )}
+            <Button className="ml-2" onClick={handleReload} variant="outline">
+              <ReloadOutlined />
+              Làm mới
             </Button>
-          </Upload>
-          <Button className="ml-2" onClick={handleDownload} variant="outline">
-            {t("btn.export")}
-          </Button> */}
-          <Button className="ml-2" onClick={handleReload} variant="outline">
-            <ReloadOutlined />
-            Làm mới
-          </Button>
-          {isAuthenticated ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button className="ml-2" variant="outline">
-                  <UserOutlined />
-                  {user?.name || ""}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <div className="flex flex-col space-y-1 p-2">
-                  <p className="text-sm font-medium">{user?.name || ""}</p>
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => dispatch(logout())}>
-                  <LogoutOutlined className="mr-2 h-4 w-4" />
-                  <span className="text-red-500">{t("logout")}</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button
-              className="ml-2"
-              onClick={() => setIsOpenForm(true)}
-              variant="default"
-            >
-              <UserOutlined />
-              {t("login")}
-            </Button>
-          )}
+          </div>
         </div>
-      </div>
-      <Modal
-        open={isOpenForm}
-        onCancel={() => setIsOpenForm(false)}
-        footer={null}
-      >
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("username")}</FormLabel>
-                  <FormControl>
-                    <Input placeholder={t("username")} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("password")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder={t("password")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? t("loading") : t("login")}
-            </Button>
-          </form>
-        </Form>
-      </Modal>
-    </CardHeader>
+        <Modal
+          open={isOpenForm}
+          onCancel={() => setIsOpenForm(false)}
+          footer={null}
+        >
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleLogin)}
+              className="space-y-4"
+            >
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("username")}</FormLabel>
+                    <FormControl>
+                      <Input placeholder={t("username")} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("password")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder={t("password")}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? t("loading") : t("login")}
+              </Button>
+            </form>
+          </Form>
+        </Modal>
+      </CardHeader>
+    </div>
   );
 };
 

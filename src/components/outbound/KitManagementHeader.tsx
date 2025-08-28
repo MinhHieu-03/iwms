@@ -1,8 +1,8 @@
-import { ReloadOutlined } from "@ant-design/icons";
-import { Eye, Plus } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { CardTitle } from "@/components/ui/card";
+import { ReloadOutlined } from "@ant-design/icons";
+import { Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface KitManagementHeaderProps {
   selectedRowKeysLength: number;
@@ -28,15 +28,6 @@ const KitManagementHeader = ({
         Quản lý KIT chờ xuất hàng
       </div>
       <div className="flex gap-2">
-        {/* <Button
-          onClick={onAccessOI}
-          className="gap-2"
-        //   disabled={rowInProgressLength === 0}
-          size="sm"
-        >
-          <Eye className="h-4 w-4" />
-          Truy cập OI thao tác
-        </Button> */}
         <Button
           onClick={onCreateOrder}
           className="gap-2"

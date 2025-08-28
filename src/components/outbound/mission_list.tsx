@@ -269,8 +269,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
           >
             {t("btn.mission")}
           </Button>
-
-          <Button
+          {/* <Button
             type="primary"
             onClick={() => setIsOpenOI(true)}
             className="gap-2"
@@ -278,7 +277,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
             size="small"
           >
             Truy cập OI thao tác
-          </Button>
+          </Button> */}
         </div>
       ),
       width: 100,
@@ -328,7 +327,17 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">Danh sách Kit gộp chẵn</div>
+            <div className="flex items-center gap-2">
+              Danh sách Kit gộp chẵn
+            </div>
+            <Button
+              type="primary"
+              onClick={() => setIsOpenOI(true)}
+              className="gap-2"
+              size="middle"
+            >
+              Truy cập OI thao tác
+            </Button>
           </CardTitle>
         </CardHeader>
         <Input
@@ -385,7 +394,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
           data={mergeData}
         />
       )}
-      
+
       <DrawerOI
         isOpen={isOpenOI}
         selectedItem={{}}

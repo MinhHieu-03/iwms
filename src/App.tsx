@@ -166,21 +166,6 @@ function App() {
                             path="/operator-interface"
                             element={<OperatorInterface />}
                           />
-                          {/*  */}
-                          {/* <Route path="/oi/outbound" element={<Outbound />} />
-                          <Route
-                            path="/oi/outbound-odd"
-                            element={<OutboundOdd />}
-                          /> */}
-                          {/* <Route
-                            path="/oi/inbound"
-                            element={<InboundManagement />}
-                          />
-                          <Route
-                            path="/oi/outbound-pick-to-line"
-                            element={<InboundManagement />}
-                          /> */}
-
                           <Route
                             path={createRoute([
                               ...mission_template_route,

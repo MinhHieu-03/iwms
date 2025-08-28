@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { User, LogOut, Building2, LogIn } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { login, logout } from "@/store/authSlice";
+import { useNavigate } from "react-router-dom";
 
 interface OutboundHeaderProps {
   selectedGate?: string;
@@ -23,6 +24,7 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
   title = ""
 }) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { isAuthenticated, loading, user } = useAppSelector((state) => state.auth);
   
   const [loginForm, setLoginForm] = useState({
@@ -105,7 +107,9 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
       <CardContent className="p-4">
         <div className="flex items-center justify-between gap-4">
           {/* Left section - Title */}
-          <div className="flex items-center">
+          <div className="flex items-center" onClick={() => {
+            navigate("/operator-interface");
+          }}>
             <h1 className="text-xl font-bold text-gray-800">
               {title}
             </h1>
