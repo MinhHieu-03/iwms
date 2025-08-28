@@ -140,13 +140,13 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
   // Define columns for the Ant Design table
   const columns: ColumnsType<any> = [
     {
-      title: "Picking NO",
+      title: "Picking No",
       dataIndex: "picking_no",
       key: "picking_no",
       width: 150,
     },
     {
-      title: "Kit NO",
+      title: "Kit No",
       dataIndex: "issue_orders",
       key: "issue_orders",
       width: 120,
@@ -250,7 +250,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
       ),
     },
     {
-      title: "Action",
+      title: "Hành động",
       dataIndex: "issord_dtl_no",
       key: "issord_dtl_no",
       render: (_, record) => (

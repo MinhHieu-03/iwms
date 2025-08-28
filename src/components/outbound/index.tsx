@@ -445,9 +445,9 @@ const IssueTimeScheduleTable = ({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Status Filter */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">Status</label>
+                    <label className="block text-sm font-medium mb-2">Trạng thái</label>
                     <AntSelect
-                      placeholder="Filter by status"
+                      placeholder="Lọc theo trạng thái"
                       value={filters.status}
                       onChange={(value) => setFilters(prev => ({ ...prev, status: value }))}
                       allowClear
@@ -461,9 +461,9 @@ const IssueTimeScheduleTable = ({
 
                   {/* Issue Time Range */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">Issue Time Range</label>
+                    <label className="block text-sm font-medium mb-2">Giờ bắt đầu cần cấp</label>
                     <RangePicker
-                      placeholder={["From date", "To date"]}
+                      placeholder={["Từ ngày", "Đến ngày"]}
                       value={filters.timeIssueRange}
                       onChange={(dates) => setFilters(prev => ({ ...prev, timeIssueRange: dates }))}
                       style={{ width: "100%" }}
@@ -474,7 +474,7 @@ const IssueTimeScheduleTable = ({
 
                   {/* Required Time Range */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">Required Time Range</label>
+                    <label className="block text-sm font-medium mb-2">Giờ cần có mặt ở nhà máy</label>
                     <RangePicker
                       placeholder={["From date", "To date"]}
                       value={filters.aReqdTimeRange}

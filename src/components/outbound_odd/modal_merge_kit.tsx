@@ -1,4 +1,4 @@
-import { Drawer, Descriptions, Tag, Table, Spin } from "antd";
+import { Drawer, Descriptions, Tag, Table, Spin, Checkbox } from "antd";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
@@ -16,32 +16,16 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
 }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [showInsufficientOnly, setShowInsufficientOnly] = useState(false);
 
   if (!data) return null;
 
-  const mergeData = data.reduce((acc: any[], record: any) => {
-    const existingIndex = acc.findIndex(
-      (item) => item.material_no === record.material_no
-    );
-    if (existingIndex >= 0) {
-      acc[existingIndex].issue_qty += record.issue_qty;
-      if (!acc[existingIndex].issue_ord_no.includes(record.issue_ord_no)) {
-        acc[existingIndex].issue_ord_no = [
-          ...(Array.isArray(acc[existingIndex].issue_ord_no)
-            ? acc[existingIndex].issue_ord_no
-            : [acc[existingIndex].issue_ord_no]),
-          record.issue_ord_no,
-        ];
-      }
-      if (record.issued_qty) {
-        acc[existingIndex].issued_qty =
-          (acc[existingIndex].issued_qty || 0) + record.issued_qty;
-      }
-    } else {
-      acc.push({ ...record });
-    }
-    return acc;
-  }, []);
+  const mergeData = data;
+
+  // Filter data based on insufficient inventory
+  const filteredData = showInsufficientOnly 
+    ? mergeData.filter(item => (item.inventory_qty || 0) < (item.issue_qty || 0))
+    : mergeData;
 
   const issueDataColumns = [
     {
@@ -94,10 +78,27 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
       key: "issue_qty",
       width: 120,
     },
+    // {
+    //   title: "Số lượng đã cấp",
+    //   dataIndex: "issued_qty",
+    //   key: "issued_qty",
+    //   width: 100,
+    //   render: (text, record) => (
+    //     <span
+    //       className={
+    //         record.issued_qty < record.issue_qty
+    //           ? "text-red-500 font-medium"
+    //           : "text-green-600"
+    //       }
+    //     >
+    //       {text?.toLocaleString()}
+    //     </span>
+    //   ),
+    // },
     {
       title: "Số lượng tồn kho",
-      dataIndex: "issued_qty",
-      key: "issued_qty",
+      dataIndex: "inventory_qty",
+      key: "inventory_qty",
       width: 120,
       render: (text, record) => (
         <span
@@ -115,7 +116,7 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
 
   return (
     <Drawer
-      title={"Danh sách gộp KIT"}
+      title={"Danh sách vật tư KIT gộp lẻ"}
       open={isOpen}
       onClose={onCancel}
       placement="bottom"
@@ -123,179 +124,69 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
       className="issue-detail-drawer"
     >
       <div className="space-y-6">
-        <Descriptions
-          title={t(
-            "issue_time_schedule.modal.basic_information",
-            "Basic Information"
-          )}
-          bordered
-          size="small"
-          column={2}
-        >
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.section", "Section")}
-          >
-            <Tag color="blue">{data.section_c}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.factory", "Factory")}
-          >
-            <Tag color="green">{data.fact_c}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label={t("issue_time_schedule.form.line", "Line")}>
-            <Tag color="orange">{data.line_c}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.product_no", "Product Number")}
-          >
-            <Tag color="purple">{data.prod_no}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t(
-              "issue_time_schedule.form.customer_desc_1",
-              "Customer Description 1"
-            )}
-          >
-            {data.cusdesch_cd1}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t(
-              "issue_time_schedule.form.customer_desc_2",
-              "Customer Description 2"
-            )}
-          >
-            {data.cusdesch_cd2}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t(
-              "issue_time_schedule.form.internal_desc",
-              "Internal Description"
-            )}
-          >
-            {data.intdesch_cd}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t(
-              "issue_time_schedule.form.issue_order_no",
-              "Issue Order Number"
-            )}
-          >
-            <span className="font-medium text-blue-600">
-              {data.issue_ord_no}
-            </span>
-          </Descriptions.Item>
-        </Descriptions>
-
-        <Descriptions
-          title={t(
-            "issue_time_schedule.modal.time_information",
-            "Time Information"
-          )}
-          bordered
-          size="small"
-          column={1}
-        >
-          <Descriptions.Item
-            label={t(
-              "issue_time_schedule.form.plan_issue_date",
-              "Plan Issue Date"
-            )}
-          >
-            <Tag color="cyan">
-              {dayjs(data.plan_issue_dt).format("YYYY-MM-DD HH:mm:ss")}
-            </Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.required_time", "Required Time")}
-          >
-            <Tag color="lime">
-              {dayjs(data.A_reqd_time).format("YYYY-MM-DD HH:mm:ss")}
-            </Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.issue_time", "Issue Time")}
-          >
-            <Tag color="red">
-              {dayjs(data.time_issue).format("YYYY-MM-DD HH:mm:ss")}
-            </Tag>
-          </Descriptions.Item>
-        </Descriptions>
-
-        <Descriptions
-          title={t(
-            "issue_time_schedule.modal.system_information",
-            "System Information"
-          )}
-          bordered
-          size="small"
-          column={2}
-        >
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.user_id", "User ID")}
-          >
-            <Tag color="default">{data.userid}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.entry_date", "Entry Date")}
-          >
-            {dayjs(data.ent_dt).format("YYYY-MM-DD")}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={t("issue_time_schedule.form.update_date", "Update Date")}
-            span={2}
-          >
-            {dayjs(data.upd_dt).format("YYYY-MM-DD HH:mm:ss")}
-          </Descriptions.Item>
-        </Descriptions>
-
-        {/* Timeline comparison */}
-        <div className="bg-gray-50 p-4 rounded">
-          <h4 className="font-semibold mb-3">
-            {t("issue_time_schedule.modal.time_comparison", "Time Comparison")}
-          </h4>
-          <div className="space-y-2">
-            <div className="flex items-center gap-4">
-              <span className="w-24 text-sm font-medium">
-                {t("issue_time_schedule.modal.issue_time_label", "Issue Time")}:
-              </span>
-              <Tag color="red">{dayjs(data.time_issue).format("HH:mm")}</Tag>
+        {/* Assumption Information Section */}
+        <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+          {/* Summary Statistics */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+              <div className="text-center">
+                <div className="text-lg font-bold text-blue-600">
+                  {new Set(filteredData.flatMap(item => 
+                    Array.isArray(item.issue_ord_no) ? item.issue_ord_no : [item.issue_ord_no]
+                  )).size}
+                </div>
+                <div className="text-gray-600">
+                  {showInsufficientOnly ? "KIT thiếu vật tư" : "Tổng số KIT"}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-green-600">
+                  {filteredData.length}
+                </div>
+                <div className="text-gray-600">
+                  {showInsufficientOnly ? "Vật tư thiếu tồn kho" : "Tổng loại vật tư"}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-purple-600">
+                  {filteredData.filter(item => (item.issued_qty || 0) >= (item.issue_qty || 0)).length}
+                </div>
+                <div className="text-gray-600">Đã hoàn thành</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-red-600">
+                  {filteredData.filter(item => (item.issue_qty || 0) > (item.inventory_qty || 0)).length}
+                </div>
+                <div className="text-gray-600">Thiếu tồn kho</div>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="w-24 text-sm font-medium">
-                {t(
-                  "issue_time_schedule.modal.required_time_label",
-                  "Required Time"
-                )}
-                :
-              </span>
-              <Tag color="lime">{dayjs(data.A_reqd_time).format("HH:mm")}</Tag>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="w-24 text-sm font-medium">
-                {t("issue_time_schedule.modal.plan_issue_label", "Plan Issue")}:
-              </span>
-              <Tag color="cyan">
-                {dayjs(data.plan_issue_dt).format("HH:mm")}
-              </Tag>
-            </div>
-          </div>
         </div>
-
         {/* Issue Data Details Table */}
         <div>
-          <h4 className="font-semibold mb-3">
-            {t(
-              "issue_time_schedule.modal.issue_data_details",
-              "Issue Data Details"
-            )}
-          </h4>
+          <div className="flex justify-between items-center mb-3">
+            <h4 className="font-semibold">
+              
+            </h4>
+            <Checkbox
+              checked={showInsufficientOnly}
+              onChange={(e) => setShowInsufficientOnly(e.target.checked)}
+              className="text-red-600"
+            >
+              <span className="text-red-600">Chỉ hiển thị vật tư không đủ tồn kho</span>
+            </Checkbox>
+          </div>
+          {/*  */}
           <Spin spinning={loading}>
             <Table
               columns={issueDataColumns}
-              dataSource={mergeData}
+              dataSource={filteredData}
               rowKey="material_no"
               size="small"
               scroll={{ x: 800 }}
+              rowClassName={(record) =>
+                record.inventory_qty < record.issue_qty
+                  ? "bg-red-100"
+                  : "bg-green-100"
+              }
               pagination={{
                 pageSize: 10,
                 showSizeChanger: true,

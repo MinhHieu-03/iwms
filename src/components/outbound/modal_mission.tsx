@@ -266,6 +266,11 @@ const ModalMission: React.FC<ModalDetailProps> = ({
               dataSource={filteredData}
               rowKey='mission_no'
               size='small'
+              rowClassName={(record) =>
+                record.status === 'error'
+                  ? "bg-red-100"
+                  : ""
+              }
               scroll={{ x: 1400 }}
               pagination={{
                 pageSize: 20,

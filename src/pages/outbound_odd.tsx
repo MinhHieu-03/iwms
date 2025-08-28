@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Steps, Tabs } from "antd";
-import Issue_time_schedule from "@/components/outbound_odd";
+import OddKit from "@/components/outbound_odd";
 import MissionList from "@/components/outbound_odd/mission_list";
 import OutboundHeader from "@/components/OutboundHeader";
 
@@ -107,8 +107,8 @@ const OrdersTab: React.FC = () => {
         onChange={(key) => setCurrent(Number(key))}
       />
       {current === 0 ? (
-        <Issue_time_schedule
-          // setCurrent={setCurrent}
+        <OddKit
+          setCurrent={setCurrent}
           setDataMerge={setDataMerge}
           setKitData={setKitData}
           missionData={dataMerge}

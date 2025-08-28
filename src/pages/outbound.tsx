@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Steps, Tabs } from "antd";
-import Issue_time_schedule from "@/components/issue_time_schedule";
-import MissionList from "@/components/issue_time_schedule/mission_list";
-import OIOutbound from "@/components/issue_time_schedule/oi_outbound";
+import Issue_time_schedule from "@/components/outbound";
+import MissionList from "@/components/outbound/mission_list";
+import OIOutbound from "@/components/outbound/oi_outbound";
 import OutboundHeader from "@/components/OutboundHeader";
 
 // Data interface for the new format

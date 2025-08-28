@@ -12,6 +12,7 @@ import { t } from "i18next";
 import ModalMergeKit from "./modal_merge_kit";
 import ModalMission from "./modal_mission";
 import { creatMissionData } from "@/lib/dummyData";
+import DrawerOI from "./modal_oi";
 
 interface PickingItem {
   id: number;
@@ -54,6 +55,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
   missionData,
   kitData,
 }) => {
+  const [isOpenOI, setIsOpenOI] = useState<boolean>(false);
   const [searchText, setSearchText] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [selectedItem, setSelectedItem] = useState<PickingItem | null>(null);
@@ -63,8 +65,8 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
   const [isOpenMerge, setIsOpenMerge] = useState(false);
   const [modalData, setModalData] = useState<any>(null);
 
-  const pickingData =
-    kitData.length > 0
+  const pickingData = useMemo(() => {
+    return kitData.length > 0
       ? [
           {
             picking_no: kitData.map((item) => item.issue_ord_no).join("_"),
@@ -76,6 +78,38 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
           },
         ]
       : [];
+  }, [kitData]);
+
+  const mergeData = useMemo(() => {
+    const record = pickingData[0];
+    const listMaterial = missionData?.filter((item) =>
+      record?.issue_orders?.includes(item.issue_ord_no)
+    );
+    if (!listMaterial?.length) return [];
+    return listMaterial.reduce((acc: any[], record: any) => {
+      const existingIndex = acc.findIndex(
+        (item) => item.material_no === record.material_no
+      );
+      if (existingIndex >= 0) {
+        acc[existingIndex].issue_qty += record.issue_qty;
+        if (!acc[existingIndex].issue_ord_no.includes(record.issue_ord_no)) {
+          acc[existingIndex].issue_ord_no = [
+            ...(Array.isArray(acc[existingIndex].issue_ord_no)
+              ? acc[existingIndex].issue_ord_no
+              : [acc[existingIndex].issue_ord_no]),
+            record.issue_ord_no,
+          ];
+        }
+        if (record.issued_qty) {
+          acc[existingIndex].issued_qty =
+            (acc[existingIndex].issued_qty || 0) + record.issued_qty;
+        }
+      } else {
+        acc.push({ ...record });
+      }
+      return acc;
+    }, []);
+  }, [missionData, pickingData]);
 
   useEffect(() => {
     // console.log('dndd__', !selectedItem)
@@ -106,13 +140,13 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
   // Define columns for the Ant Design table
   const columns: ColumnsType<any> = [
     {
-      title: "Picking NO",
+      title: "Picking No",
       dataIndex: "picking_no",
       key: "picking_no",
       width: 150,
     },
     {
-      title: "Issue Orders",
+      title: "Kit No",
       dataIndex: "issue_orders",
       key: "issue_orders",
       width: 120,
@@ -199,7 +233,24 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
       ),
     },
     {
-      title: "Action",
+      title: "Thiếu vật tư ",
+      dataIndex: "status",
+      key: "status",
+      width: 100,
+      render: (status) => (
+        <span
+          className={`px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800`}
+        >
+          {
+            mergeData.filter(
+              (item) => (item.issue_qty || 0) > (item.inventory_qty || 0)
+            ).length
+          }
+        </span>
+      ),
+    },
+    {
+      title: "Hành động",
       dataIndex: "issord_dtl_no",
       key: "issord_dtl_no",
       render: (_, record) => (
@@ -218,6 +269,16 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
           >
             {t("btn.mission")}
           </Button>
+
+          <Button
+            type="primary"
+            onClick={() => setIsOpenOI(true)}
+            className="gap-2"
+            //   disabled={rowInProgressLength === 0}
+            size="small"
+          >
+            Truy cập OI thao tác
+          </Button>
         </div>
       ),
       width: 100,
@@ -229,30 +290,9 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">Danh sách nhiệm vụ</div>
-            {/* <div className="flex gap-2">
-              <Button
-                onClick={orderPicking}
-                className="gap-2"
-                disabled={selectedRowKeys.length === 0}
-                size="sm"
-              >
-                <Plus className="h-4 w-4" />
-                Tạo lệnh xuất hàng
-              </Button>
-              <Button
-                onClick={requestDataList}
-                variant="outline"
-                size="sm"
-                className="gap-2"
-              >
-                <ReloadOutlined className="h-4 w-4" />
-                {t("btn.refresh")}
-              </Button>
-            </div> */}
+            <div className="flex items-center gap-2">Danh sách Kit gộp lẻ</div>
           </CardTitle>
         </CardHeader>
-        {/* <h3 className="text-lg font-semibold">Danh sách vật phẩm cần lấy</h3> */}
         <Input
           autoFocus
           ref={skuRef}
@@ -304,9 +344,16 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
         <ModalMergeKit
           isOpen={isOpenMerge}
           onCancel={() => setIsOpenMerge(false)}
-          data={modalData}
+          data={mergeData}
         />
       )}
+      
+      <DrawerOI
+        isOpen={isOpenOI}
+        selectedItem={{}}
+        setIsOpen={setIsOpenOI}
+        missionData={missionData}
+      />
     </div>
   );
 };

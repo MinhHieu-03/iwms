@@ -116,7 +116,7 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
 
   return (
     <Drawer
-      title={"Danh sách gộp KIT"}
+      title={"Danh sách vật tư KIT gộp chẵn"}
       open={isOpen}
       onClose={onCancel}
       placement="bottom"
@@ -164,10 +164,7 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
         <div>
           <div className="flex justify-between items-center mb-3">
             <h4 className="font-semibold">
-              {t(
-                "issue_time_schedule.modal.issue_data_details",
-                "Issue Data Details"
-              )}
+              
             </h4>
             <Checkbox
               checked={showInsufficientOnly}
@@ -185,6 +182,11 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
               rowKey="material_no"
               size="small"
               scroll={{ x: 800 }}
+              rowClassName={(record) =>
+                record.inventory_qty < record.issue_qty
+                  ? "bg-red-100"
+                  : "bg-green-100"
+              }
               pagination={{
                 pageSize: 10,
                 showSizeChanger: true,

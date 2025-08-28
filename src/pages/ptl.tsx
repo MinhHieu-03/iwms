@@ -432,7 +432,7 @@ const TrolleyKit = ({ ptlDataShow, title, kit }) => {
             .map((item, index) => (
               <div
                 key={item.id}
-                className='bg-gray-50 mb-2 p-2 rounded border flex justify-between text-xl'
+                className={`${item.picked_qty === item.ptl_qty ? "bg-green-100" : "bg-gray-50"} mb-2 p-2 rounded border flex justify-between text-xl`}
               >
                 <div className=' text-gray-600 '>{item.station}</div>
                 <div className=''>
@@ -447,7 +447,7 @@ const TrolleyKit = ({ ptlDataShow, title, kit }) => {
             .map((item, index) => (
               <div
                 key={item.id}
-                className='bg-gray-50 mb-2 p-2 rounded border flex justify-between text-xl'
+                className={`${item.picked_qty === item.ptl_qty ? "bg-green-100" : "bg-gray-50"} mb-2 p-2 rounded border flex justify-between text-xl`}
               >
                 <div className=' text-gray-600 '>{item.station}</div>
                 <div className=''>
