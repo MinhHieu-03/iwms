@@ -18,6 +18,17 @@ interface MissionData {
   eta: string;
   status: string;
 }
+
+interface PTLData {
+  id: string;
+  issue_ord_no: string;
+  material_no: string;
+  ptl_qty: number;
+  picked_qty?: number;
+  station: string;
+  box_tp: string;
+  trolley_tp: string;
+}
 const OrdersTab: React.FC = () => {
   const [selectedGate, setSelectedGate] = useState("1");
   const handleGateChange = (gate: string) => {
@@ -27,8 +38,15 @@ const OrdersTab: React.FC = () => {
   const [missionData, setMissionData] = useState<MissionData[]>([]);
 
   const fetchData = async () => {
-    const data = await creatMissionData();
-    setMissionData(data.metaData);
+    try {
+      const data = await creatMissionData();
+      if (data && data.metaData) {
+        setMissionData(data.metaData);
+      }
+    } catch (error) {
+      console.error('Error fetching mission data:', error);
+      setMissionData([]);
+    }
   };
 
   useEffect(() => {
@@ -51,16 +69,23 @@ const OrdersTab: React.FC = () => {
 
 export default OrdersTab;
 
-const SplitOrder: React.FC<any> = ({}) => {
-  const [boxFounded, setCurrentBox] = useState<any>({});
-  const [missionData, setMissionData] = useState<any[]>([]);
-  const [ptlData, setPtlData] = useState<any[]>(ptlFakeData);
+const SplitOrder: React.FC = () => {
+  const [boxFounded, setCurrentBox] = useState<Partial<MissionData>>({});
+  const [missionData, setMissionData] = useState<MissionData[]>([]);
+  const [ptlData, setPtlData] = useState<PTLData[]>(ptlFakeData);
   const [sku, setSku] = useState<string>("");
-  const [ptlDataShow, setPtlDataShow] = useState<any[]>([]);
+  const [ptlDataShow, setPtlDataShow] = useState<PTLData[]>([]);
 
   const fetchData = async () => {
-    const data = await creatMissionData();
-    setMissionData(data.metaData);
+    try {
+      const data = await creatMissionData();
+      if (data && data.metaData) {
+        setMissionData(data.metaData);
+      }
+    } catch (error) {
+      console.error('Error fetching mission data:', error);
+      setMissionData([]);
+    }
   };
 
   useEffect(() => {
@@ -81,14 +106,16 @@ const SplitOrder: React.FC<any> = ({}) => {
     if (currentRef) {
       currentRef.focus();
       setTimeout(() => {
-        currentRef.focus();
+        if (currentRef && document.contains(currentRef)) {
+          currentRef.focus();
+        }
       }, 500);
     }
 
     return () => {
       // Cleanup to prevent focusing on unmounted components
       if (currentRef && document.activeElement === currentRef) {
-        (document.activeElement as HTMLElement).blur();
+        (document.activeElement as HTMLElement)?.blur();
       }
     };
   }, []);
@@ -98,38 +125,45 @@ const SplitOrder: React.FC<any> = ({}) => {
     if (currentRef) {
       currentRef.focus();
       setTimeout(() => {
-        currentRef.focus();
+        if (currentRef && document.contains(currentRef)) {
+          currentRef.focus();
+        }
       }, 500);
     }
 
     return () => {
       // Cleanup to prevent focusing on unmounted components
       if (currentRef && document.activeElement === currentRef) {
-        (document.activeElement as HTMLElement).blur();
+        (document.activeElement as HTMLElement)?.blur();
       }
     };
   }, []);
 
-  const handleAction = (e) => {
+  const handleAction = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim();
     setValue(value);
   };
 
   useEffect(() => {
-    setPtlDataShow(ptlData.filter((item) => item.material_no === sku));
+    if (sku && ptlData && ptlData.length > 0) {
+      setPtlDataShow(ptlData.filter((item) => item?.material_no === sku));
+    } else {
+      setPtlDataShow([]);
+    }
   }, [sku, ptlData]);
 
-  const handleInputEnter = (value) => {
+  const handleInputEnter = (value: string) => {
     if (value && value.length > 6) {
       setSku(value);
-      const boxFounded = missionData.find((item) => item.material_no === value);
-      setCurrentBox(boxFounded);
+      const boxFounded = missionData.find((item) => item?.material_no === value);
+      setCurrentBox(boxFounded || {});
     } else if (value && !isNaN(Number(value))) {
       let total = Number(value);
       const convert = ptlDataShow.map((item) => {
+        if (!item) return item;
         const oldPicked = item.picked_qty || 0;
-        if (item.material_no === sku && oldPicked < item.ptl_qty) {
-          const need = item.ptl_qty - oldPicked;
+        if (item.material_no === sku && oldPicked < (item.ptl_qty || 0)) {
+          const need = (item.ptl_qty || 0) - oldPicked;
           const countSet = Math.min(total, need);
           item.picked_qty = oldPicked + countSet;
           total = total - countSet;
@@ -413,25 +447,33 @@ const ptlFakeData = [
   },
 ];
 
-const TrolleyKit = ({ ptlDataShow, title }) => {
+interface TrolleyKitProps {
+  ptlDataShow: PTLData[];
+  title: React.ReactNode;
+}
+
+const TrolleyKit: React.FC<TrolleyKitProps> = ({ ptlDataShow, title }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-3">
       {/* <h3 className="font-semibold text-center bg-blue-100 py-2 rounded text-xl flex justify-between px-3">
         <span>{title}</span>
       </h3> */}
       <div className=" p-2">
-        {ptlDataShow
-          .map((item, index) => (
+        {ptlDataShow && ptlDataShow.length > 0 ? (
+          ptlDataShow.map((item, index) => (
             <div
-              key={item.id}
-              className={`${(+item.picked_qty || 0) < +item.ptl_qty ? "bg-gray-50" : "bg-green-100"} mb-2 p-2 px-5 rounded border flex justify-between text-xl`}
+              key={item?.id || index}
+              className={`${(+(item?.picked_qty || 0)) < +(item?.ptl_qty || 0) ? "bg-gray-50" : "bg-green-100"} mb-2 p-2 px-5 rounded border flex justify-between text-xl`}
             >
-              <div className=" text-gray-600 ">{item.issue_ord_no}</div>
+              <div className=" text-gray-600 ">{item?.issue_ord_no || 'N/A'}</div>
               <div className="">
-                {+item.picked_qty || 0}/{+item.ptl_qty}
+                {+(item?.picked_qty || 0)}/{+(item?.ptl_qty || 0)}
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <div className="text-center text-gray-500 py-4">No data available</div>
+        )}
       </div>
     </div>
   );

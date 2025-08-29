@@ -294,16 +294,16 @@ const IssueTimeScheduleTable = ({
   );
 
   const rowSelection = {
-    columnTitle: (
-      <div className="flex flex-col items-center">
-        <span className="text-md">
-          {t("issue_time_schedule.table.selected")}
-        </span>
-        <span className="text-xs text-gray-500">
-          {selectedRowKeys.length}/80
-        </span>
-      </div>
-    ),
+    // columnTitle: (
+    //   <div className="flex flex-col items-center">
+    //     <span className="text-md">
+    //       {t("issue_time_schedule.table.selected")}
+    //     </span>
+    //     <span className="text-xs text-gray-500">
+    //       {selectedRowKeys.length}/80
+    //     </span>
+    //   </div>
+    // ),
     selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[]) => {
       if (selectedRowKeys.length > 80) {
@@ -433,7 +433,7 @@ const IssueTimeScheduleTable = ({
               <span className="">
                 {rowInProgress.length
                   ? `${rowInProgress.length} kit đang xử lý`
-                  : ""}
+                  : `${selectedRowKeys.length}/80 kit được chọn`}
               </span>
               <div className="flex gap-2 items-center">
                 <Input
