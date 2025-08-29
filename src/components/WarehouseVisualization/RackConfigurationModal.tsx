@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Modal, Select } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import apiClient from '@/lib/axios';
 import { set } from 'date-fns';
 
@@ -26,6 +26,8 @@ const RackConfigurationModal: React.FC<RackConfigurationModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [materials, setMaterials] = React.useState<string[]>([]);
+  const queryClient = useQueryClient();
+
   const {
     data: masterData,
     isLoading,
@@ -39,23 +41,36 @@ const RackConfigurationModal: React.FC<RackConfigurationModalProps> = ({
     enabled: open, // Only fetch when modal is open
   });
 
-  const handleSubmit = () => {
-    apiClient
-      .patch('/location/bundle/create', {
-        locationIds: selectedRacks,
-        materials,
-        area,
-        rackId: rackIdentifier,
-      })
-      .then((response) => {
-        setMaterials([]);
-        console.log('Racks configured successfully:', response.data);
-      })
-      .catch((error) => {
-        console.error('Error configuring racks:', error);
-      });
+  const configureRacksMutation = useMutation({
+    mutationFn: async (configData: {
+      locationIds: string[];
+      materials: string[];
+      area: string;
+      rackId: string;
+    }) => {
+      const { data } = await apiClient.patch('/location/bundle/create', configData);
+      return data;
+    },
+    onSuccess: (data) => {
+      setMaterials([]);
+      console.log('Racks configured successfully:', data);
+      // Invalidate related queries to refetch updated data
+      queryClient.invalidateQueries({ queryKey: ['area-data'] });
+      queryClient.invalidateQueries({ queryKey: ['location-area'] });
+      onSubmit(selectedRacks);
+    },
+    onError: (error) => {
+      console.error('Error configuring racks:', error);
+    },
+  });
 
-    onSubmit(selectedRacks);
+  const handleSubmit = () => {
+    configureRacksMutation.mutate({
+      locationIds: selectedRacks,
+      materials,
+      area,
+      rackId: rackIdentifier,
+    });
   };
 
   const handleInactive = () => {
@@ -76,13 +91,24 @@ const RackConfigurationModal: React.FC<RackConfigurationModalProps> = ({
       title={t('configure_rack')}
       footer={
         <div className='mt-4'>
-          <Button type='primary' onClick={handleSubmit}>
+          <Button 
+            type='primary' 
+            onClick={handleSubmit}
+            loading={configureRacksMutation.isPending}
+            disabled={selectedRacks.length === 0 || materials.length === 0}
+          >
             {t('submit')}
           </Button>
           {/* <Button danger className='mx-2' onClick={handleInactive}>
             {t('inactive')}
           </Button> */}
-          <Button className='mx-2'  onClick={handleCancel}>{t('cancel')}</Button>
+          <Button 
+            className='mx-2' 
+            onClick={handleCancel}
+            disabled={configureRacksMutation.isPending}
+          >
+            {t('cancel')}
+          </Button>
         </div>
       }
     >
@@ -107,6 +133,11 @@ const RackConfigurationModal: React.FC<RackConfigurationModalProps> = ({
           {error && (
             <p className='text-red-500 text-sm mt-2'>
               Error loading master data: {error.message}
+            </p>
+          )}
+          {configureRacksMutation.isError && (
+            <p className='text-red-500 text-sm mt-2'>
+              Error configuring racks: {configureRacksMutation.error?.message}
             </p>
           )}
         </div>
