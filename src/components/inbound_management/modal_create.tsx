@@ -179,6 +179,7 @@ const ModalAdd = ({
       console.log("Master data available:", masterData);
 
       const item = masterData[sku];
+      // nguyên thùng
       let storeModel = [
         {
           key: "Carton",
@@ -186,7 +187,7 @@ const ModalAdd = ({
         },
         {
           key: "Bag",
-          qty: Number(values.bag_quantity) / item?.pk_style,
+          qty: Number(values.quantity) / item?.pk_style,
         },
         {
           key: storageData[storageData.length - 1],
@@ -194,6 +195,7 @@ const ModalAdd = ({
         },
       ];
       if (item.flg1 == 2) {
+        // mở thùng carton cho túi vào thùng nhựa
         storeModel = [
           {
             key: "Plastic Bin",
@@ -201,7 +203,7 @@ const ModalAdd = ({
           },
           {
             key: "Bag",
-            qty: Number(values.bag_quantity),
+            qty: Number(values.quantity) / Number(item?.pk_style),
           },
           {
             key: storageData[storageData.length - 1],
@@ -216,11 +218,11 @@ const ModalAdd = ({
           },
           {
             key: "Carton",
-            qty: Number(values.bag_quantity),
+            qty: listItem.length,
           },
           {
             key: "Bag",
-            qty: Number(values.bag_quantity),
+            qty: Number(values.quantity) / Number(item?.pk_style),
           },
           {
             key: storageData[storageData.length - 1],
@@ -241,9 +243,11 @@ const ModalAdd = ({
       const body = {
         product_name: values.sku,
         sku: values.sku,
+        bin_code: values.bin_code,
         store: storeModel,
       };
       await apiClient.post('/inbound', body);
+      console.log("Form submitted:", body);
       reset();
     } catch (error) {
       console.error("Error during form submission:", error);
@@ -410,7 +414,12 @@ const ModalAdd = ({
                 <div className="grid grid-cols-1 gap-8">
                   <Form.Item
                     label={
-                      <span className="text-2xl font-bold">Mã vật tư</span>
+                      <span className="text-2xl font-bold">
+                        Mã vật tư{" "}
+                        <span className="text-sm font-bold">
+                          ({skuMaster?.pk_style} items/túi)
+                        </span>
+                      </span>
                     }
                     name="sku"
                   >
@@ -510,11 +519,13 @@ const ModalAdd = ({
                 </div>
                 {listItem.length > 0 && (
                   <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <div className="text-center">
+                    <div className="text-center flex justify-between items-center">
                       <span className="text-lg font-bold text-blue-800">
-                        Tổng số lượng:{" "}
+                        Tổng số lượng item:{" "}
                         {listItem.reduce((sum, item) => sum + item.quantity, 0)}{" "}
-                        | {listItem.length} / {skuMaster?.pk_style2} ({skuMaster?.pk_style}/túi)
+                      </span>
+                      <span className="text-lg font-bold text-blue-800">
+                        {listItem.length} / {skuMaster?.pk_style2}
                       </span>
                     </div>
                   </div>

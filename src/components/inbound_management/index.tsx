@@ -13,6 +13,7 @@ import { ColumnsType } from "antd/es/table";
 import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import BasePagination from "@/components/ui/antd-pagination";
@@ -55,6 +56,7 @@ const { list, create, update, upload, download, remove } = domain;
 
 const InboundManagement = () => {
   const { i18n, t } = useTranslation();
+  const queryClient = useQueryClient();
 
   const [pageInfo, setPageInfo] = useState({
     page: 1,
@@ -79,16 +81,19 @@ const InboundManagement = () => {
       createdAt: new Date().toISOString(),
     },
   });
-  const [loading, setLoading] = useState(false);
-  const [total, setTotal] = useState<number>(0);
-  const [dataList, setDataList] = useState<DataType[]>([]);
   const [dataRole, setDataRole] = useState<unknown[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
-  const requestDataList = useCallback(async () => {
-    try {
-      setLoading(true);
+  // TanStack Query for fetching data
+  const {
+    data: queryData,
+    isLoading: loading,
+    error,
+    refetch: requestDataList,
+  } = useQuery({
+    queryKey: ['inbound-data', pageInfo.page, pageInfo.perPage, isAuthenticated],
+    queryFn: async () => {
       const params = {
         limit: pageInfo.perPage,
         page: pageInfo.page,
@@ -97,16 +102,14 @@ const InboundManagement = () => {
         ...params,
         populate: ["inventory"],
       });
-      if (data) {
-        setDataList(data.metaData);
-        setTotal(data.total);
-        setLoading(false);
-      }
-    } catch (error) {
-      setLoading(false);
-      console.log("error", error);
-    }
-  }, [pageInfo.page, pageInfo.perPage]);
+      return data;
+    },
+    enabled: isAuthenticated, // Only run query when authenticated
+    staleTime: 1000 * 60 * 5, // Data is fresh for 5 minutes
+  });
+
+  const dataList = queryData?.metaData || [];
+  const total = queryData?.total || 0;
 
   const _handleFinish = (values: { [key: string]: unknown }) => {
     const payload = {
@@ -118,7 +121,7 @@ const InboundManagement = () => {
       .then((data) => {
         message.success(t("common.create_success"));
         setIsOpen(false);
-        requestDataList();
+        queryClient.invalidateQueries({ queryKey: ['inbound-data'] });
       })
       .catch((err) => {
         message.error(err?.response?.data?.message || err.message);
@@ -138,7 +141,7 @@ const InboundManagement = () => {
           isOpen: false,
           data: {},
         });
-        requestDataList();
+        queryClient.invalidateQueries({ queryKey: ['inbound-data'] });
       })
       .catch((err) => {
         message.error(err?.response?.data?.message || err.message);
@@ -158,15 +161,13 @@ const InboundManagement = () => {
       cancelText: t("common.cancel"),
       onOk: async () => {
         try {
-          setLoading(true);
           await apiClient.delete(`${remove}`, {}, { ids: selectedRowKeys });
           message.success(t("common.delete_success"));
           setSelectedRowKeys([]);
-          requestDataList();
+          queryClient.invalidateQueries({ queryKey: ['inbound-data'] });
         } catch (error) {
           console.error("Delete error:", error);
           message.error(t("common.delete_error"));
-          setLoading(false);
         }
       },
     });
@@ -176,15 +177,6 @@ const InboundManagement = () => {
     const col = RenderCol({ t });
     return col || [];
   }, [t]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      requestDataList();
-    } else {
-      setDataList([]);
-      setTotal(0);
-    }
-  }, [requestDataList, isAuthenticated]);
 
   const handleReload = () => {
     requestDataList();
@@ -196,7 +188,6 @@ const InboundManagement = () => {
       setSelectedRowKeys(selectedKeys);
     },
   };
-
   return (
     <Card>
       <Header
@@ -268,6 +259,7 @@ const Header = ({
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const { isAuthenticated, loading, error } = useAppSelector(
     (state) => state.auth
   );
@@ -323,7 +315,7 @@ const Header = ({
       apiClient
         .upload(`${upload}`, formData)
         .then(() => {
-          requestDataList();
+          queryClient.invalidateQueries({ queryKey: ['inbound-data'] });
           message.success(t("common.upload_success"));
         })
         .catch((err) => {

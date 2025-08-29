@@ -127,29 +127,29 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
       dataIndex: "destination",
       title: "Vị trí lưu kho",
       width: 150,
-      render: (text, record) => (
-        <span>{record.status === "fill" ? text : ""}</span>
-      ),
+      // render: (text, record) => (
+      //   <span>{record.status === "fill" ? text : ""}</span>
+      // ),
     },
     {
-      dataIndex: "bin",
+      dataIndex: ["inventory", "bin_code"],
       title: "Mã thùng",
       width: 120,
     },
-    // {
-    //   dataIndex: ["inventory", "store"],
-    //   title: t(`${lang_key}.store_info`),
-    //   width: 200,
-    //   render: (store: Array<{ key: string; qty: number }>) => (
-    //     <div>
-    //       {store?.map((item, index) => (
-    //         <Tag key={index} color="blue">
-    //           {item.key}: {item.qty}
-    //         </Tag>
-    //       ))}
-    //     </div>
-    //   ),
-    // },
+    {
+      dataIndex: ["inventory", "store"],
+      title: t(`${lang_key}.store_info`),
+      width: 200,
+      render: (store: Array<{ key: string; qty: number }>) => (
+        <div>
+          {store?.map((item, index) => (
+            <Tag key={index} color="blue">
+              {item.key}: {item.qty}
+            </Tag>
+          ))}
+        </div>
+      ),
+    },
     {
       dataIndex: "status",
       title: "Trạng thái",
