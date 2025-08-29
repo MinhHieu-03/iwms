@@ -37,7 +37,7 @@ import OrderDetails from "./pages/OrderDetails";
 import Login from "./pages/Login";
 import MissionsTemplates from "./components/missions/MissionsTemplates";
 import MissionTemplate from "./components/mission_setting/mission_template";
-import EditMissionTemplate from "@/components/mission_setting/mission_template/update";
+// import EditMissionTemplate from "@/components/mission_setting/mission_template/update";
 import DeviceTemplate from "./components/device/DeviceTemplate";
 import DeviceList from "./components/device/DeviceList";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -173,13 +173,13 @@ function App() {
                             ])}
                             element={<TemplateEdit />}
                           />
-                          <Route
+                          {/* <Route
                             path={createRoute([
                               ...mission_template_route,
                               ":id",
                             ])}
                             element={<EditMissionTemplate />}
-                          />
+                          /> */}
                           <Route
                             path={createRoute(mission_template_route)}
                             element={<MissionTemplate />}

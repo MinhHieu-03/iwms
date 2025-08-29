@@ -7,10 +7,12 @@ import { getAllTemplates } from "@/data/missionTemplatesData";
 
 interface MissionTemplatesCardProps {
   className?: string;
+  onTemplateStepClick?: (templateStep: string) => void;
 }
 
 const MissionTemplatesCard: React.FC<MissionTemplatesCardProps> = ({ 
-  className = "" 
+  className = "",
+  onTemplateStepClick
 }) => {
   const { toast } = useToast();
   const templates = getAllTemplates();
@@ -46,9 +48,14 @@ const MissionTemplatesCard: React.FC<MissionTemplatesCardProps> = ({
                     onClick={() => {
                       console.log("Selected step:", step);
                       toast({
-                        title: "Step Selected",
-                        description: `Selected: ${step}`,
+                        title: "Node Created",
+                        description: `Created new node: ${step}`,
                       });
+                      
+                      // Create new node if callback is provided
+                      if (onTemplateStepClick) {
+                        onTemplateStepClick(step);
+                      }
                     }}
                   >
                     <List.Item.Meta

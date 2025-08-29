@@ -1,4 +1,4 @@
-import { Node, Edge, MarkerType } from '@xyflow/react';
+import { Node, Edge, MarkerType } from "@xyflow/react";
 
 export interface Warehouse {
   id: string;
@@ -53,14 +53,14 @@ export interface StoredItem {
   sku: string;
   productName: string;
   quantity: number;
-  storeMethod: 'Bin' | 'Carton';
+  storeMethod: "Bin" | "Carton";
   storeCode: string;
-  packingMethod: 'Carton' | 'Bag' | 'Kit';
+  packingMethod: "Carton" | "Bag" | "Kit";
   packingCode: string;
   partner: string;
   inboundOrderId?: string;
   outboundOrderId?: string;
-  status: 'stored' | 'picked' | 'reserved';
+  status: "stored" | "picked" | "reserved";
   storedAt: string;
 }
 
@@ -141,26 +141,26 @@ export const warehouses: Warehouse[] = [
     location: "Zone A",
     status: "active",
     totalAreas: 8,
-    totalRacks: 200
+    totalRacks: 200,
   },
   {
-    id: "wh-002", 
+    id: "wh-002",
     name: "Secondary Warehouse",
     description: "Overflow storage facility",
     location: "Zone B",
     status: "active",
     totalAreas: 5,
-    totalRacks: 150
+    totalRacks: 150,
   },
   {
     id: "wh-003",
     name: "Quality Control Center",
     description: "QC and testing facility",
-    location: "Zone C", 
+    location: "Zone C",
     status: "maintenance",
     totalAreas: 3,
-    totalRacks: 80
-  }
+    totalRacks: 80,
+  },
 ];
 
 // Generate warehouse areas
@@ -174,40 +174,40 @@ export const warehouseAreas: WarehouseArea[] = [
     status: "active",
     capacity: 2000,
     currentUtilization: 1650,
-    createdAt: "2024-01-15T08:00:00Z"
+    createdAt: "2024-01-15T08:00:00Z",
   },
   {
     id: "area-002",
-    warehouseId: "wh-001", 
+    warehouseId: "wh-001",
     name: "Storage Zone A2",
     description: "High-density storage area",
     type: "storage",
     status: "active",
     capacity: 8000,
     currentUtilization: 6800,
-    createdAt: "2024-01-15T08:00:00Z"
+    createdAt: "2024-01-15T08:00:00Z",
   },
   {
     id: "area-003",
     warehouseId: "wh-001",
-    name: "Outbound Area A3", 
+    name: "Outbound Area A3",
     description: "Shipping and dispatch zone",
     type: "outbound",
     status: "active",
     capacity: 1500,
     currentUtilization: 1200,
-    createdAt: "2024-01-15T08:00:00Z"
+    createdAt: "2024-01-15T08:00:00Z",
   },
   {
     id: "area-004",
     warehouseId: "wh-001",
     name: "Processing Zone A4",
     description: "Order picking and packing",
-    type: "processing", 
+    type: "processing",
     status: "active",
     capacity: 2500,
     currentUtilization: 2100,
-    createdAt: "2024-01-15T08:00:00Z"
+    createdAt: "2024-01-15T08:00:00Z",
   },
   {
     id: "area-005",
@@ -215,38 +215,64 @@ export const warehouseAreas: WarehouseArea[] = [
     name: "Storage Zone B1",
     description: "Overflow storage",
     type: "storage",
-    status: "active", 
+    status: "active",
     capacity: 5000,
     currentUtilization: 3800,
-    createdAt: "2024-01-20T08:00:00Z"
-  }
+    createdAt: "2024-01-20T08:00:00Z",
+  },
 ];
 
 // Generate stored items based on inbound/outbound data structure
 export const storedItems: StoredItem[] = Array.from({ length: 300 }, (_, i) => {
   const partners = [
-    'Tech Supplies Inc.', 'Office Solutions', 'Global Parts Ltd.',
-    'Industrial Equipment Co.', 'Tech Warehouse', 'Smart Solutions',
-    'Factory Direct', 'Distribution Central', 'Supply Chain Inc.',
-    'Bulk Goods Ltd.', 'City Electronics', 'Retail Group'
+    "Tech Supplies Inc.",
+    "Office Solutions",
+    "Global Parts Ltd.",
+    "Industrial Equipment Co.",
+    "Tech Warehouse",
+    "Smart Solutions",
+    "Factory Direct",
+    "Distribution Central",
+    "Supply Chain Inc.",
+    "Bulk Goods Ltd.",
+    "City Electronics",
+    "Retail Group",
   ];
-  
-  const categories = ['Electronics', 'Clothing', 'Home & Garden', 'Sports', 'Books', 'Tools'];
-  
+
+  const categories = [
+    "Electronics",
+    "Clothing",
+    "Home & Garden",
+    "Sports",
+    "Books",
+    "Tools",
+  ];
+
   return {
-    id: `stored-${(i + 1).toString().padStart(3, '0')}`,
+    id: `stored-${(i + 1).toString().padStart(3, "0")}`,
     sku: `SKU${(12345678 + i).toString().slice(-8)}`,
-    productName: `${categories[i % categories.length]} Product ${String.fromCharCode(65 + (i % 26))}${i + 1}`,
+    productName: `${
+      categories[i % categories.length]
+    } Product ${String.fromCharCode(65 + (i % 26))}${i + 1}`,
     quantity: Math.floor(Math.random() * 50) + 1,
-    storeMethod: (['Bin', 'Carton'] as const)[i % 2],
-    storeCode: `${String.fromCharCode(65 + (i % 3))}${String(i + 1).padStart(3, '0')}`,
-    packingMethod: (['Carton', 'Bag', 'Kit'] as const)[i % 3],
-    packingCode: `PK${String(i + 1).padStart(4, '0')}`,
+    storeMethod: (["Bin", "Carton"] as const)[i % 2],
+    storeCode: `${String.fromCharCode(65 + (i % 3))}${String(i + 1).padStart(
+      3,
+      "0"
+    )}`,
+    packingMethod: (["Carton", "Bag", "Kit"] as const)[i % 3],
+    packingCode: `PK${String(i + 1).padStart(4, "0")}`,
     partner: partners[i % partners.length],
-    inboundOrderId: i < 200 ? `IN-${String(Math.floor(i / 4) + 1).padStart(3, '0')}` : undefined,
-    outboundOrderId: i >= 100 ? `OUT-${String(Math.floor((i - 100) / 3) + 1).padStart(3, '0')}` : undefined,
-    status: (['stored', 'picked', 'reserved'] as const)[i % 3],
-    storedAt: new Date(2024, 0, 15 + (i % 30), 8 + (i % 12)).toISOString()
+    inboundOrderId:
+      i < 200
+        ? `IN-${String(Math.floor(i / 4) + 1).padStart(3, "0")}`
+        : undefined,
+    outboundOrderId:
+      i >= 100
+        ? `OUT-${String(Math.floor((i - 100) / 3) + 1).padStart(3, "0")}`
+        : undefined,
+    status: (["stored", "picked", "reserved"] as const)[i % 3],
+    storedAt: new Date(2024, 0, 15 + (i % 30), 8 + (i % 12)).toISOString(),
   };
 });
 
@@ -258,38 +284,55 @@ export const racks: Rack[] = (() => {
   const warehouses = ["Main", "Secondary", "QC Center"];
   const areas = ["A", "B", "C", "D", "E"];
   const columnOptions = [6, 8];
-  
+
   let rackIndex = 0;
-  
+
   areaIds.forEach((areaId, areaIdx) => {
     const rackGroupsPerArea = areaIdx < 3 ? 4 : 3; // More rack groups for main areas
-    
+
     for (let groupIdx = 0; groupIdx < rackGroupsPerArea; groupIdx++) {
       const columns = columnOptions[groupIdx % columnOptions.length];
       const rackLetter = String.fromCharCode(65 + (groupIdx % 5)); // A, B, C, D, E
-      
+
       for (let row = 1; row <= 7; row++) {
         for (let col = 1; col <= columns; col++) {
           const occupationRate = areaIdx < 2 ? 0.85 : 0.65; // Higher occupation for main areas
           const isOccupied = Math.random() < occupationRate;
-          const status = isOccupied ? 'occupied' : 
-                        Math.random() < 0.05 ? 'maintenance' :
-                        Math.random() < 0.1 ? 'reserved' : 'empty';
-          
+          const status = isOccupied
+            ? "occupied"
+            : Math.random() < 0.05
+            ? "maintenance"
+            : Math.random() < 0.1
+            ? "reserved"
+            : "empty";
+
           const capacity = 100 + (rackIndex % 200);
-          const currentLoad = status === 'occupied' ? 
-            Math.floor(capacity * (0.6 + Math.random() * 0.4)) : 
-            status === 'reserved' ? Math.floor(capacity * 0.2) : 0;
-          
+          const currentLoad =
+            status === "occupied"
+              ? Math.floor(capacity * (0.6 + Math.random() * 0.4))
+              : status === "reserved"
+              ? Math.floor(capacity * 0.2)
+              : 0;
+
           // Assign stored items to occupied racks
-          const rackStoredItems = status === 'occupied' ? 
-            storedItems.filter(item => item.storeCode === `${rackLetter}${String(rackIndex + 1).padStart(3, '0')}`).slice(0, 3) :
-            [];
-          
+          const rackStoredItems =
+            status === "occupied"
+              ? storedItems
+                  .filter(
+                    (item) =>
+                      item.storeCode ===
+                      `${rackLetter}${String(rackIndex + 1).padStart(3, "0")}`
+                  )
+                  .slice(0, 3)
+              : [];
+
           racks.push({
-            id: `rack-${(rackIndex + 1).toString().padStart(3, '0')}`,
+            id: `rack-${(rackIndex + 1).toString().padStart(3, "0")}`,
             areaId: areaId,
-            locationCode: `${rackLetter}${String(row).padStart(2, '0')}-${String(col).padStart(2, '0')}`,
+            locationCode: `${rackLetter}${String(row).padStart(
+              2,
+              "0"
+            )}-${String(col).padStart(2, "0")}`,
             row: row,
             column: col,
             level: Math.floor(rackIndex / 25) + 1,
@@ -301,18 +344,18 @@ export const racks: Rack[] = (() => {
             dimensions: {
               width: 1.2 + (rackIndex % 3) * 0.3,
               height: 2.0 + (rackIndex % 4) * 0.5,
-              depth: 0.8 + (rackIndex % 2) * 0.4
+              depth: 0.8 + (rackIndex % 2) * 0.4,
             },
             createdAt: new Date(2024, 0, 15 + (rackIndex % 30)).toISOString(),
-            storedItems: rackStoredItems
+            storedItems: rackStoredItems,
           });
-          
+
           rackIndex++;
         }
       }
     }
   });
-  
+
   return racks;
 })();
 
@@ -324,45 +367,45 @@ export const pricingRules: PricingRule[] = [
     description: "Basic storage pricing for regular items",
     type: "storage",
     unitType: "per_day",
-    basePrice: 2.50,
+    basePrice: 2.5,
     currency: "USD",
     conditions: {
       maxVolume: 1000,
-      priority: "medium"
+      priority: "medium",
     },
     status: "active",
-    createdAt: "2024-01-15T08:00:00Z"
+    createdAt: "2024-01-15T08:00:00Z",
   },
   {
     id: "price-002",
     name: "Premium Handling",
-    description: "Special handling for fragile items", 
+    description: "Special handling for fragile items",
     type: "handling",
     unitType: "per_item",
-    basePrice: 5.00,
+    basePrice: 5.0,
     currency: "USD",
     conditions: {
       itemType: "fragile",
-      priority: "high"
+      priority: "high",
     },
     status: "active",
-    createdAt: "2024-01-15T08:00:00Z"
+    createdAt: "2024-01-15T08:00:00Z",
   },
   {
     id: "price-003",
     name: "Bulk Storage Discount",
     description: "Discounted rate for high-volume storage",
-    type: "storage", 
+    type: "storage",
     unitType: "per_month",
-    basePrice: 45.00,
+    basePrice: 45.0,
     currency: "USD",
     conditions: {
       minVolume: 5000,
-      priority: "low"
+      priority: "low",
     },
     status: "active",
-    createdAt: "2024-01-15T08:00:00Z"
-  }
+    createdAt: "2024-01-15T08:00:00Z",
+  },
 ];
 
 // Generate storage hierarchy
@@ -380,7 +423,7 @@ export const storageHierarchy: StorageHierarchy[] = [
         id: "hierarchy-002",
         name: "Carton",
         level: 1,
-        parent: "hierarchy-001", 
+        parent: "hierarchy-001",
         unitType: "carton",
         capacity: 20,
         dimensions: { width: 30, height: 20, depth: 20 },
@@ -392,22 +435,22 @@ export const storageHierarchy: StorageHierarchy[] = [
             parent: "hierarchy-002",
             unitType: "box",
             capacity: 5,
-            dimensions: { width: 15, height: 10, depth: 10 }
+            dimensions: { width: 15, height: 10, depth: 10 },
           },
           {
-            id: "hierarchy-006", 
+            id: "hierarchy-006",
             name: "Kit",
             level: 2,
             parent: "hierarchy-002",
             unitType: "kit",
             capacity: 1,
-            dimensions: { width: 10, height: 5, depth: 5 }
-          }
-        ]
+            dimensions: { width: 10, height: 5, depth: 5 },
+          },
+        ],
       },
       {
         id: "hierarchy-003",
-        name: "Box", 
+        name: "Box",
         level: 1,
         parent: "hierarchy-001",
         unitType: "box",
@@ -417,25 +460,25 @@ export const storageHierarchy: StorageHierarchy[] = [
           {
             id: "hierarchy-007",
             name: "Kit",
-            level: 2, 
+            level: 2,
             parent: "hierarchy-003",
             unitType: "kit",
             capacity: 1,
-            dimensions: { width: 10, height: 5, depth: 5 }
-          }
-        ]
+            dimensions: { width: 10, height: 5, depth: 5 },
+          },
+        ],
       },
       {
         id: "hierarchy-004",
         name: "Kit",
         level: 1,
         parent: "hierarchy-001",
-        unitType: "kit", 
+        unitType: "kit",
         capacity: 1,
-        dimensions: { width: 10, height: 5, depth: 5 }
-      }
-    ]
-  }
+        dimensions: { width: 10, height: 5, depth: 5 },
+      },
+    ],
+  },
 ];
 
 // Generate storage flows
@@ -448,157 +491,194 @@ export const storageFlows: StorageFlow[] = [
     rules: {
       maxCapacity: 20,
       itemTypes: ["electronics", "clothing"],
-      priority: "medium"
+      priority: "medium",
     },
-    status: "active"
+    status: "active",
   },
   {
-    id: "flow-002", 
+    id: "flow-002",
     name: "Carton to Box Flow",
     sourceLevel: "hierarchy-002",
     targetLevel: "hierarchy-005",
     rules: {
       maxCapacity: 5,
       itemTypes: ["small_parts"],
-      priority: "high" 
+      priority: "high",
     },
-    status: "active"
-  }
+    status: "active",
+  },
 ];
 
 // Generate master data (100 entries)
-export const masterData: MasterDataItem[] = Array.from({ length: 100 }, (_, i) => {
-  const categories = ["Electronics", "Clothing", "Home & Garden", "Sports", "Books"];
-  const storageModels = ["Plastic Bin", "Carton", "Box", "Kit"];
-  const actions = [
-    "Store in plastic bin",
-    "Move to carton storage", 
-    "Requires special handling",
-    "Standard processing",
-    "Quality check required"
-  ];
-  
-  return {
-    id: `master-${(i + 1).toString().padStart(3, "0")}`,
-    sku: `SKU${(i + 10000).toString()}`,
-    productName: `Product ${String.fromCharCode(65 + (i % 26))}${i + 1}`,
-    category: categories[i % categories.length],
-    storageModel: storageModels[i % storageModels.length],
-    cartonQuantity: 20 + (i % 100),
-    boxQuantity: 100 + (i % 200),
-    kitQuantity: 300 + (i % 500),
-    action: actions[i % actions.length],
-    preferredLocation: `Zone-${String.fromCharCode(65 + (i % 4))}`,
-    dimensions: {
-      width: 10 + (i % 20),
-      height: 5 + (i % 15), 
-      depth: 8 + (i % 12),
-      weight: 0.5 + (i % 10) * 0.1
-    },
-    specialRequirements: i % 3 === 0 ? ["fragile"] : i % 5 === 0 ? ["temperature_controlled"] : [],
-    lastUpdated: new Date(2024, 0, 1 + (i % 30)).toISOString()
-  };
-});
+export const masterData: MasterDataItem[] = Array.from(
+  { length: 100 },
+  (_, i) => {
+    const categories = [
+      "Electronics",
+      "Clothing",
+      "Home & Garden",
+      "Sports",
+      "Books",
+    ];
+    const storageModels = ["Plastic Bin", "Carton", "Box", "Kit"];
+    const actions = [
+      "Store in plastic bin",
+      "Move to carton storage",
+      "Requires special handling",
+      "Standard processing",
+      "Quality check required",
+    ];
+
+    return {
+      id: `master-${(i + 1).toString().padStart(3, "0")}`,
+      sku: `SKU${(i + 10000).toString()}`,
+      productName: `Product ${String.fromCharCode(65 + (i % 26))}${i + 1}`,
+      category: categories[i % categories.length],
+      storageModel: storageModels[i % storageModels.length],
+      cartonQuantity: 20 + (i % 100),
+      boxQuantity: 100 + (i % 200),
+      kitQuantity: 300 + (i % 500),
+      action: actions[i % actions.length],
+      preferredLocation: `Zone-${String.fromCharCode(65 + (i % 4))}`,
+      dimensions: {
+        width: 10 + (i % 20),
+        height: 5 + (i % 15),
+        depth: 8 + (i % 12),
+        weight: 0.5 + (i % 10) * 0.1,
+      },
+      specialRequirements:
+        i % 3 === 0
+          ? ["fragile"]
+          : i % 5 === 0
+          ? ["temperature_controlled"]
+          : [],
+      lastUpdated: new Date(2024, 0, 1 + (i % 30)).toISOString(),
+    };
+  }
+);
 
 // ReactFlow node and edge data for Storage Hierarchy Visualization
 export const storageHierarchyNodes: Node[] = [
   {
-    id: 'plastic-bin',
-    type: 'customStorage',
-    data: { label: 'Plastic Bin' },
-    position: { x: 400, y: 50 },
+    id: "start",
+    type: "customStart", // Use our custom start node type
+    position: {
+      x: 400, // Random position within a reasonable range
+      y: 0,
+    },
+    data: {
+      label: `Start Node`,
+    },
   },
   {
-    id: 'carton-1',
-    type: 'customStorage', 
-    data: { label: 'Carton' },
+    id: "plastic-bin",
+    type: "customStorage",
+    data: { label: "Plastic Bin" },
+    position: { x: 400, y: 70 },
+  },
+  {
+    id: "carton-1",
+    type: "customStorage",
+    data: { label: "Carton" },
     position: { x: 200, y: 200 },
   },
   {
-    id: 'box-1',
-    type: 'customStorage',
-    data: { label: 'Box' },
+    id: "box-1",
+    type: "customStorage",
+    data: { label: "Box" },
     position: { x: 400, y: 200 },
   },
   {
-    id: 'kit-1',
-    type: 'customStorage',
-    data: { label: 'Kit' },
+    id: "kit-1",
+    type: "customStorage",
+    data: { label: "Kit" },
     position: { x: 600, y: 200 },
   },
   {
-    id: 'box-2',
-    type: 'customStorage',
-    data: { label: 'Box' },
+    id: "box-2",
+    type: "customStorage",
+    data: { label: "Box" },
     position: { x: 150, y: 350 },
   },
   {
-    id: 'kit-2',
-    type: 'customStorage',
-    data: { label: 'Kit' },
+    id: "kit-2",
+    type: "customStorage",
+    data: { label: "Kit" },
     position: { x: 250, y: 350 },
   },
   {
-    id: 'kit-3',
-    type: 'customStorage',
-    data: { label: 'Kit' },
+    id: "kit-3",
+    type: "customStorage",
+    data: { label: "Kit" },
     position: { x: 400, y: 350 },
-  }
+  },
+  
+  {
+    id: "end",
+    type: "customEnd", // Use our custom start node type
+    position: {
+      x: 400, // Random position within a reasonable range
+      y: 440,
+    },
+    data: {
+      label: `End`,
+    },
+  },
 ];
 
 export const storageHierarchyEdges: Edge[] = [
   {
-    id: 'e-plastic-carton',
-    source: 'plastic-bin',
-    sourceHandle: 'output-1',
-    target: 'carton-1',
+    id: "e-plastic-carton",
+    source: "plastic-bin",
+    sourceHandle: "output-1",
+    target: "carton-1",
     animated: true,
-    style: { stroke: '#1976d2', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
+    style: { stroke: "#1976d2", strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "#1976d2" },
   },
   {
-    id: 'e-plastic-box',
-    source: 'plastic-bin',
-    sourceHandle: 'output-2',
-    target: 'box-1',
+    id: "e-plastic-box",
+    source: "plastic-bin",
+    sourceHandle: "output-2",
+    target: "box-1",
     animated: true,
-    style: { stroke: '#1976d2', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
+    style: { stroke: "#1976d2", strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "#1976d2" },
   },
   {
-    id: 'e-plastic-kit',
-    source: 'plastic-bin',
-    sourceHandle: 'output-3',
-    target: 'kit-1',
+    id: "e-plastic-kit",
+    source: "plastic-bin",
+    sourceHandle: "output-3",
+    target: "kit-1",
     animated: true,
-    style: { stroke: '#1976d2', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#1976d2' }
+    style: { stroke: "#1976d2", strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "#1976d2" },
   },
   {
-    id: 'e-carton-box',
-    source: 'carton-1',
-    sourceHandle: 'output-1',
-    target: 'box-2',
+    id: "e-carton-box",
+    source: "carton-1",
+    sourceHandle: "output-1",
+    target: "box-2",
     animated: true,
-    style: { stroke: '#7b1fa2', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#7b1fa2' }
+    style: { stroke: "#7b1fa2", strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "#7b1fa2" },
   },
   {
-    id: 'e-carton-kit',
-    source: 'carton-1',
-    sourceHandle: 'output-2',
-    target: 'kit-2',
+    id: "e-carton-kit",
+    source: "carton-1",
+    sourceHandle: "output-2",
+    target: "kit-2",
     animated: true,
-    style: { stroke: '#7b1fa2', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#7b1fa2' }
+    style: { stroke: "#7b1fa2", strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "#7b1fa2" },
   },
   {
-    id: 'e-box-kit',
-    source: 'box-1',
-    sourceHandle: 'output-1',
-    target: 'kit-3',
+    id: "e-box-kit",
+    source: "box-1",
+    sourceHandle: "output-1",
+    target: "kit-3",
     animated: true,
-    style: { stroke: '#388e3c', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#388e3c' }
-  }
+    style: { stroke: "#388e3c", strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "#388e3c" },
+  },
 ];

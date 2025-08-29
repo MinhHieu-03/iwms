@@ -1,23 +1,19 @@
-import { ReloadOutlined, DeleteOutlined } from "@ant-design/icons";
-import type { UploadProps } from "antd";
-import { message, Table, Modal, Drawer } from "antd";
+import { Drawer, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
-import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
 import BasePagination from "@/components/ui/antd-pagination";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import apiClient from "@/lib/axios";
-import Detail from "./update";
+import { Card, CardContent } from "@/components/ui/card";
+import StorageHierarchyCard from "./StorageHierarchyCard";
 
 import { mission_templates } from "@/data/missionData";
 import {
   domain,
+  missionTemplateGenForm,
   RenderCol,
-  type DataType, missionTemplateGenForm
+  type DataType
 } from "./const";
 import Header from "./header";
 
@@ -113,7 +109,7 @@ const App = () => {
             onClose={() => setShowDetail("")}
             open={!!showDetail}
             >
-              <Detail />
+              <StorageHierarchyCard />
           </Drawer>
         </CardContent>
       </Card>
