@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
   Form,
@@ -6,10 +6,10 @@ import {
   InputNumber,
   Drawer,
   Select,
-  Typography,
-} from 'antd';
-import { creatMissionData } from '@/lib/dummyData';
-import { useI18n } from '@/contexts/useI18n';
+  message,
+} from "antd";
+import { creatMissionData } from "@/lib/dummyData";
+import { useI18n } from "@/contexts/useI18n";
 
 const DrawerOI: React.FC<any> = ({
   isOpen,
@@ -41,26 +41,26 @@ const DrawerOI: React.FC<any> = ({
       // title={t('issue_time_schedule.oi_modal.title')}
       open={isOpen}
       onClose={handleCancel}
-      height={'95vh'}
-      placement='bottom'
-      footer={
-        <div style={{ textAlign: 'right' }}>
-          <Button style={{ marginRight: 8 }} onClick={handleCancelButton}>
-            {currentPage === 1
-              ? t('issue_time_schedule.oi_modal.back')
-              : t('issue_time_schedule.oi_modal.cancel')}
-          </Button>
-          <Button
-            type='primary'
-            onClick={handleOkButton}
-            loading={confirmLoading}
-          >
-            {currentPage === 0
-              ? t('issue_time_schedule.oi_modal.next')
-              : t('issue_time_schedule.oi_modal.complete')}
-          </Button>
-        </div>
-      }
+      height={"95vh"}
+      placement="bottom"
+      // footer={
+      //   <div style={{ textAlign: "right" }}>
+      //     <Button style={{ marginRight: 8 }} onClick={handleCancelButton}>
+      //       {currentPage === 1
+      //         ? t("issue_time_schedule.oi_modal.back")
+      //         : t("issue_time_schedule.oi_modal.cancel")}
+      //     </Button>
+      //     <Button
+      //       type="primary"
+      //       onClick={handleOkButton}
+      //       loading={confirmLoading}
+      //     >
+      //       {currentPage === 0
+      //         ? t("issue_time_schedule.oi_modal.next")
+      //         : t("issue_time_schedule.oi_modal.complete")}
+      //     </Button>
+      //   </div>
+      // }
     >
       {currentPage === 0 && (
         <SplitOrder
@@ -76,6 +76,7 @@ const DrawerOI: React.FC<any> = ({
           selectedItem={selectedItem}
           setCurrentPage={setCurrentPage}
           boxFounded={currentBox}
+          setCurrentBox={setCurrentBox}
         />
       )}
     </Drawer>
@@ -95,7 +96,7 @@ const SplitOrder: React.FC<any> = ({
 
   const fetchData = async () => {
     const data = await creatMissionData();
-    console.log('ata.metaData', data.metaData);
+    console.log("ata.metaData", data.metaData);
     setMissionData(data.metaData);
   };
 
@@ -104,22 +105,17 @@ const SplitOrder: React.FC<any> = ({
   }, []);
 
   const refAction = useRef(null);
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
   const [current, total] = selectedItem?.quantity
-    ?.split(' / ')
+    ?.split(" / ")
     .map((num) => parseInt(num, 10)) || [0, 0];
 
-  const handleFocus = () => {
-    setTimeout(() => {
-      refAction?.current?.focus();
-    }, 500);
-  };
 
   useEffect(() => {
     const currentRef = refAction.current;
-    console.log('currentRef', currentRef);
+    console.log("currentRef", currentRef);
     if (currentRef) {
-      console.log('dnd1');
+      console.log("dnd1");
       currentRef.focus();
       setTimeout(() => {
         currentRef.focus();
@@ -163,29 +159,45 @@ const SplitOrder: React.FC<any> = ({
     // console.log('___adf', missionData)
   };
   const handleInputEnter = (value) => {
-    const boxFounded = missionData.find((item) => item.package_no === value);
-    console.log('___package_no', boxFounded);
-    // setBoxFounded(boxFounded);
-    setCurrentBox(boxFounded);
+    if (value && value.trim().toLowerCase() === "ok") {
+        // selectedItem.quantity = selectedItem.quantity - current;
+        setCurrentPage(1);
+    } else {
+      const boxFounded = missionData.find((item) => item.package_no === value);
+      console.log("___package_no", boxFounded);
+      // setBoxFounded(boxFounded);
+      if (boxFounded) {
+        setCurrentBox(boxFounded);
+        setValue("");
+      } else {
+        message.error("Không tìm thấy mã thùng, vui lòng thử lại.");
+      }
+    }
+  };
+  
+  const handleFocus = () => {
+    setTimeout(() => {
+      refAction?.current?.focus();
+    }, 500);
   };
 
   return (
-    <div className='flex gap-4'>
-      <div className='flex-1 bg-gray-50 p-4 rounded-lg '>
-        <p className='text-4xl text-gray-900 font-extrabold mb-4 text-center'>
+    <div className="flex gap-4">
+      <div className="flex-1 bg-gray-50 p-4 rounded-lg ">
+        <p className="text-4xl text-gray-900 font-extrabold mb-4 text-center">
           Nhập mã thùng
         </p>
         <Input
           ref={refAction}
-          placeholder='Trỏ chuột vào đây để nhập dữ liệu'
+          placeholder="Trỏ chuột vào đây để nhập dữ liệu"
           autoFocus
           onBlur={handleFocus}
-          className='text-center text-3xl font-bold h-15'
+          className="text-center text-3xl font-bold h-15"
           value={value}
-          size='large'
+          size="large"
           onChange={handleAction}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "Enter") {
               handleInputEnter(value);
             }
           }}
@@ -200,7 +212,7 @@ const SplitOrder: React.FC<any> = ({
           </div>
         </div> */}
 
-        <div className='grid grid-cols-2 gap-4 my-4 mt-10'>
+        <div className="grid grid-cols-2 gap-4 my-4 mt-10">
           {/* <div className="bg-blue-50 p-3 rounded-md border border-blue-100 text-center">
             <p className="text-sm text-blue-600 font-medium">KIT</p>
             <p className="text-2xl font-bold text-blue-700 tracking-wider">
@@ -215,28 +227,28 @@ const SplitOrder: React.FC<any> = ({
           </div> */}
           {boxFounded?.package_no ? (
             <>
-              <div className='text-center'>
-                <p className='text-xl text-gray-500 font-semibold'>Mã thùng</p>
-                <p className='font-bold text-2xl'>
-                  {boxFounded?.package_no || 'Not scanned'}
+              <div className="text-center">
+                <p className="text-xl text-gray-500 font-semibold">Mã thùng</p>
+                <p className="font-bold text-2xl">
+                  {boxFounded?.package_no || "Not scanned"}
                 </p>
               </div>
-              <div className='text-center'>
-                <p className='text-xl text-gray-500 font-semibold'>Mã vật tư</p>
-                <p className='font-bold text-2xl'>
-                  {boxFounded?.material_no || 'Not available'}
+              <div className="text-center">
+                <p className="text-xl text-gray-500 font-semibold">Mã vật tư</p>
+                <p className="font-bold text-2xl">
+                  {boxFounded?.material_no || "Not available"}
                 </p>
               </div>
-              <div className='text-center'>
-                <p className='text-xl text-gray-500 font-semibold'>Số lượng</p>
-                <p className='font-bold text-2xl'>
-                  {boxFounded?.quantity || '0'}
+              <div className="text-center">
+                <p className="text-xl text-gray-500 font-semibold">Số lượng</p>
+                <p className="font-bold text-2xl">
+                  {boxFounded?.quantity || "0"}
                 </p>
               </div>
-              <div className='text-center'>
-                <p className='text-xl text-gray-500 font-semibold'>Mã vị trí</p>
-                <p className='font-bold text-2xl'>
-                  {boxFounded?.supply_loc || 'Not assigned'}
+              <div className="text-center">
+                <p className="text-xl text-gray-500 font-semibold">Mã vị trí</p>
+                <p className="font-bold text-2xl">
+                  {boxFounded?.supply_loc || "Not assigned"}
                 </p>
               </div>
             </>
@@ -251,48 +263,48 @@ const SplitOrder: React.FC<any> = ({
           </div> */}
         </div>
       </div>
-      <div className='flex-1 bg-gray-50 p-4 rounded-lg'>
+      <div className="flex-1 bg-gray-50 p-4 rounded-lg">
         <div>
-          <p className='text-4xl text-gray-900 font-extrabold mb-4 text-center'>
+          <p className="text-4xl text-gray-900 font-extrabold mb-4 text-center">
             Chỉ thị lấy vật tư
           </p>
           <div
             className={`p-6 rounded-lg border-2 shadow-lg bg-blue-200 border-blue-400 text-blue-800`}
           >
-            <div className='flex items-center justify-center gap-2'>
-              <span className='text-3xl font-bold text-blue-600'>
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-3xl font-bold text-blue-600">
                 {boxFounded.quantity}
               </span>
-              <span className='text-xl text-gray-400'>/</span>
-              <span className='text-3xl font-bold text-gray-600'>
+              <span className="text-xl text-gray-400">/</span>
+              <span className="text-3xl font-bold text-gray-600">
                 {boxFounded.available_quantity}
               </span>
             </div>
           </div>
         </div>
         <div>
-          <p className='text-3xl text-gray-900 font-bold mb-6 text-center mt-10'>
+          <p className="text-3xl text-gray-900 font-bold mb-6 text-center mt-10">
             Thông tin Kit
           </p>
-          <div className='bg-white p-6 rounded-lg border shadow-sm'>
-            <div className='space-y-4'>
+          <div className="bg-white p-6 rounded-lg border shadow-sm">
+            <div className="space-y-4">
               {boxFounded?.kit &&
                 Object.entries(boxFounded.kit).map(([kitCode, quantity]) => (
                   <div
                     key={kitCode}
-                    className='flex justify-between items-center p-4 bg-gray-50 rounded border'
+                    className="flex justify-between items-center p-4 bg-gray-50 rounded border"
                   >
-                    <span className='font-bold text-xl text-gray-700'>
+                    <span className="font-bold text-xl text-gray-700">
                       {kitCode}
                     </span>
-                    <span className='font-bold text-2xl text-blue-600'>
+                    <span className="font-bold text-2xl text-blue-600">
                       {String(quantity)}
                     </span>
                   </div>
                 ))}
               {!boxFounded?.kit && (
-                <div className='text-center text-gray-500 py-6'>
-                  <span className='text-xl'></span>
+                <div className="text-center text-gray-500 py-6">
+                  <span className="text-xl"></span>
                 </div>
               )}
             </div>
@@ -313,29 +325,33 @@ const SplitOrder: React.FC<any> = ({
   );
 };
 
-const Inbound = ({ selectedItem, setCurrentPage, boxFounded }) => {
+const Inbound = ({ selectedItem, setCurrentPage, boxFounded, setCurrentBox }) => {
   const [form] = Form.useForm();
   const [showInput, setShowInput] = useState(true);
+  const [restNumber, setRestNumber] = useState(0);
   useEffect(() => {
     if (selectedItem) {
       form.setFieldsValue({
         sku: selectedItem.sku,
-        quantity: selectedItem.quantity?.split(' / ')?.[0] || '',
+        quantity: selectedItem.quantity?.split(" / ")?.[0] || "",
       });
     }
   }, [selectedItem, form]);
 
-  const handleSubmit = (values) => {
-    console.log('Form submitted:', values);
-    // Handle form submission here
-  };
+  useEffect(() => {
+    setRestNumber((boxFounded?.available_quantity || 0) - (boxFounded?.quantity || 0));
+  }, [boxFounded]);
+
 
   const refAction = useRef(null);
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
   useEffect(() => {
     const currentRef = refAction.current;
-    if (currentRef) {
+    if (selectedItem && currentRef) {
       currentRef.focus();
+      setTimeout(() => {
+        currentRef.focus();
+      }, 500);
     }
 
     return () => {
@@ -349,17 +365,6 @@ const Inbound = ({ selectedItem, setCurrentPage, boxFounded }) => {
   const handleAction = (e) => {
     const value = e.target.value.trim();
     setValue(value);
-    if (value === 'OK') {
-      return;
-    } else if (value === 'Cancel') {
-      setCurrentPage(0);
-    } else if (
-      value === '' ||
-      (/^\d{0,4}-?\d{0,4}$/.test(value) && value.length === 9)
-    ) {
-      form.setFieldValue('binCode', value);
-      setValue('');
-    }
   };
 
   useEffect(() => {
@@ -368,28 +373,57 @@ const Inbound = ({ selectedItem, setCurrentPage, boxFounded }) => {
     );
   }, [boxFounded]);
 
+  const handleFocus = () => {
+    setTimeout(() => {
+      refAction?.current?.focus();
+    }, 500);
+  };
+  const handleInputEnter = (value) => {
+    if (value && value.toLowerCase() === "ok") {
+      setCurrentPage(0);
+      setCurrentBox({});
+    } else if(!isNaN(Number(value))) {
+      setRestNumber(Number(value));
+    }
+    setValue("");
+  };
   return (
     <div>
-      <div className='space-y-6 mt-5 bg-gray-50 p-6 rounded-lg'>
-        <div className='bg-white p-6 rounded-lg border shadow-sm'>
-          <p className='text-3xl text-gray-900 font-bold mb-6 text-center'>
+      <div className="space-y-6 mt-5 bg-gray-50 p-6 rounded-lg">
+        <div className="bg-white p-6 rounded-lg border shadow-sm">
+          <p className="text-3xl text-gray-900 font-bold mb-6 text-center">
             Xử lý hồi kho
           </p>
 
+        <Input
+          ref={refAction}
+          placeholder="Trỏ chuột vào đây để nhập dữ liệu"
+          autoFocus
+          onBlur={handleFocus}
+          className="text-center text-3xl font-bold h-15 mb-6"
+          value={value}
+          size="large"
+          onChange={handleAction}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleInputEnter(value);
+            }
+          }}
+        />
           {/* Remaining Quantity Input */}
-          <div className='mb-6'>
+          <div className="mb-6">
             {!showInput ? (
-              <div className='space-y-4'>
-                <div className='bg-red-50 border border-red-200 rounded-lg p-8 text-center'>
-                  <p className='text-5xl font-bold text-red-600'>
+              <div className="space-y-4">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
+                  <p className="text-5xl font-bold text-red-600">
                     Xử lý thùng rỗng
                   </p>
                 </div>
                 <Button
-                  type='primary'
+                  type="primary"
                   danger
-                  className='w-full text-2xl'
-                  style={{ height: '80px' }}
+                  className="w-full text-2xl"
+                  style={{ height: "80px" }}
                   onClick={() => setShowInput(true)}
                 >
                   Quay lại giao diện nhập số lượng
@@ -397,35 +431,32 @@ const Inbound = ({ selectedItem, setCurrentPage, boxFounded }) => {
               </div>
             ) : (
               <div>
-                <label className='block text-3xl font-bold text-gray-700 mb-6'>
+                <label className="block text-3xl font-bold text-gray-700 mb-6">
                   Số lượng còn lại trong thùng
                 </label>
                 <Input
-                  type='number'
-                  value={
-                    (boxFounded?.available_quantity || 0) -
-                    (boxFounded?.quantity || 0)
-                  }
-                  className='w-full text-4xl font-bold text-center'
-                  style={{ height: '80px' }}
-                  placeholder='Remaining quantity'
+                  type="number"
+                  value={restNumber}
+                  className="w-full text-4xl font-bold text-center"
+                  style={{ height: "80px" }}
+                  placeholder="Remaining quantity"
                   readOnly
                 />
               </div>
             )}
           </div>
 
-          <div className='grid grid-cols-2 gap-6'>
-            <div className='text-center p-4 bg-gray-50 rounded-lg'>
-              <p className='text-lg text-gray-500 mb-2'>Mã thùng</p>
-              <p className='font-bold text-2xl'>
-                {boxFounded?.package_no || 'Not scanned'}
+          <div className="grid grid-cols-2 gap-6">
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <p className="text-lg text-gray-500 mb-2">Mã thùng</p>
+              <p className="font-bold text-2xl">
+                {boxFounded?.package_no || "Not scanned"}
               </p>
             </div>
-            <div className='text-center p-4 bg-gray-50 rounded-lg'>
-              <p className='text-lg text-gray-500 mb-2'>Mã vật tư</p>
-              <p className='font-bold text-2xl'>
-                {boxFounded?.material_no || 'Not available'}
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <p className="text-lg text-gray-500 mb-2">Mã vật tư</p>
+              <p className="font-bold text-2xl">
+                {boxFounded?.material_no || "Not available"}
               </p>
             </div>
             {/* <div className="text-center p-4 bg-gray-50 rounded-lg">
