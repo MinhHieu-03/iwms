@@ -2,7 +2,7 @@ import OutboundHeader from "@/components/OutboundHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { creatMissionData } from "@/lib/dummyData";
 import { ReloadOutlined } from "@ant-design/icons";
-import { Button, Input, Spin, Table } from "antd";
+import { Button, Input, message, Spin, Table } from "antd";
 import { Eye, Plus } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
@@ -44,7 +44,7 @@ const OrdersTab: React.FC = () => {
         setMissionData(data.metaData);
       }
     } catch (error) {
-      console.error('Error fetching mission data:', error);
+      console.error("Error fetching mission data:", error);
       setMissionData([]);
     }
   };
@@ -83,7 +83,7 @@ const SplitOrder: React.FC = () => {
         setMissionData(data.metaData);
       }
     } catch (error) {
-      console.error('Error fetching mission data:', error);
+      console.error("Error fetching mission data:", error);
       setMissionData([]);
     }
   };
@@ -155,22 +155,27 @@ const SplitOrder: React.FC = () => {
   const handleInputEnter = (value: string) => {
     if (value && value.length > 6) {
       setSku(value);
-      const boxFounded = missionData.find((item) => item?.material_no === value);
+      const boxFounded = missionData.find(
+        (item) => item?.material_no === value
+      );
       setCurrentBox(boxFounded || {});
     } else if (value && !isNaN(Number(value))) {
       let total = Number(value);
-      const convert = ptlDataShow.map((item) => {
-        if (!item) return item;
-        const oldPicked = item.picked_qty || 0;
-        if (item.material_no === sku && oldPicked < (item.ptl_qty || 0)) {
-          const need = (item.ptl_qty || 0) - oldPicked;
-          const countSet = Math.min(total, need);
-          item.picked_qty = oldPicked + countSet;
-          total = total - countSet;
+      const clone = [...ptlDataShow];
+      const index = clone.findIndex((item) => {
+        if (item.ptl_qty === total) {
+          item.picked_qty = total;
+
+          return true;
         }
-        return item;
+        return false;
       });
-      setPtlDataShow([...convert]);
+      if (index !== -1) {
+        clone[index].picked_qty = total;
+        setPtlDataShow([...clone]);
+      } else {
+        message.error("Không tìm thấy mã vật tư trong đơn hàng");
+      }
     }
     setValue("");
   };
@@ -218,9 +223,7 @@ const SplitOrder: React.FC = () => {
             </div>
           </div>
         </div>
-        <div
-          className={`flex-1 bg-gray-100 p-4 rounded-lg`}
-        >
+        <div className={`flex-1 bg-gray-100 p-4 rounded-lg`}>
           <p className="text-xl text-gray-500 font-semibold mb-5">
             Thông tin chia vật tư
           </p>
@@ -233,17 +236,6 @@ const SplitOrder: React.FC = () => {
     </div>
   );
 };
-
-x1_g1: [
-  {
-    material_no: "9920712",
-    ptl_qty: 100,
-    picked_qty: 0,
-    station: "SA01",
-    box_tp: "Ca bé",
-    trolley_tp: "Xe bé",
-  },
-];
 
 const ptlFakeData = [
   {
@@ -463,16 +455,24 @@ const TrolleyKit: React.FC<TrolleyKitProps> = ({ ptlDataShow, title }) => {
           ptlDataShow.map((item, index) => (
             <div
               key={item?.id || index}
-              className={`${(+(item?.picked_qty || 0)) < +(item?.ptl_qty || 0) ? "bg-gray-50" : "bg-green-100"} mb-2 p-2 px-5 rounded border flex justify-between text-xl`}
+              className={`${
+                +(item?.picked_qty || 0) < +(item?.ptl_qty || 0)
+                  ? "bg-gray-50"
+                  : "bg-green-100"
+              } mb-2 p-2 px-5 rounded border flex justify-between text-xl`}
             >
-              <div className=" text-gray-600 ">{item?.issue_ord_no || 'N/A'}</div>
+              <div className=" text-gray-600 ">
+                {item?.issue_ord_no || "N/A"}
+              </div>
               <div className="">
                 {+(item?.picked_qty || 0)}/{+(item?.ptl_qty || 0)}
               </div>
             </div>
           ))
         ) : (
-          <div className="text-center text-gray-500 py-4">No data available</div>
+          <div className="text-center text-gray-500 py-4">
+            No data available
+          </div>
         )}
       </div>
     </div>
