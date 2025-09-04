@@ -1,19 +1,16 @@
-import { RenderForm, TypeRenderForm } from "@/lib/render-form";
+import apiClient from "@/lib/axios";
+import { TypeRenderForm } from "@/lib/render-form";
 import {
   Button,
+  ConfigProvider,
+  Drawer,
   Form,
   Input,
   InputNumber,
-  ConfigProvider,
-  Select,
-  Drawer,
   Typography,
-  notification,
+  notification
 } from "antd";
-import apiClient from "@/lib/axios";
-import { keyBy, uniq } from "lodash";
-
-import { useTranslation } from "react-i18next";
+import { uniq } from "lodash";
 
 import { useEffect, useRef, useState } from "react";
 
@@ -68,20 +65,16 @@ type TAdd = {
   _handleFinish: (values: unknown) => void;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  type?: string;
+  masterData?: any;
 };
 
 const ModalAdd = ({
   title,
-  itemsRender = [],
-  _handleFinish,
   isOpen,
   setIsOpen,
-  type,
+  masterData,
 }: TAdd) => {
   const [form] = Form.useForm();
-  const [masterData, setMasterData] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [storageData, setStorageData] = useState<string[]>([]);
   const [storeUnits, setStoreUnits] = useState<string[]>([]);
   const [skuMaster, setSkuMaster] = useState<any>({});
@@ -103,22 +96,6 @@ const ModalAdd = ({
   const handleClose = () => {
     reset();
     setIsOpen(false);
-  };
-
-  // Fetch master data on component mount
-  const fetchMasterData = async () => {
-    try {
-      setLoading(true);
-      const { data } = await apiClient.get("/master-data");
-      if (data?.metaData?.length) {
-        setMasterData(keyBy(fakeData, "material_no"));
-      }
-      console.log("Master data fetched:", keyBy(data.metaData, "material_no"));
-    } catch (error) {
-      console.error("Error fetching master data:", error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const fetchStorageData = async () => {
@@ -173,10 +150,7 @@ const ModalAdd = ({
     try {
       // Validate the form before submitting
       await form.validateFields();
-
       const values = form.getFieldsValue();
-      console.log("Form submitted:", values);
-      console.log("Master data available:", masterData);
 
       const item = masterData[sku];
       // nguyên thùng
@@ -230,16 +204,6 @@ const ModalAdd = ({
           },
         ];
       }
-      // Additional validation for numeric fields
-      // if (isNaN(Number(values.quantity)) || Number(values.quantity) <= 0) {
-      //   form.setFields([
-      //     {
-      //       name: 'quantity',
-      //       errors: ['Số lượng phải là số hợp lệ lớn hơn 0'],
-      //     },
-      //   ]);
-      //   return;
-      // }
       const body = {
         product_name: values.sku,
         sku: values.sku,
@@ -321,11 +285,7 @@ const ModalAdd = ({
       text2void(`OK`, false);
     }
   };
-  useEffect(() => {
-    if (sku && masterData) {
-      handleSkuChange(sku, masterData);
-    }
-  }, [sku, masterData]);
+  
   const keepFocus = () => {
     setTimeout(() => {
       refAction.current?.focus();
@@ -334,10 +294,15 @@ const ModalAdd = ({
   const handleBlur = () => {
     keepFocus();
   };
+  
+  useEffect(() => {
+    if (sku && masterData) {
+      handleSkuChange(sku, masterData);
+    }
+  }, [sku, masterData]);
 
   useEffect(() => {
     if (isOpen) {
-      fetchMasterData();
       fetchStorageData();
       keepFocus();
 

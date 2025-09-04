@@ -1,40 +1,17 @@
-import {
-  ReloadOutlined,
-  DeleteOutlined,
-  UploadOutlined,
-  LoginOutlined,
-  LockFilled,
-  UserOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, ReloadOutlined } from "@ant-design/icons";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { keyBy, uniq } from "lodash";
 import type { UploadProps } from "antd";
-import { message, Table, Modal, Avatar } from "antd";
+import { message, Modal, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { Plus } from "lucide-react";
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { Button } from "@/components/ui/button";
+import OutboundHeader from "@/components/OutboundHeader";
 import BasePagination from "@/components/ui/antd-pagination";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import apiClient from "@/lib/axios";
-import { z } from "zod";
-import {
-  domain,
-  lang_key,
-  RenderCol,
-  renderCreateForm,
-  renderEditForm,
-  DataType,
-} from "./const";
-import ModalAdd from "./modal_create";
-import ModalEdit from "./modal_update";
-import { useToast } from "@/hooks/use-toast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { login, logout } from "@/store/authSlice";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   Form,
   FormControl,
@@ -43,15 +20,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import apiClient from "@/lib/axios";
+import { login } from "@/store/authSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Input } from "../ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import OutboundHeader from "@/components/OutboundHeader";
+import { DataType, domain, RenderCol, renderCreateForm } from "./const";
+import ModalAdd from "./modal_create";
 const { list, create, update, upload, download, remove } = domain;
 
 const InboundManagement = () => {
@@ -86,13 +64,37 @@ const InboundManagement = () => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   // TanStack Query for fetching data
+  // Convert fetchMasterData to TanStack Query
+  const {
+    data: masterData,
+    error: masterDataError,
+  } = useQuery({
+    queryKey: ["master-data"],
+    queryFn: async () => {
+      const { data } = await apiClient.get("/master-data");
+      if (data?.metaData?.length) {
+        return keyBy(data?.metaData, "material_no");
+      }
+      // // Fallback to fakeData if no real data
+      // return keyBy(fakeData, "material_no");
+    },
+    // enabled: isOpen, // Only fetch when modal is open
+    staleTime: 10 * 60 * 1000, // Data stays fresh for 5 minutes
+    gcTime: 10 * 60 * 1000, // Cache for 10 minutes
+  });
+
   const {
     data: queryData,
     isLoading: loading,
     error,
     refetch: requestDataList,
   } = useQuery({
-    queryKey: ['inbound-data', pageInfo.page, pageInfo.perPage, isAuthenticated],
+    queryKey: [
+      "inbound-data",
+      pageInfo.page,
+      pageInfo.perPage,
+      isAuthenticated,
+    ],
     queryFn: async () => {
       const params = {
         limit: pageInfo.perPage,
@@ -121,27 +123,7 @@ const InboundManagement = () => {
       .then((data) => {
         message.success(t("common.create_success"));
         setIsOpen(false);
-        queryClient.invalidateQueries({ queryKey: ['inbound-data'] });
-      })
-      .catch((err) => {
-        message.error(err?.response?.data?.message || err.message);
-      });
-  };
-
-  const _handleUpdateFinish = (values: { [key: string]: unknown }) => {
-    const payload = {
-      ...values,
-    };
-
-    apiClient
-      .patch(`${update}/${formEdit?.data?._id}`, payload)
-      .then((data) => {
-        message.success(t("common.update_success"));
-        setFormEdit({
-          isOpen: false,
-          data: {},
-        });
-        queryClient.invalidateQueries({ queryKey: ['inbound-data'] });
+        queryClient.invalidateQueries({ queryKey: ["inbound-data"] });
       })
       .catch((err) => {
         message.error(err?.response?.data?.message || err.message);
@@ -164,7 +146,7 @@ const InboundManagement = () => {
           await apiClient.delete(`${remove}`, {}, { ids: selectedRowKeys });
           message.success(t("common.delete_success"));
           setSelectedRowKeys([]);
-          queryClient.invalidateQueries({ queryKey: ['inbound-data'] });
+          queryClient.invalidateQueries({ queryKey: ["inbound-data"] });
         } catch (error) {
           console.error("Delete error:", error);
           message.error(t("common.delete_error"));
@@ -239,6 +221,7 @@ const InboundManagement = () => {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         _handleFinish={_handleFinish}
+        masterData={masterData}
       />
     </Card>
   );
@@ -315,7 +298,7 @@ const Header = ({
       apiClient
         .upload(`${upload}`, formData)
         .then(() => {
-          queryClient.invalidateQueries({ queryKey: ['inbound-data'] });
+          queryClient.invalidateQueries({ queryKey: ["inbound-data"] });
           message.success(t("common.upload_success"));
         })
         .catch((err) => {
