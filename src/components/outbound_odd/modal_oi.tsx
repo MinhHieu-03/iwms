@@ -224,7 +224,7 @@ const SplitOrder: React.FC<any> = ({
               <div className='text-center'>
                 <p className='text-xl text-gray-500 font-semibold'>Mã vật tư</p>
                 <p className='font-bold text-2xl'>
-                  {boxFounded?.material_no || 'Not available'}
+                  {boxFounded?.material_no || ''}
                 </p>
               </div>
               <div className='text-center'>
