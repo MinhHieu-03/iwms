@@ -11,6 +11,7 @@ import { User, LogOut, Building2, LogIn, Plus, Columns4, UploadCloudIcon } from 
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { login, logout } from "@/store/authSlice";
 import { useNavigate } from "react-router-dom";
+import { notification } from "antd";
 
 interface OutboundHeaderProps {
   selectedGate?: string;
@@ -157,10 +158,15 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
                   <SelectItem value="3">Cửa ra 3</SelectItem>
                 </SelectContent>
               </Select>
-              {type === 'ptl-odd' ?<Button variant="default" className="flex items-center gap-2">
+              {type === 'ptl-odd' ?<Button variant="default" onClick={() => {
+                notification.success({
+                  message: 'Thông báo',
+                  description: 'Động bộ thông tin kit lên hệ thống PTL thành công!',
+                });
+              }}>
                 <Columns4 className="h-4 w-4" />
                 Đồng bộ PTL
-              </Button>: null}
+              </Button> : null}
             </div>
 
             {/* Login or User info */}

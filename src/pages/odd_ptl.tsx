@@ -204,15 +204,15 @@ const SplitOrder: React.FC = () => {
             }}
           />
 
-          <div>
+          {boxFounded?.material_no ? <div>
             <p className="text-3xl text-gray-900 font-bold mt-6 text-center">
-              Thông tin chia vật tư
+              Thông tin vật tư
             </p>
             <div className="grid grid-cols-2 gap-4 my-4">
               <div className="text-center">
                 <p className="text-xl text-gray-500 font-semibold">Mã vật tư</p>
                 <p className="font-bold text-2xl">
-                  {boxFounded?.material_no || "Not available"}
+                  {boxFounded?.material_no || ""}
                 </p>
               </div>
               <div className="text-center">
@@ -222,7 +222,7 @@ const SplitOrder: React.FC = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </div> : null}
         </div>
         <div className={`flex-1 bg-gray-100 p-4 rounded-lg`}>
           <p className="text-xl text-gray-500 font-semibold mb-5">
@@ -230,7 +230,7 @@ const SplitOrder: React.FC = () => {
           </p>
           <TrolleyKit
             ptlDataShow={ptlDataShow}
-            title={<span>{boxFounded?.material_no || "Not available"}</span>}
+            title={<span>{boxFounded?.material_no || ""}</span>}
           />
         </div>
       </div>
@@ -472,7 +472,7 @@ const TrolleyKit: React.FC<TrolleyKitProps> = ({ ptlDataShow, title }) => {
           ))
         ) : (
           <div className="text-center text-gray-500 py-4">
-            No data available
+            
           </div>
         )}
       </div>
