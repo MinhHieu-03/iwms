@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { User, LogOut, Building2, LogIn } from "lucide-react";
+import { User, LogOut, Building2, LogIn, Plus, BookUp2Icon, UploadCloudIcon } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { login, logout } from "@/store/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -15,13 +15,15 @@ import { useNavigate } from "react-router-dom";
 interface OutboundHeaderProps {
   selectedGate?: string;
   title?: string;
+  type?: "default" | "ptl-odd";
   onGateChange?: (gate: string) => void;
 }
 
 const OutboundHeader: React.FC<OutboundHeaderProps> = ({
   selectedGate = "1",
   onGateChange,
-  title = ""
+  title = "",
+  type = "default"
 }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -155,9 +157,10 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
                   <SelectItem value="3">Cửa ra 3</SelectItem>
                 </SelectContent>
               </Select>
-              {/* <Badge variant="outline" className="text-blue-600 border-blue-200">
-                Gate {currentGate}
-              </Badge> */}
+              {type === 'ptl-odd' ?<Button variant="default" className="flex items-center gap-2">
+                <UploadCloudIcon className="h-4 w-4" />
+                Load Kit
+              </Button>: null}
             </div>
 
             {/* Login or User info */}
