@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { User, LogOut, Building2, LogIn, Plus, BookUp2Icon, UploadCloudIcon } from "lucide-react";
+import { User, LogOut, Building2, LogIn, Plus, Columns4, UploadCloudIcon } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { login, logout } from "@/store/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -158,8 +158,8 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
                 </SelectContent>
               </Select>
               {type === 'ptl-odd' ?<Button variant="default" className="flex items-center gap-2">
-                <UploadCloudIcon className="h-4 w-4" />
-                Load Kit
+                <Columns4 className="h-4 w-4" />
+                Đồng bộ Kit
               </Button>: null}
             </div>
 
