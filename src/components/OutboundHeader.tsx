@@ -159,7 +159,7 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
               </Select>
               {type === 'ptl-odd' ?<Button variant="default" className="flex items-center gap-2">
                 <Columns4 className="h-4 w-4" />
-                Đồng bộ Kit
+                Đồng bộ PTL
               </Button>: null}
             </div>
 
