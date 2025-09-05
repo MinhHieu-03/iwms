@@ -59,6 +59,7 @@ const OrdersTab: React.FC = () => {
         selectedGate={selectedGate}
         onGateChange={handleGateChange}
         title="OI chia lẻ hàng lẻ"
+        type="ptl-odd"
       />
       <Card>
         <SplitOrder />
