@@ -63,22 +63,17 @@ const InboundManagement = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
-  // TanStack Query for fetching data
-  // Convert fetchMasterData to TanStack Query
   const {
     data: masterData,
-    error: masterDataError,
   } = useQuery({
-    queryKey: ["master-data"],
+    queryKey: ["material-mst"],
     queryFn: async () => {
-      const { data } = await apiClient.get("/master-data");
+      const { data } = await apiClient.get("/material-mst");
       if (data?.metaData?.length) {
         return keyBy(data?.metaData, "material_no");
       }
-      // // Fallback to fakeData if no real data
-      // return keyBy(fakeData, "material_no");
+      return {};
     },
-    // enabled: isOpen, // Only fetch when modal is open
     staleTime: 10 * 60 * 1000, // Data stays fresh for 5 minutes
     gcTime: 10 * 60 * 1000, // Cache for 10 minutes
   });

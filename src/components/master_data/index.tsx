@@ -107,7 +107,7 @@ const App = () => {
     };
 
     apiClient
-      .patch(`${update}/${formEdit?.data?._id}`, payload)
+      .patch(`${update}/${formEdit?.data?.material_no}`, payload)
       .then((data) => {
         message.success(t('common.update_success'));
         setFormEdit({
@@ -190,21 +190,21 @@ const App = () => {
             // scroll={{ x: 620, y: 600 }}
             scroll={{ x:  'calc(100vw - 340px)' }}
             // style={{ minWidth: '1520px' }}
-            onRow={(record, rowIndex) => {
-            return {
-              onClick: (e) => {
-                if (
-                  (e.target as HTMLElement).closest(".ant-checkbox-wrapper")
-                ) {
-                  return;
-                }
-                setFormEdit({
-                  isOpen: true,
-                  data: record,
-                });
-              },
-            };
-          }}
+          //   onRow={(record, rowIndex) => {
+          //   return {
+          //     onClick: (e) => {
+          //       if (
+          //         (e.target as HTMLElement).closest(".ant-checkbox-wrapper")
+          //       ) {
+          //         return;
+          //       }
+          //       setFormEdit({
+          //         isOpen: true,
+          //         data: record,
+          //       });
+          //     },
+          //   };
+          // }}
         />
         </div>
         <BasePagination
@@ -216,7 +216,7 @@ const App = () => {
           }
         />
       </CardContent>
-      <ModalAdd
+      {/* <ModalAdd
         title={t("master_data.create_master_data")}
         itemsRender={renderCreateForm(dataRole, dataList)}
         isOpen={isOpen}
@@ -229,7 +229,7 @@ const App = () => {
         formEdit={formEdit}
         setFormEdit={setFormEdit}
         _handleFinish={_handleUpdateFinish}
-      />
+      /> */}
     </Card>
   );
 };
@@ -295,7 +295,7 @@ const Header = ({
       >
         <CardTitle>{t(lang_key)}</CardTitle>
         <div className="flex items-center">
-          <Button onClick={() => setIsOpen(true)} variant="default">
+          {/* <Button onClick={() => setIsOpen(true)} variant="default">
             <Plus className="mr-2 h-4 w-4" />
             {t("btn.create_new")}
           </Button>
@@ -308,7 +308,7 @@ const Header = ({
           <Button className="ml-2" onClick={handleReload} variant="outline">
             <ReloadOutlined />
             {t("btn.reload")}
-          </Button>
+          </Button> */}
         </div>
       </div>
     </CardHeader>

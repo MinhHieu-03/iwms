@@ -117,23 +117,24 @@ const ModalAdd = ({
       bin_code: "",
     });
     const item = masterData[sku];
+    console.log("handleSkuChange item", masterData, sku, item);
     setSkuMaster(item);
     if (item) {
-      if (item.new_pk_style == 2) {
+      if (item.flg1 == 2) {
         form.setFieldsValue({
           sku: item.material_no,
           storeMethod: "Carton",
           packingMethod: "Bag",
           name: item.material_nm,
-          bin_code: item.material_no,
+          // bin_code: item.material_no,
         });
-      } else if (item.new_pk_style == 1) {
+      } else if (item.flg1 == 1) {
         form.setFieldsValue({
           sku: item.material_no,
           storeMethod: "Plastic Bin",
           packingMethod: "Bag",
           name: item.material_nm,
-          bin_code: item.material_no,
+          // bin_code: item.material_no,
         });
       }
       console.log("Item found in master data:", item);
@@ -238,15 +239,15 @@ const ModalAdd = ({
       // setCurrent(0);
       handleClose();
       return;
-    } else if (!isNaN(value) && oldSKU && value.length != 7) {
+    } else if (!isNaN(value) && oldSKU && value.length != 8  && value.length != 7) {
       // is number
-      if (listItem.length === skuMaster?.pk_style2 - 1) {
+      if (listItem.length === skuMaster?.max_pk - 1) {
         setCurrentField("bin");
       }
       setCurrentField("sku_bin");
       //
 
-      if (listItem.length >= skuMaster?.pk_style2) {
+      if (listItem.length >= skuMaster?.max_pk) {
         text2void(`Quá số lượng cho phép`);
         setValue("");
         return;
@@ -490,7 +491,7 @@ const ModalAdd = ({
                         {listItem.reduce((sum, item) => sum + item.quantity, 0)}{" "}
                       </span>
                       <span className="text-lg font-bold text-blue-800">
-                        {listItem.length} / {skuMaster?.pk_style2}
+                        {listItem.length} / {skuMaster?.max_pk}
                       </span>
                     </div>
                   </div>
@@ -602,3 +603,19 @@ const fakeData = [
 // flg1 1 là bỏ nguyên thùng
 // 2 mở thùng carton cho vào thùng nhựa => e cần biết bỏ tối đa bao nhiêu túi
 // 3 cho thùng carton vào thùng nhựa => e cần biết bỏ tối đa bao nhiêu thùng
+
+
+// material_no	nchar(26)	Mã vật tư( tối đa 26 ký tự)
+// material_nm	nchar(15)	Tên vật tư
+// material_tp	nchar(1)	Kiểu vật tư
+// pk_style	int	200 (item) / túi 
+// pk_style1	int	2000 (item) / thùng carton
+// pk_style2	int	Số lượng lớn nhất của túi/thùng carton được đóng gói trong thùng nhựa 
+// flg	int	Cờ đánh dấu vât tư cấp theo  phương thức tự động(Smart warehouse) hoặc thủ công( người cấp)
+// flg1	int	1 | 2| 3
+// data2	nchar(50)	
+// data3	nchar(50)	
+// comment	nchar(26)	
+// user_id	nchar(8)	
+// ent_dt	datetime	
+// upd_dt	datetime	

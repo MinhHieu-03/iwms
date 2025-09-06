@@ -9,8 +9,12 @@ export interface DataType {
   material_nm: string;
   material_tp: string;
   pk_style: number | string;
+  pk_style1: number | string;
   new_pk_style: number | string;
   flg: number | string;
+  flg1: number | string;
+  data2: string;
+  data3: string;
   comment: string;
   user_id: string;
   ent_dt: string;
@@ -19,9 +23,9 @@ export interface DataType {
 }
 
 export const domain = {
-  list: "master-data/list",
+  list: "material-mst/list",
   create: "master-data",
-  update: "master-data",
+  update: "material-mst",
   upload: "master-data/upload",
   download: "master-data/download",
   remove: "master-data",
@@ -47,24 +51,59 @@ export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
     },
     {
       dataIndex: "pk_style",
-      title: t(`${lang_key}.pk_style`),
-      width: 190,
+      title: t(`pk_style`),
+      width: 150,
     },
     {
-      dataIndex: "new_pk_style",
-      title: t(`${lang_key}.new_pk_style`),
-      width: 190,
+      dataIndex: "pk_style1",
+      title: t(`pk_style1`),
+      width: 150,
     },
     {
-      dataIndex: "pcs_bag",
-      title: 'PCS/Bag',
-      width: 190,
+      dataIndex: "max_pk",
+      title: t(`max_pk`),
+      width: 150,
+    },
+    {
+      dataIndex: "flg",
+      title: t(`flg`),
+      width: 100,
+    },
+    {
+      dataIndex: "flg1",
+      title: t(`flg1`),
+      width: 100,
+    },
+    {
+      dataIndex: "data2",
+      title: t(`data2`),
+      width: 150,
+    },
+    {
+      dataIndex: "data3",
+      title: t(`data3`),
+      width: 150,
     },
     {
       dataIndex: "comment",
-      title: t(`${lang_key}.comment`),
+      title: t(`comment`),
       width: 200,
       ellipsis: true,
+    },
+    {
+      dataIndex: "user_id",
+      title: t(`user_id`),
+      width: 150,
+    },
+    {
+      dataIndex: "ent_dt",
+      title: t(`ent_dt`),
+      width: 180,
+    },
+    {
+      dataIndex: "upd_dt",
+      title: t(`upd_dt`),
+      width: 180,
     },
   ];
 };
@@ -141,28 +180,41 @@ export const renderEditForm = (dataRole: unknown) => {
       type: "number",
     },
     {
-      label: "Qui cách đóng gói mới",
-      name: "new_pk_style",
+      label: "Qui cách đóng gói 1",
+      name: "pk_style1",
       type: "number",
     },
     {
-      label: "PCS/Bag",
-      name: "pcs_bag",
+      label: "Qui cách đóng gói 2",
+      name: "pk_style2",
       type: "number",
     },
-    // {
-    //   label: "Flag",
-    //   name: "flg",
-    //   type: "number",
-    // },
-    // {
-    //   label: "Comment",
-    //   name: "comment",
-    //   type: "textarea",
-    // },
-    // {
-    //   label: "User ID",
-    //   name: "user_id",
-    // },
+    {
+      label: "Flag",
+      name: "flg",
+      type: "number",
+    },
+    {
+      label: "Flag 1",
+      name: "flg1",
+      type: "number",
+    },
+    {
+      label: "Data 2",
+      name: "data2",
+    },
+    {
+      label: "Data 3",
+      name: "data3",
+    },
+    {
+      label: "Ghi chú",
+      name: "comment",
+      type: "textarea",
+    },
+    {
+      label: "User ID",
+      name: "user_id",
+    },
   ];
 };
