@@ -16,7 +16,9 @@ const { RangePicker } = DatePicker;
 import { Eye, Plus, Filter, X } from "lucide-react";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs, { Dayjs } from "dayjs";
+import { debounce } from "lodash";
 
 import { Button } from "@/components/ui/button";
 import BasePagination from "@/components/ui/antd-pagination";
@@ -45,11 +47,9 @@ const IssueTimeScheduleTable = ({
   setKitData,
 }) => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const [pageInfo, setPageInfo] = useState({ page: 1, perPage: 10 });
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [loading, setLoading] = useState(false);
-  const [total, setTotal] = useState<number>(0);
-  const [dataList, setDataList] = useState<IssueTimeScheduleDataType[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>(
     sessionStorage.getItem("activeKit")
       ? JSON.parse(sessionStorage.getItem("activeKit") || "[]")
@@ -62,10 +62,11 @@ const IssueTimeScheduleTable = ({
 
   // Filter states
   const [filters, setFilters] = useState({
-    status: null as string | null,
+    issue_ord_no: null as string | null,
     timeIssueRange: null as [Dayjs, Dayjs] | null,
     aReqdTimeRange: null as [Dayjs, Dayjs] | null,
   });
+  const [debouncedFilters, setDebouncedFilters] = useState(filters);
   const [showFilters, setShowFilters] = useState(false);
   const [formEdit, setFormEdit] = useState<{
     isOpen: boolean;
@@ -74,6 +75,64 @@ const IssueTimeScheduleTable = ({
     isOpen: false,
     data: {},
   });
+
+  // Debounce filters to avoid too many API calls
+  const debouncedSetFilters = useCallback(
+    debounce((newFilters) => {
+      setDebouncedFilters(newFilters);
+    }, 1000),
+    []
+  );
+
+  useEffect(() => {
+    debouncedSetFilters(filters);
+  }, [filters, debouncedSetFilters]);
+
+  // TanStack Query for data fetching
+  const {
+    data: queryData,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['issueTimeSchedule', pageInfo.page, pageInfo.perPage, debouncedFilters],
+    queryFn: async () => {
+      try {
+        const { data } = await apiClient.post(list, {
+          limit: pageInfo.perPage,
+          page: pageInfo.page,
+          filter: debouncedFilters
+        });
+        return {
+          metaData: data.metaData,
+          total: data.total,
+        };
+      } catch (apiError) {
+        console.warn("API not available, using mock data:", apiError);
+        // You can implement mock data fallback here if needed
+        throw apiError;
+      }
+    },
+    retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Derived state from query data
+  const dataList = useMemo(() => {
+    if (!queryData?.metaData) return [];
+    
+    const activeKit = sessionStorage.getItem("activeKit");
+    const activeElement = activeKit ? JSON.parse(activeKit) : [];
+    
+    return queryData.metaData.map((i) => {
+      if (activeElement.includes(i.issue_ord_no)) {
+        return { ...i, status: "in progress", key: i._id };
+      }
+      return { ...i, key: i._id };
+    });
+  }, [queryData]);
+
+  const total = queryData?.total || 0;
 
   const [detailModal, setDetailModal] = useState<{
     isOpen: boolean;
@@ -104,8 +163,8 @@ const IssueTimeScheduleTable = ({
     }
 
     // Apply status filter
-    if (filters.status) {
-      filtered = filtered.filter((item) => item.status === filters.status);
+    if (filters.issue_ord_no) {
+      filtered = filtered.filter((item) => item.issue_ord_no === filters.issue_ord_no);
     }
 
     // Apply time_issue date range filter
@@ -137,47 +196,15 @@ const IssueTimeScheduleTable = ({
     return filtered;
   }, [dataList, searchText, filters]);
 
-  const requestDataList = useCallback(async () => {
-    try {
-      setLoading(true);
-      // Try API first, fallback to mock data if it fails
-      try {
-        const { data } = await apiClient.post(list, {
-          limit: pageInfo.perPage,
-          page: pageInfo.page,
-        });
-        
-        setDataList(data.metaData);
-        setTotal(data.total);
-
-        const activeKit = sessionStorage.getItem("activeKit");
-        const activeElement = activeKit ? JSON.parse(activeKit) : [];
-        setSelectedRowKeys(activeElement);
-        setDataList(
-          data.metaData.map((i) => {
-            if (activeElement.includes(i.issue_ord_no)) {
-              return { ...i, status: "in progress", key: i._id };
-            }
-            return { ...i, key: i._id };
-          })
-        );
-        setTotal(data.metaData.length);
-      } catch (apiError) {
-        console.warn("API not available, using mock data:", apiError);
-        // Using mock data as fallback
-      }
-    } catch (error) {
-      console.error(error);
+  // Show error message when query fails
+  useEffect(() => {
+    if (error) {
       message.error(t("common.error.fetch_data"));
-      // Fallback to mock data on error
-    } finally {
-      setLoading(false);
     }
-  }, [pageInfo.page, pageInfo.perPage, t]);
+  }, [error, t]);
 
   const _handleFinish = async (values: FormValues) => {
     try {
-      setLoading(true);
       const payload = {
         ...values,
       };
@@ -192,18 +219,13 @@ const IssueTimeScheduleTable = ({
       }
 
       setIsOpen(false);
-      requestDataList();
+      refetch(); // Refetch data instead of calling requestDataList
     } catch (error) {
       console.error(error);
       message.error(t("common.error.create"));
-    } finally {
-      setLoading(false);
     }
-  };
-
-  const _handleUpdateFinish = async (values: FormValuesEdit) => {
+  };  const _handleUpdateFinish = async (values: FormValuesEdit) => {
     try {
-      setLoading(true);
       const payload = {
         ...values,
       };
@@ -218,18 +240,15 @@ const IssueTimeScheduleTable = ({
       }
 
       setFormEdit({ isOpen: false, data: {} });
-      requestDataList();
+      refetch(); // Refetch data instead of calling requestDataList
     } catch (error) {
       console.error(error);
       message.error(t("common.error.update"));
-    } finally {
-      setLoading(false);
     }
   };
 
   const _handleCancel = async (id: string) => {
     try {
-      setLoading(true);
       // Try API call first
       try {
         await apiClient.delete(`${remove}/${id}`);
@@ -239,12 +258,10 @@ const IssueTimeScheduleTable = ({
         message.success("Record deleted successfully (using mock data)");
       }
 
-      requestDataList();
+      refetch(); // Refetch data instead of calling requestDataList
     } catch (error) {
       console.error(error);
       message.error(t("common.error.delete"));
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -264,11 +281,13 @@ const IssueTimeScheduleTable = ({
 
   // Clear all filters
   const clearFilters = () => {
-    setFilters({
-      status: null,
+    const clearedFilters = {
+      issue_ord_no: null,
       timeIssueRange: null,
       aReqdTimeRange: null,
-    });
+    };
+    setFilters(clearedFilters);
+    setDebouncedFilters(clearedFilters);
     setSearchText("");
   };
 
@@ -276,7 +295,7 @@ const IssueTimeScheduleTable = ({
   const hasActiveFilters = useMemo(() => {
     return (
       searchText ||
-      filters.status ||
+      filters.issue_ord_no ||
       filters.timeIssueRange ||
       filters.aReqdTimeRange
     );
@@ -335,30 +354,26 @@ const IssueTimeScheduleTable = ({
       content: `Are you sure you want to delete ${selectedRowKeys.length} selected items?`,
       onOk: async () => {
         try {
-          setLoading(true);
           // In a real application, you would call the API for bulk delete
           console.log("Bulk deleting:", selectedRowKeys);
           message.success(
             `${selectedRowKeys.length} items deleted successfully`
           );
           setSelectedRowKeys([]);
-          requestDataList();
+          refetch(); // Refetch data instead of calling requestDataList
         } catch (error) {
           console.error(error);
           message.error("Failed to delete items");
-        } finally {
-          setLoading(false);
         }
       },
     });
   };
 
   useEffect(() => {
-    requestDataList();
     window.addEventListener("beforeunload", () => {
       sessionStorage.clear();
     });
-  }, [requestDataList]);
+  }, []);
 
   console.log("selectedRowKeys", selectedRowKeys);
 
@@ -410,7 +425,7 @@ const IssueTimeScheduleTable = ({
             rowInProgressLength={rowInProgress.length}
             onAccessOI={() => setIsOpenOI(true)}
             onCreateOrder={orderPicking}
-            onRefresh={requestDataList}
+            onRefresh={refetch}
           />
         </CardHeader>
         <CardContent>
@@ -456,26 +471,20 @@ const IssueTimeScheduleTable = ({
             {showFilters && (
               <div className="bg-gray-50 p-4 rounded-lg border">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Status Filter */}
+                  {/* Kit No Filter */}
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Trạng thái
+                      Kit No.
                     </label>
-                    <AntSelect
-                      placeholder="Lọc theo trạng thái"
-                      value={filters.status}
-                      onChange={(value) =>
-                        setFilters((prev) => ({ ...prev, status: value }))
+                    <Input
+                      placeholder="Lọc theo Kit No."
+                      value={filters.issue_ord_no}
+                      onChange={(e) =>
+                        setFilters((prev) => ({ ...prev, issue_ord_no: e.target.value }))
                       }
                       allowClear
                       style={{ width: "100%" }}
-                    >
-                      <AntSelect.Option value="fill">Đã xuất</AntSelect.Option>
-                      <AntSelect.Option value="in progress">
-                        Đang xuất
-                      </AntSelect.Option>
-                      <AntSelect.Option value="new">Mới</AntSelect.Option>
-                    </AntSelect>
+                    />
                   </div>
 
                   {/* Issue Time Range */}
@@ -544,7 +553,7 @@ const IssueTimeScheduleTable = ({
             columns={columns}
             dataSource={filteredData}
             rowSelection={rowSelection}
-            loading={loading}
+            loading={isLoading}
             scroll={{ x: 1800 }}
             pagination={false}
             size="middle"
@@ -574,7 +583,7 @@ const IssueTimeScheduleTable = ({
         isOpen={isOpen}
         onCancel={() => setIsOpen(false)}
         onFinish={_handleFinish}
-        loading={loading}
+        loading={isLoading}
       />
 
       {/* Edit Modal */}
@@ -582,7 +591,7 @@ const IssueTimeScheduleTable = ({
         isOpen={formEdit.isOpen}
         onCancel={() => setFormEdit({ isOpen: false, data: {} })}
         onFinish={_handleUpdateFinish}
-        loading={loading}
+        loading={isLoading}
         data={formEdit.data as IssueTimeScheduleDataType}
       />
 
