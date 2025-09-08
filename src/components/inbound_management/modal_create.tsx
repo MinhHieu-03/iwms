@@ -8,7 +8,7 @@ import {
   Input,
   InputNumber,
   Typography,
-  notification
+  notification,
 } from "antd";
 import { uniq } from "lodash";
 
@@ -68,12 +68,7 @@ type TAdd = {
   masterData?: any;
 };
 
-const ModalAdd = ({
-  title,
-  isOpen,
-  setIsOpen,
-  masterData,
-}: TAdd) => {
+const ModalAdd = ({ title, isOpen, setIsOpen, masterData }: TAdd) => {
   const [form] = Form.useForm();
   const [storageData, setStorageData] = useState<string[]>([]);
   const [storeUnits, setStoreUnits] = useState<string[]>([]);
@@ -117,16 +112,15 @@ const ModalAdd = ({
       bin_code: "",
     });
     const item = masterData[sku];
-    console.log("handleSkuChange item", masterData, sku, item);
     setSkuMaster(item);
     if (item) {
+      text2void(`OK`, false);
       if (item.flg1 == 2) {
         form.setFieldsValue({
           sku: item.material_no,
           storeMethod: "Carton",
           packingMethod: "Bag",
           name: item.material_nm,
-          // bin_code: item.material_no,
         });
       } else if (item.flg1 == 1) {
         form.setFieldsValue({
@@ -134,10 +128,8 @@ const ModalAdd = ({
           storeMethod: "Plastic Bin",
           packingMethod: "Bag",
           name: item.material_nm,
-          // bin_code: item.material_no,
         });
       }
-      console.log("Item found in master data:", item);
     } else {
       form.setFieldsValue({
         sku: "",
@@ -211,7 +203,7 @@ const ModalAdd = ({
         bin_code: values.bin_code,
         store: storeModel,
       };
-      await apiClient.post('/inbound', body);
+      await apiClient.post("/inbound", body);
       console.log("Form submitted:", body);
       reset();
     } catch (error) {
@@ -225,11 +217,43 @@ const ModalAdd = ({
     }
   };
 
-  const handleAction = (e) => {
-    const value = e.target.value.trim();
-    setValue(value);
-  };
+  const inputQuantity = (value) => {
+    // is number
+    if (listItem.length === skuMaster?.max_pk - 1) {
+      setCurrentField("bin");
+    }
+    if (listItem.length >= skuMaster?.max_pk) {
+      text2void(`Quá số lượng cho phép`);
+      setValue("");
+      return;
+    }
+    const per_scan = form.getFieldValue("per_scan");
+    if (per_scan && value !== per_scan) {
+      text2void(`Số lượng quét không hợp lệ`);
+      setValue("");
+      return;
+    }
+    if (!Number.isInteger(Number(value)) || Number(value) <= 0) {
+      text2void(`Số lượng không đúng định dạng`);
+      setValue("");
+      return;
+    }
+    
+    setCurrentField("sku_bin");
+    const oldValue = form.getFieldValue("quantity") || 0;
+    form.setFieldValue("quantity", +oldValue + Number(value));
 
+    form.setFieldValue("per_scan", value);
+    setListItem((prev) => [
+      ...prev,
+      {
+        sku: sku,
+        quantity: Number(value),
+      },
+    ]);
+    setValue("");
+    text2void(`OK`, false);
+  };
   const handleActionEnter = (value) => {
     const oldSKU = form.getFieldValue("sku");
     if (value === "OK") {
@@ -239,54 +263,37 @@ const ModalAdd = ({
       // setCurrent(0);
       handleClose();
       return;
-    } else if (!isNaN(value) && oldSKU && value.length != 8  && value.length != 7) {
-      // is number
-      if (listItem.length === skuMaster?.max_pk - 1) {
-        setCurrentField("bin");
-      }
-      setCurrentField("sku_bin");
-      //
-
-      if (listItem.length >= skuMaster?.max_pk) {
-        text2void(`Quá số lượng cho phép`);
-        setValue("");
-        return;
-      }
-      const oldValue = form.getFieldValue("quantity") || 0;
-      form.setFieldValue("quantity", +oldValue + Number(value));
-      setListItem((prev) => [
-        ...prev,
-        {
-          sku: sku,
-          quantity: Number(value),
-        },
-      ]);
-      setValue("");
-    } else if (value.startsWith("B")) {
+    } else if (
+      !isNaN(value) &&
+      oldSKU &&
+      value.length != 8 &&
+      value.length != 7
+    ) {
+      inputQuantity(value);
+    } else if (isValidBinCode(value)) {
       // is Bin ocode
       form.setFieldValue("bin_code", value);
       setCurrentField("bt");
       setValue("");
+      text2void(`OK`, false);
     } else {
       if (!oldSKU) {
         form.setFieldValue("sku", value);
       } else if (oldSKU !== value) {
-        text2void(`Không hợp lệ `);
+        text2void(`Không hợp lệ`);
         notification.error({
-          message: "không hợp lệ",
+          message: "Không hợp lệ",
           description: "Vui lòng kiểm tra lại",
         });
+        setValue("");
         return;
       }
-      setCurrentField("qty");
       setValue("");
     }
 
-    if (value && "speechSynthesis" in window) {
-      text2void(`OK`, false);
-    }
+    setValue("");
   };
-  
+
   const keepFocus = () => {
     setTimeout(() => {
       refAction.current?.focus();
@@ -295,7 +302,7 @@ const ModalAdd = ({
   const handleBlur = () => {
     keepFocus();
   };
-  
+
   useEffect(() => {
     if (sku && masterData) {
       handleSkuChange(sku, masterData);
@@ -361,7 +368,7 @@ const ModalAdd = ({
                     size="large"
                     style={{ fontSize: "20px" }}
                     value={value}
-                    onChange={handleAction}
+                    onChange={(e) => setValue(e.target.value.trim())}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         handleActionEnter(value);
@@ -533,7 +540,7 @@ const mapMessage = {
   sku: "Nhập mã vật tư",
   qty: "Nhập số lượng",
   bin: "Nhập mã thùng",
-  sku_bin: "Nhập mã vật tư /mã thùng",
+  sku_bin: "Nhập mã vật tư / mã thùng",
   bt: "Đặt thùng lên băng tải",
 };
 
@@ -604,18 +611,21 @@ const fakeData = [
 // 2 mở thùng carton cho vào thùng nhựa => e cần biết bỏ tối đa bao nhiêu túi
 // 3 cho thùng carton vào thùng nhựa => e cần biết bỏ tối đa bao nhiêu thùng
 
-
 // material_no	nchar(26)	Mã vật tư( tối đa 26 ký tự)
 // material_nm	nchar(15)	Tên vật tư
 // material_tp	nchar(1)	Kiểu vật tư
-// pk_style	int	200 (item) / túi 
+// pk_style	int	200 (item) / túi
 // pk_style1	int	2000 (item) / thùng carton
-// pk_style2	int	Số lượng lớn nhất của túi/thùng carton được đóng gói trong thùng nhựa 
+// pk_style2	int	Số lượng lớn nhất của túi/thùng carton được đóng gói trong thùng nhựa
 // flg	int	Cờ đánh dấu vât tư cấp theo  phương thức tự động(Smart warehouse) hoặc thủ công( người cấp)
 // flg1	int	1 | 2| 3
-// data2	nchar(50)	
-// data3	nchar(50)	
-// comment	nchar(26)	
-// user_id	nchar(8)	
-// ent_dt	datetime	
-// upd_dt	datetime	
+// data2	nchar(50)
+// data3	nchar(50)
+// comment	nchar(26)
+// user_id	nchar(8)
+// ent_dt	datetime
+// upd_dt	datetime
+
+function isValidBinCode(str) {
+  return /^B\d{6}$/.test(str);
+}

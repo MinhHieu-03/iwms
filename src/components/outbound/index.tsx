@@ -142,14 +142,14 @@ const IssueTimeScheduleTable = ({
       setLoading(true);
       // Try API first, fallback to mock data if it fails
       try {
-        // const { data } = await apiClient.post(list, {
-        //   limit: pageInfo.perPage,
-        //   page: pageInfo.page,
-        // });
-        // setDataList(data.metaData);
-        // setTotal(data.total);
+        const { data } = await apiClient.post(list, {
+          limit: pageInfo.perPage,
+          page: pageInfo.page,
+        });
+        
+        setDataList(data.metaData);
+        setTotal(data.total);
 
-        const data = await creatKitData();
         const activeKit = sessionStorage.getItem("activeKit");
         const activeElement = activeKit ? JSON.parse(activeKit) : [];
         setSelectedRowKeys(activeElement);

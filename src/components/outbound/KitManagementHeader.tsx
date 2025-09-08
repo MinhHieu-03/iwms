@@ -25,7 +25,7 @@ const KitManagementHeader = ({
     <CardTitle className="flex items-center justify-between">
       <div className="flex items-center gap-2">
         <span>📅</span>
-        Quản lý KIT chờ xuất hàng
+        Quản lý KIT chẵn chờ xuất hàng
       </div>
       <div className="flex gap-2">
         <Button
