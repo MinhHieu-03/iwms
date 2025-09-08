@@ -540,7 +540,7 @@ const mapMessage = {
   sku: "Nhập mã vật tư",
   qty: "Nhập số lượng",
   bin: "Nhập mã thùng",
-  sku_bin: "Nhập mã vật tư / mã thùng",
+  sku_bin: "Nhập số lượng / mã thùng",
   bt: "Đặt thùng lên băng tải",
 };
 
@@ -552,7 +552,7 @@ const mapMessage = {
 
 const mapAction = {
   1: "Bỏ nguyên thùng",
-  2: "Mở thùng carton cho vào thùng nhựa",
+  2: "Mở thùng carton và đổ toàn bộ túi vào thùng nhựa",
   3: "Cho thùng carton vào thùng nhựa",
 };
 
