@@ -41,12 +41,12 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
       if (isOpen && data?.issue_ord_no) {
         setLoading(true);
         try {
-          // const { data: issueData } = await apiClient.get(
-          //   `issue-data/issord/${data.issue_ord_no}`
-          // );
-          const issueData = await createDummyData({
-            issue_ord_no: [data.issue_ord_no],
-          });
+          const { data: issueData } = await apiClient.get(
+            `issue-data/issord/${data.issue_ord_no}`
+          );
+          // const issueData = await createDummyData({
+          //   issue_ord_no: [data.issue_ord_no],
+          // });
           console.log("issueData", issueData);
           if (data.status === "fill") {
             issueData.metaData.forEach((item) => {

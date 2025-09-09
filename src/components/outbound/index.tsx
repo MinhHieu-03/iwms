@@ -385,6 +385,11 @@ const IssueTimeScheduleTable = ({
       );
       return;
     }
+
+    // 
+    apiClient.post(createKitData, { issue_ord_nos: selectedRowKeys }).then((res) => {
+      console.log("res", res);
+    });
     setKitData(
       dataList.filter((item) => selectedRowKeys.includes(item.issue_ord_no))
     );
