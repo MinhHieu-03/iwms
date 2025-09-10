@@ -375,8 +375,6 @@ const IssueTimeScheduleTable = ({
     });
   }, []);
 
-  console.log("selectedRowKeys", selectedRowKeys);
-
   const orderPicking = async () => {
     // setIsOpenOI(true);
     if (selectedRowKeys.length === 0) {
@@ -393,7 +391,6 @@ const IssueTimeScheduleTable = ({
       status: "in_progress",
       gate: "gate1",
     };
-    console.log("selectedRowKeys", selectedRowKeys);
     selectedRowKeys.map((item) => {
       const itemData = dataList.find((i) => i.issue_ord_no === item);
       if (itemData) {
