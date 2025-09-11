@@ -103,9 +103,10 @@ const IssueTimeScheduleTable = ({
           page: pageInfo.page,
           filter: debouncedFilters
         });
+        const fakeData = await creatKitData();
         return {
-          metaData: data.metaData,
-          total: data.total,
+          metaData: fakeData.metaData,
+          // total: fakeData.total,
         };
       } catch (apiError) {
         console.warn("API not available, using mock data:", apiError);
@@ -387,9 +388,9 @@ const IssueTimeScheduleTable = ({
     }
 
     // 
-    apiClient.post(createKitData, { issue_ord_nos: selectedRowKeys }).then((res) => {
-      console.log("res", res);
-    });
+    // apiClient.post(createKitData, { issue_ord_nos: selectedRowKeys }).then((res) => {
+    //   console.log("res", res);
+    // });
     setKitData(
       dataList.filter((item) => selectedRowKeys.includes(item.issue_ord_no))
     );
