@@ -1095,7 +1095,7 @@ const missionData = {
       mission_no: "M-2024-0015",
       package_no: "B000002",
       material_no: "60988953",
-      quantity: 33,
+      quantity: 34,
       supply_loc: "C01-04",
       receive_loc: "Dock B",
       robot_no: "R002",

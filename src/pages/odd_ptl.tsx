@@ -144,9 +144,11 @@ const SplitOrder: React.FC = () => {
     const value = e.target.value.trim();
     setValue(value);
   };
-
+  const [totalPicked, setTotalPicked] = useState(33);
   useEffect(() => {
     if (sku && ptlData && ptlData.length > 0) {
+      const total = ptlData.filter((item) => item?.material_no === sku);
+      setTotalPicked(total.reduce((sum, item) => sum + (item.ptl_qty || 0), 0));
       setPtlDataShow(ptlData.filter((item) => item?.material_no === sku));
     } else {
       setPtlDataShow([]);
@@ -218,7 +220,7 @@ const SplitOrder: React.FC = () => {
               <div className="text-center">
                 <p className="text-xl text-gray-500 font-semibold">Số lượng</p>
                 <p className="font-bold text-2xl">
-                  {boxFounded?.quantity || "0"}
+                  {totalPicked || "0"}
                 </p>
               </div>
             </div>
