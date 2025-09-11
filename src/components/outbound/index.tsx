@@ -109,9 +109,15 @@ const IssueTimeScheduleTable = ({
           // total: fakeData.total,
         };
       } catch (apiError) {
+
+        const fakeData = await creatKitData();
+        return {
+          metaData: fakeData.metaData,
+          // total: fakeData.total,
+        };
         console.warn("API not available, using mock data:", apiError);
         // You can implement mock data fallback here if needed
-        throw apiError;
+        // throw apiError;
       }
     },
     retry: false,
