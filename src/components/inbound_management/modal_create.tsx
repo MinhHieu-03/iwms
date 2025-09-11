@@ -528,7 +528,7 @@ const ModalAdd = ({ title, isOpen, setIsOpen, masterData }: TAdd) => {
             </Button>
           </div>
         </div>
-        {/* 9920712 */}
+        {/* 60988953 */}
       </ConfigProvider>
     </Drawer>
   );
@@ -558,7 +558,7 @@ const mapAction = {
 
 const fakeData = [
   {
-    material_no: "9920712",
+    material_no: "60988953",
     material_nm: "TEL86101-2 ",
     material_tp: "Component",
     pk_style: 100,

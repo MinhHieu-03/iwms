@@ -243,7 +243,7 @@ const SplitOrder: React.FC = () => {
 
 x1_g1: [
   {
-    material_no: '9920712',
+    material_no: '60988953',
     ptl_qty: 100,
     picked_qty: 0,
     station: 'SA01',
@@ -256,7 +256,7 @@ const ptlFakeData = [
   {
     id: '1',
     issue_ord_no: 'K365005',
-    material_no: '9920712',
+    material_no: '60988953',
     ptl_qty: 100,
     picked_qty: 0,
     station: 'SA01',
@@ -267,7 +267,7 @@ const ptlFakeData = [
   {
     id: '2',
     issue_ord_no: 'K365005',
-    material_no: '9920712',
+    material_no: '60988953',
     ptl_qty: 200,
     station: 'SA02',
     group: 'Nhóm SA 02',
@@ -277,7 +277,7 @@ const ptlFakeData = [
   {
     id: '3',
     issue_ord_no: 'K365006',
-    material_no: '9920712',
+    material_no: '60988953',
     ptl_qty: 100,
     station: 'SD02',
     box_tp: 'Ca to',
@@ -287,7 +287,7 @@ const ptlFakeData = [
   {
     id: '4',
     issue_ord_no: 'K365006',
-    material_no: '9920712',
+    material_no: '60988953',
     ptl_qty: 100,
     station: 'SD03',
     box_tp: 'Ca to',
