@@ -141,10 +141,10 @@ const apiClient = {
         // .then((res) => _handleSuccess(res, option))
         // .catch((err) => _handleError(err, option));
     },
-    post: (url: string, data = {}) => {
+    post: (url: string, data = {}, showSuccessMessage = true) => {
         return request({ method: 'post', url, data })
         .then((res) => {
-            if(!url.includes('list'))
+            if(showSuccessMessage && !url.includes('list'))
             message.success(res.data.msg || 'Update successful');
             return res;
         })

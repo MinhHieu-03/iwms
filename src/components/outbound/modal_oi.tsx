@@ -242,7 +242,7 @@ const SplitOrder: React.FC<any> = ({
               <div className="text-center">
                 <p className="text-xl text-gray-500 font-semibold">Số lượng</p>
                 <p className="font-bold text-2xl">
-                  {boxFounded?.quantity || "0"}
+                  {boxFounded?.available_quantity || "0"}
                 </p>
               </div>
               <div className="text-center">

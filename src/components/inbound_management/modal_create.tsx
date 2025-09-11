@@ -114,6 +114,7 @@ const ModalAdd = ({ title, isOpen, setIsOpen, masterData }: TAdd) => {
     const item = masterData[sku];
     setSkuMaster(item);
     if (item) {
+      setCurrentField("qty");
       text2void(`OK`, false);
       if (item.flg1 == 2) {
         form.setFieldsValue({
@@ -203,8 +204,12 @@ const ModalAdd = ({ title, isOpen, setIsOpen, masterData }: TAdd) => {
         bin_code: values.bin_code,
         store: storeModel,
       };
-      await apiClient.post("/inbound", body);
+      await apiClient.post("/inbound", body, false);
       console.log("Form submitted:", body);
+      notification.success({
+        message: "Thành công",
+        description: `Đã thêm yêu cầu nhập kho vật tư ${values.sku} - Số lượng: ${values.quantity}`,
+      });
       reset();
     } catch (error) {
       console.error("Error during form submission:", error);

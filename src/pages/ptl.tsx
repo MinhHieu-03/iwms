@@ -234,7 +234,7 @@ const SplitOrder: React.FC = () => {
           {/* Kit 3 */}
           <TrolleyKit ptlDataShow={ptlDataShow?.filter(item => item?.issue_ord_no === 'K365007') || []} title='K365007' kit='Kit 3' />
           {/* Kit 4 */}
-          <TrolleyKit ptlDataShow={ptlDataShow?.filter(item => item?.issue_ord_no === 'K365043') || []} title='K365043' kit='Kit 4' />
+          <TrolleyKit ptlDataShow={ptlDataShow?.filter(item => item?.issue_ord_no === 'K365008') || []} title='K365008' kit='Kit 4' />
         </div>
       </div>
     </div>
