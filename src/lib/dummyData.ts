@@ -226,7 +226,7 @@ const kitData = {
 const dummyData1 = {
   metaData: [
     {
-      material_no: "9920712",
+      material_no: "60988953",
       material_name: "CLMP8271-12.00F",
       unit: "E",
       issue_qty: 100,
@@ -459,7 +459,7 @@ const dummyData1 = {
 const dummyData2 = {
   metaData: [
     {
-      material_no: "9920712",
+      material_no: "60988953",
       material_name: "CLMP8271-12.00F",
       unit: "E",
       issue_qty: 100,
@@ -830,7 +830,7 @@ const dummyData3 = {
 const dummyData4 = {
   metaData: [
     {
-      material_no: "9920712",
+      material_no: "60988953",
       material_name: "CLMP8271-12.00F",
       unit: "E",
       issue_qty: 100,
@@ -1149,7 +1149,7 @@ const missionData = {
     {
       mission_no: "M-2024-0014",
       package_no: "B000001",
-      material_no: "9920712",
+      material_no: "60988953",
       quantity: 200,
       supply_loc: "C01-03",
       receive_loc: "Dock B",
@@ -1166,7 +1166,7 @@ const missionData = {
     {
       mission_no: "M-2024-0015",
       package_no: "B000002",
-      material_no: "9920712",
+      material_no: "60988953",
       quantity: 150,
       supply_loc: "C01-04",
       receive_loc: "Dock B",
