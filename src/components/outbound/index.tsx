@@ -38,7 +38,7 @@ import PickingDrawer from "./PickingDrawer";
 import { createDummyData, creatKitData } from "@/lib/dummyData";
 import KitManagementHeader from "./KitManagementHeader";
 
-const { list, create, update, remove } = domain;
+const { list, create, update, remove, merge_kit } = domain;
 
 const IssueTimeScheduleTable = ({
   setCurrent,
@@ -382,8 +382,6 @@ const IssueTimeScheduleTable = ({
     });
   }, []);
 
-  console.log("selectedRowKeys", selectedRowKeys);
-
   const orderPicking = async () => {
     // setIsOpenOI(true);
     if (selectedRowKeys.length === 0) {
@@ -392,11 +390,27 @@ const IssueTimeScheduleTable = ({
       );
       return;
     }
-
+    const body = {
+      kit_no: selectedRowKeys,
+      plan_issue_dt: [],
+      A_reqd_time: [],
+      time_issue: [],
+      status: "in_progress",
+      gate: "gate1",
+    };
+    selectedRowKeys.map((item) => {
+      const itemData = dataList.find((i) => i.issue_ord_no === item);
+      if (itemData) {
+        body.plan_issue_dt.push(itemData.plan_issue_dt);
+        body.A_reqd_time.push(itemData.A_reqd_time);
+        body.time_issue.push(itemData.time_issue);
+      }
+      return item;
+    });
+    console.log("body", body);
     // 
-    // apiClient.post(createKitData, { issue_ord_nos: selectedRowKeys }).then((res) => {
-    //   console.log("res", res);
-    // });
+    // await apiClient.post(merge_kit, body);
+    // old
     setKitData(
       dataList.filter((item) => selectedRowKeys.includes(item.issue_ord_no))
     );

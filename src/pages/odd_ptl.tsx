@@ -263,7 +263,7 @@ const ptlFakeData = [
   {
     id: "3",
     issue_ord_no: "K365006",
-    material_no: "60988954",
+    material_no: "60988953",
     ptl_qty: 45,
     station: "SD02",
     box_tp: "Ca to",
@@ -272,7 +272,7 @@ const ptlFakeData = [
   {
     id: "4",
     issue_ord_no: "K365026",
-    material_no: "60988954",
+    material_no: "60988953",
     ptl_qty: 35,
     station: "SD03",
     box_tp: "Ca to",
@@ -281,7 +281,7 @@ const ptlFakeData = [
   {
     id: "5",
     issue_ord_no: "K365026",
-    material_no: "60988954",
+    material_no: "60988953",
     ptl_qty: 30,
     station: "SD03",
     box_tp: "Ca to",

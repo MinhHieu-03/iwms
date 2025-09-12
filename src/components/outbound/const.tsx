@@ -28,6 +28,7 @@ export const domain = {
   update: "/issue-time-schedule",
   remove: "/issue-time-schedule",
   detail: "/issue-time-schedule",
+  merge_kit: "/kit-merger",
 };
 
 export const lang_key = "issue_time_schedule.table";
