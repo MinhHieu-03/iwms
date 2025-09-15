@@ -24,7 +24,7 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
 
   // Filter data based on insufficient inventory
   const filteredData = showInsufficientOnly 
-    ? mergeData.filter(item => (item.inventory_qty || 0) < (item.issue_qty || 0))
+    ? mergeData.filter(item => (item.available_qty || 0) < (item.issue_qty || 0))
     : mergeData;
 
   const issueDataColumns = [
@@ -36,18 +36,6 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
       render: (text: string, record: any, index: number) => index + 1,
     },
     {
-      title: "Tên sản phẩm",
-      dataIndex: "material_name",
-      key: "material_name",
-      width: 150,
-    },
-    // {
-    //   title: "Vị trí",
-    //   dataIndex: ["inventory", "locationCode"],
-    //   key: "locationCode",
-    //   width: 120,
-    // },
-    {
       title: "Mã vật tư",
       dataIndex: "material_no",
       key: "material_no",
@@ -55,55 +43,20 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
       width: 150,
     },
     {
-      title: "Mã KIT",
-      dataIndex: "issue_ord_no",
-      key: "issue_ord_no",
-      render: (text: string | string[]) => {
-        if (Array.isArray(text)) {
-          return text.join(", ");
-        }
-        return text;
-      },
-      width: 120,
-    },
-    {
-      title: "Đơn vị",
-      dataIndex: "unit",
-      key: "unit",
-      width: 80,
-    },
-    {
       title: "Số lượng yêu cầu",
       dataIndex: "issue_qty",
       key: "issue_qty",
       width: 120,
     },
-    // {
-    //   title: "Số lượng đã cấp",
-    //   dataIndex: "issued_qty",
-    //   key: "issued_qty",
-    //   width: 100,
-    //   render: (text, record) => (
-    //     <span
-    //       className={
-    //         record.issued_qty < record.issue_qty
-    //           ? "text-red-500 font-medium"
-    //           : "text-green-600"
-    //       }
-    //     >
-    //       {text?.toLocaleString()}
-    //     </span>
-    //   ),
-    // },
     {
       title: "Số lượng tồn kho",
-      dataIndex: "inventory_qty",
-      key: "inventory_qty",
+      dataIndex: "available_qty",
+      key: "available_qty",
       width: 120,
       render: (text, record) => (
         <span
           className={
-            record.inventory_qty < record.issue_qty
+            record.available_qty < record.issue_qty
               ? "text-red-500 font-medium"
               : "text-green-600"
           }
@@ -154,7 +107,7 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold text-red-600">
-                  {filteredData.filter(item => (item.issue_qty || 0) > (item.inventory_qty || 0)).length}
+                  {filteredData.filter(item => (item.issue_qty || 0) > (item.available_qty || 0)).length}
                 </div>
                 <div className="text-gray-600">Thiếu tồn kho</div>
               </div>
@@ -183,7 +136,7 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
               size="small"
               scroll={{ x: 800 }}
               rowClassName={(record) =>
-                record.inventory_qty < record.issue_qty
+                record.available_qty < record.issue_qty
                   ? "bg-red-100"
                   : "bg-green-100"
               }

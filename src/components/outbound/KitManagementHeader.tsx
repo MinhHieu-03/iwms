@@ -10,6 +10,7 @@ interface KitManagementHeaderProps {
   onAccessOI?: () => void;
   onCreateOrder: () => void;
   onRefresh: () => void;
+  loading?: boolean;
 }
 
 const KitManagementHeader = ({
@@ -18,6 +19,7 @@ const KitManagementHeader = ({
   onAccessOI,
   onCreateOrder,
   onRefresh,
+  loading,
 }: KitManagementHeaderProps) => {
   const { t } = useTranslation();
 
@@ -31,13 +33,14 @@ const KitManagementHeader = ({
         <Button
           onClick={onCreateOrder}
           className="gap-2"
-          disabled={selectedRowKeysLength === 0 || rowInProgressLength === 4}
+          disabled={!!loading || selectedRowKeysLength === 0 || rowInProgressLength === 4}
           size="sm"
         >
           <Plus className="h-4 w-4" />
           Tạo lệnh xuất hàng
         </Button>
         <Button
+          disabled={!!loading}
           onClick={onRefresh}
           variant="outline"
           size="sm"

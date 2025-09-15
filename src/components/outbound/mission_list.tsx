@@ -1,6 +1,6 @@
 import Dayjs from "dayjs";
 import React, { useEffect, useMemo, useState } from "react";
-import { Drawer, Table, Input } from "antd";
+import { Drawer, Table, Input, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Search } from "lucide-react";
 import PickingItemModal from "../PickingItemModal";
@@ -11,8 +11,9 @@ import dayjs from "dayjs";
 import { t } from "i18next";
 import ModalMergeKit from "./modal_merge_kit";
 import ModalMission from "./modal_mission";
-import { creatMissionData } from "@/lib/dummyData";
 import DrawerOI from "./modal_oi";
+import { useQuery } from "@tanstack/react-query";
+import apiClient from "@/lib/axios";
 
 interface PickingItem {
   id: number;
@@ -47,15 +48,12 @@ interface PickingItem {
 }
 
 interface PickingDrawerProps {
-  missionData: any[]; // Replace with the actual type if available
-  kitData: any[];
+  // Props removed since data will be fetched internally via API
 }
 
-const PickingDrawer: React.FC<PickingDrawerProps> = ({
-  missionData,
-  kitData,
-}) => {
+const PickingDrawer: React.FC<PickingDrawerProps> = () => {
   const [isOpenOI, setIsOpenOI] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [selectedItem, setSelectedItem] = useState<PickingItem | null>(null);
@@ -65,51 +63,29 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
   const [isOpenMerge, setIsOpenMerge] = useState(false);
   const [modalData, setModalData] = useState<any>(null);
 
-  const pickingData = useMemo(() => {
-    return kitData.length > 0
-      ? [
-          {
-            picking_no: kitData.map((item) => item.issue_ord_no).join("_"),
-            issue_orders: kitData.map((item) => item.issue_ord_no),
-            A_reqd_time: kitData.map((item) => item.A_reqd_time),
-            plan_issue_dt: kitData.map((item) => item.plan_issue_dt),
-            time_issue: kitData.map((item) => item.time_issue),
-            status: "In Progress",
-          },
-        ]
-      : [];
-  }, [kitData]);
-
-  const mergeData = useMemo(() => {
-    const record = pickingData[0];
-    const listMaterial = missionData?.filter((item) =>
-      record?.issue_orders?.includes(item.issue_ord_no)
-    );
-    if (!listMaterial?.length) return [];
-    return listMaterial.reduce((acc: any[], record: any) => {
-      const existingIndex = acc.findIndex(
-        (item) => item.material_no === record.material_no
-      );
-      if (existingIndex >= 0) {
-        acc[existingIndex].issue_qty += record.issue_qty;
-        if (!acc[existingIndex].issue_ord_no.includes(record.issue_ord_no)) {
-          acc[existingIndex].issue_ord_no = [
-            ...(Array.isArray(acc[existingIndex].issue_ord_no)
-              ? acc[existingIndex].issue_ord_no
-              : [acc[existingIndex].issue_ord_no]),
-            record.issue_ord_no,
-          ];
-        }
-        if (record.issued_qty) {
-          acc[existingIndex].issued_qty =
-            (acc[existingIndex].issued_qty || 0) + record.issued_qty;
-        }
-      } else {
-        acc.push({ ...record });
+  // TanStack Query for fetching kit merger data
+  const {
+    data: queryData,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["kit-merger-list"],
+    queryFn: async () => {
+      try {
+        const { data } = await apiClient.post("kit-merger/list", {
+          // Add any required parameters here
+        });
+        console.log("Fetched kit merger data:", data);
+        return data;
+      } catch (apiError) {
+        console.error("Failed to fetch kit merger data:", apiError);
+        throw apiError;
       }
-      return acc;
-    }, []);
-  }, [missionData, pickingData]);
+    },
+    retry: 1,
+    staleTime: 1 * 60 * 1000, // 1 minute
+  });
 
   useEffect(() => {
     // console.log('dndd__', !selectedItem)
@@ -122,17 +98,37 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
   }, [selectedItem]);
 
   const onOpenMergeModal = (record: any) => {
-    setModalData(
-      missionData.filter((item) =>
-        record.issue_orders.includes(item.issue_ord_no)
-      )
-    );
-    setIsOpenMerge(true);
+    setLoading(true);
+    apiClient
+      .get(`material-merge/kit-merge/${record._id}`)
+      .then((res) => {
+        setModalData(res.data);
+        setIsOpenMerge(true);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch merge data:", err);
+        message.error("Failed to fetch merge data");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const onOpenMissionModal = (record: any) => {
-    setModalData(record);
-    setIsOpenMission(true);
+    setLoading(true);
+    apiClient
+      .get(`mission/kit-merge/${record._id}`)
+      .then((res) => {
+        setModalData(res.data);
+        setIsOpenMission(true);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch merge data:", err);
+        message.error("Failed to fetch merge data");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const lang_key = "issue_time_schedule.table";
@@ -141,14 +137,14 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
   const columns: ColumnsType<any> = [
     {
       title: "Picking No",
-      dataIndex: "picking_no",
-      key: "picking_no",
+      dataIndex: "_id",
+      key: "_id",
       width: 150,
     },
     {
       title: "Kit No",
-      dataIndex: "issue_orders",
-      key: "issue_orders",
+      dataIndex: "kit_no",
+      key: "kit_no",
       width: 120,
       render: (text) => (
         <div className="space-y-1">
@@ -234,18 +230,14 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
     },
     {
       title: "Thiếu vật tư ",
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "missing_count",
+      key: "missing_count",
       width: 100,
-      render: (status) => (
+      render: (missing_count) => (
         <span
           className={`px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800`}
         >
-          {
-            mergeData.filter(
-              (item) => (item.issue_qty || 0) > (item.inventory_qty || 0)
-            ).length
-          }
+          {missing_count}
         </span>
       ),
     },
@@ -258,6 +250,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
           <Button
             type="primary"
             size="small"
+            loading={loading}
             onClick={() => onOpenMergeModal(record)}
           >
             {t("common.detail")}
@@ -265,19 +258,11 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
           <Button
             type="primary"
             size="small"
+            loading={loading}
             onClick={() => onOpenMissionModal(record)}
           >
             {t("btn.mission")}
           </Button>
-          {/* <Button
-            type="primary"
-            onClick={() => setIsOpenOI(true)}
-            className="gap-2"
-            //   disabled={rowInProgressLength === 0}
-            size="small"
-          >
-            Truy cập OI thao tác
-          </Button> */}
         </div>
       ),
       width: 100,
@@ -291,7 +276,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
           <CardHeader>
             <CardTitle>Vị trí theo tên bộ kit</CardTitle>
           </CardHeader>
-          <CardContent>
+          {/* <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[1, 2, 3, 4].map((locationId) => {
                 const dataKit = kitData[locationId - 1] || {};
@@ -321,7 +306,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
                 );
               })}
             </div>
-          </CardContent>
+          </CardContent> */}
         </Card>
       </div>
       <Card>
@@ -366,7 +351,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
         />
         <Table
           columns={columns}
-          dataSource={pickingData}
+          dataSource={queryData?.metaData || []}
           rowKey="picking_no"
           pagination={false}
           size="middle"
@@ -391,7 +376,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
         <ModalMergeKit
           isOpen={isOpenMerge}
           onCancel={() => setIsOpenMerge(false)}
-          data={mergeData}
+          data={modalData}
         />
       )}
 
@@ -399,7 +384,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
         isOpen={isOpenOI}
         selectedItem={{}}
         setIsOpen={setIsOpenOI}
-        missionData={missionData}
+        missionData={[]}
       />
     </div>
   );

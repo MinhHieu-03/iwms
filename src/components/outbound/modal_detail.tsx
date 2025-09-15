@@ -96,16 +96,16 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
       render: (text: string) => text?.trim(),
     },
     {
-      title: t("issue_time_schedule.modal.material_name", "Material Name"),
-      dataIndex: "material_name",
-      key: "material_name",
+      title: "Section",
+      dataIndex: "section_c",
+      key: "section_c",
       width: 150,
       render: (text: string) => text?.trim(),
     },
     {
-      title: "Đơn vị",
-      dataIndex: "unit",
-      key: "unit",
+      title: "Line",
+      dataIndex: "line_c",
+      key: "line_c",
       width: 100,
     },
     {

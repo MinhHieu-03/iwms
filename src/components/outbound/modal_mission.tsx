@@ -1,7 +1,7 @@
 import { Drawer, Descriptions, Tag, Table, Spin, Input, Select, Space, Row, Col } from 'antd';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { creatMissionData } from '@/lib/dummyData';
 
 const { Search } = Input;
@@ -44,25 +44,25 @@ const ModalMission: React.FC<ModalDetailProps> = ({
   const [materialNoFilter, setMaterialNoFilter] = useState<string>('');
   const [missionNoFilter, setMissionNoFilter] = useState<string>('');
 
-  const fetchData = async () => {
-    const data = await creatMissionData();
-    setMissionData(data.metaData);
-  };
-
   useEffect(() => {
-    fetchData();
-  }, []);
+    setMissionData(data);
+  }, [data]);
 
   // Filter data based on selected filters
-  const filteredData = missionData.filter((item) => {
-    const statusMatch = !statusFilter || item.status === statusFilter;
-    const materialNoMatch = !materialNoFilter || 
-      item.material_no?.toLowerCase().includes(materialNoFilter.toLowerCase());
-    const missionNoMatch = !missionNoFilter || 
-      item.mission_no?.toLowerCase().includes(missionNoFilter.toLowerCase());
-    
-    return statusMatch && materialNoMatch && missionNoMatch;
-  });
+  const filteredData = useMemo(() => {
+  //   const statusMatch = !statusFilter || item.status === statusFilter;
+  //   const materialNoMatch = !materialNoFilter || 
+  //     item.material_no?.toLowerCase().includes(materialNoFilter.toLowerCase());
+  //   const missionNoMatch = !missionNoFilter || 
+  //     item.mission_no?.toLowerCase().includes(missionNoFilter.toLowerCase());
+
+  //   return statusMatch && materialNoMatch && missionNoMatch;
+  // }, [statusFilter, materialNoFilter, missionNoFilter, missionData]);
+
+  // Return the filtered mission data
+  console.log('missionData', missionData);
+  return missionData;
+  }, [missionData]);
 
   // Predefined status options for filter
   
@@ -95,8 +95,8 @@ const ModalMission: React.FC<ModalDetailProps> = ({
   const issueDataColumns = [
     {
       title: 'Mã nhiệm vụ',
-      dataIndex: 'mission_no',
-      key: 'mission_no',
+      dataIndex: '_id',
+      key: '_id',
       width: 150,
     },
     {
@@ -108,16 +108,16 @@ const ModalMission: React.FC<ModalDetailProps> = ({
     },
     {
       title: 'Mã thùng',
-      dataIndex: 'package_no',
-      key: 'package_no',
+      dataIndex: 'bin_id',
+      key: 'bin_id',
       width: 100,
     },
     {
       title: 'Mã vật tư',
-      dataIndex: 'material_no',
-      key: 'material_no',
-      render: (text) => text?.trim(),
+      dataIndex: 'inventory_id',
+      key: 'inventory_id',
       width: 120,
+      render: (inventory) => inventory?.sku || 'N/A',
     },
     {
       title: 'Số lượng',
@@ -127,14 +127,15 @@ const ModalMission: React.FC<ModalDetailProps> = ({
     },
     {
       title: 'Vị trí cấp',
-      dataIndex: 'supply_loc',
-      key: 'supply_loc',
+      dataIndex: 'inventory_id',
+      key: 'inventory_id',
       width: 100,
+      render: (inventory) => inventory?.locationCode || 'N/A',
     },
     {
       title: 'Vị trí nhận',
-      dataIndex: 'receive_loc',
-      key: 'receive_loc',
+      dataIndex: 'destination',
+      key: 'destination',
       width: 100,
     },
     {
@@ -151,8 +152,8 @@ const ModalMission: React.FC<ModalDetailProps> = ({
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'state',
+      key: 'state',
       width: 100,
       sorter: (a, b) => {
         const statusOrder = { 'error': 0, 'new': 1, 'running': 2, 'done': 3 };
