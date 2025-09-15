@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 interface KitManagementHeaderProps {
   selectedRowKeysLength: number;
   rowInProgressLength: number;
-  onAccessOI: () => void;
+  onAccessOI?: () => void;
   onCreateOrder: () => void;
   onRefresh: () => void;
 }

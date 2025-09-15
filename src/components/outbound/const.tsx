@@ -35,13 +35,11 @@ export const lang_key = "issue_time_schedule.table";
 
 export const RenderCol = ({
   t,
-  onEdit,
-  onDelete,
   onDetail,
 }: {
   t: (key: string) => string;
-  onEdit: (record: IssueTimeScheduleDataType) => void;
-  onDelete: (id: string) => void;
+  // onEdit: (record: IssueTimeScheduleDataType) => void;
+  // onDelete: (id: string) => void;
   onDetail: (record: IssueTimeScheduleDataType) => void;
 }): ColumnsType<IssueTimeScheduleDataType> => [
   {
