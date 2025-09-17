@@ -117,7 +117,7 @@ const OrdersTab: React.FC = () => {
       ) : null}
       {/* {current === 1 ? <OIOutbound /> : null} */}
       {current === 1 ? (
-        <MissionList missionData={dataMerge} kitData={kitData} />
+        <MissionList />
       ) : null}
     </div>
   );

@@ -110,7 +110,6 @@ const SplitOrder: React.FC<any> = ({
     ?.split(" / ")
     .map((num) => parseInt(num, 10)) || [0, 0];
 
-
   useEffect(() => {
     const currentRef = refAction.current;
     console.log("currentRef", currentRef);
@@ -160,8 +159,8 @@ const SplitOrder: React.FC<any> = ({
   };
   const handleInputEnter = (value) => {
     if (value && value.trim().toLowerCase() === "ok") {
-        // selectedItem.quantity = selectedItem.quantity - current;
-        setCurrentPage(1);
+      // selectedItem.quantity = selectedItem.quantity - current;
+      setCurrentPage(1);
     } else {
       const boxFounded = missionData.find((item) => item.package_no === value);
       console.log("___package_no", boxFounded);
@@ -174,7 +173,7 @@ const SplitOrder: React.FC<any> = ({
       }
     }
   };
-  
+
   const handleFocus = () => {
     setTimeout(() => {
       refAction?.current?.focus();
@@ -191,7 +190,11 @@ const SplitOrder: React.FC<any> = ({
           ref={refAction}
           placeholder="Trỏ chuột vào đây để nhập dữ liệu"
           autoFocus
-          onBlur={handleFocus}
+          onBlur={(e) => {
+            console.log("onBlur", e.nativeEvent.relatedTarget);
+            // restNumber
+            handleFocus();
+          }}
           className="text-center text-3xl font-bold h-15"
           value={value}
           size="large"
@@ -262,6 +265,22 @@ const SplitOrder: React.FC<any> = ({
             <p className="font-medium text-lg">{boxFounded?.eta || "Not available"}</p>
           </div> */}
         </div>
+        <div
+          className="text-center mt-6"
+          onClick={() => refAction?.current?.blur()}
+        >
+          <label className="block text-3xl font-bold text-gray-700 mb-6">
+            Số lượng còn lại trong thùng
+          </label>
+          <Input
+            type="number"
+            id="restNumber"
+            value={boxFounded?.available_quantity - boxFounded?.quantity || 0}
+            className="w-full text-4xl font-bold text-center"
+            style={{ height: "80px" }}
+            placeholder="Số lượng hồi kho"
+          />
+        </div>
       </div>
       <div className="flex-1 bg-gray-50 p-4 rounded-lg">
         <div>
@@ -325,7 +344,12 @@ const SplitOrder: React.FC<any> = ({
   );
 };
 
-const Inbound = ({ selectedItem, setCurrentPage, boxFounded, setCurrentBox }) => {
+const Inbound = ({
+  selectedItem,
+  setCurrentPage,
+  boxFounded,
+  setCurrentBox,
+}) => {
   const [form] = Form.useForm();
   const [showInput, setShowInput] = useState(true);
   const [restNumber, setRestNumber] = useState(0);
@@ -339,9 +363,10 @@ const Inbound = ({ selectedItem, setCurrentPage, boxFounded, setCurrentBox }) =>
   }, [selectedItem, form]);
 
   useEffect(() => {
-    setRestNumber((boxFounded?.available_quantity || 0) - (boxFounded?.quantity || 0));
+    setRestNumber(
+      (boxFounded?.available_quantity || 0) - (boxFounded?.quantity || 0)
+    );
   }, [boxFounded]);
-
 
   const refAction = useRef(null);
   const [value, setValue] = useState("");
@@ -382,7 +407,7 @@ const Inbound = ({ selectedItem, setCurrentPage, boxFounded, setCurrentBox }) =>
     if (value && value.toLowerCase() === "ok") {
       setCurrentPage(0);
       setCurrentBox({});
-    } else if(!isNaN(Number(value))) {
+    } else if (!isNaN(Number(value))) {
       setRestNumber(Number(value));
     }
     setValue("");
@@ -395,21 +420,21 @@ const Inbound = ({ selectedItem, setCurrentPage, boxFounded, setCurrentBox }) =>
             Xử lý hồi kho
           </p>
 
-        <Input
-          ref={refAction}
-          placeholder="Trỏ chuột vào đây để nhập dữ liệu"
-          autoFocus
-          onBlur={handleFocus}
-          className="text-center text-3xl font-bold h-15 mb-6"
-          value={value}
-          size="large"
-          onChange={handleAction}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleInputEnter(value);
-            }
-          }}
-        />
+          <Input
+            ref={refAction}
+            placeholder="Trỏ chuột vào đây để nhập dữ liệu"
+            autoFocus
+            onBlur={handleFocus}
+            className="text-center text-3xl font-bold h-15 mb-6"
+            value={value}
+            size="large"
+            onChange={handleAction}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleInputEnter(value);
+              }
+            }}
+          />
           {/* Remaining Quantity Input */}
           <div className="mb-6">
             {!showInput ? (

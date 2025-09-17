@@ -1,4 +1,4 @@
-import { ReloadOutlined, DeleteOutlined, FilterOutlined } from "@ant-design/icons";
+import { ReloadOutlined, DeleteOutlined, FilterOutlined, ExportOutlined } from "@ant-design/icons";
 import { message, Table, Modal, Input, Select, Space } from "antd";
 import { Plus, Search } from "lucide-react";
 import { useEffect, useMemo, useState, useCallback } from "react";
@@ -241,6 +241,15 @@ const InventoryTable = () => {
         <CardTitle className="flex items-center justify-between">
           <span>{t("inventory.title")}</span>
           <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={requestDataList}
+              disabled={loading}
+            >
+              <ExportOutlined />
+              Xuất exel
+            </Button>
             <Button
               variant="outline"
               size="sm"

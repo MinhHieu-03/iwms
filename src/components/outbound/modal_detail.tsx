@@ -1,10 +1,11 @@
-import { Drawer, Descriptions, Tag, Table, Spin } from "antd";
+import { Drawer, Descriptions, Tag, Table, Spin, Button, Checkbox } from "antd";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
 import { IssueTimeScheduleDataType } from "./const";
 import apiClient from "@/lib/axios";
 import { createDummyData } from "@/lib/dummyData";
+import { render } from "@react-three/fiber";
 
 interface IssueDataDetail {
   id: number;
@@ -34,6 +35,9 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
     []
   );
   const [loading, setLoading] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedRows, setSelectedRows] = useState<IssueDataDetail[]>([]);
+  const [showIncompleteOnly, setShowIncompleteOnly] = useState(false);
 
   // Fetch additional issue data when modal opens and data is available
   useEffect(() => {
@@ -78,6 +82,38 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
 
   if (!data) return null;
 
+  // Filter data based on checkbox
+  const filteredIssueDataDetails = showIncompleteOnly
+    ? issueDataDetails.filter(item => item.issue_qty > item.issued_qty)
+    : issueDataDetails;
+
+  // Row selection configuration
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (
+      newSelectedRowKeys: React.Key[],
+      newSelectedRows: IssueDataDetail[]
+    ) => {
+      setSelectedRowKeys(newSelectedRowKeys);
+      setSelectedRows(newSelectedRows);
+    },
+    onSelectAll: (
+      selected: boolean,
+      selectedRows: IssueDataDetail[],
+      changeRows: IssueDataDetail[]
+    ) => {
+      console.log("Select all:", selected, selectedRows, changeRows);
+    },
+    onSelect: (
+      record: IssueDataDetail,
+      selected: boolean,
+      selectedRows: IssueDataDetail[],
+      nativeEvent: Event
+    ) => {
+      console.log("Select row:", record, selected, selectedRows);
+    },
+  };
+
   // Table columns for issue data details
   const issueDataColumns = [
     {
@@ -120,6 +156,9 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
       dataIndex: "issued_qty",
       key: "issued_qty",
       width: 80,
+      render: (text: number, record: IssueDataDetail) => (
+        <span className={`${record.issue_qty > text ? "text-red-600" : "text-green-600"} font-medium`}>{text}</span>
+      ),  
       align: "right" as const,
     },
     // {
@@ -175,7 +214,10 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
           </Descriptions.Item>
           <Descriptions.Item label="Tổng số vật tư">
             <Tag color="green">
-              {issueDataDetails.length} vật tư
+              {showIncompleteOnly 
+                ? `${filteredIssueDataDetails.length}/${issueDataDetails.length} vật tư chưa lấy đủ`
+                : `${issueDataDetails.length} vật tư`
+              }
             </Tag>
           </Descriptions.Item>
           <Descriptions.Item
@@ -206,16 +248,40 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
 
         {/* Issue Data Details Table */}
         <div>
-          <h3 className="font-semibold mb-3">
-            Danh sách vật tư
-          </h3>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center">
+              <h3 className="font-semibold">Danh sách vật tư</h3>
+              <span className="ml-2 text-blue-600">
+                ({selectedRowKeys.length} selected)
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Checkbox
+                checked={showIncompleteOnly}
+                onChange={(e) => {
+                  setShowIncompleteOnly(e.target.checked);
+                  // Clear selection when filter changes
+                  setSelectedRowKeys([]);
+                  setSelectedRows([]);
+                }}
+              >
+                Chỉ hiển thị vật tư chưa lấy đủ
+              </Checkbox>
+              {selectedRowKeys.length > 0 && (
+                <Button onClick={() => {}}>
+                  Xác nhận lấy đủ hàng
+                </Button>
+              )}
+            </div>
+          </div>
           <Spin spinning={loading}>
             <Table
               columns={issueDataColumns}
-              dataSource={issueDataDetails}
-              rowKey="id"
+              dataSource={filteredIssueDataDetails}
+              rowKey="material_no"
               size="small"
               scroll={{ x: 800 }}
+              rowSelection={rowSelection}
               pagination={{
                 pageSize: 10,
                 showSizeChanger: true,

@@ -80,7 +80,26 @@ const IssueTimeScheduleTable = ({
         });
         // const fakeData = await creatKitData();
         return {
-          metaData: data.metaData,
+          metaData: [
+            {
+              A_reqd_time: "2025-06-10T09:00:00.000Z",
+              cusdesch_cd1: "00",
+              cusdesch_cd2: "00",
+              ent_dt: "2025-06-10T17:00:00.000Z",
+              fact_c: "ASY1",
+              intdesch_cd: "02",
+              issue_ord_no: "K374160",
+              line_c: "ASY1",
+              plan_issue_dt: "2025-06-10T17:00:00.000Z",
+              prod_no: "Common",
+              section_c: "9855",
+              time_issue: "2025-06-10T06:00:00.000Z",
+              upd_dt: "2025-06-10T17:00:00.000Z",
+              userid: "Job",
+              type: "urgent",
+            },
+            ...data.metaData,
+          ],
           total: data.total,
         };
       } catch (apiError) {
@@ -315,6 +334,9 @@ const IssueTimeScheduleTable = ({
             rowSelection={rowSelection}
             loading={isLoading}
             scroll={{ x: 1800 }}
+            rowClassName={(record) =>
+              record.type === "urgent" ? "bg-red-200" : ""
+            }
             pagination={false}
             size="middle"
             bordered

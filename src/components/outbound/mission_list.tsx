@@ -261,13 +261,29 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
             loading={loading}
             onClick={() => onOpenMissionModal(record)}
           >
-            {t("btn.mission")}
+            Xem nhiệm vụ
+          </Button>
+
+          <Button
+            type="primary"
+            onClick={() => setIsOpenOI(record)}
+            className="gap-2"
+            size="small"
+          >
+            Truy cập OI
           </Button>
         </div>
       ),
       width: 100,
     },
   ];
+
+  const currentKitMerge = useMemo(() => {
+    return queryData?.metaData?.find(
+      (item: any) => item.status === "in_progress"
+    );
+  }, [queryData]);
+  console.log("currentKitMerge", currentKitMerge);
 
   return (
     <div className="space-y-6">
@@ -276,37 +292,24 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
           <CardHeader>
             <CardTitle>Vị trí theo tên bộ kit</CardTitle>
           </CardHeader>
-          {/* <CardContent>
+          <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[1, 2, 3, 4].map((locationId) => {
-                const dataKit = kitData[locationId - 1] || {};
+                const dataKit =
+                  currentKitMerge?.kit_no?.[locationId - 1] || null;
+                console.log("dataKit", dataKit);
                 return (
-                  <div key={locationId} className="border rounded-lg p-4">
-                    <h3 className="font-semibold text-lg mb-3">
-                      Kit {locationId}
-                    </h3>
-                    <div className="space-y-2">
-                      <div className="text-sm p-2 bg-gray-50 rounded">
-                        <div className="font-medium">
-                          {dataKit.issue_ord_no}
-                        </div>
-                        {dataKit.material_no && (
-                          <div className="text-gray-600">
-                            Vật liệu: {dataKit.material_no}
-                          </div>
-                        )}
-                        {dataKit.issue_qty && (
-                          <div className="text-gray-600">
-                            Số lượng: {dataKit.issue_qty}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                  <div
+                    key={locationId}
+                    className="border rounded-lg p-4 flex justify-between"
+                  >
+                    <h3 className="font-semibold text-lg">Kit {locationId}</h3>
+                    <div className="font-medium">{dataKit || "N/A"}</div>
                   </div>
                 );
               })}
             </div>
-          </CardContent> */}
+          </CardContent>
         </Card>
       </div>
       <Card>
@@ -315,14 +318,6 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
             <div className="flex items-center gap-2">
               Danh sách Kit gộp chẵn
             </div>
-            <Button
-              type="primary"
-              onClick={() => setIsOpenOI(true)}
-              className="gap-2"
-              size="middle"
-            >
-              Truy cập OI thao tác
-            </Button>
           </CardTitle>
         </CardHeader>
         <Input
@@ -381,8 +376,8 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       )}
 
       <DrawerOI
-        isOpen={isOpenOI}
-        selectedItem={{}}
+        isOpen={!!isOpenOI}
+        selectedItem={isOpenOI}
         setIsOpen={setIsOpenOI}
         missionData={[]}
       />

@@ -216,6 +216,13 @@ const App = () => {
           }
         />
       </CardContent>
+      <ModalAdd
+        title={t("master_data.create_master_data")}
+        itemsRender={renderCreateForm(dataRole, dataList)}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        _handleFinish={_handleFinish}
+      />
       {/* <ModalAdd
         title={t("master_data.create_master_data")}
         itemsRender={renderCreateForm(dataRole, dataList)}
@@ -295,6 +302,10 @@ const Header = ({
       >
         <CardTitle>{t(lang_key)}</CardTitle>
         <div className="flex items-center">
+          <Button onClick={() => setIsOpen(true)} variant="default">
+            <Plus className="mr-2 h-4 w-4" />
+            {t("btn.create_new")}
+          </Button>
           {/* <Button onClick={() => setIsOpen(true)} variant="default">
             <Plus className="mr-2 h-4 w-4" />
             {t("btn.create_new")}
