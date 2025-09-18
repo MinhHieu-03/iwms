@@ -112,6 +112,14 @@ const ModalAdd = ({ title, isOpen, setIsOpen, masterData }: TAdd) => {
       bin_code: "",
     });
     const item = masterData[sku];
+    if (!item) {
+      form.setFieldsValue({
+        sku: "",
+      });
+      if ("speechSynthesis" in window) {
+        text2void(`Không hợp lệ`);
+      }
+    }
     if (item.flg1 === 4) {
       setSkuMaster(item);
       text2void(`Vật tư để ngoài băng tải`);
@@ -121,31 +129,22 @@ const ModalAdd = ({ title, isOpen, setIsOpen, masterData }: TAdd) => {
       return;
     }
     setSkuMaster(item);
-    if (item) {
-      setCurrentField("qty");
-      text2void(`OK`, false);
-      if (item.flg1 == 2) {
-        form.setFieldsValue({
-          sku: item.material_no,
-          storeMethod: "Carton",
-          packingMethod: "Bag",
-          name: item.material_nm,
-        });
-      } else if (item.flg1 == 1) {
-        form.setFieldsValue({
-          sku: item.material_no,
-          storeMethod: "Plastic Bin",
-          packingMethod: "Bag",
-          name: item.material_nm,
-        });
-      }
-    } else {
+    setCurrentField("qty");
+    text2void(`OK`, false);
+    if (item.flg1 == 2) {
       form.setFieldsValue({
-        sku: "",
+        sku: item.material_no,
+        storeMethod: "Carton",
+        packingMethod: "Bag",
+        name: item.material_nm,
       });
-      if ("speechSynthesis" in window) {
-        text2void(`Không hợp lệ`);
-      }
+    } else if (item.flg1 == 1) {
+      form.setFieldsValue({
+        sku: item.material_no,
+        storeMethod: "Plastic Bin",
+        packingMethod: "Bag",
+        name: item.material_nm,
+      });
     }
   };
   const handleSubmit = async () => {
@@ -251,7 +250,7 @@ const ModalAdd = ({ title, isOpen, setIsOpen, masterData }: TAdd) => {
       setValue("");
       return;
     }
-    
+
     setCurrentField("sku_bin");
     const oldValue = form.getFieldValue("quantity") || 0;
     form.setFieldValue("quantity", +oldValue + Number(value));
