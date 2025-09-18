@@ -1,7 +1,8 @@
 import apiClient from "@/lib/axios";
 import { MISSION_STATE } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { Drawer, Input, message } from "antd";
+import { Drawer, Input, message, Button } from "antd";
+import { error } from "console";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
@@ -27,11 +28,26 @@ const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
       queryFn: async () => {
         const { data } = await apiClient.get(`/mission/statistics/${kitMerge}`);
         if (data?.length) {
+          const error = data.filter(
+            (item) => item.state === MISSION_STATE.ERROR
+          ).length;
+
+          const done_picking = data.filter(
+            (item) => item.state === MISSION_STATE.DONE_PICKING
+          ).length;
+
+          const new_mission = data.filter(
+            (item) => item.state === MISSION_STATE.NEW
+          ).length;
+
+          
+          const rest = data.length - done_picking - error;
           return {
+            rest: rest,
             total: data.length,
-            done_picking: data.filter((item) => item.state === MISSION_STATE.DONE_PICKING)
-              .length,
-            new: data.filter((item) => item.state !== MISSION_STATE.NEW).length,
+            error,
+            done_picking,
+            new: new_mission,
           };
         }
         return {};
@@ -124,37 +140,38 @@ const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
       placement="bottom"
       extra={
         <div className="flex gap-4 items-center">
-          <div className="flex items-center gap-1 bg-gradient-to-r from-emerald-500 to-green-600 text-white px-4 py-2 rounded-xl shadow-lg min-w-[80px]">
-            <div className="text-center">
-              <div className="text-2xl font-bold leading-tight">
-                {missionStatistics?.done_picking || 0}
-              </div>
-              <div className="text-xs font-medium opacity-90 uppercase tracking-wide">
-                Hoàn thành
-              </div>
+          <div className="flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white px-4 py-2 rounded-xl shadow-lg min-w-[120px]">
+            <div className="text-2xl font-bold leading-tight">
+              {missionStatistics?.done_picking || 0}
+            </div>
+            <div className="text-xs font-medium opacity-90 uppercase tracking-wide">
+              Hoàn thành
             </div>
           </div>
-          <div className="flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-xl shadow-lg min-w-[80px]">
-            <div className="text-center">
-              <div className="text-2xl font-bold leading-tight">
-                {(missionStatistics?.total || 0) -
-                  (missionStatistics?.done_picking || 0)}
-              </div>
-              <div className="text-xs font-medium opacity-90 uppercase tracking-wide">
-                Còn lại
-              </div>
+          <div className="flex items-center gap-3 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-xl shadow-lg min-w-[120px]">
+            <div className="text-2xl font-bold leading-tight">
+              {missionStatistics?.error || 0}
+            </div>
+            <div className="text-xs font-medium opacity-90 uppercase tracking-wide">
+              Lỗi
             </div>
           </div>
-          <div className="flex items-center gap-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-xl shadow-lg min-w-[80px]">
-            <div className="text-center">
-              <div className="text-2xl font-bold leading-tight">
-                {missionStatistics?.total || 0}
-              </div>
-              <div className="text-xs font-medium opacity-90 uppercase tracking-wide">
-                Tổng
-              </div>
+          <div className="flex items-center gap-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-xl shadow-lg min-w-[120px]">
+            <div className="text-2xl font-bold leading-tight">
+              {missionStatistics?.rest || 0}
+            </div>
+            <div className="text-xs font-medium opacity-90 uppercase tracking-wide">
+              Còn lại
             </div>
           </div>
+          {missionStatistics?.rest === 0 ? (<Button
+            type="primary"
+            size="large"
+            // className="bg-gray-600 hover:bg-gray-700 border-gray-600 hover:border-gray-700"
+            onClick={handleCancel}
+          >
+            Kết thúc
+          </Button>) : null}
         </div>
       }
     >

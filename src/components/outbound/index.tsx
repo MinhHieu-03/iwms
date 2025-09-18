@@ -1,7 +1,7 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ConfigProvider, DatePicker, Input, message, Modal, Table } from "antd";
-import dayjs, { Dayjs } from "dayjs";
+import { DatePicker, Input, message, Table } from "antd";
+import { Dayjs } from "dayjs";
 import { debounce } from "lodash";
 import { Filter, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import apiClient from "@/lib/axios";
 
-import { createDummyData } from "@/lib/dummyData";
 import { domain, IssueTimeScheduleDataType, RenderCol } from "./const";
 import FilterPanel from "./FilterPanel";
 import KitManagementHeader from "./KitManagementHeader";

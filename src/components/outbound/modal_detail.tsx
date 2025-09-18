@@ -266,7 +266,7 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
             <div className="flex items-center">
               <h3 className="font-semibold">Danh sách vật tư</h3>
               <span className="ml-2 text-blue-600">
-                ({selectedRowKeys.length} selected)
+                ({selectedRowKeys.length} đã chọn)
               </span>
             </div>
             <div className="flex items-center gap-3">
