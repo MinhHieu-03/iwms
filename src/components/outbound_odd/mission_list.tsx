@@ -139,12 +139,12 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
 
   // Define columns for the Ant Design table
   const columns: ColumnsType<any> = [
-    {
-      title: "Picking No",
-      dataIndex: "picking_no",
-      key: "picking_no",
-      width: 150,
-    },
+    // {
+    //   title: "Picking No",
+    //   dataIndex: "picking_no",
+    //   key: "picking_no",
+    //   width: 150,
+    // },
     {
       title: "Kit No",
       dataIndex: "issue_orders",
@@ -153,7 +153,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
       render: (text) => (
         <div className="space-y-1">
           {text.map((item, index) => (
-            <div key={index} className="text-sm">
+            <div key={index}>
               {item}
             </div>
           ))}
@@ -164,45 +164,45 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
       title: t(`${lang_key}.required_time`),
       dataIndex: "A_reqd_time",
       key: "A_reqd_time",
-      width: 150,
+      width: 250,
       render: (date) => (
         <div className="space-y-1">
           {date.map((item, index) => (
-            <div key={index} className="text-sm">
+            <div key={index}>
               {dayjs(item).format("YYYY-MM-DD HH:mm")}
             </div>
           ))}
         </div>
       ),
-      sorter: (a, b) =>
-        dayjs(a.A_reqd_time).unix() - dayjs(b.A_reqd_time).unix(),
+      // sorter: (a, b) =>
+      //   dayjs(a.A_reqd_time).unix() - dayjs(b.A_reqd_time).unix(),
     },
     {
       title: t(`${lang_key}.plan_issue_date`),
       dataIndex: "plan_issue_dt",
       key: "plan_issue_dt",
-      width: 150,
+      width: 200,
       render: (date) => (
         <div className="space-y-1">
           {date.map((item, index) => (
-            <div key={index} className="text-sm">
+            <div key={index}>
               {dayjs(item).format("YYYY-MM-DD HH:mm")}
             </div>
           ))}
         </div>
       ),
-      sorter: (a, b) =>
-        dayjs(a.plan_issue_dt).unix() - dayjs(b.plan_issue_dt).unix(),
+      // sorter: (a, b) =>
+      //   dayjs(a.plan_issue_dt).unix() - dayjs(b.plan_issue_dt).unix(),
     },
     {
       title: t(`${lang_key}.issue_time`),
       dataIndex: "time_issue",
       key: "time_issue",
-      width: 150,
+      width: 200,
       render: (date) => (
         <div className="space-y-1">
           {date.map((item, index) => (
-            <div key={index} className="text-sm">
+            <div key={index}>
               {dayjs(item).format("YYYY-MM-DD HH:mm")}
             </div>
           ))}
@@ -213,7 +213,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      width: 100,
+      width: 130,
       render: (status) => (
         <span
           className={`px-2 py-1 rounded text-xs font-medium ${
@@ -233,10 +233,10 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
       ),
     },
     {
-      title: "Thiếu vật tư ",
+      title: "Thiếu vật tư",
       dataIndex: "status",
       key: "status",
-      width: 100,
+      width: 130,
       render: (status) => (
         <span
           className={`px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800`}

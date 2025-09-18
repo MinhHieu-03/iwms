@@ -536,7 +536,7 @@ const IssueTimeScheduleTable = ({
                 <div className="mt-3 pt-3 border-t border-gray-200">
                   <div className="flex items-center justify-between text-sm text-gray-600">
                     <span>
-                      Showing {filteredData.length} of {dataList.length} records
+                       {filteredData.length} / {dataList.length} 
                     </span>
                     {hasActiveFilters && (
                       <Button
@@ -545,7 +545,7 @@ const IssueTimeScheduleTable = ({
                         onClick={clearFilters}
                         className="text-blue-600 hover:text-blue-800"
                       >
-                        Reset all filters
+                        Xóa lọc
                       </Button>
                     )}
                   </div>

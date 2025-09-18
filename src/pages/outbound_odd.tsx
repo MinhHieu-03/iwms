@@ -63,9 +63,6 @@ const mockOutboundData: OutboundData[] = [
 
 const OrdersTab: React.FC = () => {
   const [current, setCurrent] = useState(0);
-  // const onChange = (value: number) => {
-  //   setCurrent(value);
-  // };
 
   const [dataMerge, setDataMerge] = useState([]);
   const [kitData, setKitData] = useState([]);

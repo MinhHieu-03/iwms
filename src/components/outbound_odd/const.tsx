@@ -43,49 +43,33 @@ export const RenderCol = ({
   onDelete: (id: string) => void;
   onDetail: (record: IssueTimeScheduleDataType) => void;
 }): ColumnsType<IssueTimeScheduleDataType> => [
-  {
-    title: t(`${lang_key}.issue_order_no`),
-    dataIndex: "issue_ord_no",
-    key: "issue_ord_no",
-    width: 60,
-    render: (text) => <span className="font-medium text-blue-600">{text}</span>,
-  },
+  // {
+  //   title: t(`${lang_key}.issue_order_no`),
+  //   dataIndex: "issue_ord_no",
+  //   key: "issue_ord_no",
+  //   width: 60,
+  //   render: (text) => <span className="font-medium text-blue-600">{text}</span>,
+  // },
   {
     title: t(`${lang_key}.status`),
     dataIndex: "status",
     key: "status",
     width: 60,
-    render: (status) => (
-      <span
-        className={`px-2 py-1 rounded text-xs font-medium ${
-          status === "fill"
-            ? "bg-green-100 text-green-800"
-            : status === "in progress"
-            ? "bg-yellow-100 text-yellow-800"
-            : "bg-red-100 text-red-800"
-        }`}
-      >
-        {status === "fill"
-          ? "Đã xuất"
-          : status === "in progress"
-          ? "Đang xuất"
-          : "Mới"}
-      </span>
-    ),
+    render: (status) => mappingStatusTag[status] || mappingStatusTag['new'],
   },
-  {
-    title: t(`${lang_key}.section`),
-    dataIndex: "section_c",
-    key: "section_c",
-    width: 60,
-    sorter: (a, b) => a.section_c.localeCompare(b.section_c),
-  },
-  {
-    title: t(`${lang_key}.line`),
-    dataIndex: "line_c",
-    key: "line_c",
-    width: 60,
-  },
+  // {
+  //   title: t(`${lang_key}.section`),
+  //   dataIndex: "section_c",
+  //   key: "section_c",
+  //   width: 60,
+  //   sorter: (a, b) => a.section_c.localeCompare(b.section_c),
+  // },
+  // {
+  //   title: t(`${lang_key}.line`),
+  //   dataIndex: "line_c",
+  //   key: "line_c",
+  //   width: 60,
+  // },
   {
     title: t(`${lang_key}.issue_time`),
     dataIndex: "time_issue",
@@ -141,3 +125,9 @@ export const RenderCol = ({
     ),
   },
 ];
+
+const mappingStatusTag = {
+  new: <Tag color="blue">Mới</Tag>,
+  "in progress": <Tag color="red">Đang xuất</Tag>,
+  fill: <Tag color="green">Đã xuất</Tag>,
+};
