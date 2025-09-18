@@ -1,4 +1,4 @@
-import { Drawer, Descriptions, Tag, Table, Spin, Checkbox } from "antd";
+import { Drawer, Descriptions, Tag, Table, Spin, Checkbox, ConfigProvider } from "antd";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
@@ -23,8 +23,10 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
   const mergeData = data;
 
   // Filter data based on insufficient inventory
-  const filteredData = showInsufficientOnly 
-    ? mergeData.filter(item => (item.available_qty || 0) < (item.issue_qty || 0))
+  const filteredData = showInsufficientOnly
+    ? mergeData.filter(
+        (item) => (item.available_qty || 0) < (item.issue_qty || 0)
+      )
     : mergeData;
 
   const issueDataColumns = [
@@ -80,73 +82,105 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
         {/* Assumption Information Section */}
         <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
           {/* Summary Statistics */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
-              <div className="text-center">
-                <div className="text-lg font-bold text-blue-600">
-                  {new Set(filteredData.flatMap(item => 
-                    Array.isArray(item.issue_ord_no) ? item.issue_ord_no : [item.issue_ord_no]
-                  )).size}
-                </div>
-                <div className="text-gray-600">
-                  {showInsufficientOnly ? "KIT thiếu vật tư" : "Tổng số KIT"}
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+            <div className="text-center">
+              <div className="text-lg font-bold text-blue-600">
+                {
+                  new Set(
+                    filteredData.flatMap((item) =>
+                      Array.isArray(item.issue_ord_no)
+                        ? item.issue_ord_no
+                        : [item.issue_ord_no]
+                    )
+                  ).size
+                }
               </div>
-              <div className="text-center">
-                <div className="text-lg font-bold text-green-600">
-                  {filteredData.length}
-                </div>
-                <div className="text-gray-600">
-                  {showInsufficientOnly ? "Vật tư thiếu tồn kho" : "Tổng loại vật tư"}
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="text-lg font-bold text-purple-600">
-                  {filteredData.filter(item => (item.issued_qty || 0) >= (item.issue_qty || 0)).length}
-                </div>
-                <div className="text-gray-600">Đã hoàn thành</div>
-              </div>
-              <div className="text-center">
-                <div className="text-lg font-bold text-red-600">
-                  {filteredData.filter(item => (item.issue_qty || 0) > (item.available_qty || 0)).length}
-                </div>
-                <div className="text-gray-600">Thiếu tồn kho</div>
+              <div className="text-gray-600">
+                {showInsufficientOnly ? "KIT thiếu vật tư" : "Tổng số KIT"}
               </div>
             </div>
+            <div className="text-center">
+              <div className="text-lg font-bold text-green-600">
+                {filteredData.length}
+              </div>
+              <div className="text-gray-600">
+                {showInsufficientOnly
+                  ? "Vật tư thiếu tồn kho"
+                  : "Tổng loại vật tư"}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-lg font-bold text-purple-600">
+                {
+                  filteredData.filter(
+                    (item) => (item.issued_qty || 0) >= (item.issue_qty || 0)
+                  ).length
+                }
+              </div>
+              <div className="text-gray-600">Đã hoàn thành</div>
+            </div>
+            <div className="text-center">
+              <div className="text-lg font-bold text-red-600">
+                {
+                  filteredData.filter(
+                    (item) => (item.issue_qty || 0) > (item.available_qty || 0)
+                  ).length
+                }
+              </div>
+              <div className="text-gray-600">Thiếu tồn kho</div>
+            </div>
+          </div>
         </div>
         {/* Issue Data Details Table */}
         <div>
           <div className="flex justify-between items-center mb-3">
-            <h4 className="font-semibold">
-              
-            </h4>
+            <h4 className="font-semibold"></h4>
             <Checkbox
               checked={showInsufficientOnly}
               onChange={(e) => setShowInsufficientOnly(e.target.checked)}
               className="text-red-600"
             >
-              <span className="text-red-600">Chỉ hiển thị vật tư không đủ tồn kho</span>
+              <span className="text-red-600">
+                Chỉ hiển thị vật tư không đủ tồn kho
+              </span>
             </Checkbox>
           </div>
           {/*  */}
           <Spin spinning={loading}>
-            <Table
-              columns={issueDataColumns}
-              dataSource={filteredData}
-              rowKey="material_no"
-              size="small"
-              scroll={{ x: 800 }}
-              rowClassName={(record) =>
-                record.available_qty < record.issue_qty
-                  ? "bg-red-100"
-                  : "bg-green-100"
-              }
-              pagination={{
-                pageSize: 10,
-                showSizeChanger: true,
-                showTotal: (total, range) =>
-                  `${range[0]}-${range[1]} of ${total} items`,
+            <ConfigProvider
+              theme={{
+                components: {
+                  Table: {
+                    fontSize: 22,
+                    headerBg: "#f5f5f5",
+                    headerColor: "#262626",
+                    cellFontSize: 22,
+                  },
+                },
+                token: {
+                  fontSize: 22,
+                },
               }}
-            />
+            >
+              <Table
+                columns={issueDataColumns}
+                dataSource={filteredData}
+                rowKey="material_no"
+                size="small"
+                scroll={{ x: 800 }}
+                rowClassName={(record) =>
+                  record.available_qty < record.issue_qty
+                    ? "bg-red-100"
+                    : "bg-green-100"
+                }
+                pagination={{
+                  pageSize: 10,
+                  showSizeChanger: true,
+                  showTotal: (total, range) =>
+                    `${range[0]}-${range[1]} of ${total} items`,
+                }}
+              />
+            </ConfigProvider>
           </Spin>
         </div>
       </div>

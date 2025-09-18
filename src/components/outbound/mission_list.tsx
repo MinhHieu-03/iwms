@@ -1,6 +1,6 @@
 import Dayjs from "dayjs";
 import React, { useEffect, useMemo, useState } from "react";
-import { Drawer, Table, Input, message } from "antd";
+import { Drawer, Table, Input, message, ConfigProvider } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Search } from "lucide-react";
 import PickingItemModal from "../PickingItemModal";
@@ -131,6 +131,23 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       });
   };
 
+  const loadingOI = (record: any) => {
+    
+    apiClient
+      .get(`mission/kit-merge/${record._id}`)
+      .then((res) => {
+        setIsOpenOI(res.data);
+        setIsOpenMission(true);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch merge data:", err);
+        message.error("Failed to fetch merge data");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
   const lang_key = "issue_time_schedule.table";
 
   // Define columns for the Ant Design table
@@ -149,7 +166,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       render: (text) => (
         <div className="space-y-1">
           {text.map((item, index) => (
-            <div key={index} className="text-sm">
+            <div key={index}>
               {item}
             </div>
           ))}
@@ -160,11 +177,11 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       title: t(`${lang_key}.required_time`),
       dataIndex: "A_reqd_time",
       key: "A_reqd_time",
-      width: 150,
+      width: 260,
       render: (date) => (
         <div className="space-y-1">
           {date.map((item, index) => (
-            <div key={index} className="text-sm">
+            <div key={index}>
               {dayjs(item).format("YYYY-MM-DD HH:mm")}
             </div>
           ))}
@@ -177,11 +194,11 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       title: t(`${lang_key}.plan_issue_date`),
       dataIndex: "plan_issue_dt",
       key: "plan_issue_dt",
-      width: 150,
+      width: 210,
       render: (date) => (
         <div className="space-y-1">
           {date.map((item, index) => (
-            <div key={index} className="text-sm">
+            <div key={index}>
               {dayjs(item).format("YYYY-MM-DD HH:mm")}
             </div>
           ))}
@@ -194,11 +211,11 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       title: t(`${lang_key}.issue_time`),
       dataIndex: "time_issue",
       key: "time_issue",
-      width: 150,
+      width: 210,
       render: (date) => (
         <div className="space-y-1">
           {date.map((item, index) => (
-            <div key={index} className="text-sm">
+            <div key={index}>
               {dayjs(item).format("YYYY-MM-DD HH:mm")}
             </div>
           ))}
@@ -229,10 +246,10 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       ),
     },
     {
-      title: "Thiếu vật tư ",
+      title: "Thiếu vật tư",
       dataIndex: "missing_count",
       key: "missing_count",
-      width: 100,
+      width: 120,
       render: (missing_count) => (
         <span
           className={`px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800`}
@@ -266,7 +283,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
 
           <Button
             type="primary"
-            onClick={() => setIsOpenOI(record)}
+            onClick={() => loadingOI(record)}
             className="gap-2"
             size="small"
           >
@@ -303,8 +320,8 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
                     key={locationId}
                     className="border rounded-lg p-4 flex justify-between"
                   >
-                    <h3 className="font-semibold text-lg">Kit {locationId}</h3>
-                    <div className="font-medium">{dataKit || "N/A"}</div>
+                    <h3 className="font-semibold text-xl">Kit {locationId}</h3>
+                    <div className=" text-xl font-bold">{dataKit || "N/A"}</div>
                   </div>
                 );
               })}
@@ -344,19 +361,35 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
           }}
           style={{ marginBottom: 16 }}
         />
-        <Table
-          columns={columns}
-          dataSource={queryData?.metaData || []}
-          rowKey="picking_no"
-          pagination={false}
-          size="middle"
-          onRow={(record) => ({
-            onClick: () => {
-              setSelectedItem(record);
-              setActionValue("");
+        <ConfigProvider
+          theme={{
+            components: {
+              Table: {
+                fontSize: 22,
+                headerBg: '#f5f5f5',
+                headerColor: '#262626',
+                cellFontSize: 22,
+              }
             },
-          })}
-        />
+            token: {
+              fontSize: 22
+            }
+          }}
+        >
+          <Table
+            columns={columns}
+            dataSource={queryData?.metaData || []}
+            rowKey="picking_no"
+            pagination={false}
+            size="middle"
+            onRow={(record) => ({
+              onClick: () => {
+                setSelectedItem(record);
+                setActionValue("");
+              },
+            })}
+          />
+        </ConfigProvider>
       </Card>
 
       {isOpenMission && (
@@ -377,9 +410,8 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
 
       <DrawerOI
         isOpen={!!isOpenOI}
-        selectedItem={isOpenOI}
         setIsOpen={setIsOpenOI}
-        missionData={[]}
+        missionData={isOpenOI}
       />
     </div>
   );

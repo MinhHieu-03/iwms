@@ -1,6 +1,6 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { DatePicker, Input, message, Modal, Table } from "antd";
+import { ConfigProvider, DatePicker, Input, message, Modal, Table } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { debounce } from "lodash";
 import { Filter, X } from "lucide-react";
@@ -328,20 +328,36 @@ const IssueTimeScheduleTable = ({
               clearFilters={clearFilters}
             />
           </div>{" "}
-          <Table
-            columns={columns}
-            dataSource={queryData?.metaData || []}
-            rowSelection={rowSelection}
-            loading={isLoading}
-            scroll={{ x: 1800 }}
-            rowClassName={(record) =>
-              record.type === "urgent" ? "bg-red-200" : ""
-            }
-            pagination={false}
-            size="middle"
-            bordered
-            rowKey="issue_ord_no"
-          />
+          <ConfigProvider
+            theme={{
+              components: {
+                Table: {
+                  fontSize: 22,
+                  headerBg: "#f5f5f5",
+                  headerColor: "#262626",
+                  cellFontSize: 22,
+                },
+              },
+              token: {
+                fontSize: 22,
+              },
+            }}
+          >
+            <Table
+              columns={columns}
+              dataSource={queryData?.metaData || []}
+              rowSelection={rowSelection}
+              loading={isLoading}
+              scroll={{ x: 1800 }}
+              rowClassName={(record) =>
+                record.type === "urgent" ? "bg-red-200" : ""
+              }
+              pagination={false}
+              size="middle"
+              bordered
+              rowKey="issue_ord_no"
+            />
+          </ConfigProvider>
           <div className="mt-4 flex justify-end">
             <BasePagination
               current={pageInfo.page}

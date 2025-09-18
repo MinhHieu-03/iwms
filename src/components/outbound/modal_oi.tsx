@@ -17,23 +17,8 @@ const DrawerOI: React.FC<any> = ({
   setIsOpen,
   missionData,
 }) => {
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
-  const { t } = useI18n();
-
-  const [currentBox, setCurrentBox] = useState<any>({});
-
-  const handleOkButton = () => {
-    currentPage === 0 ? setCurrentPage(1) : setCurrentPage(0);
-  };
-
-  const handleCancelButton = () => {
-    currentPage === 1 ? setCurrentPage(0) : setIsOpen(false);
-  };
-
   const handleCancel = () => {
     setIsOpen(false);
-    setCurrentPage(0);
   };
 
   return (
@@ -43,78 +28,37 @@ const DrawerOI: React.FC<any> = ({
       onClose={handleCancel}
       height={"95vh"}
       placement="bottom"
-      // footer={
-      //   <div style={{ textAlign: "right" }}>
-      //     <Button style={{ marginRight: 8 }} onClick={handleCancelButton}>
-      //       {currentPage === 1
-      //         ? t("issue_time_schedule.oi_modal.back")
-      //         : t("issue_time_schedule.oi_modal.cancel")}
-      //     </Button>
-      //     <Button
-      //       type="primary"
-      //       onClick={handleOkButton}
-      //       loading={confirmLoading}
-      //     >
-      //       {currentPage === 0
-      //         ? t("issue_time_schedule.oi_modal.next")
-      //         : t("issue_time_schedule.oi_modal.complete")}
-      //     </Button>
-      //   </div>
-      // }
     >
-      {currentPage === 0 && (
-        <SplitOrder
-          selectedItem={selectedItem}
-          boxFounded={currentBox}
-          setCurrentPage={setCurrentPage}
-          missionData={missionData}
-          setCurrentBox={setCurrentBox}
-        />
-      )}
-      {currentPage === 1 && (
-        <Inbound
-          selectedItem={selectedItem}
-          setCurrentPage={setCurrentPage}
-          boxFounded={currentBox}
-          setCurrentBox={setCurrentBox}
-        />
-      )}
+      <SplitOrder missionData={missionData} />
     </Drawer>
   );
 };
 
-const SplitOrder: React.FC<any> = ({
-  selectedItem,
-  setCurrentPage,
-  setCurrentBox,
-  boxFounded,
-}) => {
-  const { t } = useI18n();
+const SplitOrder: React.FC<any> = ({ missionData = [] }) => {
+  const refAction = useRef(null);
 
-  const [missionData, setMissionData] = useState<any[]>([]);
-  // const [boxFounded, setBoxFounded] = useState<any>({});
-
-  const fetchData = async () => {
-    const data = await creatMissionData();
-    console.log("ata.metaData", data.metaData);
-    setMissionData(data.metaData);
-  };
+  const [value, setValue] = useState("");
+  const [boxFounded, setBoxFounded] = useState("");
 
   useEffect(() => {
-    fetchData();
+    const currentRef = refAction.current;
+    if (currentRef) {
+      currentRef.focus();
+      setTimeout(() => {
+        currentRef.focus();
+      }, 500);
+    }
+
+    return () => {
+      if (currentRef && document.activeElement === currentRef) {
+        (document.activeElement as HTMLElement).blur();
+      }
+    };
   }, []);
 
-  const refAction = useRef(null);
-  const [value, setValue] = useState("");
-  const [current, total] = selectedItem?.quantity
-    ?.split(" / ")
-    .map((num) => parseInt(num, 10)) || [0, 0];
-
   useEffect(() => {
     const currentRef = refAction.current;
-    console.log("currentRef", currentRef);
     if (currentRef) {
-      console.log("dnd1");
       currentRef.focus();
       setTimeout(() => {
         currentRef.focus();
@@ -122,51 +66,22 @@ const SplitOrder: React.FC<any> = ({
     }
 
     return () => {
-      // Cleanup to prevent focusing on unmounted components
       if (currentRef && document.activeElement === currentRef) {
         (document.activeElement as HTMLElement).blur();
       }
     };
-  }, [selectedItem, setCurrentPage]);
-
-  useEffect(() => {
-    const currentRef = refAction.current;
-    if (selectedItem && currentRef) {
-      currentRef.focus();
-      setTimeout(() => {
-        currentRef.focus();
-      }, 500);
-    }
-
-    return () => {
-      // Cleanup to prevent focusing on unmounted components
-      if (currentRef && document.activeElement === currentRef) {
-        (document.activeElement as HTMLElement).blur();
-      }
-    };
-  }, [selectedItem]);
+  }, []);
 
   const handleAction = (e) => {
     const value = e.target.value.trim();
     setValue(value);
-    // if (value === "OK") {
-    //   setCurrentPage(1);
-    //   return;
-    // } else if (value === "cancel") {
-    //   setCurrentPage(0); // Reset to Outbound step
-    // }
-    // console.log('___adf', missionData)
   };
   const handleInputEnter = (value) => {
     if (value && value.trim().toLowerCase() === "ok") {
-      // selectedItem.quantity = selectedItem.quantity - current;
-      setCurrentPage(1);
     } else {
       const boxFounded = missionData.find((item) => item.package_no === value);
-      console.log("___package_no", boxFounded);
-      // setBoxFounded(boxFounded);
       if (boxFounded) {
-        setCurrentBox(boxFounded);
+        setBoxFounded(boxFounded);
         setValue("");
       } else {
         message.error("Không tìm thấy mã thùng, vui lòng thử lại.");
@@ -205,29 +120,7 @@ const SplitOrder: React.FC<any> = ({
             }
           }}
         />
-
-        {/* <div className="my-4">
-          <p className="text-lg text-gray-600 text-center">Quantity to Pick</p>
-          <div className="flex items-center justify-center gap-2">
-            <span className="text-3xl font-bold text-blue-600">{current}</span>
-            <span className="text-xl text-gray-400">from</span>
-            <span className="text-3xl font-bold text-gray-600">{total}</span>
-          </div>
-        </div> */}
-
         <div className="grid grid-cols-2 gap-4 my-4 mt-10">
-          {/* <div className="bg-blue-50 p-3 rounded-md border border-blue-100 text-center">
-            <p className="text-sm text-blue-600 font-medium">KIT</p>
-            <p className="text-2xl font-bold text-blue-700 tracking-wider">
-              {selectedItem?.order || "Item order"}
-            </p>
-          </div>
-          <div className="bg-blue-50 p-3 rounded-md border border-blue-100 text-center">
-            <p className="text-sm text-blue-600 font-medium">Mã vật tư</p>
-            <p className="text-2xl font-bold text-blue-700 tracking-wider">
-              {selectedItem?.sku || "Item sku"}
-            </p>
-          </div> */}
           {boxFounded?.package_no ? (
             <>
               <div className="text-center">
@@ -256,14 +149,6 @@ const SplitOrder: React.FC<any> = ({
               </div>
             </>
           ) : null}
-          {/* <div className="text-center">
-            <p className="text-md text-gray-500">Robot No</p>
-            <p className="font-medium text-lg">{boxFounded?.robot_no || "Not assigned"}</p>
-          </div>
-          <div className="text-center">
-            <p className="text-md text-gray-500">ETA</p>
-            <p className="font-medium text-lg">{boxFounded?.eta || "Not available"}</p>
-          </div> */}
         </div>
         <div
           className="text-center mt-6"
@@ -329,16 +214,6 @@ const SplitOrder: React.FC<any> = ({
             </div>
           </div>
         </div>
-        {/* <div>
-          <p className="text-lg text-gray-900 font-semibold mb-4 text-center">
-            Current Box Data (Debug)
-          </p>
-          <div className="bg-white p-4 rounded-lg border shadow-sm">
-            <pre className="text-sm text-gray-700 whitespace-pre-wrap overflow-auto max-h-60">
-              {JSON.stringify(boxFounded, null, 2)}
-            </pre>
-          </div>
-        </div> */}
       </div>
     </div>
   );

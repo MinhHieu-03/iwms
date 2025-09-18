@@ -1,4 +1,13 @@
-import { Drawer, Descriptions, Tag, Table, Spin, Button, Checkbox } from "antd";
+import {
+  Drawer,
+  Descriptions,
+  Tag,
+  Table,
+  Spin,
+  Button,
+  Checkbox,
+  ConfigProvider,
+} from "antd";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
@@ -84,7 +93,7 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
 
   // Filter data based on checkbox
   const filteredIssueDataDetails = showIncompleteOnly
-    ? issueDataDetails.filter(item => item.issue_qty > item.issued_qty)
+    ? issueDataDetails.filter((item) => item.issue_qty > item.issued_qty)
     : issueDataDetails;
 
   // Row selection configuration
@@ -157,8 +166,14 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
       key: "issued_qty",
       width: 80,
       render: (text: number, record: IssueDataDetail) => (
-        <span className={`${record.issue_qty > text ? "text-red-600" : "text-green-600"} font-medium`}>{text}</span>
-      ),  
+        <span
+          className={`${
+            record.issue_qty > text ? "text-red-600" : "text-green-600"
+          } font-medium`}
+        >
+          {text}
+        </span>
+      ),
       align: "right" as const,
     },
     // {
@@ -214,10 +229,9 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
           </Descriptions.Item>
           <Descriptions.Item label="Tổng số vật tư">
             <Tag color="green">
-              {showIncompleteOnly 
+              {showIncompleteOnly
                 ? `${filteredIssueDataDetails.length}/${issueDataDetails.length} vật tư chưa lấy đủ`
-                : `${issueDataDetails.length} vật tư`
-              }
+                : `${issueDataDetails.length} vật tư`}
             </Tag>
           </Descriptions.Item>
           <Descriptions.Item
@@ -268,27 +282,41 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
                 Chỉ hiển thị vật tư chưa lấy đủ
               </Checkbox>
               {selectedRowKeys.length > 0 && (
-                <Button onClick={() => {}}>
-                  Xác nhận lấy đủ hàng
-                </Button>
+                <Button onClick={() => {}}>Xác nhận lấy đủ hàng</Button>
               )}
             </div>
           </div>
           <Spin spinning={loading}>
-            <Table
-              columns={issueDataColumns}
-              dataSource={filteredIssueDataDetails}
-              rowKey="material_no"
-              size="small"
-              scroll={{ x: 800 }}
-              rowSelection={rowSelection}
-              pagination={{
-                pageSize: 10,
-                showSizeChanger: true,
-                showTotal: (total, range) =>
-                  `${range[0]}-${range[1]} of ${total} items`,
+            <ConfigProvider
+              theme={{
+                components: {
+                  Table: {
+                    fontSize: 22,
+                    headerBg: "#f5f5f5",
+                    headerColor: "#262626",
+                    cellFontSize: 22,
+                  },
+                },
+                token: {
+                  fontSize: 22,
+                },
               }}
-            />
+            >
+              <Table
+                columns={issueDataColumns}
+                dataSource={filteredIssueDataDetails}
+                rowKey="material_no"
+                size="small"
+                scroll={{ x: 800 }}
+                rowSelection={rowSelection}
+                pagination={{
+                  pageSize: 10,
+                  showSizeChanger: true,
+                  showTotal: (total, range) =>
+                    `${range[0]}-${range[1]} of ${total} items`,
+                }}
+              />
+            </ConfigProvider>
           </Spin>
         </div>
       </div>
