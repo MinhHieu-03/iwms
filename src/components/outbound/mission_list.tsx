@@ -305,7 +305,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
             <CardTitle>Vị trí theo tên bộ kit</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {[1, 2, 3, 4].map((locationId) => {
                 const dataKit =
                   currentKitMerge?.kit_no?.[locationId - 1] || null;
@@ -313,10 +313,10 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
                 return (
                   <div
                     key={locationId}
-                    className="border rounded-lg p-4 flex justify-between"
+                    className="border-2 border-blue-300 rounded-xl p-6 flex justify-between bg-gradient-to-br from-blue-50 to-indigo-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                   >
-                    <h3 className="font-semibold text-xl">Kit {locationId}</h3>
-                    <div className=" text-xl font-bold">{dataKit || "N/A"}</div>
+                    <h3 className="font-bold text-2xl text-blue-800">Kit {locationId}</h3>
+                    <div className="text-3xl font-black text-indigo-900 bg-white px-3 py-1 rounded-lg shadow-md">{dataKit || "N/A"}</div>
                   </div>
                 );
               })}

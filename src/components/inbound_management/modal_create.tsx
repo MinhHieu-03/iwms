@@ -71,7 +71,6 @@ type TAdd = {
 const ModalAdd = ({ title, isOpen, setIsOpen, masterData }: TAdd) => {
   const [form] = Form.useForm();
   const [storageData, setStorageData] = useState<string[]>([]);
-  const [storeUnits, setStoreUnits] = useState<string[]>([]);
   const [skuMaster, setSkuMaster] = useState<any>({});
   const refAction = useRef(null);
   const [value, setValue] = useState("");
@@ -99,7 +98,6 @@ const ModalAdd = ({ title, isOpen, setIsOpen, masterData }: TAdd) => {
       const dataNodes = data?.metaData?.[0]?.nodes || [];
       const allData = dataNodes.map((i) => i?.data?.label) || [];
       setStorageData(uniq(allData));
-      setStoreUnits(data?.metaData?.[0]?.storage_unit || []);
     } catch (error) {
       console.error("Error fetching storage data:", error);
     }
@@ -210,6 +208,7 @@ const ModalAdd = ({ title, isOpen, setIsOpen, masterData }: TAdd) => {
         sku: values.sku,
         bin_code: values.bin_code,
         store: storeModel,
+        pk_style: skuMaster?.pk_style,
       };
       await apiClient.post("/inbound", body, false);
       console.log("Form submitted:", body);
@@ -268,19 +267,15 @@ const ModalAdd = ({ title, isOpen, setIsOpen, masterData }: TAdd) => {
   };
   const handleActionEnter = (value) => {
     const oldSKU = form.getFieldValue("sku");
-    if (value === "OK") {
-      handleSubmit();
-      return;
-    } else if (value === "Cancel") {
-      // setCurrent(0);
-      handleClose();
-      return;
-    } else if (
-      !isNaN(value) &&
-      oldSKU &&
-      value.length != 8 &&
-      value.length != 7
-    ) {
+    // if (value === "OK") {
+    //   handleSubmit();
+    //   return;
+    // } else if (value === "Cancel") {
+    //   // setCurrent(0);
+    //   handleClose();
+    //   return;
+    // }
+    if (!isNaN(value) && oldSKU && value.length != 8 && value.length != 7) {
       inputQuantity(value);
     } else if (isValidBinCode(value)) {
       // is Bin ocode
@@ -288,6 +283,9 @@ const ModalAdd = ({ title, isOpen, setIsOpen, masterData }: TAdd) => {
       setCurrentField("bt");
       setValue("");
       text2void(`OK`, false);
+      setTimeout(() => {
+        handleSubmit();
+      }, 100);
     } else {
       if (!oldSKU) {
         form.setFieldValue("sku", value);

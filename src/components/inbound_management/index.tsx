@@ -41,25 +41,6 @@ const InboundManagement = () => {
     perPage: 10,
   });
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [formEdit, setFormEdit] = useState<{
-    isOpen: boolean;
-    data: DataType | Record<string, unknown>;
-  }>({
-    isOpen: false,
-    data: {
-      sku: "",
-      quantity: 0,
-      storeMethod: "Bin",
-      packingMethod: "Carton",
-      bin_code: "",
-      supplier: "",
-      invoice_code: "",
-      status: "new",
-      note: "",
-      createdAt: new Date().toISOString(),
-    },
-  });
-  const [dataRole, setDataRole] = useState<unknown[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
@@ -159,24 +140,16 @@ const InboundManagement = () => {
     requestDataList();
   };
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: (selectedKeys: React.Key[]) => {
-      setSelectedRowKeys(selectedKeys);
-    },
-  };
   return (
     <Card>
       <Header
         setIsOpen={setIsOpen}
-        requestDataList={requestDataList}
         handleReload={handleReload}
         selectedRowKeys={selectedRowKeys}
         onDelete={handleDeleteSelected}
       />
       <CardContent>
         <Table
-          rowSelection={rowSelection}
           size="middle"
           rowKey="_id"
           loading={loading}
@@ -184,22 +157,6 @@ const InboundManagement = () => {
           dataSource={dataList}
           pagination={false}
           scroll={{ x: "calc(100vw - 640px)" }}
-          onRow={(record, rowIndex) => {
-            return {
-              onClick: (e) => {
-                // Prevent row click action when clicking on checkboxes
-                if (
-                  (e.target as HTMLElement).closest(".ant-checkbox-wrapper")
-                ) {
-                  return;
-                }
-                setFormEdit({
-                  isOpen: true,
-                  data: record,
-                });
-              },
-            };
-          }}
         />
         <BasePagination
           total={total}
@@ -212,7 +169,6 @@ const InboundManagement = () => {
       </CardContent>
       <ModalAdd
         title={"OI nhập kho"}
-        itemsRender={renderCreateForm(dataRole, dataList, t)}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         _handleFinish={_handleFinish}
@@ -229,7 +185,6 @@ const formSchema = z.object({
 
 const Header = ({
   setIsOpen,
-  requestDataList,
   handleReload,
   selectedRowKeys = [],
   onDelete,
