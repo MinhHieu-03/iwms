@@ -66,7 +66,7 @@ const OrdersTab: React.FC = () => {
   const [current, setCurrent] = useState(0);
   const [dataMerge, setDataMerge] = useState([]);
   const [kitData, setKitData] = useState([]);
-  const [selectedGate, setSelectedGate] = useState("1");
+  const [selectedGate, setSelectedGate] = useState("gate1");
 
   const handleGateChange = (gate: string) => {
     setSelectedGate(gate);
@@ -96,10 +96,6 @@ const OrdersTab: React.FC = () => {
             key: "1",
             label: "Danh sách Kit gộp chẵn",
           },
-          // {
-          //   key: "2",
-          //   label: "Step 3",
-          // },
         ]}
         onChange={(key) => setCurrent(Number(key))}
       />
@@ -109,11 +105,14 @@ const OrdersTab: React.FC = () => {
           setDataMerge={setDataMerge}
           setKitData={setKitData}
           missionData={dataMerge}
+
+          gate={selectedGate}
         />
       ) : null}
       {/* {current === 1 ? <OIOutbound /> : null} */}
       {current === 1 ? (
-        <MissionList />
+        <MissionList 
+          gate={selectedGate} />
       ) : null}
     </div>
   );

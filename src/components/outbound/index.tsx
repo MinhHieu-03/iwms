@@ -22,6 +22,7 @@ const { list, create, update, remove, merge_kit } = domain;
 
 const IssueTimeScheduleTable = ({
   setCurrent,
+  gate,
   setDataMerge,
   missionData,
   setKitData,
@@ -72,10 +73,11 @@ const IssueTimeScheduleTable = ({
     ],
     queryFn: async () => {
       try {
-        const { data } = await apiClient.post(list, {
+        const { data } = await apiClient.post(`${list}`, {
           limit: pageInfo.perPage,
           page: pageInfo.page,
           filter: debouncedFilters,
+          gate,
         });
         // const fakeData = await creatKitData();
         return {
@@ -234,7 +236,7 @@ const IssueTimeScheduleTable = ({
         A_reqd_time: [],
         time_issue: [],
         status: "in_progress",
-        gate: "gate1",
+        gate,
       };
       selectedRowKeys.map((item) => {
         const itemData = dataList.find((i) => i.issue_ord_no === item);

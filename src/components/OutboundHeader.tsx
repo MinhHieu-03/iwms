@@ -21,7 +21,7 @@ interface OutboundHeaderProps {
 }
 
 const OutboundHeader: React.FC<OutboundHeaderProps> = ({
-  selectedGate = "1",
+  selectedGate = "gate1",
   onGateChange,
   title = "",
   type = "default"
@@ -153,9 +153,9 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
                   <SelectValue placeholder="Cửa ra" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">Cửa ra 1</SelectItem>
-                  <SelectItem value="2">Cửa ra 2</SelectItem>
-                  <SelectItem value="3">Cửa ra 3</SelectItem>
+                  <SelectItem value="gate1">Cửa ra 1</SelectItem>
+                  <SelectItem value="gate2">Cửa ra 2</SelectItem>
+                  <SelectItem value="gate3">Cửa ra 3</SelectItem>
                 </SelectContent>
               </Select>
               {type === 'ptl-odd' ?<Button variant="default" onClick={() => {

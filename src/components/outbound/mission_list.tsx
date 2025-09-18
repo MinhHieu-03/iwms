@@ -48,10 +48,11 @@ interface PickingItem {
 }
 
 interface PickingDrawerProps {
+  gate?: string;
   // Props removed since data will be fetched internally via API
 }
 
-const PickingDrawer: React.FC<PickingDrawerProps> = () => {
+const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
   const [isOpenOI, setIsOpenOI] = useState<boolean | Object>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState('');
@@ -70,11 +71,11 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
     error,
     refetch,
   } = useQuery({
-    queryKey: ['kit-merger-list'],
+    queryKey: ['kit-merger-list', gate],
     queryFn: async () => {
       try {
-        const { data } = await apiClient.post('kit-merger/list', {
-          // Add any required parameters here
+        const { data } = await apiClient.post(`kit-merger/list`, {
+          filter: { gate },
         });
         console.log('Fetched kit merger data:', data);
         return data;
