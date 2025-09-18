@@ -174,13 +174,6 @@ function App() {
                             ])}
                             element={<TemplateEdit />}
                           />
-                          {/* <Route
-                            path={createRoute([
-                              ...mission_template_route,
-                              ":id",
-                            ])}
-                            element={<EditMissionTemplate />}
-                          /> */}
                           <Route
                             path={createRoute(mission_template_route)}
                             element={<MissionTemplate />}
@@ -229,14 +222,14 @@ const CustomTheme = ({ children }) => (
     theme={{
       components: {
         Table: {
-          fontSize: 22,
+          fontSize: 24,
           headerBg: "#f5f5f5",
           headerColor: "#262626",
-          cellFontSize: 22,
+          cellFontSize: 24,
         },
       },
       token: {
-        fontSize: 22,
+        fontSize: 24,
       },
     }}
   >

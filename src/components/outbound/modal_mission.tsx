@@ -167,15 +167,6 @@ const ModalMission: React.FC<ModalDetailProps> = ({
       dataIndex: "state",
       key: "state",
       width: 100,
-      sorter: (a, b) => {
-        const statusOrder = { error: 0, new: 1, running: 2, done: 3 };
-        const aOrder =
-          statusOrder[a.status] !== undefined ? statusOrder[a.status] : 999;
-        const bOrder =
-          statusOrder[b.status] !== undefined ? statusOrder[b.status] : 999;
-        return aOrder - bOrder;
-      },
-      sortDirections: ["ascend", "descend"],
       render: (status) => (
         <span
           className={`px-2 py-1 rounded text-xs font-medium ${mapColor[status]}`}

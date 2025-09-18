@@ -52,7 +52,7 @@ interface PickingDrawerProps {
 }
 
 const PickingDrawer: React.FC<PickingDrawerProps> = () => {
-  const [isOpenOI, setIsOpenOI] = useState<boolean>(false);
+  const [isOpenOI, setIsOpenOI] = useState<boolean | Object>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState("");
   const [inputValue, setInputValue] = useState("");
@@ -132,10 +132,14 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
   };
 
   const loadingOI = (record: any) => {
+    setLoading(true);
     apiClient
       .get(`mission/kit-merge/${record._id}`)
       .then((res) => {
-        setIsOpenOI(res.data);
+        setIsOpenOI({
+          missions: res.data,
+          kitMerge: record._id,
+        });
       })
       .catch((err) => {
         console.error("Failed to fetch merge data:", err);
@@ -150,12 +154,12 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
 
   // Define columns for the Ant Design table
   const columns: ColumnsType<any> = [
-    {
-      title: "Picking No",
-      dataIndex: "_id",
-      key: "_id",
-      width: 150,
-    },
+    // {
+    //   title: "Picking No",
+    //   dataIndex: "_id",
+    //   key: "_id",
+    //   width: 150,
+    // },
     {
       title: "Kit No",
       dataIndex: "kit_no",
@@ -273,6 +277,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
 
           <Button
             type="primary"
+            loading={loading}
             onClick={() => loadingOI(record)}
             className="gap-2"
             size="small"
@@ -385,7 +390,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       <DrawerOI
         isOpen={!!isOpenOI}
         setIsOpen={setIsOpenOI}
-        missionData={isOpenOI}
+        data={isOpenOI}
       />
     </div>
   );

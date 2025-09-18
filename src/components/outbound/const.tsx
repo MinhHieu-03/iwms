@@ -50,7 +50,7 @@ export const RenderCol = ({
     render: (text) => <span className="font-medium text-blue-600">{text}</span>,
   },
   {
-    title: t(`${lang_key}.status`),
+    title: "Trạng thái",
     dataIndex: "status",
     key: "status",
     width: 60,
@@ -89,14 +89,14 @@ export const RenderCol = ({
     title: t(`${lang_key}.issue_time`),
     dataIndex: "time_issue",
     key: "time_issue",
-    width: 100,
+    width: 110,
     render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
   },
   {
     title: t(`${lang_key}.required_time`),
     dataIndex: "A_reqd_time",
     key: "A_reqd_time",
-    width: 100,
+    width: 150,
     render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
     sorter: (a, b) => dayjs(a.A_reqd_time).unix() - dayjs(b.A_reqd_time).unix(),
   },
@@ -108,6 +108,13 @@ export const RenderCol = ({
     render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
     sorter: (a, b) =>
       dayjs(a.plan_issue_dt).unix() - dayjs(b.plan_issue_dt).unix(),
+  },
+  {
+    title: "Loại Kit",
+    dataIndex: "type",
+    key: "type",
+    width: 50,
+    render: (type) => <Tag color="blue">{type || "Normal"}</Tag>,
   },
   {
     title: t("common.action"),
