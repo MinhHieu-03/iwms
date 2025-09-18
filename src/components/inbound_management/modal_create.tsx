@@ -112,6 +112,14 @@ const ModalAdd = ({ title, isOpen, setIsOpen, masterData }: TAdd) => {
       bin_code: "",
     });
     const item = masterData[sku];
+    if (item.flg1 === 4) {
+      setSkuMaster(item);
+      text2void(`Vật tư để ngoài băng tải`);
+      setTimeout(() => {
+        reset();
+      }, 1000 * 3);
+      return;
+    }
     setSkuMaster(item);
     if (item) {
       setCurrentField("qty");
@@ -559,6 +567,7 @@ const mapAction = {
   1: "Bỏ nguyên thùng",
   2: "Mở thùng carton và đổ toàn bộ túi vào thùng nhựa",
   3: "Cho thùng carton vào thùng nhựa",
+  4: "Để ngoài băng tải",
 };
 
 const fakeData = [
