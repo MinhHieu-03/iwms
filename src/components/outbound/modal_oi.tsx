@@ -253,7 +253,7 @@ const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
                 <span className="text-3xl font-bold text-gray-600">
                   {boxFounded?.inventory?.qty_available}
                 </span>
-                <span className="text-2xl text-gray-600">| ()</span>
+                <span className="text-2xl text-gray-600"></span>
               </div>
               
             </div>
