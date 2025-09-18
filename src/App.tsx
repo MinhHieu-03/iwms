@@ -49,6 +49,7 @@ import { Toaster } from "./components/ui/toaster";
 import "./App.css";
 import { createRoute } from "./lib/utils";
 import { route as mission_template_route } from "./components/mission_setting/mission_template/const";
+import { ConfigProvider } from "antd";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -198,17 +199,18 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-                <Route path="/oi/outbound" element={<Outbound />} />
-                <Route path="/oi/outbound-odd" element={<OutboundOdd />} />
-                <Route path="/oi/inbound" element={<InboundManagement />} />
+                <Route path="/oi/outbound" element={<CustomTheme><Outbound /></CustomTheme>} />
+                <Route path="/oi/outbound-odd" element={<CustomTheme><OutboundOdd /></CustomTheme>} />
                 <Route
-                  path="/oi/outbound-ptl"
-                  element={<Ptl />}
+                  path="/oi/inbound"
+                  element={
+                    <CustomTheme>
+                      <InboundManagement />
+                    </CustomTheme>
+                  }
                 />
-                <Route
-                  path="/oi/outbound-odd-ptl"
-                  element={<OddPtl />}
-                />
+                <Route path="/oi/outbound-ptl" element={<CustomTheme><Ptl /></CustomTheme>} />
+                <Route path="/oi/outbound-odd-ptl" element={<CustomTheme><OddPtl /></CustomTheme>} />
               </Routes>
               <Toaster />
             </div>
@@ -221,3 +223,23 @@ function App() {
 }
 
 export default App;
+
+const CustomTheme = ({ children }) => (
+  <ConfigProvider
+    theme={{
+      components: {
+        Table: {
+          fontSize: 22,
+          headerBg: "#f5f5f5",
+          headerColor: "#262626",
+          cellFontSize: 22,
+        },
+      },
+      token: {
+        fontSize: 22,
+      },
+    }}
+  >
+    {children}
+  </ConfigProvider>
+);

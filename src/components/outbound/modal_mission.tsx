@@ -278,38 +278,22 @@ const ModalMission: React.FC<ModalDetailProps> = ({
         <div>
           <h4 className="font-semibold mb-3">Danh sách nhiệm vụ kit gộp</h4>
           <Spin spinning={loading}>
-            <ConfigProvider
-              theme={{
-                components: {
-                  Table: {
-                    fontSize: 22,
-                    headerBg: "#f5f5f5",
-                    headerColor: "#262626",
-                    cellFontSize: 22,
-                  },
-                },
-                token: {
-                  fontSize: 22,
-                },
+            <Table
+              columns={issueDataColumns}
+              dataSource={filteredData}
+              rowKey="mission_no"
+              size="small"
+              rowClassName={(record) =>
+                record.status === "error" ? "bg-red-100" : ""
+              }
+              scroll={{ x: 1400 }}
+              pagination={{
+                pageSize: 20,
+                // showSizeChanger: true,
+                showTotal: (total, range) =>
+                  `${range[0]}-${range[1]} of ${total} items`,
               }}
-            >
-              <Table
-                columns={issueDataColumns}
-                dataSource={filteredData}
-                rowKey="mission_no"
-                size="small"
-                rowClassName={(record) =>
-                  record.status === "error" ? "bg-red-100" : ""
-                }
-                scroll={{ x: 1400 }}
-                pagination={{
-                  pageSize: 20,
-                  // showSizeChanger: true,
-                  showTotal: (total, range) =>
-                    `${range[0]}-${range[1]} of ${total} items`,
-                }}
-              />
-            </ConfigProvider>
+            />
           </Spin>
         </div>
       </div>

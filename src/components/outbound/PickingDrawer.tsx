@@ -180,35 +180,19 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
             style={{ marginBottom: 16 }}
           />
 
-          <ConfigProvider
-            theme={{
-              components: {
-                Table: {
-                  fontSize: 22,
-                  headerBg: "#f5f5f5",
-                  headerColor: "#262626",
-                  cellFontSize: 22,
-                },
+          <Table
+            columns={columns}
+            dataSource={missionData}
+            rowKey="issord_dtl_no"
+            pagination={false}
+            size="middle"
+            onRow={(record) => ({
+              onClick: () => {
+                setSelectedItem(record);
+                setActionValue("");
               },
-              token: {
-                fontSize: 22,
-              },
-            }}
-          >
-            <Table
-              columns={columns}
-              dataSource={missionData}
-              rowKey="issord_dtl_no"
-              pagination={false}
-              size="middle"
-              onRow={(record) => ({
-                onClick: () => {
-                  setSelectedItem(record);
-                  setActionValue("");
-                },
-              })}
-            />
-          </ConfigProvider>
+            })}
+          />
         </div>
       </Drawer>
 

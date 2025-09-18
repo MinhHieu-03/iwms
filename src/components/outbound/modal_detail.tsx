@@ -287,36 +287,20 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
             </div>
           </div>
           <Spin spinning={loading}>
-            <ConfigProvider
-              theme={{
-                components: {
-                  Table: {
-                    fontSize: 22,
-                    headerBg: "#f5f5f5",
-                    headerColor: "#262626",
-                    cellFontSize: 22,
-                  },
-                },
-                token: {
-                  fontSize: 22,
-                },
+            <Table
+              columns={issueDataColumns}
+              dataSource={filteredIssueDataDetails}
+              rowKey="material_no"
+              size="small"
+              scroll={{ x: 800 }}
+              rowSelection={rowSelection}
+              pagination={{
+                pageSize: 10,
+                showSizeChanger: true,
+                showTotal: (total, range) =>
+                  `${range[0]}-${range[1]} of ${total} items`,
               }}
-            >
-              <Table
-                columns={issueDataColumns}
-                dataSource={filteredIssueDataDetails}
-                rowKey="material_no"
-                size="small"
-                scroll={{ x: 800 }}
-                rowSelection={rowSelection}
-                pagination={{
-                  pageSize: 10,
-                  showSizeChanger: true,
-                  showTotal: (total, range) =>
-                    `${range[0]}-${range[1]} of ${total} items`,
-                }}
-              />
-            </ConfigProvider>
+            />
           </Spin>
         </div>
       </div>

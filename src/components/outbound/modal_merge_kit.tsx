@@ -147,21 +147,6 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
           </div>
           {/*  */}
           <Spin spinning={loading}>
-            <ConfigProvider
-              theme={{
-                components: {
-                  Table: {
-                    fontSize: 22,
-                    headerBg: "#f5f5f5",
-                    headerColor: "#262626",
-                    cellFontSize: 22,
-                  },
-                },
-                token: {
-                  fontSize: 22,
-                },
-              }}
-            >
               <Table
                 columns={issueDataColumns}
                 dataSource={filteredData}
@@ -180,7 +165,6 @@ const ModalMergeKit: React.FC<ModalDetailProps> = ({
                     `${range[0]}-${range[1]} of ${total} items`,
                 }}
               />
-            </ConfigProvider>
           </Spin>
         </div>
       </div>

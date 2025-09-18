@@ -132,7 +132,6 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
   };
 
   const loadingOI = (record: any) => {
-    
     apiClient
       .get(`mission/kit-merge/${record._id}`)
       .then((res) => {
@@ -146,7 +145,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       .finally(() => {
         setLoading(false);
       });
-  }
+  };
 
   const lang_key = "issue_time_schedule.table";
 
@@ -166,9 +165,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       render: (text) => (
         <div className="space-y-1">
           {text.map((item, index) => (
-            <div key={index}>
-              {item}
-            </div>
+            <div key={index}>{item}</div>
           ))}
         </div>
       ),
@@ -181,9 +178,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       render: (date) => (
         <div className="space-y-1">
           {date.map((item, index) => (
-            <div key={index}>
-              {dayjs(item).format("YYYY-MM-DD HH:mm")}
-            </div>
+            <div key={index}>{dayjs(item).format("YYYY-MM-DD HH:mm")}</div>
           ))}
         </div>
       ),
@@ -198,9 +193,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       render: (date) => (
         <div className="space-y-1">
           {date.map((item, index) => (
-            <div key={index}>
-              {dayjs(item).format("YYYY-MM-DD HH:mm")}
-            </div>
+            <div key={index}>{dayjs(item).format("YYYY-MM-DD HH:mm")}</div>
           ))}
         </div>
       ),
@@ -215,9 +208,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       render: (date) => (
         <div className="space-y-1">
           {date.map((item, index) => (
-            <div key={index}>
-              {dayjs(item).format("YYYY-MM-DD HH:mm")}
-            </div>
+            <div key={index}>{dayjs(item).format("YYYY-MM-DD HH:mm")}</div>
           ))}
         </div>
       ),
@@ -361,35 +352,19 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
           }}
           style={{ marginBottom: 16 }}
         />
-        <ConfigProvider
-          theme={{
-            components: {
-              Table: {
-                fontSize: 22,
-                headerBg: '#f5f5f5',
-                headerColor: '#262626',
-                cellFontSize: 22,
-              }
+        <Table
+          columns={columns}
+          dataSource={queryData?.metaData || []}
+          rowKey="picking_no"
+          pagination={false}
+          size="middle"
+          onRow={(record) => ({
+            onClick: () => {
+              setSelectedItem(record);
+              setActionValue("");
             },
-            token: {
-              fontSize: 22
-            }
-          }}
-        >
-          <Table
-            columns={columns}
-            dataSource={queryData?.metaData || []}
-            rowKey="picking_no"
-            pagination={false}
-            size="middle"
-            onRow={(record) => ({
-              onClick: () => {
-                setSelectedItem(record);
-                setActionValue("");
-              },
-            })}
-          />
-        </ConfigProvider>
+          })}
+        />
       </Card>
 
       {isOpenMission && (

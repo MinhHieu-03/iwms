@@ -328,21 +328,6 @@ const IssueTimeScheduleTable = ({
               clearFilters={clearFilters}
             />
           </div>{" "}
-          <ConfigProvider
-            theme={{
-              components: {
-                Table: {
-                  fontSize: 22,
-                  headerBg: "#f5f5f5",
-                  headerColor: "#262626",
-                  cellFontSize: 22,
-                },
-              },
-              token: {
-                fontSize: 22,
-              },
-            }}
-          >
             <Table
               columns={columns}
               dataSource={queryData?.metaData || []}
@@ -357,7 +342,6 @@ const IssueTimeScheduleTable = ({
               bordered
               rowKey="issue_ord_no"
             />
-          </ConfigProvider>
           <div className="mt-4 flex justify-end">
             <BasePagination
               current={pageInfo.page}
