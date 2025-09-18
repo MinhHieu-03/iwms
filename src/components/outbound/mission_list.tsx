@@ -136,7 +136,6 @@ const PickingDrawer: React.FC<PickingDrawerProps> = () => {
       .get(`mission/kit-merge/${record._id}`)
       .then((res) => {
         setIsOpenOI(res.data);
-        setIsOpenMission(true);
       })
       .catch((err) => {
         console.error("Failed to fetch merge data:", err);

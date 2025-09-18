@@ -73,7 +73,7 @@ const ModalMission: React.FC<ModalDetailProps> = ({
 
     // Return the filtered mission data
     console.log("missionData", missionData);
-    return missionData;
+    return missionData || [];
   }, [missionData]);
 
   // Predefined status options for filter
