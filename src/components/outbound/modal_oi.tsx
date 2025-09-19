@@ -154,26 +154,26 @@ const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
       extra={
         <div className='flex gap-4 items-center'>
           <div className='flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white px-4 py-2 rounded-xl shadow-lg min-w-[120px]'>
-            <div className='text-2xl font-bold leading-tight'>
+            <div className='text-3xl font-bold leading-tight'>
               {missionStatistics?.done_picking || 0}
             </div>
-            <div className='text-xs font-medium opacity-90 uppercase tracking-wide'>
+            <div className='text-xl font-medium opacity-90 uppercase tracking-wide'>
               Hoàn thành
             </div>
           </div>
           <div className='flex items-center gap-3 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-xl shadow-lg min-w-[120px]'>
-            <div className='text-2xl font-bold leading-tight'>
+            <div className='text-3xl font-bold leading-tight'>
               {missionStatistics?.error || 0}
             </div>
-            <div className='text-xs font-medium opacity-90 uppercase tracking-wide'>
+            <div className='text-xl font-medium opacity-90 uppercase tracking-wide'>
               Lỗi
             </div>
           </div>
           <div className='flex items-center gap-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-xl shadow-lg min-w-[120px]'>
-            <div className='text-2xl font-bold leading-tight'>
+            <div className='text-3xl font-bold leading-tight'>
               {missionStatistics?.rest || 0}
             </div>
-            <div className='text-xs font-medium opacity-90 uppercase tracking-wide'>
+            <div className='text-xl font-medium opacity-90 uppercase tracking-wide'>
               Còn lại
             </div>
           </div>
@@ -261,14 +261,14 @@ const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
               className={`p-6 rounded-lg border-2 shadow-lg bg-blue-200 border-blue-400 text-blue-800`}
             >
               <div className='flex items-center justify-center gap-2'>
-                <span className='text-3xl font-bold text-blue-600'>
+                <span className='text-8xl font-bold text-blue-700'>
                   {boxFounded?.inventory?.qty}
                 </span>
-                <span className='text-xl text-gray-400'>/</span>
-                <span className='text-3xl font-bold text-gray-600'>
+                <span className='text-7xl text-gray-400'>/</span>
+                <span className='text-8xl font-bold text-gray-900'>
                   {boxFounded?.inventory?.qty_available}
                 </span>
-                <span className='text-2xl text-gray-600'></span>
+                <span className='text-2xl text-gray-900'></span>
               </div>
             </div>
           </div>

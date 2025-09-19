@@ -50,6 +50,7 @@ import "./App.css";
 import { createRoute } from "./lib/utils";
 import { route as mission_template_route } from "./components/mission_setting/mission_template/const";
 import { ConfigProvider } from "antd";
+import IssueTimeSchedule from "./pages/issue-time-schedule";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -90,6 +91,7 @@ function App() {
                             element={<OrderHistory />}
                           />
                           <Route path="/inventory" element={<Inventory />} />
+                          <Route path="/issue-time-schedule" element={<IssueTimeSchedule />} />
                           <Route path="/missions" element={<Missions />} />
                           <Route
                             path="/missions/templates"

@@ -10,7 +10,6 @@ export interface DataType {
   material_tp: string;
   pk_style: number | string;
   pk_style1: number | string;
-  new_pk_style: number | string;
   flg: number | string;
   flg1: number | string;
   data2: string;
@@ -24,11 +23,11 @@ export interface DataType {
 
 export const domain = {
   list: "material-mst/list",
-  create: "master-data",
+  create: "material-mst",
   update: "material-mst",
-  upload: "master-data/upload",
-  download: "master-data/download",
-  remove: "master-data",
+  upload: "material-mst/upload",
+  download: "material-mst/download",
+  remove: "material-mst",
 };
 
 export const RenderCol: ({ t }) => ColumnsType<DataType> = ({ t }) => {
@@ -131,29 +130,46 @@ export const renderCreateForm = (dataRole: unknown, dataList: unknown) => {
       type: "number",
     },
     {
-      label: "Qui cách đóng gói mới",
-      name: "new_pk_style",
+      label: "Qui cách đóng gói 1",
+      name: "pk_style1",
       type: "number",
     },
     {
-      label: "PCS/Bag",
-      name: "pcs_bag",
+      label: "Max PK",
+      name: "max_pk",
       type: "number",
     },
-    // {
-    //   label: "Cờ",
-    //   name: "flg",
-    //   type: "number",
-    // },
-    // {
-    //   label: "Ghi chú",
-    //   name: "comment",
-    //   type: "textarea",
-    // },
-    // {
-    //   label: "Người tạo",
-    //   name: "user_id",
-    // },
+    {
+      label: "Cờ",
+      name: "flg",
+      type: "number",
+    },
+    {
+      label: "Cờ 1",
+      name: "flg1",
+      type: "number",
+    },
+    {
+      label: "Data 1",
+      name: "data1",
+    },
+    {
+      label: "Data 2",
+      name: "data2",
+    },
+    {
+      label: "Data 3",
+      name: "data3",
+    },
+    {
+      label: "Ghi chú",
+      name: "comment",
+      type: "textarea",
+    },
+    {
+      label: "Người tạo",
+      name: "user_id",
+    },
   ];
 };
 
@@ -185,19 +201,23 @@ export const renderEditForm = (dataRole: unknown) => {
       type: "number",
     },
     {
-      label: "Qui cách đóng gói 2",
-      name: "pk_style2",
+      label: "Max PK",
+      name: "max_pk",
       type: "number",
     },
     {
-      label: "Flag",
+      label: "Cờ",
       name: "flg",
       type: "number",
     },
     {
-      label: "Flag 1",
+      label: "Cờ 1",
       name: "flg1",
       type: "number",
+    },
+    {
+      label: "Data 1",
+      name: "data1",
     },
     {
       label: "Data 2",
@@ -213,7 +233,7 @@ export const renderEditForm = (dataRole: unknown) => {
       type: "textarea",
     },
     {
-      label: "User ID",
+      label: "Người tạo",
       name: "user_id",
     },
   ];

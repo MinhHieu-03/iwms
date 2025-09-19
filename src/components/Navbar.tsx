@@ -19,6 +19,7 @@ import {
   Smartphone,
   FileText,
   Package,
+  CalendarArrowUp
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -99,6 +100,11 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           path: "/inventory",
           name: "inventory" as TranslationKey,
           icon: <Package className="w-5 h-5" />,
+        },
+        {
+          path: "/issue-time-schedule",
+          name: "KIT" as TranslationKey,
+          icon: <CalendarArrowUp className="w-5 h-5" />,
         },
         {
           path: "/layout",

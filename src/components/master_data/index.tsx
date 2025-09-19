@@ -42,7 +42,6 @@ const App = () => {
       material_nm: "",
       material_tp: "",
       pk_style: "",
-      new_pk_style: "",
       flg: "",
       comment: "",
       user_id: "",
@@ -75,20 +74,17 @@ const App = () => {
     }
   }, [pageInfo.perPage, pageInfo.page]);
 
-  const _handleFinish = (values: { [key: string]: unknown }) => {
+  const _handleFinish = async (values: { [key: string]: unknown }) => {
     const payload = {
       ...values,
-      pk_style: values.pk_style ? Number(values.pk_style) : null,
-      new_pk_style: values.new_pk_style ? Number(values.new_pk_style) : null,
-      flg: values.flg ? Number(values.flg) : null,
       ent_dt: new Date().toISOString(),
       upd_dt: new Date().toISOString(),
     };
 
-    apiClient
+    await apiClient
       .post(create, payload)
       .then((data) => {
-        message.success(t('common.create_success'));
+        message.success(t("common.create_success"));
         setIsOpen(false);
         requestDataList();
       })
@@ -101,7 +97,6 @@ const App = () => {
     const payload = {
       ...values,
       pk_style: values.pk_style ? Number(values.pk_style) : null,
-      new_pk_style: values.new_pk_style ? Number(values.new_pk_style) : null,
       flg: values.flg ? Number(values.flg) : null,
       upd_dt: new Date().toISOString(),
     };
@@ -109,7 +104,7 @@ const App = () => {
     apiClient
       .patch(`${update}/${formEdit?.data?.material_no}`, payload)
       .then((data) => {
-        message.success(t('common.update_success'));
+        message.success(t("common.update_success"));
         setFormEdit({
           isOpen: false,
           data: {},
@@ -135,7 +130,7 @@ const App = () => {
       onOk: async () => {
         try {
           setLoading(true);
-          await apiClient.delete(`${remove}`, {}, { ids: selectedRowKeys});
+          await apiClient.delete(`${remove}`, {}, { ids: selectedRowKeys });
           message.success(t("common.delete_success"));
           setSelectedRowKeys([]);
           requestDataList();
@@ -178,7 +173,7 @@ const App = () => {
         onDelete={handleDeleteSelected}
       />
       <CardContent>
-        <div className="overflow-auto" style={{ width: 'calc(100vw - 340px)' }}>
+        <div className="overflow-auto" style={{ width: "calc(100vw - 340px)" }}>
           <Table
             rowSelection={rowSelection}
             size="middle"
@@ -188,24 +183,24 @@ const App = () => {
             dataSource={dataList}
             pagination={false}
             // scroll={{ x: 620, y: 600 }}
-            scroll={{ x:  'calc(100vw - 340px)' }}
+            scroll={{ x: "calc(100vw - 340px)" }}
             // style={{ minWidth: '1520px' }}
-          //   onRow={(record, rowIndex) => {
-          //   return {
-          //     onClick: (e) => {
-          //       if (
-          //         (e.target as HTMLElement).closest(".ant-checkbox-wrapper")
-          //       ) {
-          //         return;
-          //       }
-          //       setFormEdit({
-          //         isOpen: true,
-          //         data: record,
-          //       });
-          //     },
-          //   };
-          // }}
-        />
+            onRow={(record, rowIndex) => {
+              return {
+                onClick: (e) => {
+                  if (
+                    (e.target as HTMLElement).closest(".ant-checkbox-wrapper")
+                  ) {
+                    return;
+                  }
+                  setFormEdit({
+                    isOpen: true,
+                    data: record,
+                  });
+                },
+              };
+            }}
+          />
         </div>
         <BasePagination
           total={total}
@@ -237,6 +232,14 @@ const App = () => {
         setFormEdit={setFormEdit}
         _handleFinish={_handleUpdateFinish}
       /> */}
+
+      <ModalEdit
+        title={t("master_data.edit_master_data")}
+        itemsRender={renderEditForm(dataRole)}
+        formEdit={formEdit}
+        setFormEdit={setFormEdit}
+        _handleFinish={_handleUpdateFinish}
+      />
     </Card>
   );
 };

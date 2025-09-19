@@ -21,7 +21,11 @@ const ModalAdd = ({
 }: TAdd) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
-
+  const onFinish = async (values: { [key: string]: unknown }) => {
+    await _handleFinish(values);
+    form.resetFields();
+    setIsOpen(false);
+  }
   return (
     <Modal
       title={title}
@@ -33,7 +37,7 @@ const ModalAdd = ({
       footer={null}
       width={800}
     >
-      <Form onFinish={_handleFinish} form={form} layout="vertical">
+      <Form onFinish={onFinish} form={form} layout="vertical">
         {itemsRender.map((items: TypeRenderForm) => {
           return <RenderForm key={items.name} data={items} />;
         })}

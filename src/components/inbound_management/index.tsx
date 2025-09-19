@@ -1,9 +1,9 @@
 import { DeleteOutlined, ReloadOutlined } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { keyBy, uniq } from "lodash";
 import type { UploadProps } from "antd";
 import { message, Modal, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
+import { keyBy } from "lodash";
 import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -28,7 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Input } from "../ui/input";
-import { DataType, domain, RenderCol, renderCreateForm } from "./const";
+import { DataType, domain, RenderCol } from "./const";
 import ModalAdd from "./modal_create";
 const { list, create, update, upload, download, remove } = domain;
 
