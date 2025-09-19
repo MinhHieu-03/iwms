@@ -22,4 +22,5 @@ export const en: Record<TranslationKey, string> = {
     '/mission-setting': 'Mission Settings',
     "/mission-setting/template": "Mission Template",
     "/help": "Help Center",
+    "/issue-time-schedule": "KIT",
 }

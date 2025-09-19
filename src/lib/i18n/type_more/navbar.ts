@@ -19,3 +19,4 @@ export type TranslationKey =
     | '/mission-setting'
     | '/help'
     | '/oi/inbound'
+    | '/issue-time-schedule'

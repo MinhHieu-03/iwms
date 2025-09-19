@@ -22,4 +22,5 @@ export const vn: Record<TranslationKey, string> = {
     '/mission-setting': 'Cài đặt nhiệm vụ',
     "/mission-setting/template": "Mẫu Nhiệm Vụ",
     "/help": "Trung Tâm Trợ Giúp",
+    "/issue-time-schedule": "KIT",
 }
