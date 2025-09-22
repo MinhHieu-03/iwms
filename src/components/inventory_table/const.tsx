@@ -35,6 +35,35 @@ export const RenderCol = ({
   t: (key: string) => string;
 }): ColumnsType<InventoryDataType> => [
   {
+    title: t("inventory.location_code"),
+    dataIndex: "locationCode",
+    key: "locationCode",
+    width: 120,
+  },
+  {
+    title: t("inventory.status"),
+    dataIndex: "status",
+    key: "status",
+    width: 120,
+    render: (status: string) => {
+      const statusMap: Record<string, { text: string; color: string }> = {
+        wait_fill: { text: t("status.wait_fill"), color: "orange" },
+        fill: { text: t("status.fill"), color: "blue" },
+        in_progress: { text: t("status.in_progress"), color: "processing" },
+        completed: { text: t("status.completed"), color: "success" },
+        low_stock: { text: t("status.low_stock"), color: "warning" },
+        out_of_stock: { text: t("status.out_of_stock"), color: "error" },
+      };
+      
+      const statusInfo = statusMap[status] || { text: t("status.unknown"), color: "default" };
+      return (
+        <Tag color={statusInfo.color}>
+          {statusInfo.text}
+        </Tag>
+      );
+    },
+  },
+  {
     title: t("inventory.sku"),
     dataIndex: "sku",
     key: "sku",
@@ -54,12 +83,6 @@ export const RenderCol = ({
         {text}
       </Tooltip>
     ),
-  },
-  {
-    title: t("inventory.location_code"),
-    dataIndex: "locationCode",
-    key: "locationCode",
-    width: 120,
   },
   {
     title: t("inventory.store_items"),
@@ -95,29 +118,6 @@ export const RenderCol = ({
         <span className="font-semibold text-blue-600">
           {totalItems.toLocaleString()}
         </span>
-      );
-    },
-  },
-  {
-    title: t("inventory.status"),
-    dataIndex: "status",
-    key: "status",
-    width: 120,
-    render: (status: string) => {
-      const statusMap: Record<string, { text: string; color: string }> = {
-        wait_fill: { text: t("status.wait_fill"), color: "orange" },
-        fill: { text: t("status.fill"), color: "blue" },
-        in_progress: { text: t("status.in_progress"), color: "processing" },
-        completed: { text: t("status.completed"), color: "success" },
-        low_stock: { text: t("status.low_stock"), color: "warning" },
-        out_of_stock: { text: t("status.out_of_stock"), color: "error" },
-      };
-      
-      const statusInfo = statusMap[status] || { text: t("status.unknown"), color: "default" };
-      return (
-        <Tag color={statusInfo.color}>
-          {statusInfo.text}
-        </Tag>
       );
     },
   },
