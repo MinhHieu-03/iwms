@@ -75,7 +75,7 @@ const OrdersTab: React.FC = () => {
 
   return (
     <div className="space-y-2">
-      <OutboundHeader 
+      <OutboundHeader
         selectedGate={selectedGate}
         onGateChange={handleGateChange}
         title="Quản lý xuất kho hàng lẻ"

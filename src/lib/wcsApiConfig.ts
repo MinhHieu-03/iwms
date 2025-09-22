@@ -3,7 +3,7 @@ import { get } from "lodash";
 import envConfig from "../config/env";
 import { message } from "antd";
 
-export const BASE_URL = envConfig.API_BASE_URL;
+export const BASE_URL = envConfig.WCS_BASE_URL;
 console.log("BASE_URL", BASE_URL, window.location.hostname);
 
 type TResponseStatusCode = {
@@ -51,7 +51,8 @@ const processQueue = async () => {
 // Add a request interceptor
 request.interceptors.request.use(
   async (config) => {
-    const access_token = localStorage.getItem(ACCESS_TOKEN);
+    const access_token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNzU4NzkzODM3fQ.T4trhwSWWH8c_s4iAkiZuXylz1A7yLEbrBBYTlFeNlM";
     if (access_token)
       config.headers["Authorization"] = `Bearer ${access_token}`;
     return config;
@@ -84,7 +85,8 @@ request.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const refreshToken = await localStorage.getItem(REFRESH_TOKEN);
+    const refreshToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNzU4NzkzODM3fQ.T4trhwSWWH8c_s4iAkiZuXylz1A7yLEbrBBYTlFeNlM";
     if (
       error?.response?.status === 401 &&
       !originalRequest?._retry &&
@@ -131,7 +133,7 @@ const optionDefault = {
   success: false,
   showError: false, // boolean
 };
-const apiClient = {
+const wcsApiClient = {
   get: (url: string, data = {}) => {
     return request({ method: "get", url, params: data }).catch((err) => {
       message.error(err?.response?.data?.message || err.message);
@@ -187,4 +189,4 @@ const apiClient = {
   },
 };
 
-export default apiClient;
+export default wcsApiClient;

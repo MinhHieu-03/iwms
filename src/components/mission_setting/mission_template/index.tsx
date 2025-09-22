@@ -13,15 +13,18 @@ import {
   domain,
   missionTemplateGenForm,
   RenderCol,
-  type DataType
+  type DataType,
 } from "./const";
 import Header from "./header";
+import { deleteMissionTemplate } from "@/api/missionSettingApi";
+import { useToast } from "@/hooks/use-toast";
 
 const { list, create, update, upload, download, remove } = domain;
 
 const App = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showDetail, setShowDetail] = useState("");
@@ -32,28 +35,53 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState<number>(0);
   const [dataList, setDataList] = useState<DataType[]>([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  
+  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+
   const reload = () => {
     setLoading(true);
-    
-    const filter_templates = mission_templates.filter(template => {
-      return template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        template.description.toLowerCase().includes(searchQuery.toLowerCase());
-    })
-    .map(template => missionTemplateGenForm(template));
-    setDataList(filter_templates.slice(
-      (pageInfo.page - 1) * pageInfo.perPage,
-      pageInfo.page * pageInfo.perPage
-    ));
+
+    const filter_templates = mission_templates
+      .filter((template) => {
+        return (
+          template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          template.description.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      })
+      .map((template) => missionTemplateGenForm(template));
+    setDataList(
+      filter_templates.slice(
+        (pageInfo.page - 1) * pageInfo.perPage,
+        pageInfo.page * pageInfo.perPage
+      )
+    );
     setTotal(filter_templates.length);
     setLoading(false);
   };
+
   useEffect(reload, [pageInfo]);
+
   useEffect(() => {
     setPageInfo({ page: 1, perPage: pageInfo.perPage });
     reload();
   }, [searchQuery]);
+
+  const handleDelete = async (payload: string[]) => {
+    const { data } = await deleteMissionTemplate(payload);
+    setSelectedRowKeys([]);
+    reload();
+    if (data.success) {
+      toast({
+        title: t("common.delete_success"),
+        description: data.desc,
+      });
+    } else {
+      toast({
+        title: t("common.delete_error"),
+        description: data.desc,
+        variant: "destructive",
+      });
+    }
+  };
 
   const columns: ColumnsType<DataType> = useMemo(() => {
     const col = RenderCol({ t });
@@ -63,7 +91,7 @@ const App = () => {
 
   const rowSelection = {
     selectedRowKeys,
-    onChange: (selectedKeys: React.Key[]) => {
+    onChange: (selectedKeys: string[]) => {
       setSelectedRowKeys(selectedKeys);
     },
   };
@@ -73,6 +101,8 @@ const App = () => {
       <Header
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        selectedRow={selectedRowKeys}
+        handleDelete={handleDelete}
       />
       <Card>
         <CardContent>
@@ -84,7 +114,7 @@ const App = () => {
             columns={columns}
             dataSource={dataList}
             pagination={false}
-            scroll={{ x: 'calc(100vw - 640px)' }}
+            scroll={{ x: "calc(100vw - 640px)" }}
             onRow={(record, rowIndex) => {
               return {
                 onClick: (e) => {
@@ -102,14 +132,14 @@ const App = () => {
               setPageInfo({ page, perPage })
             }
           />
-          <Drawer 
+          <Drawer
             title={t("mission_template.create_new_template")}
-            height={'94vh'}
+            height={"94vh"}
             placement="bottom"
             onClose={() => setShowDetail("")}
             open={!!showDetail}
-            >
-              <StorageHierarchyCard />
+          >
+            <StorageHierarchyCard />
           </Drawer>
         </CardContent>
       </Card>

@@ -1,5 +1,4 @@
-
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,16 +27,20 @@ import {
 } from "@/components/ui/form";
 import { type DeviceData, devices, deviceTypes } from "@/data/deviceData";
 import { useTranslation } from "react-i18next";
+import { getDeviceInfo } from "@/api/missionSettingApi";
+import { Textarea } from "../ui/textarea";
 
-type DeviceFormData = Omit<DeviceData, 'id' | 'connected' | 'state' >;
-const device_types = [...new Set(deviceTypes.map(m => m.id))];
+// type DeviceFormData = Omit<DeviceData, "id" | "connected" | "state">;
+type DeviceFormData = any;
+const device_types = [...new Set(deviceTypes.map((m) => m.id))];
 
 interface DeviceFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: DeviceFormData) => void;
-  initialData?: DeviceData;
-  mode: 'create' | 'edit';
+  initialData?: any;
+  mode: "create" | "edit" | "view";
+  deviceTypes: any[];
 }
 
 const DeviceForm: React.FC<DeviceFormProps> = ({
@@ -45,22 +48,29 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
   onClose,
   onSubmit,
   initialData,
-  mode
+  mode,
+  deviceTypes,
 }) => {
   const { t } = useTranslation();
-  const form_data = initialData ? {
-    name: initialData.name,
-    description: initialData.description,
-    type: initialData.type,
-    config: initialData.config
-  } : {
-    name: "",
-    description: "",
-    type: "",
-    config: null
-  }
+  const form_data = initialData
+    ? {
+        name: initialData.name,
+        description: initialData.description,
+        type: initialData.type,
+        config: initialData.config,
+        setting: initialData.setting,
+        state: initialData.state,
+      }
+    : {
+        name: "",
+        description: "",
+        type: "",
+        config: {},
+        setting: {},
+        state: {},
+      };
 
-  const form = useForm<DeviceFormData>({defaultValues: form_data});
+  const form = useForm<DeviceFormData>({ defaultValues: form_data });
   useEffect(() => form.reset(form_data), [initialData, form]);
 
   const handleSubmit = (data: DeviceFormData) => {
@@ -74,15 +84,26 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {mode === 'create' ? 'Create device' : 'Edit device'}
+            {mode === "create"
+              ? "Create device"
+              : mode === "edit"
+              ? "Edit device"
+              : "View device"}
           </DialogTitle>
           <DialogDescription>
-            {mode === 'create' ? 'Create new device from existed types' : "Edit an existed device's information"}
+            {mode === "create"
+              ? "Create new device from existed types"
+              : mode === "edit"
+              ? "Edit an existed device's information"
+              : "View device's information"}
           </DialogDescription>
         </DialogHeader>
-        
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
             <div className="grid grid-cols-1 gap-4">
               <FormField
                 control={form.control}
@@ -90,15 +111,21 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t("device_type")}</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select
+                      disabled={mode === "view" || mode === "edit"}
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder={t("device_type_holder")} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {deviceTypes.map(type => (
-                          <SelectItem key={type.id} value={type.id}>{type.name}</SelectItem>
+                        {deviceTypes.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -116,7 +143,11 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
                   <FormItem>
                     <FormLabel>{t("device_name")}</FormLabel>
                     <FormControl>
-                      <Input placeholder={t("device_name_holder")} {...field} />
+                      <Input
+                        disabled={mode === "view" || mode === "edit"}
+                        placeholder={t("device_name_holder")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -130,7 +161,108 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
                   <FormItem>
                     <FormLabel>{t("device_description")}</FormLabel>
                     <FormControl>
-                      <Input placeholder={t("device_description_holder")} {...field} />
+                      <Input
+                        disabled={mode === "view"}
+                        placeholder={t("device_description_holder")}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              <FormField
+                control={form.control}
+                name="setting"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Setting</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        disabled={mode === "view" || mode === "edit"}
+                        value={
+                          typeof field.value === "string"
+                            ? field.value
+                            : JSON.stringify(field.value ?? {}, null, 2)
+                        }
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          try {
+                            field.onChange(JSON.parse(v));
+                          } catch {
+                            field.onChange(v);
+                          }
+                        }}
+                        className="font-mono text-sm"
+                        rows={4}
+                        placeholder="{ }"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="config"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Config</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        disabled={mode === "view"}
+                        value={
+                          typeof field.value === "string"
+                            ? field.value
+                            : JSON.stringify(field.value ?? {}, null, 2)
+                        }
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          try {
+                            field.onChange(JSON.parse(v));
+                          } catch {
+                            field.onChange(v);
+                          }
+                        }}
+                        className="font-mono text-sm"
+                        rows={4}
+                        placeholder="{ }"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="state"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>State</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        disabled={mode === "view"}
+                        value={
+                          typeof field.value === "string"
+                            ? field.value
+                            : JSON.stringify(field.value ?? {}, null, 2)
+                        }
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          try {
+                            field.onChange(JSON.parse(v));
+                          } catch {
+                            // Người dùng đang gõ JSON dở → tạm giữ dạng string
+                            field.onChange(v);
+                          }
+                        }}
+                        className="font-mono text-sm"
+                        rows={4}
+                        placeholder="{ }"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -302,9 +434,11 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit">
-                {mode === 'create' ? 'Create Order' : 'Lưu thay đổi'}
-              </Button>
+              {mode !== "view" && (
+                <Button type="submit">
+                  {mode === "create" ? "Create Order" : "Lưu thay đổi"}
+                </Button>
+              )}
             </div>
           </form>
         </Form>
