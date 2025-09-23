@@ -75,6 +75,7 @@ const IssueTimeScheduleTable = ({}) => {
           limit: pageInfo.perPage,
           page: pageInfo.page,
           filter: debouncedFilters,
+          sort: 'status'
         });
         // const fakeData = await creatKitData();
         return {
@@ -226,12 +227,9 @@ const IssueTimeScheduleTable = ({}) => {
         }
         return item;
       });
-      console.log("body", body);
-      //
       await apiClient.post(merge_kit, body);
       setLoading(false);
     } catch (error) {
-      message.error("Error creating picking order");
       console.error("Error creating picking order:", error);
       setLoading(false);
       return;
@@ -278,9 +276,10 @@ const IssueTimeScheduleTable = ({}) => {
                 <Button
                   onClick={() => setShowFilters(!showFilters)}
                   variant={showFilters ? "default" : "outline"}
+                  loading={isLoading}
                 >
                   <Filter size={16} className="mr-1" />
-                  Bộ lọc
+                  Bộ lọc {isLoading + ''}
                 </Button>
                 {hasActiveFilters && (
                   <Button

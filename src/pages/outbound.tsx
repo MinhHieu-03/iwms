@@ -64,8 +64,6 @@ const mockOutboundData: OutboundData[] = [
 
 const OrdersTab: React.FC = () => {
   const [current, setCurrent] = useState(0);
-  const [dataMerge, setDataMerge] = useState([]);
-  const [kitData, setKitData] = useState([]);
   const [selectedGate, setSelectedGate] = useState("gate1");
 
   const handleGateChange = (gate: string) => {
@@ -102,10 +100,6 @@ const OrdersTab: React.FC = () => {
       {current === 0 ? (
         <Issue_time_schedule
           setCurrent={setCurrent}
-          setDataMerge={setDataMerge}
-          setKitData={setKitData}
-          missionData={dataMerge}
-
           gate={selectedGate}
         />
       ) : null}

@@ -20,13 +20,7 @@ import ModalDetail from "./modal_detail";
 const { RangePicker } = DatePicker;
 const { list, create, update, remove, merge_kit } = domain;
 
-const IssueTimeScheduleTable = ({
-  setCurrent,
-  gate,
-  setDataMerge,
-  missionData,
-  setKitData,
-}) => {
+const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
@@ -78,29 +72,13 @@ const IssueTimeScheduleTable = ({
           page: pageInfo.page,
           filter: debouncedFilters,
           gate,
+          sort: [
+            {field: "status", direction: "asc"},
+          ]
         });
         // const fakeData = await creatKitData();
         return {
-          metaData: [
-            {
-              A_reqd_time: "2025-06-10T09:00:00.000Z",
-              cusdesch_cd1: "00",
-              cusdesch_cd2: "00",
-              ent_dt: "2025-06-10T17:00:00.000Z",
-              fact_c: "ASY1",
-              intdesch_cd: "02",
-              issue_ord_no: "K374160",
-              line_c: "ASY1",
-              plan_issue_dt: "2025-06-10T17:00:00.000Z",
-              prod_no: "Common",
-              section_c: "9855",
-              time_issue: "2025-06-10T06:00:00.000Z",
-              upd_dt: "2025-06-10T17:00:00.000Z",
-              userid: "Job",
-              type: "urgent",
-            },
-            ...data.metaData,
-          ],
+          metaData: data.metaData,
           total: data.total,
         };
       } catch (apiError) {
@@ -207,6 +185,7 @@ const IssueTimeScheduleTable = ({
       const activeKit = sessionStorage.getItem("activeKit");
       return {
         disabled:
+          (record.status !== "new" || !record.status) ||
           activeKit ||
           (selectedRowKeys.length >= 4 &&
             !selectedRowKeys.includes(record.issue_ord_no)) ||
@@ -253,7 +232,6 @@ const IssueTimeScheduleTable = ({
       setCurrent(1);
       setLoading(false);
     } catch (error) {
-      message.error("Error creating picking order");
       console.error("Error creating picking order:", error);
       setLoading(false);
       return;
@@ -329,20 +307,20 @@ const IssueTimeScheduleTable = ({
               clearFilters={clearFilters}
             />
           </div>{" "}
-            <Table
-              columns={columns}
-              dataSource={queryData?.metaData || []}
-              rowSelection={rowSelection}
-              loading={isLoading}
-              scroll={{ x: 1800 }}
-              rowClassName={(record) =>
-                record.type === "urgent" ? "bg-red-200" : ""
-              }
-              pagination={false}
-              size="middle"
-              bordered
-              rowKey="issue_ord_no"
-            />
+          <Table
+            columns={columns}
+            dataSource={queryData?.metaData || []}
+            rowSelection={rowSelection}
+            loading={isLoading}
+            scroll={{ x: 1800 }}
+            rowClassName={(record) =>
+              record.type === "urgent" ? "bg-red-200" : ""
+            }
+            pagination={false}
+            size="middle"
+            bordered
+            rowKey="issue_ord_no"
+          />
           <div className="mt-4 flex justify-end">
             <BasePagination
               current={pageInfo.page}

@@ -20,6 +20,7 @@ export interface IssueTimeScheduleDataType {
   ent_dt: string;
   upd_dt: string;
   status: string;
+  type?: string;
 }
 
 export const domain = {
@@ -66,7 +67,7 @@ export const RenderCol = ({
       type ? (
         <Tag color="red">Kit đề nghị</Tag>
       ) : (
-        <Tag color="blue">{"Kit thường"}</Tag>
+        <Tag color="default">{"Kit thường"}</Tag>
       ),
   },
   // {
@@ -139,7 +140,7 @@ export const RenderCol = ({
 ];
 
 const mappingStatusTag = {
-  new: <Tag color="blue">Mới</Tag>,
-  "in progress": <Tag color="red">Đang xuất</Tag>,
-  fill: <Tag color="green">Đã xuất</Tag>,
+  new: <Tag color="default">Mới</Tag>,
+  "in_progress": <Tag color="processing">Đang xuất</Tag>,
+  fill: <Tag color="success">Đã xuất</Tag>,
 };
