@@ -55,7 +55,9 @@ export const RenderCol = ({
     dataIndex: "status",
     key: "status",
     width: 60,
-    render: (status) => mappingStatusTag[status] || mappingStatusTag['new'],
+    render: (status) =>{
+      console.log("status__-", status);
+      return mappingStatusTag[status] || mappingStatusTag['new']},
   },
 
   {
