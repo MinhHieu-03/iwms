@@ -20,6 +20,7 @@ export interface IssueTimeScheduleDataType {
   ent_dt: string;
   upd_dt: string;
   status: string;
+  type?: string;
 }
 
 export const domain = {
@@ -28,34 +29,41 @@ export const domain = {
   update: "/issue-time-schedule",
   remove: "/issue-time-schedule",
   detail: "/issue-time-schedule",
+  merge_kit: "/kit-merger",
 };
 
 export const lang_key = "issue_time_schedule.table";
 
 export const RenderCol = ({
   t,
-  onEdit,
-  onDelete,
   onDetail,
 }: {
   t: (key: string) => string;
-  onEdit: (record: IssueTimeScheduleDataType) => void;
-  onDelete: (id: string) => void;
+  // onEdit: (record: IssueTimeScheduleDataType) => void;
+  // onDelete: (id: string) => void;
   onDetail: (record: IssueTimeScheduleDataType) => void;
 }): ColumnsType<IssueTimeScheduleDataType> => [
-  // {
-  //   title: t(`${lang_key}.issue_order_no`),
-  //   dataIndex: "issue_ord_no",
-  //   key: "issue_ord_no",
-  //   width: 60,
-  //   render: (text) => <span className="font-medium text-blue-600">{text}</span>,
-  // },
   {
-    title: t(`${lang_key}.status`),
+    title: t(`${lang_key}.issue_order_no`),
+    dataIndex: "issue_ord_no",
+    key: "issue_ord_no",
+    width: 60,
+    render: (text) => <span className="font-medium text-blue-600">{text}</span>,
+  },
+  {
+    title: "Trạng thái",
     dataIndex: "status",
     key: "status",
     width: 60,
     render: (status) => mappingStatusTag[status] || mappingStatusTag['new'],
+  },
+
+  {
+    title: "Loại Kit",
+    dataIndex: "type",
+    key: "type",
+    width: 50,
+    render: (type) => mappingTypeTag[type] || mappingTypeTag['normal'],
   },
   // {
   //   title: t(`${lang_key}.section`),
@@ -74,14 +82,14 @@ export const RenderCol = ({
     title: t(`${lang_key}.issue_time`),
     dataIndex: "time_issue",
     key: "time_issue",
-    width: 100,
+    width: 110,
     render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
   },
   {
     title: t(`${lang_key}.required_time`),
     dataIndex: "A_reqd_time",
     key: "A_reqd_time",
-    width: 100,
+    width: 150,
     render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
     sorter: (a, b) => dayjs(a.A_reqd_time).unix() - dayjs(b.A_reqd_time).unix(),
   },
@@ -127,7 +135,12 @@ export const RenderCol = ({
 ];
 
 const mappingStatusTag = {
-  new: <Tag color="blue">Mới</Tag>,
-  "in progress": <Tag color="red">Đang xuất</Tag>,
-  fill: <Tag color="green">Đã xuất</Tag>,
+  new: <Tag color="default">Mới</Tag>,
+  "in_progress": <Tag color="processing">Đang xuất</Tag>,
+  fill: <Tag color="success">Đã xuất</Tag>,
+};
+const mappingTypeTag = {
+  odd: <Tag color="processing">Kit lẻ</Tag>,
+  "urgent": <Tag color="danger">Kit đề nghị</Tag>,
+  "normal": <Tag color="default">Kit thường</Tag>,
 };

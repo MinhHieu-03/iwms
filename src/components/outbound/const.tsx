@@ -63,12 +63,7 @@ export const RenderCol = ({
     dataIndex: "type",
     key: "type",
     width: 50,
-    render: (type) =>
-      type ? (
-        <Tag color="red">Kit đề nghị</Tag>
-      ) : (
-        <Tag color="default">{"Kit thường"}</Tag>
-      ),
+    render: (type) => mappingTypeTag[type] || mappingTypeTag['normal'],
   },
   // {
   //   title: t(`${lang_key}.section`),
@@ -143,4 +138,10 @@ const mappingStatusTag = {
   new: <Tag color="default">Mới</Tag>,
   "in_progress": <Tag color="processing">Đang xuất</Tag>,
   fill: <Tag color="success">Đã xuất</Tag>,
+};
+
+const mappingTypeTag = {
+  odd: <Tag color="processing">Kit lẻ</Tag>,
+  "urgent": <Tag color="danger">Kit đề nghị</Tag>,
+  "normal": <Tag color="default">Kit thường</Tag>,
 };
