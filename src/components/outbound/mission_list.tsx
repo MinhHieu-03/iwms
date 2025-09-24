@@ -1,19 +1,19 @@
-import Dayjs from 'dayjs';
-import React, { useEffect, useMemo, useState } from 'react';
-import { Drawer, Table, Input, message, ConfigProvider, Tag } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import { Search } from 'lucide-react';
-import PickingItemModal from '../PickingItemModal';
-import { Button } from 'antd';
-import BasePagination from '@/components/ui/antd-pagination';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import dayjs from 'dayjs';
-import { t } from 'i18next';
-import ModalMergeKit from './modal_merge_kit';
-import ModalMission from './modal_mission';
-import DrawerOI from './modal_oi';
-import { useQuery } from '@tanstack/react-query';
-import apiClient from '@/lib/axios';
+import Dayjs from "dayjs";
+import React, { useEffect, useMemo, useState } from "react";
+import { Drawer, Table, Input, message, ConfigProvider, Tag } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { Search } from "lucide-react";
+import PickingItemModal from "../PickingItemModal";
+import { Button } from "antd";
+import BasePagination from "@/components/ui/antd-pagination";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import dayjs from "dayjs";
+import { t } from "i18next";
+import ModalMergeKit from "./modal_merge_kit";
+import ModalMission from "./modal_mission";
+import DrawerOI from "./modal_oi";
+import { useQuery } from "@tanstack/react-query";
+import apiClient from "@/lib/axios";
 
 interface PickingItem {
   id: number;
@@ -55,10 +55,10 @@ interface PickingDrawerProps {
 const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
   const [isOpenOI, setIsOpenOI] = useState<boolean | Object>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [searchText, setSearchText] = useState('');
-  const [inputValue, setInputValue] = useState('');
+  const [searchText, setSearchText] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const [selectedItem, setSelectedItem] = useState<PickingItem | null>(null);
-  const [actionValue, setActionValue] = useState('');
+  const [actionValue, setActionValue] = useState("");
   const skuRef = React.useRef(null);
   const [isOpenMission, setIsOpenMission] = useState(false);
   const [isOpenMerge, setIsOpenMerge] = useState(false);
@@ -71,16 +71,16 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
     error,
     refetch,
   } = useQuery({
-    queryKey: ['kit-merger-list', gate],
+    queryKey: ["kit-merger-list", gate],
     queryFn: async () => {
       try {
         const { data } = await apiClient.post(`kit-merger/list`, {
           filter: { gate, type: "STANDARD" },
         });
-        console.log('Fetched kit merger data:', data);
+        console.log("Fetched kit merger data:", data);
         return data;
       } catch (apiError) {
-        console.error('Failed to fetch kit merger data:', apiError);
+        console.error("Failed to fetch kit merger data:", apiError);
         throw apiError;
       }
     },
@@ -107,8 +107,8 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
         setIsOpenMerge(true);
       })
       .catch((err) => {
-        console.error('Failed to fetch merge data:', err);
-        message.error('Failed to fetch merge data');
+        console.error("Failed to fetch merge data:", err);
+        message.error("Failed to fetch merge data");
       })
       .finally(() => {
         setLoading(false);
@@ -124,8 +124,8 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
         setIsOpenMission(true);
       })
       .catch((err) => {
-        console.error('Failed to fetch merge data:', err);
-        message.error('Failed to fetch merge data');
+        console.error("Failed to fetch merge data:", err);
+        message.error("Failed to fetch merge data");
       })
       .finally(() => {
         setLoading(false);
@@ -143,15 +143,15 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
         });
       })
       .catch((err) => {
-        console.error('Failed to fetch merge data:', err);
-        message.error('Failed to fetch merge data');
+        console.error("Failed to fetch merge data:", err);
+        message.error("Failed to fetch merge data");
       })
       .finally(() => {
         setLoading(false);
       });
   };
 
-  const lang_key = 'issue_time_schedule.table';
+  const lang_key = "issue_time_schedule.table";
 
   // Define columns for the Ant Design table
   const columns: ColumnsType<any> = [
@@ -162,12 +162,12 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
     //   width: 150,
     // },
     {
-      title: 'Kit No',
-      dataIndex: 'kit_no',
-      key: 'kit_no',
+      title: "Kit No",
+      dataIndex: "kit_no",
+      key: "kit_no",
       width: 120,
       render: (text) => (
-        <div className='space-y-1'>
+        <div className="space-y-1">
           {text.map((item, index) => (
             <div key={index}>{item}</div>
           ))}
@@ -176,13 +176,13 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
     },
     {
       title: t(`${lang_key}.required_time`),
-      dataIndex: 'A_reqd_time',
-      key: 'A_reqd_time',
+      dataIndex: "A_reqd_time",
+      key: "A_reqd_time",
       width: 260,
       render: (date) => (
-        <div className='space-y-1'>
+        <div className="space-y-1">
           {date.map((item, index) => (
-            <div key={index}>{dayjs(item).format('YYYY-MM-DD HH:mm')}</div>
+            <div key={index}>{dayjs(item).format("YYYY-MM-DD HH:mm")}</div>
           ))}
         </div>
       ),
@@ -191,13 +191,13 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
     },
     {
       title: t(`${lang_key}.plan_issue_date`),
-      dataIndex: 'plan_issue_dt',
-      key: 'plan_issue_dt',
+      dataIndex: "plan_issue_dt",
+      key: "plan_issue_dt",
       width: 210,
       render: (date) => (
-        <div className='space-y-1'>
+        <div className="space-y-1">
           {date.map((item, index) => (
-            <div key={index}>{dayjs(item).format('YYYY-MM-DD HH:mm')}</div>
+            <div key={index}>{dayjs(item).format("YYYY-MM-DD HH:mm")}</div>
           ))}
         </div>
       ),
@@ -206,28 +206,28 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
     },
     {
       title: t(`${lang_key}.issue_time`),
-      dataIndex: 'time_issue',
-      key: 'time_issue',
+      dataIndex: "time_issue",
+      key: "time_issue",
       width: 210,
       render: (date) => (
-        <div className='space-y-1'>
+        <div className="space-y-1">
           {date.map((item, index) => (
-            <div key={index}>{dayjs(item).format('YYYY-MM-DD HH:mm')}</div>
+            <div key={index}>{dayjs(item).format("YYYY-MM-DD HH:mm")}</div>
           ))}
         </div>
       ),
     },
     {
-      title: 'Trạng thái',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
       width: 100,
       render: (status) => MAP_TAG[status] || status,
     },
     {
-      title: 'Thiếu vật tư',
-      dataIndex: 'missing_count',
-      key: 'missing_count',
+      title: "Thiếu vật tư",
+      dataIndex: "missing_count",
+      key: "missing_count",
       width: 120,
       render: (missing_count) => (
         <span
@@ -238,22 +238,22 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
       ),
     },
     {
-      title: 'Hành động',
-      dataIndex: 'issord_dtl_no',
-      key: 'issord_dtl_no',
+      title: "Hành động",
+      dataIndex: "issord_dtl_no",
+      key: "issord_dtl_no",
       render: (_, record) => (
-        <div className='flex items-center gap-2'>
+        <div className="flex items-center gap-2">
           <Button
-            type='primary'
-            size='small'
+            type="primary"
+            size="small"
             loading={loading}
             onClick={() => onOpenMergeModal(record)}
           >
-            {t('common.detail')}
+            {t("common.detail")}
           </Button>
           <Button
-            type='primary'
-            size='small'
+            type="primary"
+            size="small"
             loading={loading}
             onClick={() => onOpenMissionModal(record)}
           >
@@ -261,11 +261,11 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
           </Button>
 
           <Button
-            type='primary'
+            type="primary"
             loading={loading}
             onClick={() => loadingOI(record)}
-            className='gap-2'
-            size='small'
+            className="gap-2"
+            size="small"
           >
             Truy cập OI
           </Button>
@@ -277,34 +277,34 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
 
   const currentKitMerge = useMemo(() => {
     return queryData?.metaData?.find(
-      (item: any) => item.status === 'in_progress'
+      (item: any) => item.status === "in_progress"
     );
   }, [queryData]);
-  console.log('currentKitMerge', currentKitMerge);
+  console.log("currentKitMerge", currentKitMerge);
 
   return (
-    <div className='space-y-6'>
+    <div className="space-y-6">
       <div>
         <Card>
           <CardHeader>
             <CardTitle>Vị trí theo tên bộ kit</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {[1, 2, 3, 4].map((locationId) => {
                 const dataKit =
                   currentKitMerge?.kit_no?.[locationId - 1] || null;
-                console.log('dataKit', dataKit);
+                console.log("dataKit", dataKit);
                 return (
                   <div
                     key={locationId}
-                    className='border-2 border-blue-300 rounded-xl p-6 flex justify-between bg-gradient-to-br from-blue-50 to-indigo-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105'
+                    className="border-2 border-blue-300 rounded-xl p-6 flex justify-between bg-gradient-to-br from-blue-50 to-indigo-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                   >
-                    <h3 className='font-bold text-2xl text-blue-800'>
+                    <h3 className="font-bold text-2xl text-blue-800">
                       Kit {locationId}
                     </h3>
-                    <div className='text-3xl font-black text-indigo-900 bg-white px-3 py-1 rounded-lg shadow-md'>
-                      {dataKit || 'N/A'}
+                    <div className="text-3xl font-black text-indigo-900 bg-white px-3 py-1 rounded-lg shadow-md">
+                      {dataKit || "N/A"}
                     </div>
                   </div>
                 );
@@ -315,8 +315,8 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
       </div>
       <Card>
         <CardHeader>
-          <CardTitle className='flex items-center justify-between'>
-            <div className='flex items-center gap-2'>
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
               Danh sách Kit gộp chẵn
             </div>
           </CardTitle>
@@ -325,17 +325,17 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
           autoFocus
           ref={skuRef}
           value={inputValue}
-          placeholder='Tìm kiếm theo SKU, tên sản phẩm, vị trí, mã vật liệu, số lệnh xuất...'
-          prefix={<Search className='h-4 w-4 text-gray-400' />}
+          placeholder="Tìm kiếm theo SKU, tên sản phẩm, vị trí, mã vật liệu, số lệnh xuất..."
+          prefix={<Search className="h-4 w-4 text-gray-400" />}
           onChange={(e) => {
             const value = e.target.value.trim();
             setInputValue(value);
           }}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "Enter") {
               setSearchText(inputValue.trim());
-              setInputValue('');
-              if (inputValue && 'speechSynthesis' in window) {
+              setInputValue("");
+              if (inputValue && "speechSynthesis" in window) {
                 const utterance = new SpeechSynthesisUtterance(`OK`);
                 utterance.rate = 0.9;
                 utterance.volume = 0.5;
@@ -348,13 +348,13 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
         <Table
           columns={columns}
           dataSource={queryData?.metaData || []}
-          rowKey='picking_no'
+          rowKey="picking_no"
           pagination={false}
-          size='middle'
+          size="middle"
           onRow={(record) => ({
             onClick: () => {
               setSelectedItem(record);
-              setActionValue('');
+              setActionValue("");
             },
           })}
         />
@@ -385,8 +385,8 @@ export default PickingDrawer;
 export type { PickingItem, PickingDrawerProps };
 
 const MAP_TAG: { [key: string]: JSX.Element } = {
-  pending: <Tag color='yellow'>Đang chờ</Tag>,
-  in_progress: <Tag color='blue'>Đang xử lý</Tag>,
-  completed: <Tag color='green'>Hoàn thành</Tag>,
-  cancelled: <Tag color='red'>Đã hủy</Tag>,
+  pending: <Tag color="yellow">Đang chờ</Tag>,
+  in_progress: <Tag color="blue">Đang xử lý</Tag>,
+  completed: <Tag color="green">Hoàn thành</Tag>,
+  cancelled: <Tag color="red">Đã hủy</Tag>,
 };

@@ -1,5 +1,5 @@
 import { TranslationKey } from "../types";
-import { en as vi_mission } from "./en_more/mission";
+import { vi as vi_mission } from "./vn_more/mission";
 import { en as vi_device } from "./en_more/device";
 import { vn as vi_navbar } from "./vn_more/navbar";
 import { vi as vi_inbound } from "./vn_more/inbound";
