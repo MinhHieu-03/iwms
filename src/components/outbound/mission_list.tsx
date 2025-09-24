@@ -1,19 +1,15 @@
-import Dayjs from "dayjs";
-import React, { useEffect, useMemo, useState } from "react";
-import { Drawer, Table, Input, message, ConfigProvider, Tag } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { Search } from "lucide-react";
-import PickingItemModal from "../PickingItemModal";
-import { Button } from "antd";
-import BasePagination from "@/components/ui/antd-pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { KIT_MERGE_TYPE, useKitMergeQuery } from "@/hooks/kit-merge";
+import apiClient from "@/lib/axios";
+import ReloadOutlined from "@ant-design/icons/lib/icons/ReloadOutlined";
+import { Button, message, Select, Table, Tag } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import { t } from "i18next";
+import React, { useEffect, useMemo, useState } from "react";
 import ModalMergeKit from "./modal_merge_kit";
 import ModalMission from "./modal_mission";
 import DrawerOI from "./modal_oi";
-import { useQuery } from "@tanstack/react-query";
-import apiClient from "@/lib/axios";
 
 interface PickingItem {
   id: number;
@@ -55,10 +51,11 @@ interface PickingDrawerProps {
 const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
   const [isOpenOI, setIsOpenOI] = useState<boolean | Object>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [searchText, setSearchText] = useState("");
-  const [inputValue, setInputValue] = useState("");
   const [selectedItem, setSelectedItem] = useState<PickingItem | null>(null);
   const [actionValue, setActionValue] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const skuRef = React.useRef(null);
   const [isOpenMission, setIsOpenMission] = useState(false);
   const [isOpenMerge, setIsOpenMerge] = useState(false);
@@ -70,23 +67,10 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
     isLoading,
     error,
     refetch,
-  } = useQuery({
-    queryKey: ["kit-merger-list", gate],
-    queryFn: async () => {
-      try {
-        const { data } = await apiClient.post(`kit-merger/list`, {
-          filter: { gate, type: "STANDARD" },
-        });
-        console.log("Fetched kit merger data:", data);
-        return data;
-      } catch (apiError) {
-        console.error("Failed to fetch kit merger data:", apiError);
-        throw apiError;
-      }
-    },
-    retry: 1,
-    staleTime: 1 * 60 * 1000, // 1 minute
-  });
+  } = useKitMergeQuery(
+    { gate, type: KIT_MERGE_TYPE.STANDARD, status: statusFilter }, 
+    { page: currentPage, limit: pageSize }
+  );
 
   useEffect(() => {
     // console.log('dndd__', !selectedItem)
@@ -97,6 +81,16 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
       }, 500);
     }
   }, [selectedItem]);
+
+  // Reset pagination when status filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter]);
+
+  const handleTableChange = (pagination: any) => {
+    setCurrentPage(pagination.current);
+    setPageSize(pagination.pageSize);
+  };
 
   const onOpenMergeModal = (record: any) => {
     setLoading(true);
@@ -280,7 +274,6 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
       (item: any) => item.status === "in_progress"
     );
   }, [queryData]);
-  console.log("currentKitMerge", currentKitMerge);
 
   return (
     <div className="space-y-6">
@@ -319,37 +312,42 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
             <div className="flex items-center gap-2">
               Danh sách Kit gộp chẵn
             </div>
+            <div className="flex items-center gap-2">
+              <Select
+                placeholder="Lọc theo trạng thái"
+                value={statusFilter}
+                onChange={setStatusFilter}
+                style={{ width: 180 }}
+                options={[
+                  { value: undefined, label: "Tất cả" },
+                  { value: "in_progress", label: "Đang xử lý" },
+                  { value: "completed", label: "Hoàn thành" },
+                ]}
+              />
+              <Button onClick={() => refetch()} className="gap-2 px-4 py-3">
+                <ReloadOutlined />
+                {t("common.refresh")}
+              </Button>
+            </div>
           </CardTitle>
         </CardHeader>
-        <Input
-          autoFocus
-          ref={skuRef}
-          value={inputValue}
-          placeholder="Tìm kiếm theo SKU, tên sản phẩm, vị trí, mã vật liệu, số lệnh xuất..."
-          prefix={<Search className="h-4 w-4 text-gray-400" />}
-          onChange={(e) => {
-            const value = e.target.value.trim();
-            setInputValue(value);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              setSearchText(inputValue.trim());
-              setInputValue("");
-              if (inputValue && "speechSynthesis" in window) {
-                const utterance = new SpeechSynthesisUtterance(`OK`);
-                utterance.rate = 0.9;
-                utterance.volume = 0.5;
-                speechSynthesis.speak(utterance);
-              }
-            }
-          }}
-          style={{ marginBottom: 16 }}
-        />
         <Table
           columns={columns}
           dataSource={queryData?.metaData || []}
           rowKey="picking_no"
-          pagination={false}
+          loading={isLoading}
+          onChange={handleTableChange}
+          pagination={{
+            current: currentPage,
+            pageSize: pageSize,
+            total: queryData?.total || 0,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} của ${total} bản ghi`,
+            pageSizeOptions: ['10', '20', '50', '100'],
+            size: 'default',
+          }}
           size="middle"
           onRow={(record) => ({
             onClick: () => {
@@ -382,7 +380,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
 };
 
 export default PickingDrawer;
-export type { PickingItem, PickingDrawerProps };
+export type { PickingDrawerProps, PickingItem };
 
 const MAP_TAG: { [key: string]: JSX.Element } = {
   pending: <Tag color="yellow">Đang chờ</Tag>,

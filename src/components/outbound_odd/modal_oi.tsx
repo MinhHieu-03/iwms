@@ -93,7 +93,10 @@ const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
   };
   const back2WHS = (boxFounded) => {
     apiClient
-      .post(`/mission/back-2-whs/${boxFounded._id}`)
+      .post(`/mission/back-2-whs`, {
+        bin_id: boxFounded.bin_id,
+        gate: boxFounded.gate,
+      })
       .catch((err) => {
         console.error("Failed to move box to WHS:", err);
         message.error("Di chuyển thùng về WHS thất bại, vui lòng thử lại.");

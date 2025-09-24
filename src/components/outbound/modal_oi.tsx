@@ -1,8 +1,7 @@
 import apiClient from "@/lib/axios";
 import { KIT_MERGER_STATUS, MISSION_STATE } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { Drawer, Input, message, Button } from "antd";
-import { error } from "console";
+import { Button, Drawer, Input, message } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
@@ -93,7 +92,10 @@ const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
   };
   const back2WHS = (boxFounded) => {
     apiClient
-      .post(`/mission/back-2-whs/${boxFounded._id}`)
+      .post(`/mission/back-2-whs`, {
+        bin_id: boxFounded.bin_id,
+        gate: boxFounded.gate,
+      })
       .catch((err) => {
         console.error("Failed to move box to WHS:", err);
         message.error("Di chuyển thùng về WHS thất bại, vui lòng thử lại.");

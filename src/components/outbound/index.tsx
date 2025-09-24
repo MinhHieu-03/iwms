@@ -110,8 +110,6 @@ const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
     });
   }, [queryData]);
 
-  const total = queryData?.total || 0;
-
   const [detailModal, setDetailModal] = useState<{
     isOpen: boolean;
     data: IssueTimeScheduleDataType | null;
@@ -201,9 +199,7 @@ const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
   };
 
   useEffect(() => {
-    window.addEventListener("beforeunload", () => {
-      sessionStorage.clear();
-    });
+    refetch();
   }, []);
 
   const orderPicking = async () => {
