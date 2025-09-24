@@ -75,7 +75,7 @@ const IssueTimeScheduleTable = ({}) => {
           limit: pageInfo.perPage,
           page: pageInfo.page,
           filter: debouncedFilters,
-          sort: 'status'
+          // sort: 'status'
         });
         // const fakeData = await creatKitData();
         return {
