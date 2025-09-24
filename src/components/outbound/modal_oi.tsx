@@ -41,7 +41,7 @@ const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
 
           const rest = data.length - done_picking - error;
           return {
-            rest: rest,
+            rest,
             total: data.length,
             error,
             done_picking,
