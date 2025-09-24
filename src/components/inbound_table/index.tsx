@@ -1,4 +1,8 @@
-import { ReloadOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  ReloadOutlined,
+  DeleteOutlined,
+  FilterOutlined,
+} from "@ant-design/icons";
 import { message, Table, Modal, Tag } from "antd";
 import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState, useCallback } from "react";
@@ -13,6 +17,8 @@ import { domain, lang_key, RenderCol, DataType, mockData } from "./const";
 import ModalAdd, { type FormValues } from "./modal_create";
 import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
 import ModalDetail from "./modal_detail";
+import SearchForm from "./filterForm";
+import axios from "axios";
 
 const { list, create, update, remove } = domain;
 
@@ -31,7 +37,7 @@ const InboundTable = () => {
     isOpen: false,
     data: {},
   });
-  
+
   const [detailModal, setDetailModal] = useState<{
     isOpen: boolean;
     data: DataType | null;
@@ -40,33 +46,84 @@ const InboundTable = () => {
     data: null,
   });
 
+  const [filters, setFilters] = useState({
+    sku: "",
+    origin: "",
+    product_name: "",
+    destination: "",
+    status: null,
+  });
+  const [showFilters, setShowFilters] = useState(false);
+
+  // Add debounced filters
+  const [debouncedFilters, setDebouncedFilters] = useState(filters);
+
   const requestDataList = useCallback(async () => {
     try {
       setLoading(true);
-      // Try API first, fallback to mock data if it fails
+
       try {
+        // API request
         const { data } = await apiClient.post(list, {
           limit: pageInfo.perPage,
           page: pageInfo.page,
+          ...debouncedFilters, // ✅ spread filter ra ngoài
         });
-        setDataList(data.metaData);
-        setTotal(data.total);
+
+        setDataList(data.metaData || []);
+        setTotal(data.total || 0);
       } catch (apiError) {
         console.warn("API not available, using mock data:", apiError);
-        // Using mock data as fallback
-        setDataList(mockData);
-        setTotal(mockData.length);
+
+        // Fallback to mock data filtering
+        let filteredData = mockData;
+
+        if (debouncedFilters.sku) {
+          filteredData = filteredData.filter((item) =>
+            item.sku.toLowerCase().includes(debouncedFilters.sku.toLowerCase())
+          );
+        }
+
+        if (debouncedFilters.origin) {
+          filteredData = filteredData.filter(
+            (item) =>
+              item.origin.toLowerCase() ===
+              debouncedFilters.origin.toLowerCase()
+          );
+        }
+
+        if (debouncedFilters.product_name) {
+          filteredData = filteredData.filter((item) =>
+            item.product_name
+              .toLowerCase()
+              .includes(debouncedFilters.product_name.toLowerCase())
+          );
+        }
+
+        if (debouncedFilters.destination) {
+          filteredData = filteredData.filter(
+            (item) =>
+              item.destination.toLowerCase() ===
+              debouncedFilters.destination.toLowerCase()
+          );
+        }
+
+        if (debouncedFilters.status) {
+          filteredData = filteredData.filter(
+            (item) => item.status === debouncedFilters.status
+          );
+        }
+
+        setDataList(filteredData);
+        setTotal(filteredData.length);
       }
     } catch (error) {
       console.error(error);
-      message.error(t("common.error.fetch_data"));
-      // Fallback to mock data on error
-      setDataList(mockData);
-      setTotal(mockData.length);
+      message.error(t("outbound.message.create_error"));
     } finally {
       setLoading(false);
     }
-  }, [pageInfo.page, pageInfo.perPage, t]);
+  }, [pageInfo.page, pageInfo.perPage, t, debouncedFilters]);
 
   const _handleFinish = async (values: FormValues) => {
     try {
@@ -140,7 +197,7 @@ const InboundTable = () => {
       onOk: async () => {
         try {
           setLoading(true);
-          
+
           // Try API call first
           try {
             await apiClient.delete(remove, { data: { ids: selectedRowKeys } });
@@ -149,7 +206,7 @@ const InboundTable = () => {
             console.warn("API not available for delete operation:", apiError);
             message.success(t("common.success.delete"));
           }
-          
+
           setSelectedRowKeys([]);
           requestDataList();
         } catch (error) {
@@ -164,16 +221,19 @@ const InboundTable = () => {
 
   const onCancel = useCallback(
     async (record: DataType) => {
-      apiClient.patch(`${update}/${record._id}`, {
-        status: "cancelled",
-      })
+      apiClient
+        .patch(`${update}/${record._id}`, {
+          status: "cancelled",
+        })
         .then(() => {
           requestDataList();
         })
         .catch((error) => {
           console.error("Cancel error:", error);
         });
-    }, [t, requestDataList]);
+    },
+    [t, requestDataList]
+  );
 
   const columns = useMemo(() => {
     const baseColumns = RenderCol({ t, onCancel });
@@ -199,7 +259,7 @@ const InboundTable = () => {
 
   useEffect(() => {
     requestDataList();
-  }, [pageInfo, requestDataList]);
+  }, [requestDataList]);
 
   const rowSelection = {
     selectedRowKeys,
@@ -215,12 +275,80 @@ const InboundTable = () => {
     });
   };
 
+  const handleFilter = async (values: any) => {
+    try {
+      setLoading(true);
+
+      const filterQuery: any = {};
+
+      if (values.sku?.trim()) {
+        filterQuery.sku = { $regex: values.sku.trim(), $options: "i" };
+      }
+
+      if (values.origin?.trim()) {
+        filterQuery.origin = { $regex: values.origin.trim(), $options: "i" };
+      }
+
+      if (values.product_name?.trim()) {
+        filterQuery.product_name = {
+          $regex: values.product_name.trim(),
+          $options: "i",
+        };
+      }
+
+      if (values.destination?.trim()) {
+        filterQuery.destination = {
+          $regex: values.destination.trim(),
+          $options: "i",
+        };
+      }
+
+      if (values.status) {
+        filterQuery.status = values.status;
+      }
+
+      console.log("Filter Query:", filterQuery);
+
+      const response = await apiClient.post(list, {
+        limit: pageInfo.perPage,
+        page: pageInfo.page,
+        filter: JSON.stringify(filterQuery),
+      });
+
+      if (response.data) {
+        setDataList(response.data.metaData || []);
+        setTotal(response.data.total || 0);
+      }
+    } catch (error) {
+      console.error("Filter error:", error);
+      message.error("Failed to filter data");
+      setDataList([]);
+      setTotal(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Reset page về 1 khi filter thay đổi
+    setPageInfo((prev) => ({ ...prev, page: 1 }));
+    handleFilter(filters);
+  }, [filters]);
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>{t("inbound.title")}</span>
           <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFilters((prev) => !prev)}
+            >
+              <FilterOutlined />
+              {t("btn.filter")}
+            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -243,10 +371,44 @@ const InboundTable = () => {
               <Plus className="w-4 h-4" />
               {t("btn.create_new")}
             </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                try {
+                  const response = await apiClient.post(
+                    `${list}/export-excel`,
+                    {
+                      filter: JSON.stringify(filters),
+                    },
+                    { responseType: "blob" }
+                  );
+
+                  const url = window.URL.createObjectURL(
+                    new Blob([response.data])
+                  );
+                  const link = document.createElement("a");
+                  link.href = url;
+                  link.setAttribute("download", "inbounds.xlsx"); // tên file
+                  document.body.appendChild(link);
+                  link.click();
+                } catch (error) {
+                  console.error("Export error:", error);
+                }
+              }}
+            >
+              Export Excel
+            </Button>
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
+        <SearchForm
+          filters={filters}
+          onFilterChange={setFilters}
+          handleFilter={handleFilter}
+          showFilters={showFilters}
+        />
         <Table
           rowKey="_id"
           columns={columns}
@@ -257,7 +419,7 @@ const InboundTable = () => {
           scroll={{ x: "calc(100vw - 640px)" }}
           onRow={(record) => ({
             onClick: () => handleRowClick(record),
-            style: { cursor: 'pointer' },
+            style: { cursor: "pointer" },
           })}
         />
         <BasePagination
