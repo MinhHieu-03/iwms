@@ -143,6 +143,6 @@ const mappingStatusTag = {
 };
 const mappingTypeTag = {
   odd: <Tag color="processing">Kit lẻ</Tag>,
-  "urgent": <Tag color="danger">Kit đề nghị</Tag>,
+  "urgent": <Tag color="red">Kit đề nghị</Tag>,
   "normal": <Tag color="default">Kit thường</Tag>,
 };

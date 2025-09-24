@@ -195,6 +195,7 @@ const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
         time_issue: [],
         status: "in_progress",
         gate,
+        type: "ODD",
       };
       selectedRowKeys.map((item) => {
         const itemData = dataList.find((i) => i.issue_ord_no === item);

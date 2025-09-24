@@ -67,10 +67,16 @@ const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
     ],
     queryFn: async () => {
       try {
+        const { data: kitUrgent } = await apiClient.post(`${list}`, {
+          limit: pageInfo.perPage,
+          page: pageInfo.page,
+          filter: {type: 'urgent'},
+          gate,
+        });
         const { data } = await apiClient.post(`${list}`, {
           limit: pageInfo.perPage,
           page: pageInfo.page,
-          filter: debouncedFilters,
+          filter: {...debouncedFilters, type: 'normal'},
           gate,
           sort: [
             {field: "status", direction: "asc"},
@@ -78,7 +84,7 @@ const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
         });
         // const fakeData = await creatKitData();
         return {
-          metaData: data.metaData,
+          metaData: [...kitUrgent.metaData , ...data.metaData],
           total: data.total,
         };
       } catch (apiError) {
@@ -216,6 +222,7 @@ const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
         time_issue: [],
         status: "in_progress",
         gate,
+        type: "STANDARD",
       };
       selectedRowKeys.map((item) => {
         const itemData = dataList.find((i) => i.issue_ord_no === item);

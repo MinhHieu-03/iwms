@@ -75,7 +75,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({ gate }) => {
     queryFn: async () => {
       try {
         const { data } = await apiClient.post(`kit-merger/list`, {
-          filter: { gate },
+          filter: { gate, type: "ODD" },
         });
         console.log('Fetched kit merger data:', data);
         return data;
