@@ -1,42 +1,47 @@
+import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Navbar from "./components/Navbar";
-import Dashboard from "./pages/Dashboard";
-import WarehouseLayout from "./pages/WarehouseLayout";
-import InboundOutbound from "./pages/InboundOutbound";
-import Missions from "./pages/Missions";
-import Settings from "./pages/Settings";
-import TeamSettings from "./pages/TeamSettings";
-import UserSettings from "./pages/UserSettings";
-import SystemSettings from "./pages/SystemSettings";
-import WarehouseSettings from "./pages/WarehouseSettings";
-import WarehouseLayoutConfig from "./pages/WarehouseLayoutConfig";
-import WarehouseStorageConfig from "./pages/WarehouseStorageConfig";
-import Notifications from "./pages/Notifications";
-import Help from "./pages/Help";
-import HelpGuides from "./pages/HelpGuides";
-import HelpFAQs from "./pages/HelpFAQs";
-import OperatorInterface from "./pages/OperatorInterface";
-import InboundManagement from "@/components/inbound_management";
-import OperatorOutbound from "./pages/OperatorOutbound";
-import Inventory from "./pages/Inventory";
-import Outbound from "./pages/outbound";
-import OutboundOdd from "./pages/outbound_odd";
-import Ptl from "./pages/ptl";
-import OddPtl from "./pages/odd_ptl";
-import OrderHistory from "./pages/OrderHistory";
-import NotFound from "./pages/NotFound";
-import UserEdit from "./pages/team/UserEdit";
-import RoleEdit from "./pages/team/RoleEdit";
-import GroupEdit from "./pages/team/GroupEdit";
-import TemplateEdit from "./pages/TemplateEdit";
-import OrderDetails from "./pages/OrderDetails";
-import Login from "./pages/Login";
-import MissionsTemplates from "./components/missions/MissionsTemplates";
-import MissionTemplate from "./components/mission_setting/mission_template";
-import DeviceTemplate from "./components/device/DeviceTemplate";
-import DeviceList from "./components/device/DeviceList";
 import ProtectedRoute from "./components/ProtectedRoute";
+import LoadingSpinner from "./components/LoadingSpinner";
+
+// Dynamic imports for better code splitting
+const Dashboard = React.lazy(() => import("./pages/Dashboard"));
+const WarehouseLayout = React.lazy(() => import("./pages/WarehouseLayout"));
+const InboundOutbound = React.lazy(() => import("./pages/InboundOutbound"));
+const Missions = React.lazy(() => import("./pages/Missions"));
+const Settings = React.lazy(() => import("./pages/Settings"));
+const TeamSettings = React.lazy(() => import("./pages/TeamSettings"));
+const UserSettings = React.lazy(() => import("./pages/UserSettings"));
+const SystemSettings = React.lazy(() => import("./pages/SystemSettings"));
+const WarehouseSettings = React.lazy(() => import("./pages/WarehouseSettings"));
+const WarehouseLayoutConfig = React.lazy(() => import("./pages/WarehouseLayoutConfig"));
+const WarehouseStorageConfig = React.lazy(() => import("./pages/WarehouseStorageConfig"));
+const Notifications = React.lazy(() => import("./pages/Notifications"));
+const Help = React.lazy(() => import("./pages/Help"));
+const HelpGuides = React.lazy(() => import("./pages/HelpGuides"));
+const HelpFAQs = React.lazy(() => import("./pages/HelpFAQs"));
+const OperatorInterface = React.lazy(() => import("./pages/OperatorInterface"));
+const InboundManagement = React.lazy(() => import("@/components/inbound_management"));
+const OperatorOutbound = React.lazy(() => import("./pages/OperatorOutbound"));
+const Inventory = React.lazy(() => import("./pages/Inventory"));
+const Outbound = React.lazy(() => import("./pages/outbound"));
+const OutboundOdd = React.lazy(() => import("./pages/outbound_odd"));
+const Ptl = React.lazy(() => import("./pages/ptl"));
+const OddPtl = React.lazy(() => import("./pages/odd_ptl"));
+const OrderHistory = React.lazy(() => import("./pages/OrderHistory"));
+const NotFound = React.lazy(() => import("./pages/NotFound"));
+const UserEdit = React.lazy(() => import("./pages/team/UserEdit"));
+const RoleEdit = React.lazy(() => import("./pages/team/RoleEdit"));
+const GroupEdit = React.lazy(() => import("./pages/team/GroupEdit"));
+const TemplateEdit = React.lazy(() => import("./pages/TemplateEdit"));
+const OrderDetails = React.lazy(() => import("./pages/OrderDetails"));
+const Login = React.lazy(() => import("./pages/Login"));
+const MissionsTemplates = React.lazy(() => import("./components/missions/MissionsTemplates"));
+const MissionTemplate = React.lazy(() => import("./components/mission_setting/mission_template"));
+const DeviceTemplate = React.lazy(() => import("./components/device/DeviceTemplate"));
+const DeviceList = React.lazy(() => import("./components/device/DeviceList"));
+const IssueTimeSchedule = React.lazy(() => import("./pages/issue-time-schedule"));
 
 import { LanguageProvider } from "./contexts/LanguageProvider";
 import { Provider } from "react-redux";
@@ -46,7 +51,6 @@ import "./App.css";
 import { createRoute } from "./lib/utils";
 import { route as mission_template_route } from "./components/mission_setting/mission_template/const";
 import { ConfigProvider } from "antd";
-import IssueTimeSchedule from "./pages/issue-time-schedule";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -65,144 +69,186 @@ function App() {
         <LanguageProvider>
           <Router>
             <div className="min-h-screen bg-background">
-              <Routes>
-                {/* Public route - accessible without authentication */}
-                <Route path="/login" element={<Login />} />
+              <Suspense fallback={<LoadingSpinner />}>
+                <Routes>
+                  {/* Public route - accessible without authentication */}
+                  <Route path="/login" element={<Login />} />
 
-                {/* Protected routes - require authentication */}
-                <Route
-                  path="/*"
-                  element={
-                    <ProtectedRoute>
-                      <Navbar>
-                        <Routes>
-                          <Route path="/" element={<Dashboard />} />
-                          <Route path="/layout" element={<WarehouseLayout />} />
-                          <Route
-                            path="/inbound-outbound"
-                            element={<InboundOutbound />}
-                          />
-                          <Route
-                            path="/inbound-outbound/history"
-                            element={<OrderHistory />}
-                          />
-                          <Route path="/inventory" element={<Inventory />} />
-                          <Route path="/issue-time-schedule" element={<IssueTimeSchedule />} />
-                          <Route path="/missions" element={<Missions />} />
-                          <Route
-                            path="/missions/templates"
-                            element={<MissionsTemplates />}
-                          />
-                          <Route
-                            path="/missions/templates/new"
-                            element={<TemplateEdit />}
-                          />
-                          <Route
-                            path="/missions/templates/:id"
-                            element={<TemplateEdit />}
-                          />
-                          <Route
-                            path="/mission-settings/template"
-                            element={<MissionTemplate />}
-                          />
-                          <Route
-                            path="/mission-settings/device"
-                            element={<DeviceList />}
-                          />
-                          <Route
-                            path="/mission-settings/device-template"
-                            element={<DeviceTemplate />}
-                          />
-                          <Route path="/settings" element={<Settings />} />
-                          <Route
-                            path="/team-settings"
-                            element={<TeamSettings />}
-                          />
-                          <Route
-                            path="/team-settings/:section"
-                            element={<TeamSettings />}
-                          />
-                          <Route
-                            path="/team-settings/users/:id"
-                            element={<UserEdit />}
-                          />
-                          <Route
-                            path="/team-settings/roles/:id"
-                            element={<RoleEdit />}
-                          />
-                          <Route
-                            path="/team-settings/groups/:id"
-                            element={<GroupEdit />}
-                          />
-                          <Route
-                            path="/user-settings"
-                            element={<UserSettings />}
-                          />
-                          <Route
-                            path="/system-settings"
-                            element={<SystemSettings />}
-                          />
-                          <Route
-                            path="/warehouse-settings"
-                            element={<WarehouseSettings />}
-                          />
-                          <Route
-                            path="/warehouse-settings/layout"
-                            element={<WarehouseLayoutConfig />}
-                          />
-                          <Route
-                            path="/warehouse-settings/storage"
-                            element={<WarehouseStorageConfig />}
-                          />
-                          <Route
-                            path="/notifications"
-                            element={<Notifications />}
-                          />
-                          <Route path="/help" element={<Help />} />
-                          <Route path="/help/guides" element={<HelpGuides />} />
-                          <Route path="/help/faqs" element={<HelpFAQs />} />
-                          <Route
-                            path="/operator-interface"
-                            element={<OperatorInterface />}
-                          />
-                          <Route
-                            path={createRoute([
-                              ...mission_template_route,
-                              "new",
-                            ])}
-                            element={<TemplateEdit />}
-                          />
-                          <Route
-                            path={createRoute(mission_template_route)}
-                            element={<MissionTemplate />}
-                          />
-                          <Route
-                            path="/operator-interface/outbound"
-                            element={<OperatorOutbound />}
-                          />
-                          <Route
-                            path="/operator-interface/order/:orderId"
-                            element={<OrderDetails />}
-                          />
-                          <Route path="*" element={<NotFound />} />
-                        </Routes>
-                      </Navbar>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="/oi/outbound" element={<CustomTheme><Outbound /></CustomTheme>} />
-                <Route path="/oi/outbound-odd" element={<CustomTheme><OutboundOdd /></CustomTheme>} />
-                <Route
-                  path="/oi/inbound"
-                  element={
-                    <CustomTheme>
-                      <InboundManagement />
-                    </CustomTheme>
-                  }
-                />
-                <Route path="/oi/outbound-ptl" element={<CustomTheme><Ptl /></CustomTheme>} />
-                <Route path="/oi/outbound-odd-ptl" element={<CustomTheme><OddPtl /></CustomTheme>} />
-              </Routes>
+                  {/* Protected routes - require authentication */}
+                  <Route
+                    path="/*"
+                    element={
+                      <ProtectedRoute>
+                        <Navbar>
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <Routes>
+                              <Route path="/" element={<Dashboard />} />
+                              <Route path="/layout" element={<WarehouseLayout />} />
+                              <Route
+                                path="/inbound-outbound"
+                                element={<InboundOutbound />}
+                              />
+                              <Route
+                                path="/inbound-outbound/history"
+                                element={<OrderHistory />}
+                              />
+                              <Route path="/inventory" element={<Inventory />} />
+                              <Route path="/issue-time-schedule" element={<IssueTimeSchedule />} />
+                              <Route path="/missions" element={<Missions />} />
+                              <Route
+                                path="/missions/templates"
+                                element={<MissionsTemplates />}
+                              />
+                              <Route
+                                path="/missions/templates/new"
+                                element={<TemplateEdit />}
+                              />
+                              <Route
+                                path="/missions/templates/:id"
+                                element={<TemplateEdit />}
+                              />
+                              <Route
+                                path="/mission-settings/template"
+                                element={<MissionTemplate />}
+                              />
+                              <Route
+                                path="/mission-settings/device"
+                                element={<DeviceList />}
+                              />
+                              <Route
+                                path="/mission-settings/device-template"
+                                element={<DeviceTemplate />}
+                              />
+                              <Route path="/settings" element={<Settings />} />
+                              <Route
+                                path="/team-settings"
+                                element={<TeamSettings />}
+                              />
+                              <Route
+                                path="/team-settings/:section"
+                                element={<TeamSettings />}
+                              />
+                              <Route
+                                path="/team-settings/users/:id"
+                                element={<UserEdit />}
+                              />
+                              <Route
+                                path="/team-settings/roles/:id"
+                                element={<RoleEdit />}
+                              />
+                              <Route
+                                path="/team-settings/groups/:id"
+                                element={<GroupEdit />}
+                              />
+                              <Route
+                                path="/user-settings"
+                                element={<UserSettings />}
+                              />
+                              <Route
+                                path="/system-settings"
+                                element={<SystemSettings />}
+                              />
+                              <Route
+                                path="/warehouse-settings"
+                                element={<WarehouseSettings />}
+                              />
+                              <Route
+                                path="/warehouse-settings/layout"
+                                element={<WarehouseLayoutConfig />}
+                              />
+                              <Route
+                                path="/warehouse-settings/storage"
+                                element={<WarehouseStorageConfig />}
+                              />
+                              <Route
+                                path="/notifications"
+                                element={<Notifications />}
+                              />
+                              <Route path="/help" element={<Help />} />
+                              <Route path="/help/guides" element={<HelpGuides />} />
+                              <Route path="/help/faqs" element={<HelpFAQs />} />
+                              <Route
+                                path="/operator-interface"
+                                element={<OperatorInterface />}
+                              />
+                              <Route
+                                path={createRoute([
+                                  ...mission_template_route,
+                                  "new",
+                                ])}
+                                element={<TemplateEdit />}
+                              />
+                              <Route
+                                path={createRoute(mission_template_route)}
+                                element={<MissionTemplate />}
+                              />
+                              <Route
+                                path="/operator-interface/outbound"
+                                element={<OperatorOutbound />}
+                              />
+                              <Route
+                                path="/operator-interface/order/:orderId"
+                                element={<OrderDetails />}
+                              />
+                              <Route path="*" element={<NotFound />} />
+                            </Routes>
+                          </Suspense>
+                        </Navbar>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route 
+                    path="/oi/outbound" 
+                    element={
+                      <Suspense fallback={<LoadingSpinner />}>
+                        <CustomTheme>
+                          <Outbound />
+                        </CustomTheme>
+                      </Suspense>
+                    } 
+                  />
+                  <Route 
+                    path="/oi/outbound-odd" 
+                    element={
+                      <Suspense fallback={<LoadingSpinner />}>
+                        <CustomTheme>
+                          <OutboundOdd />
+                        </CustomTheme>
+                      </Suspense>
+                    } 
+                  />
+                  <Route
+                    path="/oi/inbound"
+                    element={
+                      <Suspense fallback={<LoadingSpinner />}>
+                        <CustomTheme>
+                          <InboundManagement />
+                        </CustomTheme>
+                      </Suspense>
+                    }
+                  />
+                  <Route 
+                    path="/oi/outbound-ptl" 
+                    element={
+                      <Suspense fallback={<LoadingSpinner />}>
+                        <CustomTheme>
+                          <Ptl />
+                        </CustomTheme>
+                      </Suspense>
+                    } 
+                  />
+                  <Route 
+                    path="/oi/outbound-odd-ptl" 
+                    element={
+                      <Suspense fallback={<LoadingSpinner />}>
+                        <CustomTheme>
+                          <OddPtl />
+                        </CustomTheme>
+                      </Suspense>
+                    } 
+                  />
+                </Routes>
+              </Suspense>
               <Toaster />
             </div>
           </Router>

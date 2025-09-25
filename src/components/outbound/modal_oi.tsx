@@ -56,6 +56,9 @@ const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
 
   useEffect(() => {
     const currentRef = refAction.current;
+    if(!isOpen) return() => {
+      setValue('');
+    };
     if (currentRef) {
       currentRef.focus();
       setTimeout(() => {
@@ -68,7 +71,7 @@ const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
         (document.activeElement as HTMLElement).blur();
       }
     };
-  }, []);
+  }, [isOpen]);
 
   useEffect(() => {
     const currentRef = refAction.current;
