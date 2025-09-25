@@ -86,6 +86,8 @@ export const en: Record<TranslationKey, string> = {
   "btn.edit": "Update",
   "btn.delete": "Delete",
   "btn.cancel": "Cancel",
+  "btn.filter": "Filter",
+  "btn.export_excel": "Export Excel",
 
   mark_all_read: "Mark all as read",
   clear_all: "Clear all",
@@ -281,6 +283,7 @@ export const en: Record<TranslationKey, string> = {
   "inventory.location_code": "Location Code",
   "inventory.store_items": "Store Items",
   "inventory.total_items": "Total Items",
+  "inventory.available_items": "Available Items",
   "inventory.status": "Status",
   "inventory.created_at": "Created At",
   "inventory.updated_at": "Updated At",
