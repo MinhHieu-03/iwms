@@ -1,8 +1,20 @@
-import { Drawer, Descriptions, Tag, Table, Spin, Input, Select, Space, Row, Col } from 'antd';
-import { useTranslation } from 'react-i18next';
-import dayjs from 'dayjs';
-import { useState, useEffect } from 'react';
-import { creatMissionData } from '@/lib/dummyData';
+import {
+  Drawer,
+  Descriptions,
+  Tag,
+  Table,
+  Spin,
+  Input,
+  Select,
+  Space,
+  Row,
+  Col,
+  ConfigProvider,
+} from "antd";
+import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
+import { useState, useEffect, useMemo } from "react";
+import { creatMissionData } from "@/lib/dummyData";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -38,34 +50,33 @@ const ModalMission: React.FC<ModalDetailProps> = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [missionData, setMissionData] = useState<MissionData[]>([]);
-  
-  // Filter states
-  const [statusFilter, setStatusFilter] = useState<string>('');
-  const [materialNoFilter, setMaterialNoFilter] = useState<string>('');
-  const [missionNoFilter, setMissionNoFilter] = useState<string>('');
 
-  const fetchData = async () => {
-    const data = await creatMissionData();
-    setMissionData(data.metaData);
-  };
+  // Filter states
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [materialNoFilter, setMaterialNoFilter] = useState<string>("");
+  const [missionNoFilter, setMissionNoFilter] = useState<string>("");
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    setMissionData(data);
+  }, [data]);
 
   // Filter data based on selected filters
-  const filteredData = missionData.filter((item) => {
-    const statusMatch = !statusFilter || item.status === statusFilter;
-    const materialNoMatch = !materialNoFilter || 
-      item.material_no?.toLowerCase().includes(materialNoFilter.toLowerCase());
-    const missionNoMatch = !missionNoFilter || 
-      item.mission_no?.toLowerCase().includes(missionNoFilter.toLowerCase());
-    
-    return statusMatch && materialNoMatch && missionNoMatch;
-  });
+  const filteredData = useMemo(() => {
+    //   const statusMatch = !statusFilter || item.status === statusFilter;
+    //   const materialNoMatch = !materialNoFilter ||
+    //     item.material_no?.toLowerCase().includes(materialNoFilter.toLowerCase());
+    //   const missionNoMatch = !missionNoFilter ||
+    //     item.mission_no?.toLowerCase().includes(missionNoFilter.toLowerCase());
+
+    //   return statusMatch && materialNoMatch && missionNoMatch;
+    // }, [statusFilter, materialNoFilter, missionNoFilter, missionData]);
+
+    // Return the filtered mission data
+    console.log("missionData", missionData);
+    return missionData || [];
+  }, [missionData]);
 
   // Predefined status options for filter
-  
 
   //   const splitedData = data.reduce((acc: any[], record: any) => {
   //     const existingIndex = acc.findIndex(
@@ -94,77 +105,71 @@ const ModalMission: React.FC<ModalDetailProps> = ({
 
   const issueDataColumns = [
     {
-      title: 'Mã nhiệm vụ',
-      dataIndex: 'mission_no',
-      key: 'mission_no',
+      title: "Mã nhiệm vụ",
+      dataIndex: "_id",
+      key: "_id",
       width: 150,
     },
     {
-      title: 'loại nhiệm vụ',
-      dataIndex: 'mission_type',
-      key: 'mission_type',
+      title: "loại nhiệm vụ",
+      dataIndex: "mission_type",
+      key: "mission_type",
       width: 150,
-      render: (text) => text?.trim() || 'Xuất kho',
+      render: (text) => text?.trim() || "Xuất kho",
     },
     {
-      title: 'Mã thùng',
-      dataIndex: 'package_no',
-      key: 'package_no',
+      title: "Mã thùng",
+      dataIndex: "bin_id",
+      key: "bin_id",
       width: 100,
     },
     {
-      title: 'Mã vật tư',
-      dataIndex: 'material_no',
-      key: 'material_no',
-      render: (text) => text?.trim(),
+      title: "Mã vật tư",
+      dataIndex: "inventory",
+      key: "inventory",
       width: 120,
+      render: (inventory) => inventory?.material_no || "N/A",
     },
     {
-      title: 'Số lượng',
-      dataIndex: 'quantity',
-      key: 'quantity',
+      title: "Số lượng",
+      dataIndex: "inventory",
+      key: "inventory",
+      width: 100,
+      render: (inventory) => inventory?.qty || "N/A",
+    },
+    {
+      title: "Vị trí cấp",
+      dataIndex: "origin",
+      key: "origin",
+      width: 100,
+      render: (origin) => origin || "N/A",
+    },
+    {
+      title: "Vị trí nhận",
+      dataIndex: "destination",
+      key: "destination",
       width: 100,
     },
     {
-      title: 'Vị trí cấp',
-      dataIndex: 'supply_loc',
-      key: 'supply_loc',
+      title: "Robot",
+      dataIndex: "robot_no",
+      key: "robot_no",
       width: 100,
     },
     {
-      title: 'Vị trí nhận',
-      dataIndex: 'receive_loc',
-      key: 'receive_loc',
+      title: "ETA",
+      dataIndex: "eta",
+      key: "eta",
       width: 100,
     },
     {
-      title: 'Robot',
-      dataIndex: 'robot_no',
-      key: 'robot_no',
+      title: "Trạng thái",
+      dataIndex: "state",
+      key: "state",
       width: 100,
-    },
-    {
-      title: 'ETA',
-      dataIndex: 'eta',
-      key: 'eta',
-      width: 100,
-    },
-    {
-      title: 'Trạng thái',
-      dataIndex: 'status',
-      key: 'status',
-      width: 100,
-      sorter: (a, b) => {
-        const statusOrder = { 'error': 0, 'new': 1, 'running': 2, 'done': 3 };
-        const aOrder = statusOrder[a.status] !== undefined ? statusOrder[a.status] : 999;
-        const bOrder = statusOrder[b.status] !== undefined ? statusOrder[b.status] : 999;
-        return aOrder - bOrder;
-      },
-      sortDirections: ['ascend', 'descend'],
       render: (status) => (
         <span
-          className={`px-2 py-1 rounded text-xs font-medium ${
-            mapColor[status]}`}
+          className={`px-2 py-1 rounded text-xs font-medium ${mapColor[status]}`}
         >
           {mapText[status] || status}
         </span>
@@ -174,53 +179,56 @@ const ModalMission: React.FC<ModalDetailProps> = ({
 
   return (
     <Drawer
-      title={'Danh sách nhiệm vụ'}
+      title={"Danh sách nhiệm vụ"}
       open={isOpen}
       onClose={onCancel}
-      placement='bottom'
-      height='90vh'
-      className='issue-detail-drawer'
+      placement="bottom"
+      height="90vh"
+      className="issue-detail-drawer"
     >
-      <div className='space-y-6'>
+      <div className="space-y-6">
         {/* Summary Section */}
-        <div className='bg-gray-50 p-4 rounded-lg'>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-            <div className='text-center'>
-              <div className='text-2xl font-bold text-blue-600'>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">
                 {filteredData.length}
               </div>
-              <div className='text-sm text-gray-600'>Tổng số nhiệm vụ</div>
+              <div className="text-sm text-gray-600">Tổng số nhiệm vụ</div>
             </div>
-            <div className='text-center'>
-              <div className='text-2xl font-bold text-orange-600'>
-                {new Set(filteredData.map(item => item.material_no)).size}
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-600">
+                {new Set(filteredData.map((item) => item.material_no)).size}
               </div>
-              <div className='text-sm text-gray-600'>Số loại vật tư</div>
+              <div className="text-sm text-gray-600">Số loại vật tư</div>
             </div>
-            <div className='text-center'>
-              <div className='text-2xl font-bold text-purple-600'>
-                {filteredData.filter(item => item.status === 'completed').length}
+            <div className="text-center">
+              <div className="text-2xl font-bold text-purple-600">
+                {
+                  filteredData.filter((item) => item.status === "completed")
+                    .length
+                }
               </div>
-              <div className='text-sm text-gray-600'>Nhiệm vụ hoàn thành</div>
+              <div className="text-sm text-gray-600">Nhiệm vụ hoàn thành</div>
             </div>
           </div>
         </div>
         {/* Filter Section */}
-        <div className='bg-white p-4 rounded-lg border border-gray-200'>
+        <div className="bg-white p-4 rounded-lg border border-gray-200">
           <Row gutter={[16, 16]}>
             <Col xs={24} sm={8}>
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-1'>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Trạng thái
                 </label>
                 <Select
                   placeholder="Chọn trạng thái"
                   value={statusFilter}
                   onChange={setStatusFilter}
-                  style={{ width: '100%' }}
+                  style={{ width: "100%" }}
                   allowClear
                 >
-                  {statusOptions.map(option => (
+                  {statusOptions.map((option) => (
                     <Option key={option.value} value={option.value}>
                       {option.label || "đang sử lý"}
                     </Option>
@@ -230,7 +238,7 @@ const ModalMission: React.FC<ModalDetailProps> = ({
             </Col>
             <Col xs={24} sm={8}>
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-1'>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Mã vật tư
                 </label>
                 <Search
@@ -243,7 +251,7 @@ const ModalMission: React.FC<ModalDetailProps> = ({
             </Col>
             <Col xs={24} sm={8}>
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-1'>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Mã nhiệm vụ
                 </label>
                 <Search
@@ -259,17 +267,15 @@ const ModalMission: React.FC<ModalDetailProps> = ({
 
         {/* Issue Data Details Table */}
         <div>
-          <h4 className='font-semibold mb-3'>Danh sách nhiệm vụ kit gộp</h4>
+          <h4 className="font-semibold mb-3">Danh sách nhiệm vụ kit gộp</h4>
           <Spin spinning={loading}>
             <Table
               columns={issueDataColumns}
               dataSource={filteredData}
-              rowKey='mission_no'
-              size='small'
+              rowKey="mission_no"
+              size="small"
               rowClassName={(record) =>
-                record.status === 'error'
-                  ? "bg-red-100"
-                  : ""
+                record.status === "error" ? "bg-red-100" : ""
               }
               scroll={{ x: 1400 }}
               pagination={{
@@ -289,20 +295,20 @@ const ModalMission: React.FC<ModalDetailProps> = ({
 export default ModalMission;
 
 const statusOptions = [
-    { value: 'done', label: 'Hoàn thành' },
-    { value: 'new', label: 'Đang đợi' },
-    { value: 'error', label: 'Lỗi' },
-    { value: 'running', label: 'Đang chạy' }
-  ];
+  { value: "done", label: "Hoàn thành" },
+  { value: "new", label: "Đang đợi" },
+  { value: "error", label: "Lỗi" },
+  { value: "running", label: "Đang chạy" },
+];
 const mapText = {
-    'done': 'Hoàn thành',
-    'new': 'Đang đợi',
-    'error': 'Lỗi',
-    'running': 'Đang chạy'
-}
+  done: "Hoàn thành",
+  new: "Đang đợi",
+  error: "Lỗi",
+  running: "Đang chạy",
+};
 const mapColor = {
-  'done': 'bg-green-100 text-green-800',
-  'new': 'bg-blue-100 text-blue-800',
-  'error': 'bg-red-100 text-red-800',
-  'running': 'bg-yellow-100 text-yellow-800'
-}
+  done: "bg-green-100 text-green-800",
+  new: "bg-blue-100 text-blue-800",
+  error: "bg-red-100 text-red-800",
+  running: "bg-yellow-100 text-yellow-800",
+};

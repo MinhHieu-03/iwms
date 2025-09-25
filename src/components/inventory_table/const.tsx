@@ -29,74 +29,16 @@ export const domain = {
 
 export const lang_key = "inventory.table";
 
-export const RenderCol = ({ 
-  t 
-}: { 
+export const RenderCol = ({
+  t,
+}: {
   t: (key: string) => string;
 }): ColumnsType<InventoryDataType> => [
-  {
-    title: t("inventory.sku"),
-    dataIndex: "sku",
-    key: "sku",
-    width: 120,
-    fixed: "left",
-  },
-  {
-    title: t("inventory.product_name"),
-    dataIndex: "product_name",
-    key: "product_name",
-    width: 200,
-    ellipsis: {
-      showTitle: false,
-    },
-    render: (text: string) => (
-      <Tooltip placement="topLeft" title={text}>
-        {text}
-      </Tooltip>
-    ),
-  },
   {
     title: t("inventory.location_code"),
     dataIndex: "locationCode",
     key: "locationCode",
     width: 120,
-  },
-  {
-    title: t("inventory.store_items"),
-    dataIndex: "store",
-    key: "store",
-    width: 250,
-    render: (store: StoreItem[]) => (
-      <div className="flex flex-wrap gap-1">
-        {store.map((item, index) => (
-          <Tag
-            key={index}
-            color={
-              item.key === "Item" 
-                ? "blue" 
-                : item.key === "Bag" 
-                ? "green" 
-                : "orange"
-            }
-          >
-            {item.key}: {item.qty}
-          </Tag>
-        ))}
-      </div>
-    ),
-  },
-  {
-    title: t("inventory.total_items"),
-    key: "totalItems",
-    width: 100,
-    render: (_, record: InventoryDataType) => {
-      const totalItems = record.store.find(item => item.key === "Item")?.qty || 0;
-      return (
-        <span className="font-semibold text-blue-600">
-          {totalItems.toLocaleString()}
-        </span>
-      );
-    },
   },
   {
     title: t("inventory.status"),
@@ -112,12 +54,85 @@ export const RenderCol = ({
         low_stock: { text: t("status.low_stock"), color: "warning" },
         out_of_stock: { text: t("status.out_of_stock"), color: "error" },
       };
-      
-      const statusInfo = statusMap[status] || { text: t("status.unknown"), color: "default" };
+
+      const statusInfo = statusMap[status] || {
+        text: t("status.unknown"),
+        color: "default",
+      };
+      return <Tag color={statusInfo.color}>{statusInfo.text}</Tag>;
+    },
+  },
+  {
+    title: t("inventory.sku"),
+    dataIndex: "sku",
+    key: "sku",
+    width: 120,
+    fixed: "left",
+  },
+  // {
+  //   title: t("inventory.product_name"),
+  //   dataIndex: "product_name",
+  //   key: "product_name",
+  //   width: 200,
+  //   ellipsis: {
+  //     showTitle: false,
+  //   },
+  //   render: (text: string) => (
+  //     <Tooltip placement="topLeft" title={text}>
+  //       {text}
+  //     </Tooltip>
+  //   ),
+  // },
+  {
+    title: t("inventory.store_items"),
+    key: "store",
+    dataIndex: "store",
+    width: 250,
+    render: (store: StoreItem[]) => {
       return (
-        <Tag color={statusInfo.color}>
-          {statusInfo.text}
-        </Tag>
+        <div className="flex flex-wrap gap-1">
+          {store?.map((item, index) => (
+            <Tag
+              key={index}
+              color={
+                item.key === "Item"
+                  ? "blue"
+                  : item.key === "Bag"
+                  ? "green"
+                  : "orange"
+              }
+            >
+              {item.key}: {item.qty}
+            </Tag>
+          ))}
+        </div>
+      );
+    },
+  },
+  {
+    title: t("inventory.total_items"),
+    key: "totalItems",
+    width: 100,
+    render: (_, record: InventoryDataType) => {
+      const totalItems =
+        record?.store?.find((item) => item.key === "Item")?.qty || 0;
+      return (
+        <span className="font-semibold text-blue-600">
+          {totalItems.toLocaleString()}
+        </span>
+      );
+    },
+  },
+  {
+    title: t("inventory.available"),
+    key: "available",
+    dataIndex: "available",
+    width: 100,
+    render: (available: number) => {
+      return (
+        <span className="font-semibold text-green-600">
+          {available ? available.toLocaleString() : 0}
+        </span>
       );
     },
   },
@@ -126,15 +141,16 @@ export const RenderCol = ({
     dataIndex: "createdAt",
     key: "createdAt",
     width: 140,
-    render: (date: string) => date ? dayjs(date).format("DD/MM/YYYY HH:mm") : "-",
+    render: (date: string) =>
+      date ? dayjs(date).format("DD/MM/YYYY HH:mm") : "-",
   },
-  {
-    title: t("inventory.updated_at"),
-    dataIndex: "updatedAt",
-    key: "updatedAt",
-    width: 140,
-    render: (date: string) => date ? dayjs(date).format("DD/MM/YYYY HH:mm") : "-",
-  },
+  // {
+  //   title: t("inventory.updated_at"),
+  //   dataIndex: "updatedAt",
+  //   key: "updatedAt",
+  //   width: 140,
+  //   render: (date: string) => date ? dayjs(date).format("DD/MM/YYYY HH:mm") : "-",
+  // },
 ];
 
 // Mock data for development - replace with actual API call
@@ -148,16 +164,16 @@ export const mockData: InventoryDataType[] = [
     store: [
       {
         key: "Plastic Bin",
-        qty: 1
+        qty: 1,
       },
       {
         key: "Bag",
-        qty: 20
+        qty: 20,
       },
       {
         key: "Item",
-        qty: 3455
-      }
+        qty: 3455,
+      },
     ],
     status: "wait_fill",
     createdAt: "2025-07-03T04:02:49.145Z",
@@ -172,16 +188,16 @@ export const mockData: InventoryDataType[] = [
     store: [
       {
         key: "Plastic Bin",
-        qty: 2
+        qty: 2,
       },
       {
         key: "Bag",
-        qty: 50
+        qty: 50,
       },
       {
         key: "Item",
-        qty: 1250
-      }
+        qty: 1250,
+      },
     ],
     status: "fill",
     createdAt: "2025-07-03T03:45:22.145Z",
@@ -196,16 +212,16 @@ export const mockData: InventoryDataType[] = [
     store: [
       {
         key: "Plastic Bin",
-        qty: 1
+        qty: 1,
       },
       {
         key: "Bag",
-        qty: 5
+        qty: 5,
       },
       {
         key: "Item",
-        qty: 89
-      }
+        qty: 89,
+      },
     ],
     status: "low_stock",
     createdAt: "2025-07-02T08:30:10.145Z",
@@ -220,16 +236,16 @@ export const mockData: InventoryDataType[] = [
     store: [
       {
         key: "Plastic Bin",
-        qty: 3
+        qty: 3,
       },
       {
         key: "Bag",
-        qty: 75
+        qty: 75,
       },
       {
         key: "Item",
-        qty: 5678
-      }
+        qty: 5678,
+      },
     ],
     status: "completed",
     createdAt: "2025-07-01T14:20:45.145Z",
@@ -244,16 +260,16 @@ export const mockData: InventoryDataType[] = [
     store: [
       {
         key: "Plastic Bin",
-        qty: 0
+        qty: 0,
       },
       {
         key: "Bag",
-        qty: 0
+        qty: 0,
       },
       {
         key: "Item",
-        qty: 0
-      }
+        qty: 0,
+      },
     ],
     status: "out_of_stock",
     createdAt: "2025-06-30T10:15:30.145Z",

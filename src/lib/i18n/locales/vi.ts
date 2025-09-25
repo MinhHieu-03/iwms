@@ -1,5 +1,5 @@
 import { TranslationKey } from "../types";
-import { en as vi_mission } from "./en_more/mission";
+import { vi as vi_mission } from "./vn_more/mission";
 import { en as vi_device } from "./en_more/device";
 import { vn as vi_navbar } from "./vn_more/navbar";
 import { vi as vi_inbound } from "./vn_more/inbound";
@@ -555,7 +555,7 @@ export const vi: Record<TranslationKey, string> = {
   "inventory.title": "Quản lý kho hàng",
   "inventory.description":
     "Quản lý và theo dõi hàng tồn kho tại các vị trí trong kho",
-  "inventory.sku": "Mã SKU",
+  "inventory.sku": "Mã vật tư",
   "inventory.product_name": "Tên sản phẩm",
   "inventory.location_code": "Mã vị trí",
   "inventory.store_items": "Mô hình lưu trữ nhập kho",
@@ -567,9 +567,9 @@ export const vi: Record<TranslationKey, string> = {
   "inventory.edit": "Chỉnh sửa kho hàng",
   "inventory.detail": "Chi tiết kho hàng",
   "inventory.search_placeholder":
-    "Tìm kiếm theo SKU, tên sản phẩm hoặc vị trí...",
+    "Tìm kiếm theo mã vật tư, tên sản phẩm hoặc vị trí...",
   "inventory.filter_by_status": "Lọc theo trạng thái",
-  "inventory.sku_placeholder": "Nhập mã SKU",
+  "inventory.sku_placeholder": "Nhập mã vật tư",
   "inventory.product_name_placeholder": "Nhập tên sản phẩm",
   "inventory.location_code_placeholder": "Nhập mã vị trí (ví dụ: A-02/05-02)",
   "inventory.status_placeholder": "Chọn trạng thái",

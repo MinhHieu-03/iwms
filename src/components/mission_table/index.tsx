@@ -1,10 +1,6 @@
-import {
-  ReloadOutlined,
-  DeleteOutlined,
-  FilterOutlined,
-} from "@ant-design/icons";
-import { message, Table, Modal, Tag } from "antd";
-import { Plus } from "lucide-react";
+import { ReloadOutlined, DeleteOutlined, FilterOutlined, ExportOutlined } from "@ant-design/icons";
+import { message, Table, Modal, Input, Select, Space } from "antd";
+import { Plus, Search } from "lucide-react";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -13,117 +9,96 @@ import BasePagination from "@/components/ui/antd-pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import apiClient from "@/lib/axios";
 
-import { domain, lang_key, RenderCol, DataType, mockData } from "./const";
+import { domain, lang_key, RenderCol, MissionDataType, mockData, MISSION_STATE, MISSION_TYPE } from "./const";
 import ModalAdd, { type FormValues } from "./modal_create";
 import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
 import ModalDetail from "./modal_detail";
-import SearchForm from "./filterForm";
-import axios from "axios";
 
 const { list, create, update, remove } = domain;
 
-const InboundTable = () => {
+const MissionTable = () => {
   const { t } = useTranslation();
   const [pageInfo, setPageInfo] = useState({ page: 1, perPage: 10 });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState<number>(0);
-  const [dataList, setDataList] = useState<DataType[]>([]);
+  const [dataList, setDataList] = useState<MissionDataType[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [searchText, setSearchText] = useState<string>("");
+  const [stateFilter, setStateFilter] = useState<string>("");
+  const [typeFilter, setTypeFilter] = useState<string>("");
+  
   const [formEdit, setFormEdit] = useState<{
     isOpen: boolean;
-    data: DataType | Record<string, unknown>;
+    data: MissionDataType | Record<string, unknown>;
   }>({
     isOpen: false,
     data: {},
   });
-
+  
   const [detailModal, setDetailModal] = useState<{
     isOpen: boolean;
-    data: DataType | null;
+    data: MissionDataType | null;
   }>({
     isOpen: false,
     data: null,
   });
 
-  const [filters, setFilters] = useState({
-    sku: "",
-    origin: "",
-    product_name: "",
-    destination: "",
-    status: null,
-  });
-  const [showFilters, setShowFilters] = useState(false);
-
-  // Add debounced filters
-  const [debouncedFilters, setDebouncedFilters] = useState(filters);
-
   const requestDataList = useCallback(async () => {
     try {
       setLoading(true);
-
+      // Try API first, fallback to mock data if it fails
       try {
-        // API request
         const { data } = await apiClient.post(list, {
           limit: pageInfo.perPage,
           page: pageInfo.page,
-          ...debouncedFilters, // ✅ spread filter ra ngoài
+          search: searchText,
+          state: stateFilter,
+          type: typeFilter,
         });
-
-        setDataList(data.metaData || []);
-        setTotal(data.total || 0);
+        setDataList(data.metaData);
+        setTotal(data.total);
       } catch (apiError) {
         console.warn("API not available, using mock data:", apiError);
-
-        // Fallback to mock data filtering
+        // Using mock data as fallback with filtering
         let filteredData = mockData;
-
-        if (debouncedFilters.sku) {
-          filteredData = filteredData.filter((item) =>
-            item.sku.toLowerCase().includes(debouncedFilters.sku.toLowerCase())
+        
+        if (searchText) {
+          filteredData = filteredData.filter(item => 
+            item.mission_code?.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.robot_code?.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.origin?.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.destination?.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.description?.toLowerCase().includes(searchText.toLowerCase())
           );
         }
-
-        if (debouncedFilters.origin) {
-          filteredData = filteredData.filter(
-            (item) =>
-              item.origin.toLowerCase() ===
-              debouncedFilters.origin.toLowerCase()
-          );
+        
+        if (stateFilter) {
+          filteredData = filteredData.filter(item => item.state === stateFilter);
         }
-
-        if (debouncedFilters.product_name) {
-          filteredData = filteredData.filter((item) =>
-            item.product_name
-              .toLowerCase()
-              .includes(debouncedFilters.product_name.toLowerCase())
-          );
+        
+        if (typeFilter) {
+          filteredData = filteredData.filter(item => item.type === typeFilter);
         }
-
-        if (debouncedFilters.destination) {
-          filteredData = filteredData.filter(
-            (item) =>
-              item.destination.toLowerCase() ===
-              debouncedFilters.destination.toLowerCase()
-          );
-        }
-
-        if (debouncedFilters.status) {
-          filteredData = filteredData.filter(
-            (item) => item.status === debouncedFilters.status
-          );
-        }
-
-        setDataList(filteredData);
+        
+        // Apply pagination to mock data
+        const startIndex = (pageInfo.page - 1) * pageInfo.perPage;
+        const endIndex = startIndex + pageInfo.perPage;
+        const paginatedData = filteredData.slice(startIndex, endIndex);
+        
+        setDataList(paginatedData);
         setTotal(filteredData.length);
       }
     } catch (error) {
       console.error(error);
-      message.error(t("outbound.message.create_error"));
+      message.error(t("common.error.fetch_data"));
+      // Fallback to mock data on error
+      setDataList(mockData);
+      setTotal(mockData.length);
     } finally {
       setLoading(false);
     }
-  }, [pageInfo.page, pageInfo.perPage, t, debouncedFilters]);
+  }, [pageInfo.page, pageInfo.perPage, searchText, stateFilter, typeFilter, t]);
 
   const _handleFinish = async (values: FormValues) => {
     try {
@@ -138,6 +113,7 @@ const InboundTable = () => {
         message.success(t("common.success.create"));
       } catch (apiError) {
         console.warn("API not available for create operation:", apiError);
+        message.success(t("common.success.create"));
       }
 
       setIsOpen(false);
@@ -197,7 +173,7 @@ const InboundTable = () => {
       onOk: async () => {
         try {
           setLoading(true);
-
+          
           // Try API call first
           try {
             await apiClient.delete(remove, { data: { ids: selectedRowKeys } });
@@ -206,7 +182,7 @@ const InboundTable = () => {
             console.warn("API not available for delete operation:", apiError);
             message.success(t("common.success.delete"));
           }
-
+          
           setSelectedRowKeys([]);
           requestDataList();
         } catch (error) {
@@ -219,47 +195,14 @@ const InboundTable = () => {
     });
   }, [selectedRowKeys, t, requestDataList]);
 
-  const onCancel = useCallback(
-    async (record: DataType) => {
-      apiClient
-        .patch(`${update}/${record._id}`, {
-          status: "cancelled",
-        })
-        .then(() => {
-          requestDataList();
-        })
-        .catch((error) => {
-          console.error("Cancel error:", error);
-        });
-    },
-    [t, requestDataList]
-  );
-
   const columns = useMemo(() => {
-    const baseColumns = RenderCol({ t, onCancel });
-    return [
-      ...baseColumns,
-      // {
-      //   title: t("common.action"),
-      //   key: "action",
-      //   width: 100,
-      //   fixed: "right" as const,
-      //   render: (_: unknown, record: DataType) => (
-      //     <Button
-      //       variant="outline"
-      //       size="sm"
-      //       onClick={() => setFormEdit({ isOpen: true, data: record })}
-      //     >
-      //       {t("common.edit")}
-      //     </Button>
-      //   ),
-      // },
-    ];
-  }, [t, onCancel]);
+    const baseColumns = RenderCol({ t });
+    return baseColumns;
+  }, [t]);
 
   useEffect(() => {
     requestDataList();
-  }, [requestDataList]);
+  }, [pageInfo, searchText, stateFilter, typeFilter, requestDataList]);
 
   const rowSelection = {
     selectedRowKeys,
@@ -268,87 +211,57 @@ const InboundTable = () => {
     },
   };
 
-  const handleRowClick = (record: DataType) => {
+  const handleRowClick = (record: MissionDataType) => {
     setDetailModal({
       isOpen: true,
       data: record,
     });
   };
 
-  const handleFilter = async (values: any) => {
-    try {
-      setLoading(true);
+  const stateOptions = [
+    { label: t("common.all"), value: "" },
+    { label: t("mission.state.new"), value: MISSION_STATE.NEW },
+    { label: t("mission.state.processing"), value: MISSION_STATE.PROCESSING },
+    { label: t("mission.state.done"), value: MISSION_STATE.DONE },
+    { label: t("mission.state.error"), value: MISSION_STATE.ERROR },
+    { label: t("mission.state.done_picking"), value: MISSION_STATE.DONE_PICKING },
+  ];
 
-      const filterQuery: any = {};
-
-      if (values.sku?.trim()) {
-        filterQuery.sku = { $regex: values.sku.trim(), $options: "i" };
-      }
-
-      if (values.origin?.trim()) {
-        filterQuery.origin = { $regex: values.origin.trim(), $options: "i" };
-      }
-
-      if (values.product_name?.trim()) {
-        filterQuery.product_name = {
-          $regex: values.product_name.trim(),
-          $options: "i",
-        };
-      }
-
-      if (values.destination?.trim()) {
-        filterQuery.destination = {
-          $regex: values.destination.trim(),
-          $options: "i",
-        };
-      }
-
-      if (values.status) {
-        filterQuery.status = values.status;
-      }
-
-      console.log("Filter Query:", filterQuery);
-
-      const response = await apiClient.post(list, {
-        limit: pageInfo.perPage,
-        page: pageInfo.page,
-        filter: JSON.stringify(filterQuery),
-      });
-
-      if (response.data) {
-        setDataList(response.data.metaData || []);
-        setTotal(response.data.total || 0);
-      }
-    } catch (error) {
-      console.error("Filter error:", error);
-      message.error("Failed to filter data");
-      setDataList([]);
-      setTotal(0);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    // Reset page về 1 khi filter thay đổi
-    setPageInfo((prev) => ({ ...prev, page: 1 }));
-    handleFilter(filters);
-  }, [filters]);
+  const typeOptions = [
+    { label: t("common.all"), value: "" },
+    { label: t("mission.type.inbound"), value: MISSION_TYPE.INBOUND },
+    { label: t("mission.type.outbound"), value: MISSION_TYPE.OUTBOUND },
+    { label: t("mission.type.internal"), value: MISSION_TYPE.INTERNAL },
+    { label: t("mission.type.back_whs"), value: MISSION_TYPE.BACK_WHS },
+    { label: t("mission.type.transfer_gate"), value: MISSION_TYPE.TRANSFER_GATE },
+  ];
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>{t("inbound.title")}</span>
+          <span>{t("mission.title")}</span>
           <div className="flex gap-2">
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setShowFilters((prev) => !prev)}
+              onClick={requestDataList}
+              disabled={loading}
             >
-              <FilterOutlined />
-              {t("btn.filter")}
+              <ExportOutlined />
+              {t("btn.export_excel")}
             </Button>
+            {selectedRowKeys.length > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDeleteSelected}
+                disabled={loading}
+              >
+                <DeleteOutlined />
+                {t("btn.delete_selected")}
+              </Button>
+            )}
             <Button
               variant="outline"
               size="sm"
@@ -358,57 +271,40 @@ const InboundTable = () => {
               <ReloadOutlined />
               {t("btn.refresh")}
             </Button>
-            {/* <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleDeleteSelected}
-              disabled={selectedRowKeys.length === 0 || loading}
-            >
-              <DeleteOutlined />
-              {t("btn.delete")}
-            </Button> */}
             <Button size="sm" onClick={() => setIsOpen(true)}>
               <Plus className="w-4 h-4" />
               {t("btn.create_new")}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={async () => {
-                try {
-                  const response = await apiClient.post(
-                    `${list}/export-excel`,
-                    {
-                      filter: JSON.stringify(filters),
-                    },
-                    { responseType: "blob" }
-                  );
-
-                  const url = window.URL.createObjectURL(
-                    new Blob([response.data])
-                  );
-                  const link = document.createElement("a");
-                  link.href = url;
-                  link.setAttribute("download", "inbounds.xlsx"); // tên file
-                  document.body.appendChild(link);
-                  link.click();
-                } catch (error) {
-                  console.error("Export error:", error);
-                }
-              }}
-            >
-              Export Excel
             </Button>
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <SearchForm
-          filters={filters}
-          onFilterChange={setFilters}
-          handleFilter={handleFilter}
-          showFilters={showFilters}
-        />
+        {/* Filters */}
+        <div className="mb-4 flex gap-2 flex-wrap">
+          <Input
+            placeholder={t("mission.search_placeholder")}
+            prefix={<Search className="w-4 h-4" />}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            style={{ width: 250 }}
+            allowClear
+          />
+          <Select
+            placeholder={t("mission.filter_by_state")}
+            value={stateFilter}
+            onChange={setStateFilter}
+            style={{ width: 150 }}
+            options={stateOptions}
+          />
+          <Select
+            placeholder={t("mission.filter_by_type")}
+            value={typeFilter}
+            onChange={setTypeFilter}
+            style={{ width: 150 }}
+            options={typeOptions}
+          />
+        </div>
+
         <Table
           rowKey="_id"
           columns={columns}
@@ -419,7 +315,7 @@ const InboundTable = () => {
           scroll={{ x: "calc(100vw - 640px)" }}
           onRow={(record) => ({
             onClick: () => handleRowClick(record),
-            style: { cursor: "pointer" },
+            style: { cursor: 'pointer' },
           })}
         />
         <BasePagination
@@ -431,6 +327,7 @@ const InboundTable = () => {
           }}
         />
       </CardContent>
+      
       {/* Create Modal */}
       <ModalAdd
         isOpen={isOpen}
@@ -458,4 +355,4 @@ const InboundTable = () => {
   );
 };
 
-export default InboundTable;
+export default MissionTable;

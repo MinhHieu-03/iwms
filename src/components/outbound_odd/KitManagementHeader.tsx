@@ -1,15 +1,16 @@
-import { ReloadOutlined } from "@ant-design/icons";
-import { Eye, Plus } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { CardTitle } from "@/components/ui/card";
+import { ReloadOutlined } from "@ant-design/icons";
+import { Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface KitManagementHeaderProps {
   selectedRowKeysLength: number;
   rowInProgressLength: number;
-  onAccessOI: () => void;
+  onAccessOI?: () => void;
   onCreateOrder: () => void;
   onRefresh: () => void;
+  loading?: boolean;
 }
 
 const KitManagementHeader = ({
@@ -18,6 +19,7 @@ const KitManagementHeader = ({
   onAccessOI,
   onCreateOrder,
   onRefresh,
+  loading,
 }: KitManagementHeaderProps) => {
   const { t } = useTranslation();
 
@@ -25,19 +27,22 @@ const KitManagementHeader = ({
     <CardTitle className="flex items-center justify-between">
       <div className="flex items-center gap-2">
         <span>📅</span>
-        Quản lý KIT chờ xuất hàng
+        Quản lý KIT lẻ chờ xuất hàng
       </div>
       <div className="flex gap-2">
         <Button
           onClick={onCreateOrder}
           className="gap-2"
-          disabled={selectedRowKeysLength === 0 || rowInProgressLength === 4}
+          loading={loading}
+          disabled={!!loading || selectedRowKeysLength === 0 || rowInProgressLength === 80}
           size="sm"
         >
           <Plus className="h-4 w-4" />
           Tạo lệnh xuất hàng
         </Button>
         <Button
+          disabled={!!loading}
+          loading={loading}
           onClick={onRefresh}
           variant="outline"
           size="sm"

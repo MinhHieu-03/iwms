@@ -1,13 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { User, LogOut, Building2, LogIn, Plus, Columns4, UploadCloudIcon } from "lucide-react";
+import {
+  User,
+  LogOut,
+  Building2,
+  LogIn,
+  Plus,
+  Columns4,
+  UploadCloudIcon,
+} from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { login, logout } from "@/store/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -24,15 +44,17 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
   selectedGate = "gate1",
   onGateChange,
   title = "",
-  type = "default"
+  type = "default",
 }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated, loading, user } = useAppSelector((state) => state.auth);
-  
+  const { isAuthenticated, loading, user } = useAppSelector(
+    (state) => state.auth
+  );
+
   const [loginForm, setLoginForm] = useState({
     username: "",
-    password: ""
+    password: "",
   });
   const [currentGate, setCurrentGate] = useState(selectedGate);
   const [storedUsername, setStoredUsername] = useState<string>("");
@@ -56,6 +78,11 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
 
   useEffect(() => {
     // Update time every second
+    
+    const currentGate = localStorage.getItem("out_bound_gate");
+    if (currentGate) {
+      setCurrentGate(currentGate);
+    }
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
@@ -69,11 +96,13 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
     }
 
     try {
-      await dispatch(login({
-        username: loginForm.username,
-        password: loginForm.password
-      })).unwrap();
-      
+      await dispatch(
+        login({
+          username: loginForm.username,
+          password: loginForm.password,
+        })
+      ).unwrap();
+
       // Clear form and close modal on successful login
       setLoginForm({ username: "", password: "" });
       handleModalClose(false);
@@ -86,9 +115,15 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
     dispatch(logout());
   };
 
+  useEffect(() => {
+    if (onGateChange && currentGate !== selectedGate) {
+      onGateChange(currentGate);
+    }
+  }, [currentGate, onGateChange]);
+
   const handleGateChange = (gate: string) => {
     setCurrentGate(gate);
-    onGateChange?.(gate);
+    localStorage.setItem("out_bound_gate", gate);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -110,31 +145,32 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
       <CardContent className="p-4">
         <div className="flex items-center justify-between gap-4">
           {/* Left section - Title */}
-          <div className="flex items-center" onClick={() => {
-            navigate("/operator-interface");
-          }}>
-            <h1 className="text-xl font-bold text-gray-800">
-              {title}
-            </h1>
+          <div
+            className="flex items-center"
+            onClick={() => {
+              navigate("/operator-interface");
+            }}
+          >
+            <h1 className="text-xl font-bold text-gray-800">{title}</h1>
           </div>
 
           {/* Center section - Current Time */}
           <div className="flex-1 flex justify-center">
             <div className="text-center">
               <div className="text-3xl font-mono font-bold text-gray-800">
-                {currentTime.toLocaleTimeString('en-US', { 
-                  hour12: false, 
-                  hour: '2-digit', 
-                  minute: '2-digit', 
-                  second: '2-digit' 
+                {currentTime.toLocaleTimeString("en-US", {
+                  hour12: false,
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
                 })}
               </div>
               <div className="text-sm text-gray-500">
-                {currentTime.toLocaleDateString('vn-VN', { 
-                  weekday: 'short', 
-                  year: 'numeric', 
-                  month: 'short', 
-                  day: 'numeric' 
+                {currentTime.toLocaleDateString("vn-VN", {
+                  weekday: "short",
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
                 })}
               </div>
             </div>
@@ -146,114 +182,146 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <Building2 className="h-5 w-5 text-gray-500" />
-                <span className="text-sm font-medium text-gray-700">Cửa ra:</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Cửa ra:
+                </span>
               </div>
               <Select value={currentGate} onValueChange={handleGateChange}>
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder="Cửa ra" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="gate1">Cửa ra 1</SelectItem>
-                  <SelectItem value="gate2">Cửa ra 2</SelectItem>
-                  <SelectItem value="gate3">Cửa ra 3</SelectItem>
+                  {gates.map((gate) => (
+                    <SelectItem key={gate.value} value={gate.value}>
+                      {gate.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-              {type === 'ptl-odd' ?<Button variant="default" onClick={() => {
-                notification.success({
-                  message: 'Thông báo',
-                  description: 'Động bộ thông tin kit lên hệ thống PTL thành công!',
-                });
-              }}>
-                <Columns4 className="h-4 w-4" />
-                Đồng bộ PTL
-              </Button> : null}
+              {type === "ptl-odd" ? (
+                <Button
+                  variant="default"
+                  onClick={() => {
+                    notification.success({
+                      message: "Thông báo",
+                      description:
+                        "Động bộ thông tin kit lên hệ thống PTL thành công!",
+                    });
+                  }}
+                >
+                  <Columns4 className="h-4 w-4" />
+                  Đồng bộ PTL
+                </Button>
+              ) : null}
             </div>
 
             {/* Login or User info */}
             <div className="flex items-center gap-4 border-l pl-4">
               {!isAuthenticated ? (
-              <Dialog open={isLoginModalOpen} onOpenChange={handleModalClose}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" className="flex items-center gap-2">
-                    <LogIn className="h-4 w-4" />
-                    đăng nhập
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                      <User className="h-5 w-5" />
-                      Sign In to Outbound System
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 pt-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="username">Tên đăng nhập</Label>
-                      <Input
-                        id="username"
-                        type="text"
-                        placeholder="Nhập tên đăng nhập của bạn"
-                        value={loginForm.username}
-                        onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
-                        onKeyPress={handleKeyPress}
-                      />
+                <Dialog open={isLoginModalOpen} onOpenChange={handleModalClose}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="flex items-center gap-2"
+                    >
+                      <LogIn className="h-4 w-4" />
+                      đăng nhập
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2">
+                        <User className="h-5 w-5" />
+                        Sign In to Outbound System
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 pt-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="username">Tên đăng nhập</Label>
+                        <Input
+                          id="username"
+                          type="text"
+                          placeholder="Nhập tên đăng nhập của bạn"
+                          value={loginForm.username}
+                          onChange={(e) =>
+                            setLoginForm({
+                              ...loginForm,
+                              username: e.target.value,
+                            })
+                          }
+                          onKeyPress={handleKeyPress}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="password">Mật khẩu</Label>
+                        <Input
+                          id="password"
+                          type="password"
+                          placeholder="Nhập mật khẩu của bạn"
+                          value={loginForm.password}
+                          onChange={(e) =>
+                            setLoginForm({
+                              ...loginForm,
+                              password: e.target.value,
+                            })
+                          }
+                          onKeyPress={handleKeyPress}
+                        />
+                      </div>
+                      <div className="flex justify-end gap-3 pt-4">
+                        <Button
+                          variant="outline"
+                          onClick={() => handleModalClose(false)}
+                        >
+                          Hủy
+                        </Button>
+                        <Button
+                          onClick={handleLogin}
+                          disabled={
+                            loading ||
+                            !loginForm.username ||
+                            !loginForm.password
+                          }
+                          className="min-w-[100px]"
+                        >
+                          {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+                        </Button>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="password">Mật khẩu</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        placeholder="Nhập mật khẩu của bạn"
-                        value={loginForm.password}
-                        onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                        onKeyPress={handleKeyPress}
-                      />
-                    </div>
-                    <div className="flex justify-end gap-3 pt-4">
-                      <Button 
-                        variant="outline" 
-                        onClick={() => handleModalClose(false)}
-                      >
-                        Hủy
-                      </Button>
-                      <Button 
-                        onClick={handleLogin}
-                        disabled={loading || !loginForm.username || !loginForm.password}
-                        className="min-w-[100px]"
-                      >
-                        {loading ? "Đang đăng nhập..." : "Đăng nhập"}
-                      </Button>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            ) : (
-              <div className="flex items-center gap-3">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={(user as any)?.avatar || ""} />
-                  <AvatarFallback>
-                    {(storedUsername || loginForm.username)?.charAt(0)?.toUpperCase() || "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">
-                    {storedUsername || (user as any)?.name || loginForm.username || "User"}
-                  </span>
-                  {/* <Badge variant="secondary" className="text-xs">
+                  </DialogContent>
+                </Dialog>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={(user as any)?.avatar || ""} />
+                    <AvatarFallback>
+                      {(storedUsername || loginForm.username)
+                        ?.charAt(0)
+                        ?.toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium">
+                      {storedUsername ||
+                        (user as any)?.name ||
+                        loginForm.username ||
+                        "User"}
+                    </span>
+                    {/* <Badge variant="secondary" className="text-xs">
                     Authenticated
                   </Badge> */}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleLogout}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <LogOut className="h-4 w-4 mr-1" />
+                    Đăng xuất
+                  </Button>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                  <LogOut className="h-4 w-4 mr-1" />
-                  Đăng xuất
-                </Button>
-              </div>
-            )}
+              )}
             </div>
           </div>
         </div>
@@ -263,3 +331,10 @@ const OutboundHeader: React.FC<OutboundHeaderProps> = ({
 };
 
 export default OutboundHeader;
+
+const gates = [
+  { label: "Cửa ra 1", value: "gate1" },
+  { label: "Cửa ra 2", value: "gate2" },
+  { label: "Cửa ra 3", value: "gate3" },
+  { label: "Cửa ra 4", value: "gate4" },
+];
