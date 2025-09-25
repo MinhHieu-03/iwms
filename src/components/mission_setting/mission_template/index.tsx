@@ -20,8 +20,10 @@ import {
   createMissionTemplate,
   deleteMissionTemplate,
   getMissionTemplate,
+  runMissionApi,
 } from "@/api/missionSettingApi";
 import { useToast } from "@/hooks/use-toast";
+import MissionForm from "./missionForm";
 
 const { list, create, update, upload, download, remove } = domain;
 
@@ -40,6 +42,7 @@ const App = () => {
   const [total, setTotal] = useState<number>(0);
   const [dataList, setDataList] = useState<DataType[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+  const [selectedMission, setSelectedMission] = useState<any>(null);
 
   const fetchData = async () => {
     try {
@@ -100,7 +103,7 @@ const App = () => {
 
   const handleDelete = async (payload: string[]) => {
     try {
-      const { data } = await deleteMissionTemplate(payload[0]);
+      const { data } = await deleteMissionTemplate(payload);
 
       setSelectedRowKeys([]);
 
@@ -144,8 +147,34 @@ const App = () => {
     }
   };
 
+  const handleRunButton = (mission: any) => {
+    setSelectedMission(mission);
+  };
+
+  const handleRunMission = async (mission: any) => {
+    try {
+      const { data } = await runMissionApi(mission);
+
+      if (data.success) {
+        fetchData();
+        toast({
+          title: t("common.success"),
+          description: data.desc,
+        });
+      } else {
+        toast({
+          title: t("common.error"),
+          description: data.desc,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   const columns: ColumnsType<DataType> = useMemo(() => {
-    const col = RenderCol({ t });
+    const col = RenderCol({ t, handleDelete, handleRunButton });
     return col || [];
   }, [t]);
 
@@ -213,6 +242,12 @@ const App = () => {
           </Drawer>
         </CardContent>
       </Card>
+      <MissionForm
+        isOpen={selectedMission !== null}
+        onClose={() => setSelectedMission(null)}
+        onSubmit={handleRunMission}
+        data={selectedMission}
+      />
     </div>
   );
 };

@@ -59,7 +59,6 @@ const NodeForm: React.FC<NodeFormProps> = ({
 
   // Memoize form_data to prevent unnecessary recalculations
   const form_data = useMemo(() => {
-    console.log("data", data);
     let paramValue = [];
     if (data?.param) {
       if (Array.isArray(data.param)) {

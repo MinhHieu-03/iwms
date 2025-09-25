@@ -33,7 +33,11 @@ const createMissionTemplate = async (payload: any) => {
 };
 
 const deleteMissionTemplate = async (payload: any) => {
-  return await wcsApiClient.delete(`/mission/template/${payload}`);
+  return await wcsApiClient.delete(`/mission/template`, {}, { id: payload });
+};
+
+const runMissionApi = async (payload: any) => {
+  return await wcsApiClient.post(`/mission`, payload);
 };
 
 export {
@@ -46,4 +50,5 @@ export {
   getMissionTemplate,
   patchMissionTemplate,
   createMissionTemplate,
+  runMissionApi,
 };

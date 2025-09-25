@@ -290,10 +290,22 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
             const { label, ...data } = n.data;
             return data;
           });
+
+        const nodeLocations = nodes.map(
+          ({ position, type }: { position: any; type: string }) => {
+            return {
+              x: position.x,
+              y: position.y,
+              type: type,
+            };
+          }
+        );
+
         const missionTemplate = {
           name: templateName.trim(),
           start: startNode,
           tasks: taskList,
+          ui_data: nodeLocations,
         };
 
         let response;
