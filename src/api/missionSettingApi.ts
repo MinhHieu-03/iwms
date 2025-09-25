@@ -20,12 +20,20 @@ const deleteDevice = async (payload: any) => {
   return await wcsApiClient.delete(`/device`, {}, payload);
 };
 
+const getMissionTemplate = async (payload: any) => {
+  return await wcsApiClient.get(`/mission/template`, payload);
+};
+
+const patchMissionTemplate = async (payload: any, id: string) => {
+  return await wcsApiClient.patch(`/mission/template/${id}`, payload);
+};
+
 const createMissionTemplate = async (payload: any) => {
   return await wcsApiClient.post(`/mission/template`, payload);
 };
 
 const deleteMissionTemplate = async (payload: any) => {
-  return await wcsApiClient.delete(`/mission/template/${payload.id}`);
+  return await wcsApiClient.delete(`/mission/template/${payload}`);
 };
 
 export {
@@ -35,4 +43,7 @@ export {
   createDevice,
   deleteDevice,
   deleteMissionTemplate,
+  getMissionTemplate,
+  patchMissionTemplate,
+  createMissionTemplate,
 };

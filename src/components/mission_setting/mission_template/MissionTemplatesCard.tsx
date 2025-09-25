@@ -74,7 +74,10 @@ const MissionTemplatesCard: React.FC<MissionTemplatesCardProps> = ({
 
                       // Create new node if callback is provided
                       if (onTemplateStepClick) {
-                        onTemplateStepClick(task);
+                        onTemplateStepClick({
+                          ...task,
+                          device_name: device.name,
+                        });
                       }
                     }}
                   >

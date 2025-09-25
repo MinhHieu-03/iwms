@@ -12,6 +12,7 @@ interface HeaderProps {
   setSearchQuery: (query: string) => void;
   selectedRow: string[];
   handleDelete: (payload: string[]) => void;
+  handleCreateMission: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -19,9 +20,9 @@ const Header: React.FC<HeaderProps> = ({
   setSearchQuery,
   selectedRow,
   handleDelete,
+  handleCreateMission,
 }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   return (
     <div>
@@ -39,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({
           <div className="flex gap-2">
             <>
               <Button
-                onClick={() => navigate(`/mission-setting/template/new`)}
+                onClick={handleCreateMission}
                 className="h-10 bg-warehouse-primary hover:bg-warehouse-primary/90"
               >
                 <Plus className="mr-2 h-4 w-4" />

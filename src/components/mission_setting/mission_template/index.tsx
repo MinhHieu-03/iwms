@@ -16,7 +16,11 @@ import {
   type DataType,
 } from "./const";
 import Header from "./header";
-import { deleteMissionTemplate } from "@/api/missionSettingApi";
+import {
+  createMissionTemplate,
+  deleteMissionTemplate,
+  getMissionTemplate,
+} from "@/api/missionSettingApi";
 import { useToast } from "@/hooks/use-toast";
 
 const { list, create, update, upload, download, remove } = domain;
@@ -27,7 +31,7 @@ const App = () => {
   const { toast } = useToast();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [showDetail, setShowDetail] = useState("");
+  const [showDetail, setShowDetail] = useState<any>(null);
   const [pageInfo, setPageInfo] = useState({
     page: 1,
     perPage: 10,
@@ -37,55 +41,111 @@ const App = () => {
   const [dataList, setDataList] = useState<DataType[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
 
-  const reload = () => {
-    setLoading(true);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const { data } = await getMissionTemplate({});
 
-    const filter_templates = mission_templates
-      .filter((template) => {
-        return (
-          template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          template.description.toLowerCase().includes(searchQuery.toLowerCase())
+      if (data?.success) {
+        const filteredData = data.data
+          .filter((template) => {
+            return (
+              template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              template.description
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase())
+            );
+          })
+          .map((template) => missionTemplateGenForm(template));
+
+        setDataList(
+          filteredData.slice(
+            (pageInfo.page - 1) * pageInfo.perPage,
+            pageInfo.page * pageInfo.perPage
+          )
         );
-      })
-      .map((template) => missionTemplateGenForm(template));
-    setDataList(
-      filter_templates.slice(
-        (pageInfo.page - 1) * pageInfo.perPage,
-        pageInfo.page * pageInfo.perPage
-      )
-    );
-    setTotal(filter_templates.length);
-    setLoading(false);
-  };
 
-  useEffect(reload, [pageInfo]);
+        setTotal(filteredData.length);
+
+        toast({
+          title: t("common.success"),
+          description: data?.desc,
+        });
+      } else {
+        toast({
+          title: t("common.error"),
+          description: data?.desc,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.log("error", error);
+      toast({
+        title: t("common.error"),
+        description: "An error occurred while fetching data",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     setPageInfo({ page: 1, perPage: pageInfo.perPage });
-    reload();
   }, [searchQuery]);
 
+  useEffect(() => {
+    fetchData();
+  }, [searchQuery, pageInfo.page, pageInfo.perPage]);
+
   const handleDelete = async (payload: string[]) => {
-    const { data } = await deleteMissionTemplate(payload);
-    setSelectedRowKeys([]);
-    reload();
-    if (data.success) {
-      toast({
-        title: t("common.delete_success"),
-        description: data.desc,
-      });
-    } else {
-      toast({
-        title: t("common.delete_error"),
-        description: data.desc,
-        variant: "destructive",
-      });
+    try {
+      const { data } = await deleteMissionTemplate(payload[0]);
+
+      setSelectedRowKeys([]);
+
+      if (data.success) {
+        fetchData();
+        toast({
+          title: t("common.delete_success"),
+          description: data.desc,
+        });
+      } else {
+        toast({
+          title: t("common.delete_error"),
+          description: data.desc,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const handleCreateMission = async (mission: any) => {
+    try {
+      const { data } = await createMissionTemplate(mission);
+
+      if (data.success) {
+        fetchData();
+        toast({
+          title: t("common.success"),
+          description: data.desc,
+        });
+      } else {
+        toast({
+          title: t("common.error"),
+          description: data.desc,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.log("error", error);
     }
   };
 
   const columns: ColumnsType<DataType> = useMemo(() => {
     const col = RenderCol({ t });
-    console.log("col", col);
     return col || [];
   }, [t]);
 
@@ -99,6 +159,9 @@ const App = () => {
   return (
     <div className="space-y-4">
       <Header
+        handleCreateMission={() =>
+          setShowDetail({ mode: "new", onSubmit: handleCreateMission })
+        }
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         selectedRow={selectedRowKeys}
@@ -109,7 +172,7 @@ const App = () => {
           <Table
             rowSelection={rowSelection}
             size="middle"
-            rowKey="id"
+            rowKey="_id"
             loading={loading}
             columns={columns}
             dataSource={dataList}
@@ -119,7 +182,7 @@ const App = () => {
               return {
                 onClick: (e) => {
                   // navigate(`/mission-setting/template/${record.id}`);
-                  setShowDetail(record.id);
+                  setShowDetail(record);
                 },
               };
             }}
@@ -136,10 +199,17 @@ const App = () => {
             title={t("mission_template.create_new_template")}
             height={"94vh"}
             placement="bottom"
-            onClose={() => setShowDetail("")}
+            onClose={() => {
+              setShowDetail(null);
+              fetchData();
+            }}
             open={!!showDetail}
           >
-            <StorageHierarchyCard />
+            <StorageHierarchyCard
+              missionData={showDetail}
+              mode={showDetail?._id ? "update" : "create"}
+              onSubmit={handleCreateMission}
+            />
           </Drawer>
         </CardContent>
       </Card>

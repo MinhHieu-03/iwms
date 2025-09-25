@@ -561,124 +561,15 @@ export const masterData: MasterDataItem[] = Array.from(
 export const storageHierarchyNodes: Node[] = [
   {
     id: "start",
-    type: "customStart", // Use our custom start node type
+    type: "customStart",
     position: {
-      x: 400, // Random position within a reasonable range
+      x: 400,
       y: 0,
     },
     data: {
       label: `Start Node`,
     },
   },
-  {
-    id: "plastic-bin",
-    type: "customStorage",
-    data: { label: "Plastic Bin" },
-    position: { x: 400, y: 70 },
-  },
-  {
-    id: "carton-1",
-    type: "customStorage",
-    data: { label: "Carton" },
-    position: { x: 200, y: 200 },
-  },
-  {
-    id: "box-1",
-    type: "customStorage",
-    data: { label: "Box" },
-    position: { x: 400, y: 200 },
-  },
-  {
-    id: "kit-1",
-    type: "customStorage",
-    data: { label: "Kit" },
-    position: { x: 600, y: 200 },
-  },
-  {
-    id: "box-2",
-    type: "customStorage",
-    data: { label: "Box" },
-    position: { x: 150, y: 350 },
-  },
-  {
-    id: "kit-2",
-    type: "customStorage",
-    data: { label: "Kit" },
-    position: { x: 250, y: 350 },
-  },
-  {
-    id: "kit-3",
-    type: "customStorage",
-    data: { label: "Kit" },
-    position: { x: 400, y: 350 },
-  },
-  
-  {
-    id: "end",
-    type: "customEnd", // Use our custom start node type
-    position: {
-      x: 400, // Random position within a reasonable range
-      y: 440,
-    },
-    data: {
-      label: `End`,
-    },
-  },
 ];
 
-export const storageHierarchyEdges: Edge[] = [
-  {
-    id: "e-plastic-carton",
-    source: "plastic-bin",
-    sourceHandle: "output-1",
-    target: "carton-1",
-    // animated: true,
-    style: { stroke: "#1976d2", strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: "#1976d2" },
-  },
-  {
-    id: "e-plastic-box",
-    source: "plastic-bin",
-    sourceHandle: "output-2",
-    target: "box-1",
-    // animated: true,
-    style: { stroke: "#1976d2", strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: "#1976d2" },
-  },
-  {
-    id: "e-plastic-kit",
-    source: "plastic-bin",
-    sourceHandle: "output-3",
-    target: "kit-1",
-    // animated: true,
-    style: { stroke: "#1976d2", strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: "#1976d2" },
-  },
-  {
-    id: "e-carton-box",
-    source: "carton-1",
-    sourceHandle: "output-1",
-    target: "box-2",
-    // animated: true,
-    style: { stroke: "#7b1fa2", strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: "#7b1fa2" },
-  },
-  {
-    id: "e-carton-kit",
-    source: "carton-1",
-    sourceHandle: "output-2",
-    target: "kit-2",
-    // animated: true,
-    style: { stroke: "#7b1fa2", strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: "#7b1fa2" },
-  },
-  {
-    id: "e-box-kit",
-    source: "box-1",
-    sourceHandle: "output-1",
-    target: "kit-3",
-    // animated: true,
-    style: { stroke: "#388e3c", strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: "#388e3c" },
-  },
-];
+export const storageHierarchyEdges: Edge[] = [];
