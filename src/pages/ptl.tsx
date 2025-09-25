@@ -1,10 +1,12 @@
 import OutboundHeader from "@/components/OutboundHeader";
 import { Card } from "@/components/ui/card";
 import { KIT_MERGE_TYPE, useKitMergeQuery } from "@/hooks/kit-merge";
+import { PTLKitIssueDataItem, usePTLKitIssueDataByIssordNo } from "@/hooks/ptl";
 import { creatMissionData } from "@/lib/dummyData";
 import { KIT_MERGER_STATUS } from "@/types";
 import { Input } from "antd";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import _ from "lodash";
+import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 
 interface MissionData {
   _id: string;
@@ -19,17 +21,6 @@ interface MissionData {
   status: string;
 }
 
-interface PTLData {
-  id: string;
-  issue_ord_no: string;
-  material_no: string;
-  ptl_qty: number;
-  picked_qty?: number;
-  station: string;
-  group?: string;
-  box_tp: string;
-  trolley_tp: string;
-}
 const OrdersTab: React.FC = () => {
   const [selectedGate, setSelectedGate] = useState<string | undefined>(
     undefined
@@ -49,16 +40,27 @@ const OrdersTab: React.FC = () => {
       listKitMerge.metaData &&
       listKitMerge.metaData.length > 0
     ) {
-      return listKitMerge.metaData[0];
+      return listKitMerge.metaData[0].kit_no;
     }
-    return null;
+    return [];
   }, [listKitMerge]);
+
+  const {
+    data: ptlDataByIssordNo,
+    isLoading: isLoadingPTLData,
+    refetch,
+  } = usePTLKitIssueDataByIssordNo(currentKitMerge);
+  useEffect(() => {
+    if (ptlDataByIssordNo) {
+      console.log("ptlDataByIssordNo", ptlDataByIssordNo);
+    }
+  }, [ptlDataByIssordNo]);
 
   const [boxFounded, setCurrentBox] = useState<Partial<MissionData>>({});
   const [missionData, setMissionData] = useState<MissionData[]>([]);
-  const [ptlData, setPtlData] = useState<PTLData[]>(ptlFakeData);
+  const [ptlData, setPtlData] = useState<PTLKitIssueDataItem[]>(ptlFakeData);
   const [sku, setSku] = useState<string>("");
-  const [ptlDataShow, setPtlDataShow] = useState<PTLData[]>([]);
+  const [ptlDataShow, setPtlDataShow] = useState<PTLKitIssueDataItem[]>([]);
 
   const fetchData = async () => {
     try {
@@ -90,7 +92,7 @@ const OrdersTab: React.FC = () => {
     if (currentRef) {
       currentRef.focus();
       setTimeout(() => {
-        if (currentRef && document.contains(currentRef)) {
+        if (currentRef) {
           currentRef.focus();
         }
       }, 500);
@@ -109,7 +111,7 @@ const OrdersTab: React.FC = () => {
     if (currentRef) {
       currentRef.focus();
       setTimeout(() => {
-        if (currentRef && document.contains(currentRef)) {
+        if (currentRef) {
           currentRef.focus();
         }
       }, 500);
@@ -129,20 +131,23 @@ const OrdersTab: React.FC = () => {
   };
 
   useEffect(() => {
-    if (sku && ptlData && ptlData.length > 0) {
-      setPtlDataShow(ptlData.filter((item) => item?.material_no === sku));
+    if (sku && ptlDataByIssordNo && ptlDataByIssordNo.length > 0) {
+      setPtlDataShow(
+        ptlDataByIssordNo.filter((item) => item?.material_no === sku)
+      );
     } else {
       setPtlDataShow([]);
     }
-  }, [sku, ptlData]);
+  }, [sku, ptlDataByIssordNo]);
 
   const handleInputEnter = (value: string) => {
     if (value && value.length >= 6) {
       setSku(value);
-      const boxFounded = missionData.find(
+      const boxFoundedMission = missionData.find(
         (item) => item?.material_no === value
       );
-      setCurrentBox(boxFounded || {});
+      console.log("boxFounded", boxFounded);
+      setCurrentBox(boxFoundedMission || {});
     } else if (value && !isNaN(Number(value))) {
       let total = Number(value);
       const convert = ptlDataShow.map((item) => {
@@ -223,8 +228,16 @@ const OrdersTab: React.FC = () => {
           </div>
           <div className="mt-6">
             <div className="grid grid-cols-4 gap-4">
+              {currentKitMerge.map((kitNo, index) => (
+                <TrolleyKit
+                  ptlDataShow={ptlDataShow}
+                  key={kitNo}
+                  title={kitNo}
+                  kit={`Kit ${index + 1}`}
+                />
+              ))}
               {/* Kit 1 */}
-              <TrolleyKit
+              {/* <TrolleyKit
                 ptlDataShow={
                   ptlDataShow?.filter(
                     (item) => item?.issue_ord_no === "K365005"
@@ -232,40 +245,12 @@ const OrdersTab: React.FC = () => {
                 }
                 title="K365005"
                 kit="Kit 1"
-              />
-              {/* Kit 2 */}
-              <TrolleyKit
-                ptlDataShow={
-                  ptlDataShow?.filter(
-                    (item) => item?.issue_ord_no === "K365006"
-                  ) || []
-                }
-                title="K365006"
-                kit="Kit 2"
-              />
-              {/* Kit 3 */}
-              <TrolleyKit
-                ptlDataShow={
-                  ptlDataShow?.filter(
-                    (item) => item?.issue_ord_no === "K365007"
-                  ) || []
-                }
-                title="K365007"
-                kit="Kit 3"
-              />
-              {/* Kit 4 */}
-              <TrolleyKit
-                ptlDataShow={
-                  ptlDataShow?.filter(
-                    (item) => item?.issue_ord_no === "K365008"
-                  ) || []
-                }
-                title="K365008"
-                kit="Kit 4"
-              />
+              /> */}
             </div>
           </div>
         </div>
+
+        {isLoadingPTLData && <span>Loading...</span>}
       </Card>
     </div>
   );
@@ -480,12 +465,14 @@ const ptlFakeData = [
 ];
 
 interface TrolleyKitProps {
-  ptlDataShow: PTLData[];
+  ptlDataShow: PTLKitIssueDataItem[];
   title: string;
   kit: string;
 }
 
-const TrolleyKit: React.FC<TrolleyKitProps> = ({ ptlDataShow, title, kit }) => {
+const TrolleyKit: React.FC<TrolleyKitProps> = memo(({ ptlDataShow: data, title, kit }) => {
+  const ptlDataShow = data?.filter((item) => item?.issord_no === kit) || [];
+
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-3">
       <h3 className="font-semibold text-center bg-blue-100 py-2 rounded text-xl flex justify-between px-3">
@@ -495,7 +482,7 @@ const TrolleyKit: React.FC<TrolleyKitProps> = ({ ptlDataShow, title, kit }) => {
         <div className="h-[30vh] bg-red-50 p-2">
           {ptlDataShow && ptlDataShow.length > 0 ? (
             ptlDataShow
-              .filter((item) => item?.station?.startsWith("SA"))
+              .filter((item) => item?.type ==="SA")
               .map((item, index) => (
                 <div
                   key={item?.id || index}
@@ -505,7 +492,7 @@ const TrolleyKit: React.FC<TrolleyKitProps> = ({ ptlDataShow, title, kit }) => {
                       : "bg-gray-50"
                   } mb-2 p-2 rounded border flex justify-between text-xl`}
                 >
-                  <div className=" text-gray-600 ">{item?.group || "N/A"}</div>
+                  <div className=" text-gray-600 ">{item?.ptl_code || "N/A"}</div>
                   <div className="">
                     {item?.picked_qty || 0}/{item?.ptl_qty || 0}
                   </div>
@@ -520,7 +507,7 @@ const TrolleyKit: React.FC<TrolleyKitProps> = ({ ptlDataShow, title, kit }) => {
         <div className="h-[30vh] bg-green-50  p-2">
           {ptlDataShow && ptlDataShow.length > 0 ? (
             ptlDataShow
-              .filter((item) => item?.station?.startsWith("SD"))
+              .filter((item) => item?.type ==="SD")
               .map((item, index) => (
                 <div
                   key={item?.id || index}
@@ -530,7 +517,7 @@ const TrolleyKit: React.FC<TrolleyKitProps> = ({ ptlDataShow, title, kit }) => {
                       : "bg-gray-50"
                   } mb-2 p-2 rounded border flex justify-between text-xl`}
                 >
-                  <div className=" text-gray-600 ">{item?.group || "N/A"}</div>
+                  <div className=" text-gray-600 ">{item?.ptl_code || "N/A"}</div>
                   <div className="">
                     {item?.picked_qty || 0}/{item?.ptl_qty || 0}
                   </div>
@@ -545,4 +532,4 @@ const TrolleyKit: React.FC<TrolleyKitProps> = ({ ptlDataShow, title, kit }) => {
       </div>
     </div>
   );
-};
+});
