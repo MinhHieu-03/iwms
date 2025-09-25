@@ -140,8 +140,14 @@ const apiClient = {
     // .then((res) => _handleSuccess(res, option))
     // .catch((err) => _handleError(err, option));
   },
-  post: (url: string, data = {}, showSuccessMessage = true) => {
-    return request({ method: "post", url, data })
+
+  post: (
+    url: string,
+    data = {},
+    config: AxiosRequestConfig = {},
+    showSuccessMessage = true
+  ) => {
+    return request({ method: "post", url, data, ...config })
       .then((res) => {
         if (showSuccessMessage && !url.includes("list"))
           message.success(res.data.msg || "Update successful");

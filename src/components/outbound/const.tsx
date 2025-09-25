@@ -20,6 +20,7 @@ export interface IssueTimeScheduleDataType {
   ent_dt: string;
   upd_dt: string;
   status: string;
+  type?: string;
 }
 
 export const domain = {
@@ -62,12 +63,7 @@ export const RenderCol = ({
     dataIndex: "type",
     key: "type",
     width: 50,
-    render: (type) =>
-      type ? (
-        <Tag color="red">Kit đề nghị</Tag>
-      ) : (
-        <Tag color="blue">{"Kit thường"}</Tag>
-      ),
+    render: (type) => mappingTypeTag[type] || mappingTypeTag['normal'],
   },
   // {
   //   title: t(`${lang_key}.section`),
@@ -139,7 +135,13 @@ export const RenderCol = ({
 ];
 
 const mappingStatusTag = {
-  new: <Tag color="blue">Mới</Tag>,
-  "in progress": <Tag color="red">Đang xuất</Tag>,
-  fill: <Tag color="green">Đã xuất</Tag>,
+  new: <Tag color="default">Mới</Tag>,
+  "in_progress": <Tag color="processing">Đang xuất</Tag>,
+  fill: <Tag color="success">Đã xuất</Tag>,
+};
+
+const mappingTypeTag = {
+  odd: <Tag color="processing">Kit lẻ</Tag>,
+  "urgent": <Tag color="red">Kit đề nghị</Tag>,
+  "normal": <Tag color="default">Kit thường</Tag>,
 };

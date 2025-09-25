@@ -1,6 +1,6 @@
 import Dayjs from "dayjs";
 import React, { useEffect, useMemo, useState } from "react";
-import { Drawer, Table, Input, Button } from "antd";
+import { Drawer, Table, Input, Button, ConfigProvider } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Search } from "lucide-react";
 import PickingItemModal from "../PickingItemModal";
@@ -43,39 +43,39 @@ interface PickingDrawerProps {
 
 const defaultData: PickingItem[] = [
   {
-    "id": 17,
-    "material_no": "19004803                  ",
-    "issord_no": "KANB1101",
-    "issord_dtl_no": "T974628",
-    "issue_qty": 1000,
-    "inventory_qty": 14000,
-    "inventory": {
-      "_id": "68678a1cef7da51a1db6f05b",
-      "sku": "19004803",
-      "product_name": "test",
-      "locationId": "68678a1625a739200aa35f5a",
-      "locationCode": "A-02/02-02",
-      "store": [
+    id: 17,
+    material_no: "19004803                  ",
+    issord_no: "KANB1101",
+    issord_dtl_no: "T974628",
+    issue_qty: 1000,
+    inventory_qty: 14000,
+    inventory: {
+      _id: "68678a1cef7da51a1db6f05b",
+      sku: "19004803",
+      product_name: "test",
+      locationId: "68678a1625a739200aa35f5a",
+      locationCode: "A-02/02-02",
+      store: [
         {
-          "key": "Carton",
-          "qty": 1
+          key: "Carton",
+          qty: 1,
         },
         {
-          "key": "Bag",
-          "qty": 14
+          key: "Bag",
+          qty: 14,
         },
         {
-          "key": "Item",
-          "qty": 14000
-        }
+          key: "Item",
+          qty: 14000,
+        },
       ],
-      "status": "fill",
-      "available": 14000,
-      "createdAt": "2025-07-04T08:00:28.128Z",
-      "updatedAt": "2025-07-04T08:03:50.690Z",
-      "__v": 0
-    }
-  }
+      status: "fill",
+      available: 14000,
+      createdAt: "2025-07-04T08:00:28.128Z",
+      updatedAt: "2025-07-04T08:03:50.690Z",
+      __v: 0,
+    },
+  },
 ];
 
 const PickingDrawer: React.FC<PickingDrawerProps> = ({
@@ -91,13 +91,18 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
   const skuRef = React.useRef(null);
 
   const filteredData = useMemo(() => {
-    const listVal = defaultData.filter((item) =>
-      item.material_no.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.issord_no.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.issord_dtl_no.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.inventory.sku.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.inventory.product_name.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.inventory.locationCode.toLowerCase().includes(searchText.toLowerCase())
+    const listVal = defaultData.filter(
+      (item) =>
+        item.material_no.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.issord_no.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.issord_dtl_no.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.inventory.sku.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.inventory.product_name
+          .toLowerCase()
+          .includes(searchText.toLowerCase()) ||
+        item.inventory.locationCode
+          .toLowerCase()
+          .includes(searchText.toLowerCase())
     );
 
     if (searchText && listVal.length > 0) {
@@ -174,6 +179,7 @@ const PickingDrawer: React.FC<PickingDrawerProps> = ({
             }}
             style={{ marginBottom: 16 }}
           />
+
           <Table
             columns={columns}
             dataSource={missionData}
@@ -248,7 +254,13 @@ const columns: ColumnsType<PickingItem> = [
     key: "inventory_qty",
     width: 140,
     render: (text, record) => (
-      <span className={record.inventory_qty < record.issue_qty ? "text-red-500 font-medium" : "text-green-600"}>
+      <span
+        className={
+          record.inventory_qty < record.issue_qty
+            ? "text-red-500 font-medium"
+            : "text-green-600"
+        }
+      >
         {text?.toLocaleString()}
       </span>
     ),
@@ -259,12 +271,16 @@ const columns: ColumnsType<PickingItem> = [
     key: "status",
     width: 100,
     render: (status) => (
-      <span className={`px-2 py-1 rounded text-xs font-medium ${
-        status === 'fill' ? 'bg-green-100 text-green-800' : 
-        status === 'empty' ? 'bg-red-100 text-red-800' : 
-        'bg-yellow-100 text-yellow-800'
-      }`}>
-        {status === 'fill' ? 'Đầy' : status === 'empty' ? 'Trống' : status}
+      <span
+        className={`px-2 py-1 rounded text-xs font-medium ${
+          status === "fill"
+            ? "bg-green-100 text-green-800"
+            : status === "empty"
+            ? "bg-red-100 text-red-800"
+            : "bg-yellow-100 text-yellow-800"
+        }`}
+      >
+        {status === "fill" ? "Đầy" : status === "empty" ? "Trống" : status}
       </span>
     ),
   },

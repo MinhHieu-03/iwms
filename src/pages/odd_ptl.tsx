@@ -1,10 +1,8 @@
 import OutboundHeader from "@/components/OutboundHeader";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { creatMissionData } from "@/lib/dummyData";
-import { ReloadOutlined } from "@ant-design/icons";
-import { Button, Input, message, Spin, Table } from "antd";
-import { Eye, Plus } from "lucide-react";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Input, message } from "antd";
+import React, { useEffect, useRef, useState } from "react";
 
 interface MissionData {
   _id: string;
