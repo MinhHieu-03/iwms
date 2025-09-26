@@ -1,10 +1,10 @@
 import apiClient from "@/lib/axios";
-import { 
-  useQuery, 
-  useMutation, 
+import {
+  useQuery,
+  useMutation,
   useQueryClient,
   UseQueryResult,
-  UseMutationResult
+  UseMutationResult,
 } from "@tanstack/react-query";
 import { useCallback } from "react";
 
@@ -103,14 +103,21 @@ interface BulkCreatePTLKitIssueDataRequest {
 
 // Constants
 const PTL_KIT_ISSUE_DATA_QUERY_KEYS = {
-  all: ['ptl-kit-issue-data'] as const,
-  lists: () => [...PTL_KIT_ISSUE_DATA_QUERY_KEYS.all, 'list'] as const,
-  list: (filter?: PTLKitIssueDataFilter, pagination?: PTLKitIssueDataPaginationParams) => 
+  all: ["ptl-kit-issue-data"] as const,
+  lists: () => [...PTL_KIT_ISSUE_DATA_QUERY_KEYS.all, "list"] as const,
+  list: (
+    filter?: PTLKitIssueDataFilter,
+    pagination?: PTLKitIssueDataPaginationParams
+  ) =>
     [...PTL_KIT_ISSUE_DATA_QUERY_KEYS.lists(), { filter, pagination }] as const,
-  detail: (id: string) => [...PTL_KIT_ISSUE_DATA_QUERY_KEYS.all, 'detail', id] as const,
-  byIssordNo: (issord_no: string[]) => [...PTL_KIT_ISSUE_DATA_QUERY_KEYS.all, 'issord', {issord_no}] as const,
-  byMaterialNo: (material_no: string) => [...PTL_KIT_ISSUE_DATA_QUERY_KEYS.all, 'material', material_no] as const,
-  byTrolleyId: (trolley_id: string) => [...PTL_KIT_ISSUE_DATA_QUERY_KEYS.all, 'trolley', trolley_id] as const,
+  detail: (id: string) =>
+    [...PTL_KIT_ISSUE_DATA_QUERY_KEYS.all, "detail", id] as const,
+  byIssordNo: (issord_no: string[]) =>
+    [...PTL_KIT_ISSUE_DATA_QUERY_KEYS.all, "issord", { issord_no }] as const,
+  byMaterialNo: (material_no: string) =>
+    [...PTL_KIT_ISSUE_DATA_QUERY_KEYS.all, "material", material_no] as const,
+  byTrolleyId: (trolley_id: string) =>
+    [...PTL_KIT_ISSUE_DATA_QUERY_KEYS.all, "trolley", trolley_id] as const,
 };
 
 const DEFAULT_PAGINATION = {
@@ -130,11 +137,40 @@ export const usePTLKitIssueDataByIssordNo = (
   return useQuery({
     queryKey: PTL_KIT_ISSUE_DATA_QUERY_KEYS.byIssordNo(issord_no),
     queryFn: async (): Promise<PTLKitIssueDataItem[]> => {
-      const { data } = await apiClient.post(`ptl/get-by-kits`, { kits: issord_no });
+      const { data } = await apiClient.post(`ptl/get-by-kits`, {
+        kits: issord_no,
+      });
       return data;
     },
     enabled: issord_no && issord_no.length > 0 && enabled,
     retry: 2,
     staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const createPtlKitIssueData = () => {
+  return useMutation({
+    mutationFn: async (issord_nos: string[]): Promise<void> => {
+      await apiClient.post(`ptl/by-kits`, { kits: issord_nos });
+    },
+    onSuccess: () => {
+      // Invalidate and refetch
+    },
+  });
+};
+export const useUpdatePTL = () => {
+  return useMutation({
+    mutationFn: async ({
+      id,
+      picked_qty,
+    }: {
+      id: string;
+      picked_qty: number;
+    }): Promise<void> => {
+      await apiClient.patch(`ptl/${id}`, { picked_qty });
+    },
+    onSuccess: () => {
+      // Invalidate and refetch
+    },
   });
 };
