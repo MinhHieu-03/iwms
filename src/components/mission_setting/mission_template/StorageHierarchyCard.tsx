@@ -14,6 +14,7 @@ import {
   Edge,
   MarkerType,
 } from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
 import { Workflow } from "lucide-react";
 import {
   storageHierarchyNodes,
@@ -370,6 +371,9 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
                   onEdgesChange(val);
                 }}
                 onNodeDoubleClick={onNodeClick}
+                onNodeClick={(event, node) => {
+                  if (node.id !== "0") setSelectedNode(node);
+                }}
                 onConnect={onConnect}
                 nodeTypes={nodeTypes}
                 fitView
@@ -382,7 +386,7 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
                 <Controls />
                 <MiniMap />
                 <Background gap={16} size={1} />
-                {/* <Panel position="top-right">
+                <Panel position="top-right">
                   <div className="bg-white border p-3 rounded-md shadow-sm text-sm">
                     <h4 className="font-medium mb-2">Mission Template</h4>
                     <div className="text-xs text-gray-600 space-y-1">
@@ -403,7 +407,7 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
                       </p>
                     </div>
                   </div>
-                </Panel> */}
+                </Panel>
               </ReactFlow>
             </div>
           </div>
