@@ -90,7 +90,7 @@ const OrdersTab: React.FC = () => {
       const boxFoundedMission = missionData.find(
         (item) => item?.inventory?.material_no === sku
       );
-      setCurrentBox(boxFoundedMission.inventory || {});
+      setCurrentBox(boxFoundedMission?.inventory || {});
     } else {
       setCurrentBox({});
     }
