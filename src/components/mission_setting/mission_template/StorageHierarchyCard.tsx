@@ -28,6 +28,7 @@ import { NodeForm } from "./NodeForm";
 import { useToast } from "@/hooks/use-toast";
 import { patchMissionTemplate } from "@/api/missionSettingApi";
 import { initEdges, initNodes } from "./const";
+import { useI18n } from "@/contexts/useI18n";
 
 interface StorageHierarchyCardProps {
   className?: string;
@@ -49,6 +50,7 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
   const [templateName, setTemplateName] = useState("");
 
   const { toast } = useToast();
+  const { t } = useI18n();
 
   useEffect(() => {
     setTemplateName(missionData?.name || "");
@@ -264,23 +266,23 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
   const handleSaveChanges = async () => {
     if (checkUnconnectedNode().length > 0) {
       toast({
-        title: "Error",
+        title: t("common.error"),
         variant: "destructive",
-        description: "Node is not connected",
+        description: t("mission_template.node_not_connected"),
       });
       return;
     } else if (templateName.trim() === "") {
       toast({
-        title: "Error",
+        title: t("common.error"),
         variant: "destructive",
-        description: "Please enter a template name",
+        description: t("mission_template.enter_template_name"),
       });
       return;
     } else if (startNode === -1) {
       toast({
-        title: "Error",
+        title: t("common.error"),
         variant: "destructive",
-        description: "Please connect to start node",
+        description: t("mission_template.connect_start_node"),
       });
       return;
     } else {
@@ -321,12 +323,12 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
 
         if (response.data.success) {
           toast({
-            title: "Success",
-            description: "Mission template updated successfully",
+            title: t("common.success"),
+            description: t("mission_template.updated_successfully"),
           });
         } else {
           toast({
-            title: "Error",
+            title: t("common.error"),
             variant: "destructive",
             description: response.data.desc,
           });
@@ -371,9 +373,6 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
                   onEdgesChange(val);
                 }}
                 onNodeDoubleClick={onNodeClick}
-                onNodeClick={(event, node) => {
-                  if (node.id !== "0") setSelectedNode(node);
-                }}
                 onConnect={onConnect}
                 nodeTypes={nodeTypes}
                 fitView

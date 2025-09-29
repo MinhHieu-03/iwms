@@ -31,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({
           <div className="relative flex-1">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search mission template"
+              placeholder={t("mission_template.search_placeholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-8"

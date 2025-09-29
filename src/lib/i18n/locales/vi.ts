@@ -452,6 +452,14 @@ export const vi: Record<TranslationKey, string> = {
   "common.not_assigned": "Chưa được gán",
   "common.column": "Cột",
   "common.row": "Hàng",
+  "common.success": "Thành công",
+  "common.error": "Lỗi",
+  "mission_template.node_not_connected": "Nút chưa được kết nối",
+  "mission_template.enter_template_name": "Vui lòng nhập tên mẫu",
+  "mission_template.connect_start_node": "Vui lòng kết nối với nút bắt đầu",
+  "mission_template.updated_successfully":
+    "Mẫu nhiệm vụ đã được cập nhật thành công",
+  "mission_template.search_placeholder": "Tìm kiếm mẫu nhiệm vụ...",
   // Area Management
   "area.management": "Quản lý khu vực",
   "area.create": "Tạo khu vực mới",

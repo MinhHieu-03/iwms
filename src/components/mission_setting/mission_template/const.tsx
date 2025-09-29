@@ -51,15 +51,11 @@ export const RenderCol: ({
   return [
     {
       dataIndex: "name",
-      title: t(`${lang_key}.name`),
-    },
-    {
-      dataIndex: "description",
-      title: t(`${lang_key}.description`),
+      title: "Template Name",
     },
     {
       dataIndex: "action",
-      title: t(`${lang_key}.action`),
+      title: "Action",
       render: (value: string, record: DataType) => (
         <div className="flex items-center justify-center gap-2">
           <Button
