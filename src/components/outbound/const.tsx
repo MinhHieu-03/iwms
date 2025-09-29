@@ -51,15 +51,16 @@ export const RenderCol = ({
     render: (text) => <span className="font-medium text-blue-600">{text}</span>,
   },
   {
-    title: "Trạng thái",
+    title: t(`${lang_key}.issue_status`),
     dataIndex: "status",
     key: "status",
     width: 60,
-    render: (status) => mappingStatusTag[status] || mappingStatusTag['new'],
+    render: (status: string) =>
+    mappingStatusTag[status] || <Tag color="default">{status}</Tag>,
   },
 
   {
-    title: "Loại Kit",
+    title: t(`${lang_key}.issue_kit_type`),
     dataIndex: "type",
     key: "type",
     width: 50,
@@ -134,13 +135,14 @@ export const RenderCol = ({
   },
 ];
 
-const mappingStatusTag = {
+export const mappingStatusTag = {
   new: <Tag color="default">Mới</Tag>,
-  "in_progress": <Tag color="processing">Đang xuất</Tag>,
-  fill: <Tag color="success">Đã xuất</Tag>,
+  in_progress: <Tag color="processing">Đang xuất</Tag>,
+  completed: <Tag color="success">Đã xuất</Tag>,
+  cancelled: <Tag color="error">Đã hủy</Tag>,
 };
 
-const mappingTypeTag = {
+export const mappingTypeTag = {
   odd: <Tag color="processing">Kit lẻ</Tag>,
   "urgent": <Tag color="red">Kit đề nghị</Tag>,
   "normal": <Tag color="default">Kit thường</Tag>,

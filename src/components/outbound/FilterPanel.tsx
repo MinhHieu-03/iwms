@@ -1,6 +1,7 @@
-import { DatePicker, Input } from 'antd';
+import { DatePicker, Input, Select } from 'antd';
 import { Dayjs } from 'dayjs';
 import { Button } from '@/components/ui/button';
+import { mappingStatusTag, mappingTypeTag } from "./const";
 
 const { RangePicker } = DatePicker;
 
@@ -8,17 +9,22 @@ interface FilterPanelProps {
   showFilters: boolean;
   filters: {
     issue_ord_no: string | null;
+    status: string | null;
+    type: string | null;
     timeIssueRange: [Dayjs, Dayjs] | null;
     aReqdTimeRange: [Dayjs, Dayjs] | null;
   };
   setFilters: React.Dispatch<React.SetStateAction<{
     issue_ord_no: string | null;
+    status: string | null;
+    type: string | null;
     timeIssueRange: [Dayjs, Dayjs] | null;
     aReqdTimeRange: [Dayjs, Dayjs] | null;
   }>>;
   filteredDataLength: number;
   dataListLength: number;
   hasActiveFilters: boolean;
+  onFilterChange?: (newFilter: any) => void;
   clearFilters: () => void;
 }
 
@@ -29,13 +35,14 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   filteredDataLength,
   dataListLength,
   hasActiveFilters,
+  onFilterChange,
   clearFilters,
 }) => {
   if (!showFilters) return null;
 
   return (
     <div className='bg-gray-50 p-4 rounded-lg border'>
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+      <div className='grid grid-cols-1 md:grid-cols-5 gap-4'>
         {/* Kit No Filter */}
         <div>
           <label className='block text-sm font-medium mb-2'>
@@ -52,6 +59,49 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             }
             allowClear
             style={{ width: '100%' }}
+          />
+        </div>
+
+        {/* Status Filter */}
+        <div>
+          <label className="block text-sm font-medium mb-2">Trạng thái</label>
+          <Select
+            placeholder="Chọn trạng thái"
+            value={filters.status}
+            onChange={(value) => {
+              if (onFilterChange) {
+                onFilterChange({ status: value }); 
+              } else {
+                setFilters((prev) => ({ ...prev, status: value })); 
+              }
+            }}
+            allowClear
+            style={{ width: "100%" }}
+            options={Object.entries(mappingStatusTag).map(([key]) => ({
+              label: mappingStatusTag[key],
+              value: key,
+            }))}
+          />
+        </div>
+
+        {/* Type Kit Filter */}
+        <div>
+          <label className="block text-sm font-medium mb-2">Loại Kit</label>
+          <Select
+            placeholder="Chọn loại Kit"
+            value={filters.type}
+            onChange={(value) =>
+              setFilters((prev) => ({
+                ...prev,
+                type: value,
+              }))
+            }
+            allowClear
+            style={{ width: "100%" }}
+            options={Object.entries(mappingTypeTag).map(([key]) => ({
+              label: mappingTypeTag[key],
+              value: key,
+            }))}
           />
         </div>
 

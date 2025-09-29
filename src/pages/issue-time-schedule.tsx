@@ -279,7 +279,7 @@ const IssueTimeScheduleTable = ({}) => {
                   loading={isLoading}
                 >
                   <Filter size={16} className="mr-1" />
-                  Bộ lọc {isLoading + ''}
+                  {t("common.filter")}
                 </Button>
                 {hasActiveFilters && (
                   <Button
