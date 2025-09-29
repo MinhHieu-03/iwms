@@ -1,4 +1,9 @@
-import { ReloadOutlined, DeleteOutlined, FilterOutlined, ExportOutlined } from "@ant-design/icons";
+import {
+  ReloadOutlined,
+  DeleteOutlined,
+  FilterOutlined,
+  ExportOutlined,
+} from "@ant-design/icons";
 import { message, Table, Modal, Input, Select, Space } from "antd";
 import { Plus, Search } from "lucide-react";
 import { useEffect, useMemo, useState, useCallback } from "react";
@@ -9,10 +14,17 @@ import BasePagination from "@/components/ui/antd-pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import apiClient from "@/lib/axios";
 
-import { domain, lang_key, RenderCol, InventoryDataType, mockData } from "./const";
+import {
+  domain,
+  lang_key,
+  RenderCol,
+  InventoryDataType,
+  mockData,
+} from "./const";
 import ModalAdd, { type FormValues } from "./modal_create";
 import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
 import ModalDetail from "./modal_detail";
+import SearchForm from "./filterForm";
 
 const { list, create, update, remove } = domain;
 
@@ -26,7 +38,7 @@ const InventoryTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("");
-  
+
   const [formEdit, setFormEdit] = useState<{
     isOpen: boolean;
     data: InventoryDataType | Record<string, unknown>;
@@ -34,7 +46,7 @@ const InventoryTable = () => {
     isOpen: false,
     data: {},
   });
-  
+
   const [detailModal, setDetailModal] = useState<{
     isOpen: boolean;
     data: InventoryDataType | null;
@@ -42,6 +54,19 @@ const InventoryTable = () => {
     isOpen: false,
     data: null,
   });
+
+  const [filters, setFilters] = useState({
+    sku: "",
+    product_name: "",
+    locationId: "",
+    locationCode: "",
+    store: [],
+    status: null,
+  });
+
+  const [showFilters, setShowFilters] = useState(false);
+
+  const [debouncedFilters, setDebouncedFilters] = useState(filters);
 
   const requestDataList = useCallback(async () => {
     try {
@@ -51,28 +76,57 @@ const InventoryTable = () => {
         const { data } = await apiClient.post(list, {
           limit: pageInfo.perPage,
           page: pageInfo.page,
-          search: searchText,
-          status: statusFilter,
+          ...debouncedFilters,
         });
+
         setDataList(data.metaData);
         setTotal(data.total);
       } catch (apiError) {
         console.warn("API not available, using mock data:", apiError);
-        // Using mock data as fallback with filtering
+
         let filteredData = mockData;
-        
-        if (searchText) {
-          filteredData = filteredData.filter(item => 
-            item.sku.toLowerCase().includes(searchText.toLowerCase()) ||
-            item.product_name.toLowerCase().includes(searchText.toLowerCase()) ||
-            item.locationCode.toLowerCase().includes(searchText.toLowerCase())
+
+        if (debouncedFilters.sku) {
+          filteredData = filteredData.filter((item) =>
+            item.sku.toLowerCase().includes(debouncedFilters.sku.toLowerCase())
           );
         }
-        
-        if (statusFilter) {
-          filteredData = filteredData.filter(item => item.status === statusFilter);
+
+        if (debouncedFilters.product_name) {
+          filteredData = filteredData.filter(
+            (item) =>
+              item.product_name.toLowerCase() ===
+              debouncedFilters.product_name.toLowerCase()
+          );
         }
-        
+
+        if (debouncedFilters.locationId) {
+          filteredData = filteredData.filter((item) =>
+            item.locationId
+              .toLowerCase()
+              .includes(debouncedFilters.locationId.toLowerCase())
+          );
+        }
+
+        if (debouncedFilters.locationCode) {
+          filteredData = filteredData.filter(
+            (item) =>
+              item.locationCode.toLowerCase() ===
+              debouncedFilters.locationCode.toLowerCase()
+          );
+        }
+
+        if (debouncedFilters.store && debouncedFilters.store.length > 0) {
+          filteredData = filteredData.filter((item) =>
+            debouncedFilters.store.includes(item.store)
+          );
+        }
+
+        if (debouncedFilters.status) {
+          filteredData = filteredData.filter(
+            (item) => item.status === debouncedFilters.status
+          );
+        }
         setDataList(filteredData);
         setTotal(filteredData.length);
       }
@@ -160,7 +214,7 @@ const InventoryTable = () => {
       onOk: async () => {
         try {
           setLoading(true);
-          
+
           // Try API call first
           try {
             await apiClient.delete(remove, { data: { ids: selectedRowKeys } });
@@ -169,7 +223,7 @@ const InventoryTable = () => {
             console.warn("API not available for delete operation:", apiError);
             message.success(t("common.success.delete"));
           }
-          
+
           setSelectedRowKeys([]);
           requestDataList();
         } catch (error) {
@@ -186,30 +240,30 @@ const InventoryTable = () => {
     const baseColumns = RenderCol({ t });
     return [
       ...baseColumns,
-    //   {
-    //     title: t("common.action"),
-    //     key: "action",
-    //     width: 100,
-    //     fixed: "right" as const,
-    //     render: (_: unknown, record: InventoryDataType) => (
-    //       <Button
-    //         variant="outline"
-    //         size="sm"
-    //         onClick={(e) => {
-    //           e.stopPropagation();
-    //           setFormEdit({ isOpen: true, data: record });
-    //         }}
-    //       >
-    //         {t("common.edit")}
-    //       </Button>
-    //     ),
-    //   },
+      //   {
+      //     title: t("common.action"),
+      //     key: "action",
+      //     width: 100,
+      //     fixed: "right" as const,
+      //     render: (_: unknown, record: InventoryDataType) => (
+      //       <Button
+      //         variant="outline"
+      //         size="sm"
+      //         onClick={(e) => {
+      //           e.stopPropagation();
+      //           setFormEdit({ isOpen: true, data: record });
+      //         }}
+      //       >
+      //         {t("common.edit")}
+      //       </Button>
+      //     ),
+      //   },
     ];
   }, [t]);
 
   useEffect(() => {
     requestDataList();
-  }, [pageInfo, searchText, statusFilter, requestDataList]);
+  }, [requestDataList]);
 
   const rowSelection = {
     selectedRowKeys,
@@ -225,15 +279,85 @@ const InventoryTable = () => {
     });
   };
 
-  const statusOptions = [
-    { label: t("common.all"), value: "" },
-    { label: t("status.wait_fill"), value: "wait_fill" },
-    { label: t("status.fill"), value: "fill" },
-    { label: t("status.in_progress"), value: "in_progress" },
-    { label: t("status.completed"), value: "completed" },
-    { label: t("status.low_stock"), value: "low_stock" },
-    { label: t("status.out_of_stock"), value: "out_of_stock" },
-  ];
+  // const statusOptions = [
+  //   { label: t("common.all"), value: "" },
+  //   { label: t("status.wait_fill"), value: "wait_fill" },
+  //   { label: t("status.fill"), value: "fill" },
+  //   { label: t("status.in_progress"), value: "in_progress" },
+  //   { label: t("status.completed"), value: "completed" },
+  //   { label: t("status.low_stock"), value: "low_stock" },
+  //   { label: t("status.out_of_stock"), value: "out_of_stock" },
+  // ];
+
+  const handleFilter = async (values: any) => {
+    try {
+      setLoading(true);
+
+      const filterQuery: any = {};
+
+      if (values.sku?.trim()) {
+        filterQuery.sku = {
+          $regex: values.sku.trim(),
+          $options: "i",
+        };
+      }
+
+      if (values.product_name?.trim()) {
+        filterQuery.product_name = {
+          $regex: values.product_name.trim(),
+          $options: "i",
+        };
+      }
+
+      if (values.locationId?.trim()) {
+        filterQuery.locationId = {
+          $regex: values.locationId.trim(),
+          $options: "i",
+        };
+      }
+
+      if (values.locationCode?.trim()) {
+        filterQuery.locationCode = {
+          $regex: values.locationCode.trim(),
+          $options: "i",
+        };
+      }
+
+      if (Array.isArray(values.store) && values.store.length > 0) {
+        filterQuery.store = { $in: values.store.map((s: any) => s.id || s) };
+      }
+
+      if (values.status) {
+        filterQuery.status = values.status;
+      }
+
+      console.log("Filter Query:", filterQuery);
+
+      const response = await apiClient.post(list, {
+        limit: pageInfo.perPage,
+        page: pageInfo.page,
+        filter: JSON.stringify(filterQuery),
+      });
+
+      if (response.data) {
+        setDataList(response.data.metaData || []);
+        setTotal(response.data.total || 0);
+      }
+    } catch (error) {
+      console.error("Filter error:", error);
+      message.error("Failed to filter data");
+      setDataList([]);
+      setTotal(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Reset page về 1 khi filter thay đổi
+    setPageInfo((prev) => ({ ...prev, page: 1 }));
+    handleFilter(filters);
+  }, [filters]);
 
   return (
     <Card>
@@ -244,11 +368,10 @@ const InventoryTable = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={requestDataList}
-              disabled={loading}
+              onClick={() => setShowFilters(!showFilters)}
             >
-              <ExportOutlined />
-              Xuất exel
+              <FilterOutlined />
+              {t("btn.filter")}
             </Button>
             <Button
               variant="outline"
@@ -263,12 +386,45 @@ const InventoryTable = () => {
               <Plus className="w-4 h-4" />
               {t("btn.create_new")}
             </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                try {
+                  const response = await apiClient.post(
+                    `${list}/export-excel`,
+                    {
+                      filter: JSON.stringify(filters),
+                    },
+                    { responseType: "blob" }
+                  );
+
+                  const url = window.URL.createObjectURL(
+                    new Blob([response.data])
+                  );
+                  const link = document.createElement("a");
+                  link.href = url;
+                  link.setAttribute("download", "inventory.xlsx");
+                  document.body.appendChild(link);
+                  link.click();
+                } catch (error) {
+                  console.error("Export error:", error);
+                }
+              }}
+            >
+              {t("btn.export_excel")}
+            </Button>
           </div>
         </CardTitle>
       </CardHeader>
+      <SearchForm
+        filters={filters}
+        onFilterChange={setFilters}
+        showFilters={showFilters}
+        handleFilter={handleFilter}
+      />
       <CardContent>
-        {/* Filters */}
-        <div className="mb-4 flex gap-2 flex-wrap">
+        {/* <div className="mb-4 flex gap-2 flex-wrap">
           <Input
             placeholder={t("inventory.search_placeholder")}
             prefix={<Search className="w-4 h-4" />}
@@ -284,7 +440,7 @@ const InventoryTable = () => {
             style={{ width: 150 }}
             options={statusOptions}
           />
-        </div>
+        </div> */}
 
         <Table
           rowKey="_id"
@@ -296,7 +452,7 @@ const InventoryTable = () => {
           scroll={{ x: "calc(100vw - 640px)" }}
           onRow={(record) => ({
             onClick: () => handleRowClick(record),
-            style: { cursor: 'pointer' },
+            style: { cursor: "pointer" },
           })}
         />
         <BasePagination
@@ -308,7 +464,7 @@ const InventoryTable = () => {
           }}
         />
       </CardContent>
-      
+
       {/* Create Modal */}
       <ModalAdd
         isOpen={isOpen}

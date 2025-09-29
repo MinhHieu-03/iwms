@@ -413,6 +413,8 @@ export const vi: Record<TranslationKey, string> = {
   "btn.delete": "Xóa",
   "btn.mission": "Tiến độ cấp hàng",
   "btn.detail": "Chi tiết",
+  "btn.filter": "Bộ lọc",
+  "btn.export_excel": "Xuất Excel",
 
   // Common actions and messages
   "common.name": "Tên",
@@ -560,6 +562,7 @@ export const vi: Record<TranslationKey, string> = {
   "inventory.location_code": "Mã vị trí",
   "inventory.store_items": "Mô hình lưu trữ nhập kho",
   "inventory.total_items": "Tổng số mặt hàng",
+  "inventory.available_items": "Khả dụng",
   "inventory.status": "Trạng thái",
   "inventory.created_at": "Ngày tạo",
   "inventory.updated_at": "Ngày cập nhật",
