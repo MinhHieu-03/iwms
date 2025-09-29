@@ -44,31 +44,18 @@ const App = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
   const [selectedMission, setSelectedMission] = useState<any>(null);
 
+  const [allData, setAllData] = useState<DataType[]>([]);
+
   const fetchData = async () => {
     try {
       setLoading(true);
       const { data } = await getMissionTemplate({});
 
       if (data?.success) {
-        const filteredData = data.data
-          .filter((template) => {
-            return (
-              template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              template.description
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase())
-            );
-          })
-          .map((template) => missionTemplateGenForm(template));
-
-        setDataList(
-          filteredData.slice(
-            (pageInfo.page - 1) * pageInfo.perPage,
-            pageInfo.page * pageInfo.perPage
-          )
+        const formattedData = data.data.map((template) =>
+          missionTemplateGenForm(template)
         );
-
-        setTotal(filteredData.length);
+        setAllData(formattedData);
 
         toast({
           title: t("common.success"),
@@ -93,13 +80,34 @@ const App = () => {
     }
   };
 
+  const filteredData = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return allData;
+    }
+
+    return allData.filter((template) => {
+      return (
+        template.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        template.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    });
+  }, [allData, searchQuery]);
+
+  useEffect(() => {
+    const startIndex = (pageInfo.page - 1) * pageInfo.perPage;
+    const endIndex = startIndex + pageInfo.perPage;
+
+    setDataList(filteredData.slice(startIndex, endIndex));
+    setTotal(filteredData.length);
+  }, [filteredData, pageInfo.page, pageInfo.perPage]);
+
   useEffect(() => {
     setPageInfo({ page: 1, perPage: pageInfo.perPage });
   }, [searchQuery]);
 
   useEffect(() => {
     fetchData();
-  }, [searchQuery, pageInfo.page, pageInfo.perPage]);
+  }, []);
 
   const handleDelete = async (payload: string[]) => {
     try {
