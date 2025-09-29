@@ -15,6 +15,9 @@ import { IssueTimeScheduleDataType } from "./const";
 import apiClient from "@/lib/axios";
 import { createDummyData } from "@/lib/dummyData";
 import { render } from "@react-three/fiber";
+import pickBy from "lodash/pickBy";
+import { FilterOutlined } from "@ant-design/icons";
+import FilterForm from "./filterIssue-Data";
 
 interface IssueDataDetail {
   id: number;
@@ -48,35 +51,61 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
   const [selectedRows, setSelectedRows] = useState<IssueDataDetail[]>([]);
   const [showIncompleteOnly, setShowIncompleteOnly] = useState(false);
 
-  // Fetch additional issue data when modal opens and data is available
+  const [filters, setFilters] = useState({
+    material_no: null as string | null,
+    section_c: null as string | null,
+    line_c: null as string | null,
+    issue_qty: null as number | null,
+    issued_qty: null as number | null,
+  });
+
+  const [showFilters, setShowFilters] = useState(false);
+
   useEffect(() => {
     const fetchIssueData = async () => {
       if (isOpen && data?.issue_ord_no) {
         setLoading(true);
         try {
+          const cleanedFilters = pickBy(filters, (value) => value !== null);
+          const queryString = new URLSearchParams(
+            cleanedFilters as any
+          ).toString();
           const { data: issueData } = await apiClient.get(
-            `issue-data/issord/${data.issue_ord_no}`
+            `issue-data/issord/${data.issue_ord_no}?${queryString}`
           );
-          // const issueData = await createDummyData({
-          //   issue_ord_no: [data.issue_ord_no],
-          // });
-          console.log("issueData", issueData);
-          if (data.status === "fill") {
-            issueData.metaData.forEach((item) => {
+
+          issueData.metaData.forEach((item: any) => {
+            if (data.status === "fill") {
               item.issued_qty = item.issue_qty;
-            });
-          } else if (data.status === "in progress") {
-            issueData.metaData.forEach((item) => {
+            } else if (data.status === "in progress") {
               item.issued_qty = Math.floor(Math.random() * item.issue_qty);
-            });
-          } else {
-            issueData.metaData.forEach((item) => {
+            } else {
               item.issued_qty = 0;
-            });
-          }
-          setIssueDataDetails(
-            issueData.metaData as unknown as IssueDataDetail[]
-          );
+            }
+          });
+
+          let filtered = issueData.metaData.filter((item: any) => {
+            return (
+              (!filters?.material_no ||
+                item.material_no
+                  ?.toLowerCase()
+                  .includes(filters?.material_no.toLowerCase())) &&
+              (!filters?.section_c ||
+                item.section_c
+                  ?.toLowerCase()
+                  .includes(filters?.section_c.toLowerCase())) &&
+              (!filters?.line_c ||
+                item.line_c
+                  ?.toLowerCase()
+                  .includes(filters?.line_c.toLowerCase())) &&
+              (!filters?.issue_qty ||
+                item.issue_qty === Number(filters?.issue_qty)) &&
+              (!filters?.issued_qty ||
+                item.issued_qty === Number(filters?.issued_qty))
+            );
+          });
+
+          setIssueDataDetails(filtered as IssueDataDetail[]);
         } catch (error) {
           console.error("Error fetching issue data:", error);
           setIssueDataDetails([]);
@@ -87,7 +116,7 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
     };
 
     fetchIssueData();
-  }, [isOpen, data?.issue_ord_no]);
+  }, [isOpen, data?.issue_ord_no, filters]);
 
   if (!data) return null;
 
@@ -270,6 +299,40 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
               </span>
             </div>
             <div className="flex items-center gap-3">
+              <Button
+                onClick={() => {
+                  setShowFilters((prev) => !prev);
+                }}
+              >
+                <FilterOutlined />
+                {t("common.filter")}
+              </Button>
+              <Button
+                onClick={async () => {
+                  try {
+                    const response = await apiClient.post(
+                      "/issue-data/list/export-excel",
+                      {
+                        filter: JSON.stringify(filters),
+                      },
+                      { responseType: "blob" }
+                    );
+
+                    const url = window.URL.createObjectURL(
+                      new Blob([response.data])
+                    );
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.setAttribute("download", "order_information.xlsx");
+                    document.body.appendChild(link);
+                    link.click();
+                  } catch (error) {
+                    console.error("Export error:", error);
+                  }
+                }}
+              >
+                {t("btn.export_excel")}
+              </Button>
               <Checkbox
                 checked={showIncompleteOnly}
                 onChange={(e) => {
@@ -287,6 +350,12 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
             </div>
           </div>
           <Spin spinning={loading}>
+            <FilterForm
+              filters={filters}
+              onFilterChange={setFilters}
+              // handleFilter={handleFilter}
+              showFilters={showFilters}
+            />
             <Table
               columns={issueDataColumns}
               dataSource={filteredIssueDataDetails}
