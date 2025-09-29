@@ -3,9 +3,10 @@ import { Handle, Position, NodeProps } from "@xyflow/react";
 
 interface CustomNodeData {
   label: string;
+  device_name: string;
 }
 
-const CustomStorageNode: React.FC<NodeProps> = ({ data, selected }) => {
+const CustomStorageNode: React.FC<NodeProps> = ({ data, selected, id }) => {
   const nodeData = data as unknown as CustomNodeData;
   return (
     <div
@@ -29,6 +30,15 @@ const CustomStorageNode: React.FC<NodeProps> = ({ data, selected }) => {
         }}
       />
       <div className="text-sm font-medium text-gray-900">{nodeData.label}</div>
+      <div className="flex justify-between text-xs text-gray-500 mt-2 gap-4">
+        <div className="w-full flex flex-col text-center">
+          <span className="font-bold">ID:</span> {id || ""}
+        </div>
+        <div className="w-full flex flex-col text-center">
+          <span className="font-bold">Device:</span>{" "}
+          {nodeData.device_name || ""}
+        </div>
+      </div>
       <div className="flex justify-between text-xs text-gray-500 mt-2">
         <span style={{ width: "33.33%", textAlign: "center" }}>OK</span>
         <span style={{ width: "33.33%", textAlign: "center" }}>TO</span>
@@ -45,9 +55,7 @@ const CustomStorageNode: React.FC<NodeProps> = ({ data, selected }) => {
           borderRadius: "50%",
           left: "25%",
         }}
-      >
-        
-      </Handle>
+      ></Handle>
       <Handle
         type="source"
         position={Position.Bottom}
