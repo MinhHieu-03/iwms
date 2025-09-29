@@ -23,7 +23,7 @@ export const vi: Record<TranslationKey, string> = {
   username: "Tên đăng nhập",
   password: "Mật khẩu",
   loading: "Đang tải...",
-
+  btn_delete: "Xoá",
   // Navigation & Sidebar
   dashboard: "Bảng điều khiển",
   operator_interface: "Giao diện vận hành",
