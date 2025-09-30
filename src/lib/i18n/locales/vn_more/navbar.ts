@@ -12,6 +12,7 @@ export const vn: Record<TranslationKey, string> = {
     "/warehouse-settings/layout": "Cấu hình cấu trúc kho",
     "/warehouse-settings/storage": "Cấu Hình Mô Hình Lưu Trữ",
     "/mission-settings": "Cài Đặt WCS",
+    '/mission-setting/mission-managerment': 'Quản lý nhiệm vụ',
     "/mission-settings/template": "Mẫu Nhiệm Vụ",
     "/mission-settings/device": "Quản Lý Thiết Bị",
     "/mission-settings/device-template": "Loại Thiết Bị",

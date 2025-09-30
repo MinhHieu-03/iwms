@@ -143,6 +143,11 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           name: createRoute(mission_setting_route) as TranslationKey,
           icon: <Bot className="w-5 h-5" />,
           children: [
+             {
+              path: "/mission-settings/mission-management",
+              name: "/mission-setting/mission-managerment" as TranslationKey,
+              icon: <LayoutList className="w-4 h-4" />,
+            },
             {
               path: createRoute(mission_template_route),
               name: createRoute(mission_template_route) as TranslationKey,
