@@ -1,5 +1,6 @@
 export const vi = {
   // Issue Time Schedule translations
+  "issue_time_schedule.title": "Quản lý Kit",
   "issue_time_schedule.table.title": "Danh sách KIT yêu cầu xuất hàng",
   "issue_time_schedule.table.selected": "Đã chọn",
   "issue_time_schedule.table.section": "Phân Loại",
