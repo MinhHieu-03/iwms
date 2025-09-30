@@ -1,17 +1,17 @@
-import { DeleteOutlined, ReloadOutlined } from "@ant-design/icons";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import type { UploadProps } from "antd";
-import { message, Modal, Table } from "antd";
-import { ColumnsType } from "antd/es/table";
-import { keyBy } from "lodash";
-import { Plus } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import type { UploadProps } from 'antd';
+import { message, Modal, Table } from 'antd';
+import { ColumnsType } from 'antd/es/table';
+import { keyBy } from 'lodash';
+import { Plus } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import OutboundHeader from "@/components/OutboundHeader";
-import BasePagination from "@/components/ui/antd-pagination";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import OutboundHeader from '@/components/OutboundHeader';
+import BasePagination from '@/components/ui/antd-pagination';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -19,17 +19,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
-import apiClient from "@/lib/axios";
-import { login } from "@/store/authSlice";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Input } from "../ui/input";
-import { DataType, domain, RenderCol } from "./const";
-import ModalAdd from "./modal_create";
+} from '@/components/ui/form';
+import { useToast } from '@/hooks/use-toast';
+import apiClient from '@/lib/axios';
+import { login } from '@/store/authSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Input } from '../ui/input';
+import { DataType, domain, RenderCol } from './const';
+import ModalAdd from './modal_create';
+import { useMatSuppMstAll } from '@/hooks/matsupp-mst';
 const { list, create, update, upload, download, remove } = domain;
 
 const InboundManagement = () => {
@@ -44,14 +45,13 @@ const InboundManagement = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
-  const {
-    data: masterData,
-  } = useQuery({
-    queryKey: ["material-mst"],
+  const { data: suppMatData } = useMatSuppMstAll();
+  const { data: masterData } = useQuery({
+    queryKey: ['material-mst'],
     queryFn: async () => {
-      const { data } = await apiClient.get("/material-mst");
+      const { data } = await apiClient.get('/material-mst');
       if (data?.metaData?.length) {
-        return keyBy(data?.metaData, "material_no");
+        return keyBy(data?.metaData, 'material_no');
       }
       return {};
     },
@@ -66,7 +66,7 @@ const InboundManagement = () => {
     refetch: requestDataList,
   } = useQuery({
     queryKey: [
-      "inbound-data",
+      'inbound-data',
       pageInfo.page,
       pageInfo.perPage,
       isAuthenticated,
@@ -78,7 +78,7 @@ const InboundManagement = () => {
       };
       const { data } = await apiClient.post(list, {
         ...params,
-        populate: ["inventory"],
+        populate: ['inventory'],
       });
       return data;
     },
@@ -97,9 +97,9 @@ const InboundManagement = () => {
     apiClient
       .post(create, payload)
       .then((data) => {
-        message.success(t("common.create_success"));
+        message.success(t('common.create_success'));
         setIsOpen(false);
-        queryClient.invalidateQueries({ queryKey: ["inbound-data"] });
+        queryClient.invalidateQueries({ queryKey: ['inbound-data'] });
       })
       .catch((err) => {
         message.error(err?.response?.data?.message || err.message);
@@ -110,22 +110,22 @@ const InboundManagement = () => {
     if (selectedRowKeys.length === 0) return;
 
     Modal.confirm({
-      title: t("common.confirm_delete"),
-      content: t("common.confirm_delete_multiple", {
+      title: t('common.confirm_delete'),
+      content: t('common.confirm_delete_multiple', {
         count: selectedRowKeys.length,
       }),
-      okText: t("common.delete"),
-      okType: "danger",
-      cancelText: t("common.cancel"),
+      okText: t('common.delete'),
+      okType: 'danger',
+      cancelText: t('common.cancel'),
       onOk: async () => {
         try {
           await apiClient.delete(`${remove}`, {}, { ids: selectedRowKeys });
-          message.success(t("common.delete_success"));
+          message.success(t('common.delete_success'));
           setSelectedRowKeys([]);
-          queryClient.invalidateQueries({ queryKey: ["inbound-data"] });
+          queryClient.invalidateQueries({ queryKey: ['inbound-data'] });
         } catch (error) {
-          console.error("Delete error:", error);
-          message.error(t("common.delete_error"));
+          console.error('Delete error:', error);
+          message.error(t('common.delete_error'));
         }
       },
     });
@@ -150,13 +150,13 @@ const InboundManagement = () => {
       />
       <CardContent>
         <Table
-          size="middle"
-          rowKey="_id"
+          size='middle'
+          rowKey='_id'
           loading={loading}
           columns={columns}
           dataSource={dataList}
           pagination={false}
-          scroll={{ x: "calc(100vw - 640px)" }}
+          scroll={{ x: 'calc(100vw - 640px)' }}
         />
         <BasePagination
           total={total}
@@ -168,19 +168,20 @@ const InboundManagement = () => {
         />
       </CardContent>
       <ModalAdd
-        title={"OI nhập kho"}
+        title={'OI nhập kho'}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         _handleFinish={_handleFinish}
         masterData={masterData}
+        suppMatData={suppMatData}
       />
     </Card>
   );
 };
 
 const formSchema = z.object({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  username: z.string().min(1, 'Username is required'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
 const Header = ({
@@ -198,14 +199,14 @@ const Header = ({
   );
   const [isOpenForm, setIsOpenForm] = useState(false);
   const [user, setUser] = useState<any>(
-    JSON.parse(localStorage.getItem("user") || "{}")
+    JSON.parse(localStorage.getItem('user') || '{}')
   );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      username: '',
+      password: '',
     },
   });
 
@@ -216,14 +217,14 @@ const Header = ({
         password: values.password,
       })
     );
-    console.log("resultAction", resultAction);
+    console.log('resultAction', resultAction);
     setIsOpenForm(false);
 
     if (login.fulfilled.match(resultAction)) {
       setUser(resultAction.payload.user);
       toast({
-        title: "Login successful",
-        description: "Welcome back!",
+        title: 'Login successful',
+        description: 'Welcome back!',
       });
     }
   };
@@ -231,29 +232,29 @@ const Header = ({
   useEffect(() => {
     if (error) {
       toast({
-        title: "Login failed",
+        title: 'Login failed',
         description: error,
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
   }, [error, toast]);
 
   const uploadProps: UploadProps = {
-    name: "file",
-    accept: ".xlsx,.xls", // Only allow Excel files
+    name: 'file',
+    accept: '.xlsx,.xls', // Only allow Excel files
     fileList: [],
     beforeUpload: (file) => {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append('file', file);
       apiClient
         .upload(`${upload}`, formData)
         .then(() => {
-          queryClient.invalidateQueries({ queryKey: ["inbound-data"] });
-          message.success(t("common.upload_success"));
+          queryClient.invalidateQueries({ queryKey: ['inbound-data'] });
+          message.success(t('common.upload_success'));
         })
         .catch((err) => {
-          console.error("Upload error:", err);
-          message.error(t("common.upload_error"));
+          console.error('Upload error:', err);
+          message.error(t('common.upload_error'));
         });
 
       return false;
@@ -263,16 +264,16 @@ const Header = ({
   const handleDownload = async () => {
     try {
       const response = await apiClient.get(`${download}`, {
-        responseType: "blob",
+        responseType: 'blob',
       });
 
       // Create a Blob URL
       const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
 
       // Create a temporary link element
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = blobUrl;
-      link.setAttribute("download", "inbound.xlsx");
+      link.setAttribute('download', 'inbound.xlsx');
       document.body.appendChild(link);
 
       // Trigger the download
@@ -285,36 +286,36 @@ const Header = ({
       // message.success(t("common.download_success"));
     } catch (error) {
       // message.error(t("common.download_error"));
-      console.error("Download error:", error);
+      console.error('Download error:', error);
     }
   };
 
-  const [selectedGate, setSelectedGate] = useState("1");
+  const [selectedGate, setSelectedGate] = useState('1');
   return (
     <div>
       <OutboundHeader
         selectedGate={selectedGate}
         onGateChange={setSelectedGate}
-        title="Quản lý nhập kho"
+        title='Quản lý nhập kho'
       />
       <CardHeader>
         <div
-          className="flex items-center justify-between"
-          style={{ paddingBottom: "10px" }}
+          className='flex items-center justify-between'
+          style={{ paddingBottom: '10px' }}
         >
           <CardTitle>Yêu cầu nhập kho</CardTitle>
-          <div className="flex items-center">
-            <Button onClick={() => setIsOpen(true)} variant="default">
-              <Plus className="mr-2 h-4 w-4" />
+          <div className='flex items-center'>
+            <Button onClick={() => setIsOpen(true)} variant='default'>
+              <Plus className='mr-2 h-4 w-4' />
               OI nhập kho
             </Button>
             {selectedRowKeys.length > 0 && (
-              <Button onClick={onDelete} variant="destructive" className="ml-2">
-                <DeleteOutlined className="mr-2" />
-                {t("btn.delete")} ({selectedRowKeys.length})
+              <Button onClick={onDelete} variant='destructive' className='ml-2'>
+                <DeleteOutlined className='mr-2' />
+                {t('btn.delete')} ({selectedRowKeys.length})
               </Button>
             )}
-            <Button className="ml-2" onClick={handleReload} variant="outline">
+            <Button className='ml-2' onClick={handleReload} variant='outline'>
               <ReloadOutlined />
               Làm mới
             </Button>
@@ -328,16 +329,16 @@ const Header = ({
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleLogin)}
-              className="space-y-4"
+              className='space-y-4'
             >
               <FormField
                 control={form.control}
-                name="username"
+                name='username'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("username")}</FormLabel>
+                    <FormLabel>{t('username')}</FormLabel>
                     <FormControl>
-                      <Input placeholder={t("username")} {...field} />
+                      <Input placeholder={t('username')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -345,14 +346,14 @@ const Header = ({
               />
               <FormField
                 control={form.control}
-                name="password"
+                name='password'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("password")}</FormLabel>
+                    <FormLabel>{t('password')}</FormLabel>
                     <FormControl>
                       <Input
-                        type="password"
-                        placeholder={t("password")}
+                        type='password'
+                        placeholder={t('password')}
                         {...field}
                       />
                     </FormControl>
@@ -360,8 +361,8 @@ const Header = ({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? t("loading") : t("login")}
+              <Button type='submit' className='w-full' disabled={loading}>
+                {loading ? t('loading') : t('login')}
               </Button>
             </form>
           </Form>
