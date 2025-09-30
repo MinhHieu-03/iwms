@@ -37,6 +37,8 @@ interface ModalDetailProps {
   data: IssueTimeScheduleDataType | null;
 }
 
+export const lang_key = "issue_time_schedule";
+
 const ModalDetail: React.FC<ModalDetailProps> = ({
   isOpen,
   onCancel,
@@ -163,21 +165,21 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
         index + 1,
     },
     {
-      title: t("issue_time_schedule.modal.material_no"),
+      title: t(`${lang_key}.oi_modal.material_no`),
       dataIndex: "material_no",
       key: "material_no",
       width: 150,
       render: (text: string) => text?.trim(),
     },
     {
-      title: "Section",
+      title: t(`${lang_key}.form.section`),
       dataIndex: "section_c",
       key: "section_c",
       width: 150,
       render: (text: string) => text?.trim(),
     },
     {
-      title: "Line",
+      title: t(`${lang_key}.form.line`),
       dataIndex: "line_c",
       key: "line_c",
       width: 100,
@@ -243,7 +245,7 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
           >
             <Tag color="blue">{data.section_c}</Tag>
           </Descriptions.Item> */}
-          <Descriptions.Item label={t("issue_time_schedule.form.line", "Line")}>
+          <Descriptions.Item label={t("issue_time_schedule.form.line")}>
             <Tag color="orange">{data.line_c}</Tag>
           </Descriptions.Item>
           <Descriptions.Item
@@ -256,7 +258,7 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
               {data.issue_ord_no}
             </span>
           </Descriptions.Item>
-          <Descriptions.Item label="Tổng số vật tư">
+          <Descriptions.Item label={t('issue_time_schedule.form.total_material')}>
             <Tag color="green">
               {showIncompleteOnly
                 ? `${filteredIssueDataDetails.length}/${issueDataDetails.length} vật tư chưa lấy đủ`
@@ -293,9 +295,9 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
         <div>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center">
-              <h3 className="font-semibold">Danh sách vật tư</h3>
+              <h3 className="font-semibold">{t("issue_time_schedule.table.list_material")}</h3>
               <span className="ml-2 text-blue-600">
-                ({selectedRowKeys.length} đã chọn)
+                ({selectedRowKeys.length} {t('common.selected')})
               </span>
             </div>
             <div className="flex items-center gap-3">
@@ -342,7 +344,7 @@ const ModalDetail: React.FC<ModalDetailProps> = ({
                   setSelectedRows([]);
                 }}
               >
-                Chỉ hiển thị vật tư chưa lấy đủ
+                {t('issue_time_schedule.table.materials_not_fully')}
               </Checkbox>
               {selectedRowKeys.length > 0 && (
                 <Button onClick={() => {}}>Xác nhận lấy đủ hàng</Button>
