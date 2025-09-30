@@ -9,6 +9,10 @@ export const en = {
   "issue_time_schedule.table.customer_desc_2": "Customer Desc 2",
   "issue_time_schedule.table.internal_desc": "Internal Desc",
   "issue_time_schedule.table.issue_order_no": "Issue Order No.",
+  "issue_time_schedule.table.list_material": "List of Material",
+  "issue_time_schedule.table.materials_not_fully": "Show only materials not fully picked",
+  "issue_time_schedule.table.issue_kit_type": "Kit Type",
+  "issue_time_schedule.table.issue_status": "Status",
   "issue_time_schedule.table.plan_issue_date": "Plan Issue Date",
   "issue_time_schedule.table.required_time": "Required Time",
   "issue_time_schedule.table.issue_time": "Issue Time",
@@ -23,6 +27,7 @@ export const en = {
   "issue_time_schedule.form.detail_title": "Issue Time Schedule Details",
   "issue_time_schedule.form.section": "Section",
   "issue_time_schedule.form.factory": "Factory",
+  "issue_time_schedule.form.total_material": "Total Material",
   "issue_time_schedule.form.line": "Line",
   "issue_time_schedule.form.product_no": "Product Number",
   "issue_time_schedule.form.customer_desc_1": "Customer Description 1",
@@ -35,6 +40,8 @@ export const en = {
   "issue_time_schedule.form.user_id": "User ID",
   "issue_time_schedule.form.entry_date": "Entry Date",
   "issue_time_schedule.form.update_date": "Update Date",
+  "issue_time_schedule.modal.issue_qty": "Issue_qty",
+  "issue_time_schedule.modal.issued_qty": "Issued_qty",
 
   // Issue Time Schedule Modal
   "issue_time_schedule.modal.detail_title": "Issue Time Schedule Details",
@@ -106,4 +113,5 @@ export const en = {
   "common.export": "Export",
   "common.import": "Import",
   "common.refresh": "Refresh",
+  "common.selected" : "Selected"
 };

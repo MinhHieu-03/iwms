@@ -1,5 +1,6 @@
 import { Input, InputNumber, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 
 interface SearchFormProps {
   filters: {
@@ -12,12 +13,14 @@ interface SearchFormProps {
   onFilterChange: (values: any) => void;
   showFilters: boolean;
 }
+export const lang_key = "issue_time_schedule";
 
 const FilterForm = ({
   filters,
   onFilterChange,
   showFilters,
 }: SearchFormProps) => {
+  const { t } = useTranslation();
   if (!showFilters) return null;
 
   return (
@@ -25,9 +28,11 @@ const FilterForm = ({
       <div className="grid grid-cols-5 gap-4">
         {/* Material No */}
         <div>
-          <label className="block text-sm font-medium mb-1">Material No</label>
+          <label className="block text-sm font-medium mb-1">
+            {t(`${lang_key}.oi_modal.material_no`)}
+          </label>
           <Input
-            placeholder="Nhập material no"
+            placeholder={t(`${lang_key}.oi_modal.material_no`)}
             value={filters.material_no || ""}
             onChange={(e) =>
               onFilterChange({ ...filters, material_no: e.target.value })
@@ -39,9 +44,11 @@ const FilterForm = ({
 
         {/* Section */}
         <div>
-          <label className="block text-sm font-medium mb-1">Section</label>
+          <label className="block text-sm font-medium mb-1">
+            {t(`${lang_key}.form.section`)}
+          </label>
           <Input
-            placeholder="Nhập section"
+            placeholder={t(`${lang_key}.form.section`)}
             value={filters.section_c || ""}
             onChange={(e) =>
               onFilterChange({ ...filters, section_c: e.target.value })
@@ -52,9 +59,11 @@ const FilterForm = ({
 
         {/* Line */}
         <div>
-          <label className="block text-sm font-medium mb-1">Line</label>
+          <label className="block text-sm font-medium mb-1">
+            {t(`${lang_key}.form.line`)}
+          </label>
           <Input
-            placeholder="Nhập line"
+            placeholder={t(`${lang_key}.form.line`)}
             value={filters.line_c || ""}
             onChange={(e) =>
               onFilterChange({ ...filters, line_c: e.target.value })
@@ -65,9 +74,11 @@ const FilterForm = ({
 
         {/* Issue Qty */}
         <div>
-          <label className="block text-sm font-medium mb-1">Issue Qty</label>
+          <label className="block text-sm font-medium mb-1">
+            {t(`${lang_key}.modal.issue_qty`)}
+          </label>
           <InputNumber
-            placeholder="Nhập issue qty"
+            placeholder={t(`${lang_key}.modal.issue_qty`)}
             value={filters.issue_qty ?? undefined}
             onChange={(value) =>
               onFilterChange({ ...filters, issue_qty: value })
@@ -78,9 +89,11 @@ const FilterForm = ({
 
         {/* Issued Qty */}
         <div>
-          <label className="block text-sm font-medium mb-1">Issued Qty</label>
+          <label className="block text-sm font-medium mb-1">
+            {t(`${lang_key}.modal.issued_qty`)}
+          </label>
           <InputNumber
-            placeholder="Nhập issued qty"
+            placeholder={t(`${lang_key}.modal.issued_qty`)}
             value={filters.issued_qty ?? undefined}
             onChange={(value) =>
               onFilterChange({ ...filters, issued_qty: value })

@@ -2,6 +2,7 @@ import { DatePicker, Input, Select } from 'antd';
 import { Dayjs } from 'dayjs';
 import { Button } from '@/components/ui/button';
 import { mappingStatusTag, mappingTypeTag } from "./const";
+import { useTranslation } from 'react-i18next';
 
 const { RangePicker } = DatePicker;
 
@@ -28,6 +29,8 @@ interface FilterPanelProps {
   clearFilters: () => void;
 }
 
+export const lang_key = "issue_time_schedule.table";
+
 const FilterPanel: React.FC<FilterPanelProps> = ({
   showFilters,
   filters,
@@ -38,6 +41,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   onFilterChange,
   clearFilters,
 }) => {
+  const { t } = useTranslation();
   if (!showFilters) return null;
 
   return (
@@ -46,10 +50,10 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         {/* Kit No Filter */}
         <div>
           <label className='block text-sm font-medium mb-2'>
-            Kit No.
+            {t(`${lang_key}.issue_order_no`)}
           </label>
           <Input
-            placeholder='Lọc theo Kit No.'
+            placeholder={t(`${lang_key}.issue_order_no`)}
             value={filters.issue_ord_no}
             onChange={(e) =>
               setFilters((prev) => ({
@@ -64,9 +68,11 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
         {/* Status Filter */}
         <div>
-          <label className="block text-sm font-medium mb-2">Trạng thái</label>
+          <label className="block text-sm font-medium mb-2">
+            {t(`${lang_key}.issue_status`)}
+          </label>
           <Select
-            placeholder="Chọn trạng thái"
+            placeholder={t(`${lang_key}.issue_status`)}
             value={filters.status}
             onChange={(value) => {
               if (onFilterChange) {
@@ -86,9 +92,11 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
         {/* Type Kit Filter */}
         <div>
-          <label className="block text-sm font-medium mb-2">Loại Kit</label>
+          <label className="block text-sm font-medium mb-2">
+            {t(`${lang_key}.issue_kit_type`)}
+          </label>
           <Select
-            placeholder="Chọn loại Kit"
+            placeholder={t(`${lang_key}.issue_kit_type`)}
             value={filters.type}
             onChange={(value) =>
               setFilters((prev) => ({
@@ -108,10 +116,10 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         {/* Issue Time Range */}
         <div>
           <label className='block text-sm font-medium mb-2'>
-            Giờ bắt đầu cần cấp
+            {t(`${lang_key}.issue_time`)}
           </label>
           <RangePicker
-            placeholder={['Từ ngày', 'Đến ngày']}
+            placeholder={['From date', 'To date']}
             value={filters.timeIssueRange}
             onChange={(dates) =>
               setFilters((prev) => ({
@@ -128,7 +136,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         {/* Required Time Range */}
         <div>
           <label className='block text-sm font-medium mb-2'>
-            Giờ cần có mặt ở nhà máy
+            {t(`${lang_key}.required_time`)}
           </label>
           <RangePicker
             placeholder={['From date', 'To date']}
