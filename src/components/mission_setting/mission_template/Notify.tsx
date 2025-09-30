@@ -43,6 +43,10 @@ interface Notify {
   update_at: string;
 }
 
+const API_URL = "http://35.184.194.168:3142/log/notify";
+const AUTH_TOKEN =
+  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNzU5NTE2Mzk3fQ.6JSSuxVnGiXDMonUkH6SOZEVrmhORyBrfusFAXSvrOY";
+
 const mockData = [
   {
     type: "begin",
@@ -129,6 +133,24 @@ const Notify = () => {
 
   useEffect(() => {
     setLoading(true);
+    // fetch(API_URL, {
+    //   method: "GET",
+    //   headers: {
+    //     Authorization: AUTH_TOKEN,
+    //     Accept: "application/json",
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((json) => {
+    //     if (json.success && Array.isArray(json.data)) {
+    //       setData(json.data);
+    //     } else {
+    //       console.error("API response invalid:", json);
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.error("API call failed:", err);
+    //   });
     setTimeout(() => {
       setData(mockData);
       setLoading(false);

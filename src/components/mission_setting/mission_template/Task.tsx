@@ -35,119 +35,11 @@ interface Task {
   };
 }
 
-const mockData = [
-  {
-    mission_log_id: "68d51e09bc3cf1c9eb3a9865",
-    result: {
-      code: 1,
-      desc: "Timeout to call api bind",
-      flow: "timeout",
-    },
-    next: -1,
-    status: "done",
-    create_at: "2025-09-25T17:48:42.061000",
-    update_at: "2025-09-25T17:48:42.146000",
-    device_name: "RCS",
-    name: "bind container and bin",
-    param: [
-      {
-        assigned: true,
-        name: "container",
-        type: "str",
-        value: "",
-      },
-      {
-        assigned: true,
-        name: "bin",
-        type: "str",
-        value: "",
-      },
-      {
-        assigned: true,
-        name: "timeout",
-        type: "float",
-        value: "",
-      },
-    ],
-    flow: {
-      ok: -1,
-      fail: -1,
-      timeout: -1,
-    },
-    notify: {
-      begin: {
-        enable: false,
-        url: "",
-        userdata: "",
-      },
-      end: {
-        enable: false,
-        url: "",
-        userdata: "",
-      },
-    },
-    timeout: 0,
-    need_trigger: false,
-    _id: "68d51e0abc3cf1c9eb3a9866",
-  },
-  {
-    mission_log_id: "68d51e59bc3cf1c9eb3a9868",
-    result: {
-      code: 1,
-      desc: "Timeout to call api bind",
-      flow: "timeout",
-    },
-    next: -1,
-    status: "done",
-    create_at: "2025-09-25T17:50:01.912000",
-    update_at: "2025-09-25T17:50:01.963000",
-    device_name: "RCS",
-    name: "bind container and bin",
-    param: [
-      {
-        assigned: true,
-        name: "container",
-        type: "str",
-        value: "",
-      },
-      {
-        assigned: true,
-        name: "bin",
-        type: "str",
-        value: "",
-      },
-      {
-        assigned: true,
-        name: "timeout",
-        type: "float",
-        value: "",
-      },
-    ],
-    flow: {
-      ok: -1,
-      fail: -1,
-      timeout: -1,
-    },
-    notify: {
-      begin: {
-        enable: false,
-        url: "",
-        userdata: "",
-      },
-      end: {
-        enable: false,
-        url: "",
-        userdata: "",
-      },
-    },
-    timeout: 0,
-    need_trigger: false,
-    _id: "68d51e59bc3cf1c9eb3a9869",
-  },
-];
+const API_URL = "http://35.184.194.168:3142/log/task";
+const AUTH_TOKEN =
+  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNzU5NTE2Mzk3fQ.6JSSuxVnGiXDMonUkH6SOZEVrmhORyBrfusFAXSvrOY";
 
 const Task = () => {
-  const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Task[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -167,11 +59,24 @@ const Task = () => {
   ];
 
   useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setData(mockData);
-      setLoading(false);
-    }, 500);
+    fetch(API_URL, {
+      method: "GET",
+      headers: {
+        Authorization: AUTH_TOKEN,
+        Accept: "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.data)) {
+          setData(json.data);
+        } else {
+          console.error("API response invalid:", json);
+        }
+      })
+      .catch((err) => {
+        console.error("API call failed:", err);
+      });
   }, []);
 
   const handleRowClick = (record: Task) => {
@@ -193,7 +98,7 @@ const Task = () => {
 
       <Modal
         title="Task"
-        visible={modalVisible}
+        open={modalVisible}
         footer={<Button onClick={() => setModalVisible(false)}>Close</Button>}
         onCancel={() => setModalVisible(false)}
         width={700}
