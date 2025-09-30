@@ -95,6 +95,7 @@ const OrdersTab: React.FC = () => {
       setCurrentBox({});
     }
   }, [sku, ptlDataByIssordNo, missionData]);
+
   const handlePTL = (value) => {
     let total = Number(value);
     const updateItems = [];

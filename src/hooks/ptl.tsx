@@ -158,6 +158,17 @@ export const createPtlKitIssueData = () => {
     },
   });
 };
+export const createPtlOdd = () => {
+  return useMutation({
+    mutationFn: async (issord_nos: string[]): Promise<void> => {
+      await apiClient.post(`ptl/by-odd-kits`, { kits: issord_nos });
+    },
+    onSuccess: () => {
+      // Invalidate and refetch
+    },
+  });
+};
+
 export const useUpdatePTL = () => {
   return useMutation({
     mutationFn: async ({
