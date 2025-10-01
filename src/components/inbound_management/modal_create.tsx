@@ -135,6 +135,9 @@ const ModalAdd = ({
         text2void(`Không hợp lệ`);
         return;
       }
+      form.setFieldsValue({
+        sku: isSuppMat,
+      });
     }
     if (item.flg1 === 4) {
       setSkuMaster(item);
