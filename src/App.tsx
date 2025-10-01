@@ -51,6 +51,7 @@ import "./App.css";
 import { createRoute } from "./lib/utils";
 import { route as mission_template_route } from "./components/mission_setting/mission_template/const";
 import { ConfigProvider } from "antd";
+import MissionManagerment from "./components/mission_setting/mission_template/MissionManagerment";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -106,6 +107,10 @@ function App() {
                               <Route
                                 path="/missions/templates/:id"
                                 element={<TemplateEdit />}
+                              />
+                              <Route
+                                path="/mission-settings/mission-management"
+                                element={<MissionManagerment />}
                               />
                               <Route
                                 path="/mission-settings/template"
