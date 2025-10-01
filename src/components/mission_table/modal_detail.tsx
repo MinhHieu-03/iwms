@@ -52,48 +52,48 @@ const ModalDetail = ({ isOpen, data, onClose }: ModalDetailProps) => {
           <h3 className="text-lg font-semibold mb-3">{t("mission.basic_info")}</h3>
           <Descriptions column={2} bordered size="small">
             <Descriptions.Item label={t("mission.mission_code")}>
-              <strong>{data.mission_code}</strong>
+              <strong>{data?.mission_code}</strong>
             </Descriptions.Item>
             <Descriptions.Item label={t("mission.type")}>
-              {getTypeTag(data.type)}
+              {getTypeTag(data?.type)}
             </Descriptions.Item>
             <Descriptions.Item label={t("mission.state")}>
-              {getStateTag(data.state || MISSION_STATE.NEW)}
+              {getStateTag(data?.state || MISSION_STATE.NEW)}
             </Descriptions.Item>
             <Descriptions.Item label={t("mission.robot_code")}>
-              {data.robot_code || "-"}
+              {data?.robot_code || "-"}
             </Descriptions.Item>
             <Descriptions.Item label={t("mission.origin")}>
-              {data.origin || "-"}
+              {data?.origin || "-"}
             </Descriptions.Item>
             <Descriptions.Item label={t("mission.destination")}>
-              {data.destination || "-"}
+              {data?.destination || "-"}
             </Descriptions.Item>
             <Descriptions.Item label={t("mission.bin_id")}>
-              {data.bin_id || "-"}
+              {data?.bin_id || "-"}
             </Descriptions.Item>
             <Descriptions.Item label={t("mission.eta")}>
-              {data.ETA ? `${data.ETA} minutes` : "-"}
+              {data?.ETA ? `${data?.ETA} minutes` : "-"}
             </Descriptions.Item>
             <Descriptions.Item label={t("mission.description")} span={2}>
-              {data.description || "-"}
+              {data?.description || "-"}
             </Descriptions.Item>
           </Descriptions>
         </div>
 
         {/* Inventory Information */}
-        {data.inventory && (
+        {data?.inventory && (
           <div>
             <h3 className="text-lg font-semibold mb-3">{t("mission.inventory_info")}</h3>
             <Descriptions column={2} bordered size="small">
               <Descriptions.Item label={t("mission.inventory_material_no")}>
-                {data.inventory.material_no || "-"}
+                {data?.inventory.material_no || "-"}
               </Descriptions.Item>
               <Descriptions.Item label={t("mission.inventory_qty")}>
-                {data.inventory.qty || "-"}
+                {data?.inventory.qty || "-"}
               </Descriptions.Item>
               <Descriptions.Item label={t("mission.inventory_qty_available")} span={2}>
-                {data.inventory.qty_available || "-"}
+                {data?.inventory.qty_available || "-"}
               </Descriptions.Item>
             </Descriptions>
           </div>
@@ -102,10 +102,10 @@ const ModalDetail = ({ isOpen, data, onClose }: ModalDetailProps) => {
         {/* Status History */}
         <div>
           <h3 className="text-lg font-semibold mb-3">{t("mission.status_history")}</h3>
-          {data.status_list && data.status_list.length > 0 ? (
+          {data?.status_list && data?.status_list.length > 0 ? (
             <Timeline
-              items={data.status_list.map((status, index) => ({
-                color: index === data.status_list.length - 1 ? 'green' : 'blue',
+              items={data?.status_list.map((status, index) => ({
+                color: index === data?.status_list.length - 1 ? 'green' : 'blue',
                 children: (
                   <div>
                     <div className="font-medium">{status.status}</div>
@@ -126,16 +126,16 @@ const ModalDetail = ({ isOpen, data, onClose }: ModalDetailProps) => {
           <h3 className="text-lg font-semibold mb-3">{t("mission.additional_info")}</h3>
           <Descriptions column={2} bordered size="small">
             <Descriptions.Item label={t("mission.inventory_id")}>
-              {data.inventory_id || "-"}
+              {data?.inventory_id || "-"}
             </Descriptions.Item>
             <Descriptions.Item label={t("mission.kit_merger")}>
-              {data.kit_merger || "-"}
+              {data?.kit_merger || "-"}
             </Descriptions.Item>
             <Descriptions.Item label={t("common.created_at")}>
-              {dayjs(data.createdAt).format("DD/MM/YYYY HH:mm:ss")}
+              {dayjs(data?.createdAt).format("DD/MM/YYYY HH:mm:ss")}
             </Descriptions.Item>
             <Descriptions.Item label={t("common.updated_at")}>
-              {dayjs(data.updatedAt).format("DD/MM/YYYY HH:mm:ss")}
+              {dayjs(data?.updatedAt).format("DD/MM/YYYY HH:mm:ss")}
             </Descriptions.Item>
           </Descriptions>
         </div>

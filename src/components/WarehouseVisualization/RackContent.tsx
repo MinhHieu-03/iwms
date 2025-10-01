@@ -2,6 +2,7 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { RackContentProps } from "./types";
+import { STATUS_LOCATION } from "./constants";
 
 const RackContent: React.FC<RackContentProps> = ({ rack }) => {
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ const RackContent: React.FC<RackContentProps> = ({ rack }) => {
               variant={rack.status === "occupied" ? "default" : "secondary"}
             >
               <span className="capitalize">
-                {t(`status.${rack.status}`) || rack.status.replace("_", " ")}
+                {t(`status.${rack.status || STATUS_LOCATION.AVAILABLE}`) || rack.status.replace("_", " ")}
               </span>
             </Badge>
           </div>

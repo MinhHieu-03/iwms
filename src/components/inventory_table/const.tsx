@@ -56,7 +56,7 @@ export const RenderCol = ({
       };
 
       const statusInfo = statusMap[status] || {
-        text: t("status.unknown"),
+        text: status,
         color: "default",
       };
       return <Tag color={statusInfo.color}>{statusInfo.text}</Tag>;

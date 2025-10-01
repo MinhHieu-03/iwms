@@ -1,5 +1,5 @@
 import { ColumnsType } from "antd/es/table";
-import { Tag, Tooltip } from "antd";
+import { Tag, Tooltip, Select, Button, Space, message } from "antd";
 import dayjs from "dayjs";
 
 export enum MISSION_STATE {
@@ -8,6 +8,7 @@ export enum MISSION_STATE {
   DONE = "done",
   ERROR = "error",
   DONE_PICKING = "done_picking",
+  DONE_PICKING_SPLIT = "done_picking_split",
 }
 
 export enum MISSION_TYPE {
@@ -54,19 +55,61 @@ export const domain = {
   update: "/mission",
   remove: "/mission",
   detail: "/mission",
+  updateStatus: "/mission/status", // New endpoint for status updates
+};
+
+// Helper function to get status color and text
+export const getStatusDisplay = (
+  state: MISSION_STATE,
+  t: (key: string) => string
+): { text: string; color: string } => {
+  const stateMap: Record<string, { text: string; color: string }> = {
+    new: { text: t("mission.state.new"), color: "default" },
+    processing: { text: t("mission.state.processing"), color: "processing" },
+    done: { text: t("mission.state.done"), color: "success" },
+    error: { text: t("mission.state.error"), color: "error" },
+    done_picking: { text: t("mission.state.done_picking"), color: "green" },
+  };
+
+  return stateMap[state || 'new'] || {
+    text: t("mission.state.unknown"),
+    color: "default",
+  };
+};
+
+// Get available status transitions based on current state
+export const getAvailableStatusTransitions = (currentState: MISSION_STATE): MISSION_STATE[] => {
+  const transitions: Record<MISSION_STATE, MISSION_STATE[]> = {
+    [MISSION_STATE.NEW]: [MISSION_STATE.PROCESSING, MISSION_STATE.ERROR],
+    [MISSION_STATE.PROCESSING]: [MISSION_STATE.DONE_PICKING, MISSION_STATE.DONE, MISSION_STATE.ERROR],
+    [MISSION_STATE.DONE_PICKING]: [MISSION_STATE.DONE, MISSION_STATE.ERROR],
+    [MISSION_STATE.DONE_PICKING_SPLIT]: [MISSION_STATE.DONE, MISSION_STATE.ERROR],
+
+    [MISSION_STATE.ERROR]: [MISSION_STATE.NEW, MISSION_STATE.PROCESSING],
+    [MISSION_STATE.DONE]: [], // Terminal state - no transitions allowed
+  };
+
+  return transitions[currentState] || Object.values(MISSION_STATE);
 };
 
 export const lang_key = "mission.table";
 
+// Status update handler interface
+export interface StatusUpdateHandler {
+  (missionId: string, newStatus: MISSION_STATE): Promise<void>;
+}
+
 export const RenderCol = ({
   t,
+  onStatusUpdate,
 }: {
   t: (key: string) => string;
+  onStatusUpdate?: StatusUpdateHandler;
 }): ColumnsType<MissionDataType> => [
   {
     title: t("mission.mission_code"),
-    dataIndex: "mission_code",
-    key: "mission_code",
+    dataIndex: "_id",
+    key: "_id",
     width: 150,
     fixed: "left",
   },
@@ -118,18 +161,7 @@ export const RenderCol = ({
     key: "state",
     width: 120,
     render: (state: MISSION_STATE) => {
-      const stateMap: Record<string, { text: string; color: string }> = {
-        new: { text: t("mission.state.new"), color: "default" },
-        processing: { text: t("mission.state.processing"), color: "processing" },
-        done: { text: t("mission.state.done"), color: "success" },
-        error: { text: t("mission.state.error"), color: "error" },
-        done_picking: { text: t("mission.state.done_picking"), color: "green" },
-      };
-
-      const stateInfo = stateMap[state || 'new'] || {
-        text: t("mission.state.unknown"),
-        color: "default",
-      };
+      const stateInfo = getStatusDisplay(state, t);
       return <Tag color={stateInfo.color}>{stateInfo.text}</Tag>;
     },
   },
@@ -168,27 +200,27 @@ export const RenderCol = ({
       );
     },
   },
-  {
-    title: t("mission.description"),
-    dataIndex: "description",
-    key: "description",
-    width: 200,
-    ellipsis: {
-      showTitle: false,
-    },
-    render: (text: string) => (
-      <Tooltip placement="topLeft" title={text}>
-        {text || "-"}
-      </Tooltip>
-    ),
-  },
-  {
-    title: t("mission.eta"),
-    dataIndex: "ETA",
-    key: "ETA",
-    width: 100,
-    render: (eta: number) => eta ? `${eta} min` : "-",
-  },
+  // {
+  //   title: t("mission.description"),
+  //   dataIndex: "description",
+  //   key: "description",
+  //   width: 200,
+  //   ellipsis: {
+  //     showTitle: false,
+  //   },
+  //   render: (text: string) => (
+  //     <Tooltip placement="topLeft" title={text}>
+  //       {text || "-"}
+  //     </Tooltip>
+  //   ),
+  // },
+  // {
+  //   title: t("mission.eta"),
+  //   dataIndex: "ETA",
+  //   key: "ETA",
+  //   width: 100,
+  //   render: (eta: number) => eta ? `${eta} min` : "-",
+  // },
   {
     title: t("mission.status_history"),
     key: "status_list",
@@ -216,6 +248,54 @@ export const RenderCol = ({
     width: 120,
     render: (text: string) => dayjs(text).format("DD/MM/YYYY HH:mm"),
   },
+  {
+    title: t("common.action"),
+    key: "action",
+    fixed: "right",
+    width: 180,
+    render: (_: any, record: MissionDataType) => {
+      const handleStatusChange = async (newStatus: MISSION_STATE) => {
+        if (onStatusUpdate) {
+          try {
+            await onStatusUpdate(record._id, newStatus);
+            message.success(t("mission.status_updated_successfully"));
+          } catch (error) {
+            message.error(t("mission.status_update_failed"));
+            console.error("Status update error:", error);
+          }
+        }
+      };
+
+      // Get available status transitions for current state
+      const allStatusOptions = [
+        { value: MISSION_STATE.NEW, label: t("mission.state.new"), color: "default" },
+        { value: MISSION_STATE.PROCESSING, label: t("mission.state.processing"), color: "processing" },
+        { value: MISSION_STATE.DONE_PICKING, label: "hoàn thành pick tổng", color: "green" },
+        { value: MISSION_STATE.DONE_PICKING_SPLIT, label: "hoàn thành chia hàng", color: "green" },
+        // { value: MISSION_STATE.DONE, label: t("mission.state.done"), color: "success" },
+        { value: MISSION_STATE.ERROR, label: t("mission.state.error"), color: "error" },
+      ];
+
+      return (
+        <Space direction="vertical" size="small">
+          <Select
+            value={record.state}
+            onChange={handleStatusChange}
+            style={{ width: 140 }}
+            size="small"
+            placeholder={t("mission.select_status")}
+            // disabled={!onStatusUpdate || isDoneState}
+          >
+            {allStatusOptions.map((option) => (
+              <Select.Option key={option.value} value={option.value}>
+                  {option.label}
+              </Select.Option>
+            ))}
+          </Select>
+        </Space>
+      );
+    },
+  }
 ];
 
 // Mock data for development and testing

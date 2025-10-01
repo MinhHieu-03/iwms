@@ -447,7 +447,7 @@ const InventoryTable = () => {
           columns={columns}
           dataSource={dataList}
           loading={loading}
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection}
           pagination={false}
           scroll={{ x: "calc(100vw - 640px)" }}
           onRow={(record) => ({
