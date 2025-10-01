@@ -145,7 +145,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           children: [
              {
               path: "/mission-settings/mission-management",
-              name: "/mission-setting/mission-managerment" as TranslationKey,
+              name: "/mission-settings/mission-management" as TranslationKey,
               icon: <LayoutList className="w-4 h-4" />,
             },
             {

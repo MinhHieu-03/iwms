@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Table, Modal, Descriptions, Button, Tag } from "antd";
+import wcsApiClient from "@/lib/wcsApiConfig";
+import { Button, Descriptions, Modal, Table, Tag, message } from "antd";
+import { useEffect, useState } from "react";
 
 interface Param {
   assigned: boolean;
@@ -35,10 +36,6 @@ interface Task {
   };
 }
 
-const API_URL = "http://35.184.194.168:3142/log/task";
-const AUTH_TOKEN =
-  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNzU5NTE2Mzk3fQ.6JSSuxVnGiXDMonUkH6SOZEVrmhORyBrfusFAXSvrOY";
-
 const Task = () => {
   const [data, setData] = useState<Task[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -59,23 +56,13 @@ const Task = () => {
   ];
 
   useEffect(() => {
-    fetch(API_URL, {
-      method: "GET",
-      headers: {
-        Authorization: AUTH_TOKEN,
-        Accept: "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.success && Array.isArray(json.data)) {
-          setData(json.data);
-        } else {
-          console.error("API response invalid:", json);
-        }
+    wcsApiClient
+      .get("/log/task")
+      .then(({ data }) => {
+        setData(data.data);
       })
-      .catch((err) => {
-        console.error("API call failed:", err);
+      .catch((error) => {
+        message.error("Failed to fetch tasks");
       });
   }, []);
 

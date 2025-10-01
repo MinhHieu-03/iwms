@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Table, Spin, Tag, Modal, Descriptions } from "antd";
+import { Table, Spin, Tag, Modal, Descriptions, message } from "antd";
 import { getMissionTemplate } from "@/api/missionSettingApi";
 import apiClient from "@/lib/axios";
+import wcsApiClient from "@/lib/wcsApiConfig";
 
 interface Param {
   assigned: boolean;
@@ -27,11 +28,6 @@ interface Mission {
   start: number;
   tasks: Task[];
 }
-
-const API_URL = "http://35.184.194.168:3142/log/mission";
-const AUTH_TOKEN =
-  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNzU5NTE2Mzk3fQ.6JSSuxVnGiXDMonUkH6SOZEVrmhORyBrfusFAXSvrOY";
-
 export default function MissionTemplatePage() {
   const [data, setData] = useState<Mission[]>([]);
   const [loading, setLoading] = useState(false);
@@ -40,23 +36,14 @@ export default function MissionTemplatePage() {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    fetch(API_URL, {
-      method: "GET",
-      headers: {
-        Authorization: AUTH_TOKEN,
-        Accept: "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.success && Array.isArray(json.data)) {
-          setData(json.data);
-        } else {
-          console.error("API response invalid:", json);
-        }
+    wcsApiClient
+      .get("/log/mission")
+      .then(({ data }) => {
+        setData(data.data);
       })
-      .catch((err) => {
-        console.error("API call failed:", err);
+      .catch((error) => {
+        console.error("API request failed:", error);
+        message.error("Failed to fetch missions");
       });
   }, []);
 

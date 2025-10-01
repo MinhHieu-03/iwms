@@ -51,8 +51,8 @@ const processQueue = async () => {
 // Add a request interceptor
 request.interceptors.request.use(
   async (config) => {
-    const access_token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjo0ODc0Mjc0MzYzfQ.9TZKkw2x-BO6BIWlWsM83RfbJBsppeKdkIHtltiocEM";
+    const access_token = envConfig.WCS_AUTH_TOKEN;
+      // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjo0ODc0Mjc0MzYzfQ.9TZKkw2x-BO6BIWlWsM83RfbJBsppeKdkIHtltiocEM";
     if (access_token)
       config.headers["Authorization"] = `Bearer ${access_token}`;
     return config;
