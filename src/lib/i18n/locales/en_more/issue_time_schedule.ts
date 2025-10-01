@@ -1,5 +1,6 @@
 export const en = {
   // Issue Time Schedule translations
+  "issue_time_schedule.title": "Kit Managerment",
   "issue_time_schedule.table.selected": "Selected",
   "issue_time_schedule.table.section": "Section",
   "issue_time_schedule.table.factory": "Factory",
