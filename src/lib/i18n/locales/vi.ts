@@ -30,7 +30,7 @@ export const vi: Record<TranslationKey, string> = {
   inbound_outbound: "Nhập/Xuất kho",
   inventory: "Kho hàng",
   robot_missions: "Nhiệm vụ robot",
-  team_management: "Quản lý nhóm",
+  team_management: "Quản lý người dùng",
   user_settings: "Cài đặt người dùng",
   system_settings: "Cài đặt hệ thống",
   warehouse_settings: "Cài đặt kho",
