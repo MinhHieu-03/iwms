@@ -39,6 +39,7 @@ const MissionForm = ({ isOpen, onClose, onSubmit, data }) => {
             data.tasks.map((task: any) => ({
               name: task.name ?? "",
               device_name: task.device_name ?? "",
+              flow: task.flow ?? { ok: 0, fail: 0, timeout: 0 },
               param:
                 task.param.map((param: any) => ({
                   name: param.name ?? "",
@@ -91,7 +92,22 @@ const MissionForm = ({ isOpen, onClose, onSubmit, data }) => {
                         <Collapsible>
                           <CollapsibleTrigger className="w-full flex items-center justify-between rounded-md border px-4 py-2 hover:bg-gray-100">
                             <div className="font-medium">
-                              {field.value?.name || `Task ${index + 1}`}
+                              <div className="flex flex-col text-left">
+                                <div className="font-bold text-[16px]">
+                                  {index}. {field.value?.name || `Task ${index + 1}`}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  Device:{" "}
+                                  {field.value?.device_name || "N/A"}
+                                </div>
+                                {field.value?.flow && (
+                                  <div className="text-sm text-gray-500">
+                                    Flow → ok: {field.value.flow.ok}, Fail:{" "}
+                                    {field.value.flow.fail}, Timeout:{" "}
+                                    {field.value.flow.timeout}
+                                  </div>
+                                )}
+                              </div>
                             </div>
                             <ChevronDown />
                           </CollapsibleTrigger>

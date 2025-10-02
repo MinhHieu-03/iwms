@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DeleteOutlined } from "@ant-design/icons";
+import { Popconfirm } from "antd";
 
 interface HeaderProps {
   searchQuery: string;
@@ -46,15 +47,21 @@ const Header: React.FC<HeaderProps> = ({
                 <Plus className="mr-2 h-4 w-4" />
                 {t("btn.create_new")}
               </Button>
-              <Button
-                className="h-10"
-                variant="destructive"
-                disabled={selectedRow.length === 0}
-                onClick={() => handleDelete(selectedRow)}
+              <Popconfirm
+                title="Bạn có chắc muốn xóa"
+                onConfirm={() => handleDelete(selectedRow)}
+                okText="Có"
+                cancelText="Không"
               >
-                <DeleteOutlined className="mr-2 h-4 w-4" />
-                {t("btn.delete")} ({selectedRow.length})
-              </Button>
+                <Button
+                  className="h-10"
+                  variant="destructive"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <DeleteOutlined className="mr-2 h-4 w-4" />
+                  {t("btn.delete")} ({selectedRow.length})
+                </Button>
+              </Popconfirm>
             </>
           </div>
         </div>
