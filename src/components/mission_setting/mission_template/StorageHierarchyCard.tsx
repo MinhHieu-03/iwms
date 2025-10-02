@@ -79,6 +79,7 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
         },
         data: {
           ...templateStep,
+          index: nodes.length - 1,
           label: templateStep.name,
           flow: { ok: -1, timeout: -1, fail: -1 },
           notify: {
@@ -182,7 +183,7 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
       setNodes((prev) => {
         const newNodes = prev
           .filter((n) => !deletedNodeIds.includes(n.id))
-          .map((n) => {
+          .map((n, index) => {
             const data = n.data ?? {};
             const flow = data.flow ?? { ok: -1, timeout: -1, fail: -1 };
 
@@ -207,6 +208,7 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
               ...n,
               data: {
                 ...data,
+                index: index - 1,
                 flow: newFlow,
               },
             };
@@ -221,12 +223,17 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
   console.log("edges", edges);
 
   const checkUnconnectedNode = () => {
-    const targetedList = edges.map((e) => e.target);
+    let sourceIsTarget = false;
+    const targetedList = edges.map((e) => {
+      if (e.target === e.source) {
+        sourceIsTarget = true;
+      }
+      return e.target;
+    });
     const unconnectedNode = nodes.filter(
       (n) => !targetedList.includes(n.id) && n.id !== "start"
     );
-
-    return unconnectedNode;
+    return { unconnectedNode, sourceIsTarget };
   };
 
   const handleDeleteEdge = useCallback(
@@ -303,7 +310,10 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
   };
 
   const handleSaveChanges = async () => {
-    if (checkUnconnectedNode().length > 0) {
+    if (
+      checkUnconnectedNode().unconnectedNode.length > 0 ||
+      checkUnconnectedNode().sourceIsTarget
+    ) {
       toast({
         title: t("common.error"),
         variant: "destructive",
@@ -329,7 +339,7 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
         const taskList = nodes
           .filter((n) => n.id !== "start")
           .map((n) => {
-            const { label, ...data } = n.data;
+            const { label, index, ...data } = n.data;
             const flow = data.flow ?? { ok: -1, timeout: -1, fail: -1 };
             const formattedData = {
               ...data,

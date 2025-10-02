@@ -142,8 +142,9 @@ export const initNodes = (missionData: any): Node[] => {
         id: `${index}`,
         type: missionData.ui_data[index + 1]?.type || "customStorage",
         data: {
-          label: task.name,
           ...task,
+          label: task.name,
+          index: index,
         },
         position: {
           x: missionData.ui_data[index + 1]?.x || 400,
