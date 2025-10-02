@@ -75,7 +75,7 @@ export const RenderCol: ({
             variant="outline"
             onClick={(e) => {
               e.stopPropagation();
-              handleDelete([record._id]);
+              handleDelete([record._id], "single");
             }}
           >
             <Trash className="h-4 w-4" />
@@ -92,9 +92,9 @@ export const initEdges = (missionData: any): Edge[] => {
   const initEdges = missionData.tasks.flatMap((task, index) => {
     return Object.entries(task.flow || {})
       .filter(([key, value]) => value !== -1)
-      .map(([key, value]) => ({
-        id: `e${index + 1}-${value}`,
-        source: `${index + 1}`,
+      .map(([key, value]: any) => ({
+        id: `edge-${index}-${value}`,
+        source: `${index}`,
         target: `${value}`,
         sourceHandle:
           key === "ok"
@@ -110,7 +110,7 @@ export const initEdges = (missionData: any): Edge[] => {
   if (missionData.start !== undefined && missionData.start !== -1) {
     initEdges.push({
       id: "edge-start",
-      source: "0",
+      source: "start",
       target: `${missionData.start}`,
       type: "default",
       style: { stroke: "#3b82f6", strokeWidth: 3 },
@@ -124,7 +124,7 @@ export const initEdges = (missionData: any): Edge[] => {
 export const initNodes = (missionData: any): Node[] => {
   const initNodes: Node[] = [
     {
-      id: "0",
+      id: "start",
       type: missionData?.ui_data ? missionData.ui_data[0].type : "customStart",
       data: { label: "Start" },
       position: {
@@ -139,7 +139,7 @@ export const initNodes = (missionData: any): Node[] => {
   initNodes.push(
     ...missionData.tasks.map(
       (task: any, index: number): Node => ({
-        id: `${index + 1}`,
+        id: `${index}`,
         type: missionData.ui_data[index + 1]?.type || "customStorage",
         data: {
           label: task.name,

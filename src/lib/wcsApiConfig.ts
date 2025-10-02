@@ -4,6 +4,9 @@ import envConfig from "../config/env";
 import { message } from "antd";
 
 export const BASE_URL = envConfig.WCS_BASE_URL;
+
+const MISSION_TOKEN =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjo0ODc0Mjc0MzYzfQ.9TZKkw2x-BO6BIWlWsM83RfbJBsppeKdkIHtltiocEM";
 console.log("BASE_URL", BASE_URL, window.location.hostname);
 
 type TResponseStatusCode = {
@@ -51,8 +54,7 @@ const processQueue = async () => {
 // Add a request interceptor
 request.interceptors.request.use(
   async (config) => {
-    const access_token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjo0ODc0Mjc0MzYzfQ.9TZKkw2x-BO6BIWlWsM83RfbJBsppeKdkIHtltiocEM";
+    const access_token = MISSION_TOKEN;
     if (access_token)
       config.headers["Authorization"] = `Bearer ${access_token}`;
     return config;
@@ -85,8 +87,7 @@ request.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const refreshToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjo0ODc0Mjc0MzYzfQ.9TZKkw2x-BO6BIWlWsM83RfbJBsppeKdkIHtltiocEM";
+    const refreshToken = MISSION_TOKEN;
     if (
       error?.response?.status === 401 &&
       !originalRequest?._retry &&

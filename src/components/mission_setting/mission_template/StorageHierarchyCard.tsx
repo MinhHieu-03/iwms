@@ -1,34 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { patchMissionTemplate } from "@/api/missionSettingApi";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useI18n } from "@/contexts/useI18n";
+import { useToast } from "@/hooks/use-toast";
 import {
-  ReactFlow,
-  MiniMap,
-  Controls,
-  Background,
-  useNodesState,
-  useEdgesState,
-  Panel,
-  Node,
   addEdge,
+  Background,
   Connection,
+  Controls,
   Edge,
   MarkerType,
+  MiniMap,
+  Node,
+  Panel,
+  ReactFlow,
+  useEdgesState,
+  useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { Workflow } from "lucide-react";
-import {
-  storageHierarchyNodes,
-  storageHierarchyEdges,
-} from "@/data/warehouseData";
 import { Button, Input } from "antd";
-import CustomStorageNode from "./CustomStorageNode";
+import { Workflow } from "lucide-react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { initEdges, initNodes } from "./const";
 import CustomStartNode, { CustomEndNode } from "./CustomStartNode";
+import CustomStorageNode from "./CustomStorageNode";
 import MissionTemplatesCard from "./MissionTemplatesCard";
 import { NodeForm } from "./NodeForm";
-import { useToast } from "@/hooks/use-toast";
-import { patchMissionTemplate } from "@/api/missionSettingApi";
-import { initEdges, initNodes } from "./const";
-import { useI18n } from "@/contexts/useI18n";
 
 interface StorageHierarchyCardProps {
   className?: string;
@@ -54,7 +50,7 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
 
   useEffect(() => {
     setTemplateName(missionData?.name || "");
-    setStartNode(missionData?.start || -1);
+    setStartNode(missionData?.start ?? -1);
   }, [missionData]);
 
   useEffect(() => {
@@ -73,10 +69,9 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
 
   const addNodeFromTemplate = useCallback(
     (templateStep: any) => {
-      const newNodeIndex = nodes.length;
-      const newNodeId = `${newNodeIndex}`;
+      const newNodeIndex = nodes.length - 1;
       const newNode: Node = {
-        id: newNodeId,
+        id: `${Date.now()}`,
         type: "customStorage",
         position: {
           x: Math.random() * 400 + 100,
@@ -155,7 +150,7 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
 
   const onConnect = useCallback(
     (params: Connection) => {
-      if (params.source === "0") {
+      if (params.source === "start") {
         if (startNode !== -1) {
           return;
         }
@@ -183,37 +178,52 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
         setStartNode(-1);
       }
 
-      setNodes((prevNodes) => {
-        // 1) Xác định các id bị xóa và filter ra danh sách node còn lại
-        const deletedIdSet = new Set(deletedNodes.map((dn) => dn.id));
-        const kept = prevNodes.filter((n) => !deletedIdSet.has(n.id));
+      const deletedNodeIds = deletedNodes.map((dn) => dn.id);
+      setNodes((prev) => {
+        const newNodes = prev
+          .filter((n) => !deletedNodeIds.includes(n.id))
+          .map((n) => {
+            const data = n.data ?? {};
+            const flow = data.flow ?? { ok: -1, timeout: -1, fail: -1 };
 
-        // 2) Cập nhật flow connections - set to -1 if target is deleted
-        return kept.map((node) => {
-          const data: any = node.data ?? {};
-          const flow = data.flow ?? { ok: -1, timeout: -1, fail: -1 };
+            const newFlow = {
+              ok:
+                flow.ok !== -1 && deletedNodeIds.includes(flow.ok.toString())
+                  ? -1
+                  : flow.ok,
+              timeout:
+                flow.timeout !== -1 &&
+                deletedNodeIds.includes(flow.timeout.toString())
+                  ? -1
+                  : flow.timeout,
+              fail:
+                flow.fail !== -1 &&
+                deletedNodeIds.includes(flow.fail.toString())
+                  ? -1
+                  : flow.fail,
+            };
 
-          return {
-            ...node,
-            data: {
-              ...data,
-              flow: {
-                ok: deletedIdSet.has(flow.ok) ? -1 : flow.ok,
-                timeout: deletedIdSet.has(flow.timeout) ? -1 : flow.timeout,
-                fail: deletedIdSet.has(flow.fail) ? -1 : flow.fail,
+            return {
+              ...n,
+              data: {
+                ...data,
+                flow: newFlow,
               },
-            },
-          };
-        });
+            };
+          });
+        return newNodes;
       });
     },
     [nodes, startNode]
   );
 
+  console.log("nodes", nodes);
+  console.log("edges", edges);
+
   const checkUnconnectedNode = () => {
     const targetedList = edges.map((e) => e.target);
     const unconnectedNode = nodes.filter(
-      (n) => !targetedList.includes(n.id) && n.id !== "0"
+      (n) => !targetedList.includes(n.id) && n.id !== "start"
     );
 
     return unconnectedNode;
@@ -223,44 +233,73 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
     (deletedEdges: Edge[]) => {
       if (!deletedEdges?.length) return;
 
-      if (deletedEdges.some((e) => e.source === "0")) {
+      if (deletedEdges.some((e) => e.source === "start")) {
         setStartNode(-1);
       }
-      setNodes((prevNodes) => {
-        const sourceToTargets = new Map<string, Set<string>>();
 
-        for (const e of deletedEdges) {
-          const targets = sourceToTargets.get(e.source) ?? new Set();
-          targets.add(e.target);
-          sourceToTargets.set(e.source, targets);
-        }
-        if (sourceToTargets.size === 0) return prevNodes;
+      setNodes((prev) => {
+        return prev.map((node) => {
+          const data = node.data ?? {};
+          const flow = data.flow ?? { ok: -1, timeout: -1, fail: -1 };
 
-        return prevNodes.map((node: any) => {
-          const targets = sourceToTargets.get(node.id);
-          if (!targets) return node;
-          const flow = node.data?.flow ?? { ok: -1, timeout: -1, fail: -1 };
-          const nextFlow = {
-            ok: targets.has(flow.ok) ? -1 : flow.ok,
-            timeout: targets.has(flow.timeout) ? -1 : flow.timeout,
-            fail: targets.has(flow.fail) ? -1 : flow.fail,
-          };
-          if (
-            nextFlow.ok === flow.ok &&
-            nextFlow.timeout === flow.timeout &&
-            nextFlow.fail === flow.fail
-          ) {
-            return node;
+          const affectedEdges = deletedEdges.filter(
+            (e) => e.source === node.id
+          );
+
+          const newFlow = { ...flow };
+
+          for (const e of affectedEdges) {
+            switch (e.sourceHandle) {
+              case "output-1":
+                newFlow.ok = -1;
+                break;
+              case "output-2":
+                newFlow.timeout = -1;
+                break;
+              case "output-3":
+                newFlow.fail = -1;
+                break;
+            }
           }
-          return { ...node, data: { ...node.data, flow: nextFlow } };
+
+          return {
+            ...node,
+            data: {
+              ...data,
+              flow: newFlow,
+            },
+          };
         });
       });
     },
     [nodes, startNode]
   );
 
-  const onNodeClick = (event: React.MouseEvent, node: Node) => {
-    if (node.id !== "0") setSelectedNode(node);
+  const onNodeClick = (event: React.MouseEvent, node: any) => {
+    if (node.id !== "start") {
+      const data = node.data ?? {};
+      const flow = data.flow ?? { ok: -1, timeout: -1, fail: -1 };
+      setSelectedNode({
+        ...node,
+        data: {
+          ...data,
+          flow: {
+            ok:
+              flow.ok !== -1
+                ? nodes.findIndex((n) => n.id === flow.ok.toString()) - 1
+                : -1,
+            timeout:
+              flow.timeout !== -1
+                ? nodes.findIndex((n) => n.id === flow.timeout.toString()) - 1
+                : -1,
+            fail:
+              flow.fail !== -1
+                ? nodes.findIndex((n) => n.id === flow.fail.toString()) - 1
+                : -1,
+          },
+        },
+      });
+    }
   };
 
   const handleSaveChanges = async () => {
@@ -288,10 +327,29 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
     } else {
       try {
         const taskList = nodes
-          .filter((n) => n.id !== "0")
+          .filter((n) => n.id !== "start")
           .map((n) => {
             const { label, ...data } = n.data;
-            return data;
+            const flow = data.flow ?? { ok: -1, timeout: -1, fail: -1 };
+            const formattedData = {
+              ...data,
+              flow: {
+                ok:
+                  flow.ok !== -1
+                    ? nodes.findIndex((n) => n.id === flow.ok.toString()) - 1
+                    : -1,
+                timeout:
+                  flow.timeout !== -1
+                    ? nodes.findIndex((n) => n.id === flow.timeout.toString()) -
+                      1
+                    : -1,
+                fail:
+                  flow.fail !== -1
+                    ? nodes.findIndex((n) => n.id === flow.fail.toString()) - 1
+                    : -1,
+              },
+            };
+            return formattedData;
           });
 
         const nodeLocations = nodes.map(
@@ -306,10 +364,12 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
 
         const missionTemplate = {
           name: templateName.trim(),
-          start: startNode,
+          start: nodes.findIndex((n) => n.id === startNode.toString()) - 1,
           tasks: taskList,
           ui_data: nodeLocations,
         };
+
+        console.log("missionTemplate", missionTemplate);
 
         let response;
         if (mode === "create") {

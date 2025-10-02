@@ -24,6 +24,7 @@ import {
 } from "@/api/missionSettingApi";
 import { useToast } from "@/hooks/use-toast";
 import MissionForm from "./missionForm";
+import { DeleteConfirmForm } from "@/components/common/DeleteConfirm";
 
 const { list, create, update, upload, download, remove } = domain;
 
@@ -43,6 +44,15 @@ const App = () => {
   const [dataList, setDataList] = useState<DataType[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
   const [selectedMission, setSelectedMission] = useState<any>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{
+    isOpen: boolean;
+    data: string[];
+    type: "single" | "multiple";
+  }>({
+    isOpen: false,
+    data: [],
+    type: "single",
+  });
 
   const [allData, setAllData] = useState<DataType[]>([]);
 
@@ -109,11 +119,27 @@ const App = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (payload: string[]) => {
+  const handleDelete = (
+    payload: string[],
+    type: "single" | "multiple" = "single"
+  ) => {
+    setDeleteConfirm({
+      isOpen: true,
+      data: payload,
+      type: type,
+    });
+  };
+
+  const confirmDelete = async () => {
     try {
-      const { data } = await deleteMissionTemplate(payload);
+      const { data } = await deleteMissionTemplate(deleteConfirm.data);
 
       setSelectedRowKeys([]);
+      setDeleteConfirm({
+        isOpen: false,
+        data: [],
+        type: "single",
+      });
 
       if (data.success) {
         fetchData();
@@ -130,7 +156,20 @@ const App = () => {
       }
     } catch (error) {
       console.log("error", error);
+      setDeleteConfirm({
+        isOpen: false,
+        data: [],
+        type: "single",
+      });
     }
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirm({
+      isOpen: false,
+      data: [],
+      type: "single",
+    });
   };
 
   const handleCreateMission = async (mission: any) => {
@@ -202,7 +241,7 @@ const App = () => {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         selectedRow={selectedRowKeys}
-        handleDelete={handleDelete}
+        handleDelete={(payload) => handleDelete(payload, "multiple")}
       />
       <Card>
         <CardContent>
@@ -255,6 +294,19 @@ const App = () => {
         onClose={() => setSelectedMission(null)}
         onSubmit={handleRunMission}
         data={selectedMission}
+      />
+      <DeleteConfirmForm
+        isOpen={deleteConfirm.isOpen}
+        confirmation={
+          deleteConfirm.type === "single"
+            ? t("mission_template.delete_single_confirm")
+            : t("mission_template.delete_multiple_confirm", {
+                count: deleteConfirm.data.length,
+              })
+        }
+        data={deleteConfirm.data}
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
       />
     </div>
   );
