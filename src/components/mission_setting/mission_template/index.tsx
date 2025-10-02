@@ -65,7 +65,8 @@ const App = () => {
         const formattedData = data.data.map((template) =>
           missionTemplateGenForm(template)
         );
-        setAllData(formattedData);
+        const missionWithCount = handleCountTasks(formattedData);
+        setAllData(missionWithCount);
 
         toast({
           title: t("common.success"),
@@ -220,8 +221,18 @@ const App = () => {
     }
   };
 
+  const handleCountTasks = (missions: DataType[]) => {
+    return missions.map((mission) => ({
+      ...mission,
+      totalTasks: mission.tasks?.length || 0,
+    }));
+  };
   const columns: ColumnsType<DataType> = useMemo(() => {
-    const col = RenderCol({ t, handleDelete, handleRunButton });
+    const col = RenderCol({
+      t,
+      handleDelete,
+      handleRunButton,
+    });
     return col || [];
   }, [t]);
 

@@ -5,6 +5,7 @@ import { createLangKey } from "@/lib/utils";
 import { MarkerType, Node, Edge } from "@xyflow/react";
 import { Button } from "@/components/ui/button";
 import { Send, Trash } from "lucide-react";
+import { Popconfirm } from "antd";
 
 export const route = [...route_parent, "template"];
 export const lang_key = createLangKey(route);
@@ -25,7 +26,10 @@ export interface MissionTemplate {
   createAt: string;
 }
 
-export interface DataType extends Omit<MissionTemplate, "tasks"> {}
+export interface DataType extends Omit<MissionTemplate, "tasks"> {
+  tasks: TaskData[];
+  totalTasks?: number;
+}
 
 export const missionTemplateGenForm = (data: MissionTemplate) => {
   const form: DataType = {
@@ -54,6 +58,10 @@ export const RenderCol: ({
       title: "Template Name",
     },
     {
+      dataIndex: "totalTasks",
+      title: "Total task",
+    },
+    {
       dataIndex: "action",
       title: "Action",
       render: (value: string, record: DataType) => (
@@ -69,17 +77,24 @@ export const RenderCol: ({
           >
             <Send className="h-4 w-4" />
           </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDelete([record._id], "single");
+          <Popconfirm
+            title="Bạn có chắc muốn xóa?"
+            onConfirm={(e) => {
+              e?.stopPropagation();
+              handleDelete([record._id]);
             }}
+            onCancel={(e) => {
+              e?.stopPropagation();
+            }}
+            okText="Có"
+            cancelText="Không"
           >
-            <Trash className="h-4 w-4" />
-          </Button>
+            <span onClick={(e) => e.stopPropagation()}>
+              <Button type="button" size="sm" variant="outline">
+                <Trash className="h-4 w-4" />
+              </Button>
+            </span>
+          </Popconfirm>
         </div>
       ),
     },
