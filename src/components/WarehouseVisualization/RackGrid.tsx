@@ -37,6 +37,7 @@ const RackGrid: React.FC<RackGridProps> = ({ rackId, racks, area, index }) => {
     queryKey: ["location-area", rackIdentifier],
     queryFn: async () => {
       const { data } = await apiClient.get(`/location/area/${rackIdentifier}`);
+      // console.log("Location Data:", data);
       return keyBy(data.metaData, "code");
     },
     enabled: !!rackIdentifier,
@@ -97,19 +98,6 @@ const RackGrid: React.FC<RackGridProps> = ({ rackId, racks, area, index }) => {
     });
   };
 
-  const getRackStatusColor = (
-    locationData: any,
-    configured: boolean
-  ): string => {
-    const status = locationData?.status || STATUS_LOCATION.AVAILABLE;
-
-    if (configured && status === STATUS_LOCATION.AVAILABLE) {
-      return STATUS_COLOR[STATUS_LOCATION.CONFIGURED];
-    }
-
-    return STATUS_COLOR[status] || "bg-gray-100";
-  };
-
   const handleConfigureRack = () => {
     setShowConfigure(highlightedRack);
   };
@@ -128,11 +116,12 @@ const RackGrid: React.FC<RackGridProps> = ({ rackId, racks, area, index }) => {
             </div>
           </div>
           <div>
-            {highlightedRack.length > 0 && (
-              <Button onClick={handleConfigureRack}>
-                {t("configure_rack")}
-              </Button>
-            )}
+            <Button
+              disabled={highlightedRack.length <= 0}
+              onClick={handleConfigureRack}
+            >
+              {t("configure_rack")}
+            </Button>
           </div>
         </div>
       </CardHeader>
@@ -182,32 +171,33 @@ const RackGrid: React.FC<RackGridProps> = ({ rackId, racks, area, index }) => {
                     const col = colIndex + 1;
                     const cellId = generateCellId(rackId, row, col);
                     const rackData = rackGrid.get(cellId);
-                    const rackStatus = get(locationData, cellId, {
-                      status: STATUS_LOCATION.AVAILABLE,
-                    });
-
-                    if (
-                      rackStatus.status === STATUS_LOCATION.AVAILABLE &&
-                      rackData?.skus?.length
-                    ) {
-                      rackStatus.status = STATUS_LOCATION.CONFIGURED;
+                    const cellData = get(locationData, `${cellId}`, {});
+                    let cellStatus = get(
+                      locationData,
+                      `${cellId}.inventory.status`,
+                      ""
+                    );
+                    if (!cellStatus && cellData?.skus?.length) {
+                      cellStatus = STATUS_LOCATION.CONFIGURED;
                     }
+                    console.log("cellStatus:", cellStatus);
 
                     const rack = {
                       ...rackData,
-                      ...rackStatus,
+                      ...cellData,
+                      status: cellStatus,
                     };
 
                     const isHighlighted = highlightedRack.includes(rack?.id);
-                    
+                    const cellStatusColor =
+                      STATUS_COLOR[cellStatus] || "bg-gray-100";
                     return (
                       <RackCell
                         key={`${row}-${col}`}
                         rack={rack}
                         isHighlighted={isHighlighted}
                         onRackClick={onRackClick}
-                        getRackStatusColor={getRackStatusColor}
-                        locationData={locationData}
+                        cellColor={cellStatusColor}
                         col={col}
                       />
                     );

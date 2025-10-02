@@ -16,6 +16,7 @@ import { domain, IssueTimeScheduleDataType, RenderCol } from "./const";
 import FilterPanel from "./FilterPanel";
 import KitManagementHeader from "./KitManagementHeader";
 import ModalDetail from "./modal_detail";
+import { createPtlOdd } from "@/hooks/ptl";
 
 const { RangePicker } = DatePicker;
 const { list, create, update, remove, merge_kit } = domain;
@@ -178,7 +179,7 @@ const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
       };
     },
   };
-
+  const mutate = createPtlOdd()
   const orderPicking = async () => {
     try {
       setLoading(true);
@@ -209,6 +210,7 @@ const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
       console.log("body", body);
       //
       await apiClient.post(merge_kit, body);
+      await mutate.mutateAsync(selectedRowKeys as string[]);
       setCurrent(1);
       setLoading(false);
     } catch (error) {

@@ -12,6 +12,7 @@ export const en: Record<TranslationKey, string> = {
     "/warehouse-settings/layout": "Layout Configuration",
     "/warehouse-settings/storage": "Storage Model Configuration",
     "/mission-settings": "WCS Setting",
+    '/mission-settings/mission-management': 'Mission Management',
     "/mission-settings/template": "Mission Template",
     "/mission-settings/device": "Device Management",
     "/mission-settings/device-template": "Device Type",

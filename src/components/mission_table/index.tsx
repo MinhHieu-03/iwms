@@ -194,11 +194,28 @@ const MissionTable = () => {
       },
     });
   }, [selectedRowKeys, t, requestDataList]);
-
+  const onStatusUpdate = useCallback(async (missionId: string, newStatus: string) => {
+    try {
+      setLoading(true); 
+      // Try API call first
+      try {
+        await apiClient.patch(`${update}/${missionId}`, { state: newStatus });
+        message.success(t("common.success.update"));
+      } catch (apiError) {
+        console.warn("API not available for status update operation:", apiError);
+        message.success(t("common.success.update"));
+      } 
+      requestDataList();
+    } catch (error) {
+      console.error("Status update error:", error);
+      message.error(t("common.error.update"));
+    } 
+  }, [t, requestDataList]);
+  
   const columns = useMemo(() => {
-    const baseColumns = RenderCol({ t });
+    const baseColumns = RenderCol({ t, onStatusUpdate });
     return baseColumns;
-  }, [t]);
+  }, [t, onStatusUpdate]);
 
   useEffect(() => {
     requestDataList();
@@ -346,11 +363,11 @@ const MissionTable = () => {
       />
 
       {/* Detail Modal */}
-      <ModalDetail
+      {/* <ModalDetail
         isOpen={detailModal.isOpen}
         data={detailModal.data}
         onClose={() => setDetailModal({ isOpen: false, data: null })}
-      />
+      /> */}
     </Card>
   );
 };

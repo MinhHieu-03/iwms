@@ -104,18 +104,18 @@ const ModalMission: React.FC<ModalDetailProps> = ({
   //   }, []);
 
   const issueDataColumns = [
+    // {
+    //   title: "Mã nhiệm vụ",
+    //   dataIndex: "_id",
+    //   key: "_id",
+    //   width: 100,
+    // },
     {
-      title: "Mã nhiệm vụ",
-      dataIndex: "_id",
-      key: "_id",
+      title: "Loại nhiệm vụ",
+      dataIndex: "type",
+      key: "type",
       width: 150,
-    },
-    {
-      title: "loại nhiệm vụ",
-      dataIndex: "mission_type",
-      key: "mission_type",
-      width: 150,
-      render: (text) => text?.trim() || "Xuất kho",
+      render: (text) => missionMap[text] || "Xuất kho",
     },
     {
       title: "Mã thùng",
@@ -131,11 +131,18 @@ const ModalMission: React.FC<ModalDetailProps> = ({
       render: (inventory) => inventory?.material_no || "N/A",
     },
     {
-      title: "Số lượng",
+      title: "SL cấp",
       dataIndex: "inventory",
       key: "inventory",
       width: 100,
       render: (inventory) => inventory?.qty || "N/A",
+    },
+    {
+      title: "SL khả dụng",
+      dataIndex: "inventory",
+      key: "inventory",
+      width: 100,
+      render: (inventory) => inventory?.qty_available || "N/A",
     },
     {
       title: "Vị trí cấp",
@@ -305,6 +312,11 @@ const mapText = {
   new: "Đang đợi",
   error: "Lỗi",
   running: "Đang chạy",
+};
+const missionMap = {
+  transfer_gate: "Chuyển tiếp",
+  outbound: "Xuất kho",
+  inbound: "Nhập kho",
 };
 const mapColor = {
   done: "bg-green-100 text-green-800",

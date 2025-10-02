@@ -23,14 +23,14 @@ export const vi: Record<TranslationKey, string> = {
   username: "Tên đăng nhập",
   password: "Mật khẩu",
   loading: "Đang tải...",
-
+  btn_delete: "Xoá",
   // Navigation & Sidebar
   dashboard: "Bảng điều khiển",
   operator_interface: "Giao diện vận hành",
   inbound_outbound: "Nhập/Xuất kho",
   inventory: "Kho hàng",
   robot_missions: "Nhiệm vụ robot",
-  team_management: "Quản lý nhóm",
+  team_management: "Quản lý người dùng",
   user_settings: "Cài đặt người dùng",
   system_settings: "Cài đặt hệ thống",
   warehouse_settings: "Cài đặt kho",
@@ -413,6 +413,8 @@ export const vi: Record<TranslationKey, string> = {
   "btn.delete": "Xóa",
   "btn.mission": "Tiến độ cấp hàng",
   "btn.detail": "Chi tiết",
+  "btn.filter": "Bộ lọc",
+  "btn.export_excel": "Xuất Excel",
 
   // Common actions and messages
   "common.name": "Tên",
@@ -568,6 +570,7 @@ export const vi: Record<TranslationKey, string> = {
   "inventory.location_code": "Mã vị trí",
   "inventory.store_items": "Mô hình lưu trữ nhập kho",
   "inventory.total_items": "Tổng số mặt hàng",
+  "inventory.available_items": "Khả dụng",
   "inventory.status": "Trạng thái",
   "inventory.created_at": "Ngày tạo",
   "inventory.updated_at": "Ngày cập nhật",

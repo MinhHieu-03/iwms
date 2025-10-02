@@ -10,11 +10,7 @@ import { STATUS_COLOR } from "./constants";
 import { generateCellId } from "./utils";
 import RackGrid from "./RackGrid";
 
-const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
-  area,
-  hoveredRack,
-  onRackHover,
-}) => {
+const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({ area }) => {
   const { t } = useTranslation();
 
   const {
@@ -60,7 +56,7 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
         }
         convertedData[item.location_code] = rackList;
       });
-      
+
       return new Map(Object.entries(convertedData));
     },
     enabled: !!area,
@@ -87,13 +83,13 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
           </div>
         </div>
       </CardHeader>
-      
+
       {isLoading && (
         <div className="p-4 text-center">
           <div className="text-sm text-gray-500">{t("loading")}...</div>
         </div>
       )}
-      
+
       {error && (
         <div className="p-4 text-center">
           <div className="text-sm text-red-500">
@@ -101,7 +97,7 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
           </div>
         </div>
       )}
-      
+
       <div className="space-y-4">
         {Array.from(rackGroups.entries()).map(([rackId, rackList], index) => (
           <RackGrid
@@ -110,8 +106,8 @@ const Warehouse2DView: React.FC<Warehouse2DViewProps> = ({
             key={rackId}
             rackId={rackId}
             racks={rackList}
-            hoveredRack={hoveredRack}
-            onRackHover={onRackHover}
+            // hoveredRack={hoveredRack}
+            // onRackHover={onRackHover}
           />
         ))}
       </div>

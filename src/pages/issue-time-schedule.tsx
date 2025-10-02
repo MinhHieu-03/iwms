@@ -39,6 +39,8 @@ const IssueTimeScheduleTable = ({}) => {
   // Filter states
   const [filters, setFilters] = useState({
     issue_ord_no: null as string | null,
+    status: null as string | null,
+    type: null as string | null,
     timeIssueRange: null as [Dayjs, Dayjs] | null,
     aReqdTimeRange: null as [Dayjs, Dayjs] | null,
   });
@@ -79,9 +81,7 @@ const IssueTimeScheduleTable = ({}) => {
         });
         // const fakeData = await creatKitData();
         return {
-          metaData: [
-            ...data.metaData,
-          ],
+          metaData: [...data.metaData],
           total: data.total,
         };
       } catch (apiError) {
@@ -138,6 +138,8 @@ const IssueTimeScheduleTable = ({}) => {
   const clearFilters = () => {
     const clearedFilters = {
       issue_ord_no: null,
+      status: null,
+      type: null,
       timeIssueRange: null,
       aReqdTimeRange: null,
     };
@@ -253,6 +255,9 @@ const IssueTimeScheduleTable = ({}) => {
             onCreateOrder={orderPicking}
             onRefresh={refetch}
             loading={loading}
+            showFilters={showFilters}
+            setShowFilters={setShowFilters}
+            isLoading={isLoading}
           />
         </CardHeader>
         <CardContent>
@@ -273,14 +278,7 @@ const IssueTimeScheduleTable = ({}) => {
                   style={{ width: "400px" }}
                   allowClear
                 />
-                <Button
-                  onClick={() => setShowFilters(!showFilters)}
-                  variant={showFilters ? "default" : "outline"}
-                  loading={isLoading}
-                >
-                  <Filter size={16} className="mr-1" />
-                  Bộ lọc {isLoading + ''}
-                </Button>
+
                 {hasActiveFilters && (
                   <Button
                     onClick={clearFilters}

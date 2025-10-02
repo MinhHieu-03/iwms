@@ -10,7 +10,6 @@ const OrdersTab: React.FC = () => {
 
   const handleGateChange = (gate: string) => {
     setSelectedGate(gate);
-    console.log("Gate changed to:", gate);
   };
 
   return (

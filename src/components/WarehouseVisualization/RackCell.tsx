@@ -7,8 +7,7 @@ const RackCell: React.FC<RackCellProps> = ({
   rack,
   isHighlighted,
   onRackClick,
-  getRackStatusColor,
-  locationData,
+  cellColor,
   col,
 }) => {
   if (!rack) {
@@ -28,10 +27,7 @@ const RackCell: React.FC<RackCellProps> = ({
         className={`
           w-10 h-10 flex items-center justify-center text-xs font-medium
           transition-all duration-200 ease-in-out rounded border
-          ${getRackStatusColor(
-            locationData?.[rack.locationCode],
-            rack?.skus?.length > 0
-          )}
+            ${cellColor || "bg-gray-100"}
           ${
             isHighlighted
               ? "ring-2 ring-warehouse-highlight scale-105 z-10 shadow-md"

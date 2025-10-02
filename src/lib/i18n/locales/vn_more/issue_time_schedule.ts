@@ -1,5 +1,6 @@
 export const vi = {
   // Issue Time Schedule translations
+  "issue_time_schedule.title": "Quản lý Kit",
   "issue_time_schedule.table.title": "Danh sách KIT yêu cầu xuất hàng",
   "issue_time_schedule.table.selected": "Đã chọn",
   "issue_time_schedule.table.section": "Phân Loại",
@@ -10,6 +11,10 @@ export const vi = {
   "issue_time_schedule.table.customer_desc_2": "Mô tả khách hàng 2",
   "issue_time_schedule.table.internal_desc": "Mô tả nội bộ",
   "issue_time_schedule.table.issue_order_no": "KIT No.",
+  "issue_time_schedule.table.issue_status": "Trạng thái",
+  "issue_time_schedule.table.issue_kit_type": "Loại KIT",
+  "issue_time_schedule.table.list_material": "Danh sách vật tư",
+  "issue_time_schedule.table.materials_not_fully": "Chỉ hiển thị vật tư chưa lấy đủ",
   "issue_time_schedule.table.plan_issue_date": "Ngày kế hoạch",
   "issue_time_schedule.table.required_time": "Giờ cần có mặt ở nhà máy",
   "issue_time_schedule.table.issue_time": "Giờ bắt đầu cần cấp",
@@ -25,6 +30,7 @@ export const vi = {
   "issue_time_schedule.form.detail_title": "Chi tiết lịch trình thời gian xuất",
   "issue_time_schedule.form.section": "Phân Loại",
   "issue_time_schedule.form.factory": "Nhà máy",
+  "issue_time_schedule.form.total_material": "Tổng số vật tư",
   "issue_time_schedule.form.line": "Dây chuyền",
   "issue_time_schedule.form.product_no": "Mã sản phẩm",
   "issue_time_schedule.form.customer_desc_1": "Mô tả khách hàng 1",
@@ -115,4 +121,5 @@ export const vi = {
   "common.export": "Xuất",
   "common.import": "Nhập",
   "common.refresh": "Làm mới",
+  "common.selected" : "Đã chọn"
 };

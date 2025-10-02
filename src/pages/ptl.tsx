@@ -1,39 +1,24 @@
 import OutboundHeader from "@/components/OutboundHeader";
 import { Card } from "@/components/ui/card";
 import { KIT_MERGE_TYPE, useKitMergeQuery } from "@/hooks/kit-merge";
-import { creatMissionData } from "@/lib/dummyData";
+import { MissionKitMergeItem, useMissionKitMergeDetail } from "@/hooks/mission";
+import { PTLKitIssueDataItem, usePTLKitIssueDataByIssordNo, useUpdatePTL } from "@/hooks/ptl";
 import { KIT_MERGER_STATUS } from "@/types";
-import { Input } from "antd";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Input, message } from "antd";
+import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 
-interface MissionData {
-  _id: string;
-  mission_no: string;
-  package_no: string;
-  material_no: string;
-  quantity: number;
-  supply_loc: string;
-  receive_loc: string;
-  robot_no: string;
-  eta: string;
-  status: string;
-}
-
-interface PTLData {
-  id: string;
-  issue_ord_no: string;
-  material_no: string;
-  ptl_qty: number;
-  picked_qty?: number;
-  station: string;
-  group?: string;
-  box_tp: string;
-  trolley_tp: string;
-}
 const OrdersTab: React.FC = () => {
-  const [selectedGate, setSelectedGate] = useState<string | undefined>(
-    undefined
+  const refAction = useRef(null);
+
+  const [boxFounded, setCurrentBox] = useState<Partial<MissionKitMergeItem>>(
+    {}
   );
+  const [sku, setSku] = useState<string>("");
+  const [ptlDataShow, setPtlDataShow] = useState<PTLKitIssueDataItem[]>([]);
+  const [value, setValue] = useState("");
+  const [selectedGate, setSelectedGate] = useState<string | undefined>();
+
+  // get kit merge in progress
   const { data: listKitMerge, isLoading } = useKitMergeQuery(
     {
       gate: selectedGate,
@@ -43,42 +28,28 @@ const OrdersTab: React.FC = () => {
     { page: 1, limit: 2 }
   );
 
-  const currentKitMerge = useMemo(() => {
+  const [currentKits, currentKitMerge] = useMemo(() => {
     if (
       listKitMerge &&
       listKitMerge.metaData &&
       listKitMerge.metaData.length > 0
     ) {
-      return listKitMerge.metaData[0];
+      return [listKitMerge.metaData[0].kit_no, listKitMerge.metaData[0]._id];
     }
-    return null;
+    return [[], undefined];
   }, [listKitMerge]);
 
-  const [boxFounded, setCurrentBox] = useState<Partial<MissionData>>({});
-  const [missionData, setMissionData] = useState<MissionData[]>([]);
-  const [ptlData, setPtlData] = useState<PTLData[]>(ptlFakeData);
-  const [sku, setSku] = useState<string>("");
-  const [ptlDataShow, setPtlDataShow] = useState<PTLData[]>([]);
+  const {
+    data: ptlDataByIssordNo,
+    error: ptlDataError,
+    isLoading: isLoadingPTLData,
+    refetch: refetchPTLData,
+  } = usePTLKitIssueDataByIssordNo(currentKits);
 
-  const fetchData = async () => {
-    try {
-      const data = await creatMissionData();
-      if (data && data.metaData) {
-        setMissionData(data.metaData);
-      }
-    } catch (error) {
-      console.error("Error fetching mission data:", error);
-      setMissionData([]);
-    }
-  };
+  const { data: missionData, refetch: refetchMissionData } =
+    useMissionKitMergeDetail(currentKitMerge);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const refAction = useRef(null);
-  const [value, setValue] = useState("");
-
+  const { mutate: updatePTLMutate } = useUpdatePTL();
   const handleFocus = () => {
     setTimeout(() => {
       refAction?.current?.focus();
@@ -89,35 +60,12 @@ const OrdersTab: React.FC = () => {
     const currentRef = refAction.current;
     if (currentRef) {
       currentRef.focus();
-      setTimeout(() => {
-        if (currentRef && document.contains(currentRef)) {
-          currentRef.focus();
-        }
-      }, 500);
+      handleFocus();
     }
 
     return () => {
       // Cleanup to prevent focusing on unmounted components
-      if (currentRef && document.activeElement === currentRef) {
-        (document.activeElement as HTMLElement)?.blur();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    const currentRef = refAction.current;
-    if (currentRef) {
-      currentRef.focus();
-      setTimeout(() => {
-        if (currentRef && document.contains(currentRef)) {
-          currentRef.focus();
-        }
-      }, 500);
-    }
-
-    return () => {
-      // Cleanup to prevent focusing on unmounted components
-      if (currentRef && document.activeElement === currentRef) {
+      if (currentRef && document?.activeElement === currentRef) {
         (document.activeElement as HTMLElement)?.blur();
       }
     };
@@ -129,34 +77,65 @@ const OrdersTab: React.FC = () => {
   };
 
   useEffect(() => {
-    if (sku && ptlData && ptlData.length > 0) {
-      setPtlDataShow(ptlData.filter((item) => item?.material_no === sku));
+    if (!sku) return () => {};
+    refetchPTLData();
+    if (ptlDataByIssordNo && ptlDataByIssordNo.length > 0) {
+      setPtlDataShow(
+        ptlDataByIssordNo.filter((item) => item?.material_no === sku)
+      );
     } else {
       setPtlDataShow([]);
     }
-  }, [sku, ptlData]);
+    if (missionData && missionData.length > 0) {
+      const boxFoundedMission = missionData.find(
+        (item) => item?.inventory?.material_no === sku
+      );
+      setCurrentBox(boxFoundedMission?.inventory || {});
+    } else {
+      setCurrentBox({});
+    }
+  }, [sku, ptlDataByIssordNo, missionData]);
+
+  const handlePTL = (value) => {
+    let total = Number(value);
+    const updateItems = [];
+
+    const convert = ptlDataShow.map((item) => {
+      if (!item) return item;
+      const oldPicked = item.picked_qty || 0;
+
+      if (item.material_no === sku && oldPicked < (item.ptl_qty || 0)) {
+        const need = (item.ptl_qty || 0) - oldPicked;
+
+        const countSet = Math.min(total, need);
+        if(countSet <= 0) return item;
+        
+        item.picked_qty = oldPicked + countSet;
+        total = total - countSet;
+        
+        updateItems.push(item);
+      }
+      return item;
+    });
+    console.log("updateItems", updateItems);
+    updateItems.forEach((item) => {
+      if (!item || !item._id) return;
+      updatePTLMutate({
+        id: item._id || "",
+        picked_qty: item.picked_qty || 0,
+      });
+    });
+    setPtlDataShow([...convert]);
+  };
 
   const handleInputEnter = (value: string) => {
     if (value && value.length >= 6) {
       setSku(value);
-      const boxFounded = missionData.find(
-        (item) => item?.material_no === value
-      );
-      setCurrentBox(boxFounded || {});
     } else if (value && !isNaN(Number(value))) {
-      let total = Number(value);
-      const convert = ptlDataShow.map((item) => {
-        if (!item) return item;
-        const oldPicked = item.picked_qty || 0;
-        if (item.material_no === sku && oldPicked < (item.ptl_qty || 0)) {
-          const need = (item.ptl_qty || 0) - oldPicked;
-          const countSet = Math.min(total, need);
-          item.picked_qty = oldPicked + countSet;
-          total = total - countSet;
-        }
-        return item;
-      });
-      setPtlDataShow([...convert]);
+      handlePTL(value);
+    } else {
+      console.log("Invalid input", value);
+      message.error("Dữ liệu nhập không hợp lệ");
     }
     setValue("");
   };
@@ -214,7 +193,7 @@ const OrdersTab: React.FC = () => {
                       Số lượng
                     </p>
                     <p className="font-bold text-2xl">
-                      {boxFounded?.quantity || "0"}
+                      {boxFounded?.qty || "0"}
                     </p>
                   </div>
                 </div>
@@ -223,49 +202,25 @@ const OrdersTab: React.FC = () => {
           </div>
           <div className="mt-6">
             <div className="grid grid-cols-4 gap-4">
-              {/* Kit 1 */}
-              <TrolleyKit
-                ptlDataShow={
-                  ptlDataShow?.filter(
-                    (item) => item?.issue_ord_no === "K365005"
-                  ) || []
-                }
-                title="K365005"
-                kit="Kit 1"
-              />
-              {/* Kit 2 */}
-              <TrolleyKit
-                ptlDataShow={
-                  ptlDataShow?.filter(
-                    (item) => item?.issue_ord_no === "K365006"
-                  ) || []
-                }
-                title="K365006"
-                kit="Kit 2"
-              />
-              {/* Kit 3 */}
-              <TrolleyKit
-                ptlDataShow={
-                  ptlDataShow?.filter(
-                    (item) => item?.issue_ord_no === "K365007"
-                  ) || []
-                }
-                title="K365007"
-                kit="Kit 3"
-              />
-              {/* Kit 4 */}
-              <TrolleyKit
-                ptlDataShow={
-                  ptlDataShow?.filter(
-                    (item) => item?.issue_ord_no === "K365008"
-                  ) || []
-                }
-                title="K365008"
-                kit="Kit 4"
-              />
+              {currentKits.map((kitNo, index) => (
+                <TrolleyKit
+                  ptlDataShow={ptlDataShow}
+                  key={kitNo}
+                  title={kitNo}
+                  kit={`Kit ${index + 1}`}
+                />
+              ))}
             </div>
           </div>
         </div>
+
+        {isLoadingPTLData ? (
+          <span>Loading...</span>
+        ) : (
+          <span>
+            {ptlDataError ? ptlDataError.message : ptlDataByIssordNo?.length}
+          </span>
+        )}
       </Card>
     </div>
   );
@@ -480,69 +435,77 @@ const ptlFakeData = [
 ];
 
 interface TrolleyKitProps {
-  ptlDataShow: PTLData[];
+  ptlDataShow: PTLKitIssueDataItem[];
   title: string;
   kit: string;
 }
 
-const TrolleyKit: React.FC<TrolleyKitProps> = ({ ptlDataShow, title, kit }) => {
-  return (
-    <div className="bg-white border border-gray-200 rounded-lg p-3">
-      <h3 className="font-semibold text-center bg-blue-100 py-2 rounded text-xl flex justify-between px-3">
-        <span>{kit}</span> <span>{title}</span>
-      </h3>
-      <div className="">
-        <div className="h-[30vh] bg-red-50 p-2">
-          {ptlDataShow && ptlDataShow.length > 0 ? (
-            ptlDataShow
-              .filter((item) => item?.station?.startsWith("SA"))
-              .map((item, index) => (
-                <div
-                  key={item?.id || index}
-                  className={`${
-                    (item?.picked_qty || 0) === (item?.ptl_qty || 0)
-                      ? "bg-green-100"
-                      : "bg-gray-50"
-                  } mb-2 p-2 rounded border flex justify-between text-xl`}
-                >
-                  <div className=" text-gray-600 ">{item?.group || "N/A"}</div>
-                  <div className="">
-                    {item?.picked_qty || 0}/{item?.ptl_qty || 0}
+const TrolleyKit: React.FC<TrolleyKitProps> = memo(
+  ({ ptlDataShow: data, title, kit }) => {
+    const ptlDataShow = data?.filter((item) => item?.issord_no === title) || [];
+
+    return (
+      <div className="bg-white border border-gray-200 rounded-lg p-3">
+        <h3 className="font-semibold text-center bg-blue-100 py-2 rounded text-xl flex justify-between px-3">
+          <span>{kit}</span> <span>{title}</span>
+        </h3>
+        <div className="">
+          <div className="h-[30vh] bg-red-50 p-2">
+            {ptlDataShow && ptlDataShow.length > 0 ? (
+              ptlDataShow
+                .filter((item) => item?.type === "SA")
+                .map((item, index) => (
+                  <div
+                    key={item?.id || index}
+                    className={`${
+                      (item?.picked_qty || 0) === (item?.ptl_qty || 0)
+                        ? "bg-green-100"
+                        : "bg-gray-50"
+                    } mb-2 p-2 rounded border flex justify-between text-xl`}
+                  >
+                    <div className=" text-gray-600 ">
+                      {item?.ptl_code || "N/A"}
+                    </div>
+                    <div className="">
+                      {item?.picked_qty || 0}/{item?.ptl_qty || 0}
+                    </div>
                   </div>
-                </div>
-              ))
-          ) : (
-            <div className="text-center text-gray-500 py-4">
-              No SA data available
-            </div>
-          )}
-        </div>
-        <div className="h-[30vh] bg-green-50  p-2">
-          {ptlDataShow && ptlDataShow.length > 0 ? (
-            ptlDataShow
-              .filter((item) => item?.station?.startsWith("SD"))
-              .map((item, index) => (
-                <div
-                  key={item?.id || index}
-                  className={`${
-                    (item?.picked_qty || 0) === (item?.ptl_qty || 0)
-                      ? "bg-green-100"
-                      : "bg-gray-50"
-                  } mb-2 p-2 rounded border flex justify-between text-xl`}
-                >
-                  <div className=" text-gray-600 ">{item?.group || "N/A"}</div>
-                  <div className="">
-                    {item?.picked_qty || 0}/{item?.ptl_qty || 0}
+                ))
+            ) : (
+              <div className="text-center text-gray-500 py-4">
+                No SA data available
+              </div>
+            )}
+          </div>
+          <div className="h-[30vh] bg-green-50  p-2">
+            {ptlDataShow && ptlDataShow.length > 0 ? (
+              ptlDataShow
+                .filter((item) => item?.type === "SD")
+                .map((item, index) => (
+                  <div
+                    key={item?.id || index}
+                    className={`${
+                      (item?.picked_qty || 0) === (item?.ptl_qty || 0)
+                        ? "bg-green-100"
+                        : "bg-gray-50"
+                    } mb-2 p-2 rounded border flex justify-between text-xl`}
+                  >
+                    <div className=" text-gray-600 ">
+                      {item?.ptl_code || "N/A"}
+                    </div>
+                    <div className="">
+                      {item?.picked_qty || 0}/{item?.ptl_qty || 0}
+                    </div>
                   </div>
-                </div>
-              ))
-          ) : (
-            <div className="text-center text-gray-500 py-4">
-              No SD data available
-            </div>
-          )}
+                ))
+            ) : (
+              <div className="text-center text-gray-500 py-4">
+                No SD data available
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+);

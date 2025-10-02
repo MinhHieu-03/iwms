@@ -16,6 +16,7 @@ import { domain, IssueTimeScheduleDataType, RenderCol } from "./const";
 import FilterPanel from "./FilterPanel";
 import KitManagementHeader from "./KitManagementHeader";
 import ModalDetail from "./modal_detail";
+import { createPtlKitIssueData } from "@/hooks/ptl";
 
 const { RangePicker } = DatePicker;
 const { list, create, update, remove, merge_kit } = domain;
@@ -25,11 +26,7 @@ const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [pageInfo, setPageInfo] = useState({ page: 1, perPage: 10 });
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>(
-    sessionStorage.getItem("activeKit")
-      ? JSON.parse(sessionStorage.getItem("activeKit") || "[]")
-      : []
-  );
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [searchText, setSearchText] = useState<string>("");
 
   // Filter states
@@ -201,7 +198,7 @@ const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
   useEffect(() => {
     refetch();
   }, []);
-
+  const mutationFn = createPtlKitIssueData();
   const orderPicking = async () => {
     try {
       setLoading(true);
@@ -230,8 +227,8 @@ const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
         return item;
       });
       console.log("body", body);
-      //
       await apiClient.post(merge_kit, body);
+      mutationFn.mutate(selectedRowKeys as string[]);
       setCurrent(1);
       setLoading(false);
     } catch (error) {
