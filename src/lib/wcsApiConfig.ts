@@ -20,7 +20,7 @@ const ResponseStatusCode: TResponseStatusCode = {
 };
 
 const timeout = 100000;
-const ACCESS_TOKEN = envConfig.AUTH_STORAGE_KEY;
+const ACCESS_TOKEN = envConfig.WCS_AUTH_TOKEN;
 const REFRESH_TOKEN = "refreshToken";
 const config: AxiosRequestConfig = {
   baseURL: BASE_URL,
@@ -52,7 +52,7 @@ const processQueue = async () => {
 request.interceptors.request.use(
   async (config) => {
     const access_token = envConfig.WCS_AUTH_TOKEN;
-      // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjo0ODc0Mjc0MzYzfQ.9TZKkw2x-BO6BIWlWsM83RfbJBsppeKdkIHtltiocEM";
+    // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjo0ODc0Mjc0MzYzfQ.9TZKkw2x-BO6BIWlWsM83RfbJBsppeKdkIHtltiocEM";
     if (access_token)
       config.headers["Authorization"] = `Bearer ${access_token}`;
     return config;
@@ -85,8 +85,7 @@ request.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const refreshToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjo0ODc0Mjc0MzYzfQ.9TZKkw2x-BO6BIWlWsM83RfbJBsppeKdkIHtltiocEM";
+    const refreshToken = envConfig.WCS_AUTH_TOKEN;
     if (
       error?.response?.status === 401 &&
       !originalRequest?._retry &&
