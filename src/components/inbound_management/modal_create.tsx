@@ -1,5 +1,6 @@
 import apiClient from "@/lib/axios";
 import { TypeRenderForm } from "@/lib/render-form";
+import { INVENTORY_TYPE } from "@/types";
 import {
   Button,
   ConfigProvider,
@@ -116,6 +117,7 @@ const ModalAdd = ({
       bag_quantity: undefined,
       bin_code: "",
     });
+    console.log("sku____", sku);
     let item = masterData[sku];
     if (!item) {
       const isSuppMat = findSubMat(sku, suppMatData);
@@ -136,9 +138,15 @@ const ModalAdd = ({
         return;
       }
       form.setFieldsValue({
-        sku: isSuppMat,
+        type: INVENTORY_TYPE.OTHER,
+        skuConvert: isSuppMat,
       });
     }
+    // set type về standard
+    form.setFieldsValue({
+      type: INVENTORY_TYPE.STANDARD,
+    });
+
     if (item.flg1 === 4) {
       setSkuMaster(item);
       text2void(`Không nhập kho`);
@@ -149,17 +157,16 @@ const ModalAdd = ({
     }
     setSkuMaster(item);
     setCurrentField("qty");
+    console.log("item", item);
     text2void(`OK`, false);
     if (item.flg1 == 2) {
       form.setFieldsValue({
-        sku: item.material_no,
         storeMethod: "Carton",
         packingMethod: "Bag",
         name: item.material_nm,
       });
     } else if (item.flg1 == 1) {
       form.setFieldsValue({
-        sku: item.material_no,
         storeMethod: "Plastic Bin",
         packingMethod: "Bag",
         name: item.material_nm,
@@ -171,6 +178,8 @@ const ModalAdd = ({
       // Validate the form before submitting
       await form.validateFields();
       const values = form.getFieldsValue();
+      const type = form.getFieldValue("type");
+      const sku = form.getFieldValue("skuConvert") || values.sku;
 
       const item = masterData[sku];
       // nguyên thùng
@@ -225,8 +234,9 @@ const ModalAdd = ({
         ];
       }
       const body = {
+        type: type,
         product_name: values.sku,
-        sku: values.sku,
+        sku: sku,
         bin_code: values.bin_code,
         store: storeModel,
         pk_style: skuMaster?.pk_style,
@@ -235,7 +245,7 @@ const ModalAdd = ({
       console.log("Form submitted:", body);
       notification.success({
         message: "Thành công",
-        description: `Đã thêm yêu cầu nhập kho vật tư ${values.sku} - Số lượng: ${values.quantity}`,
+        description: `Đã thêm yêu cầu nhập kho vật tư ${sku} - Số lượng: ${values.quantity}`,
       });
       reset();
     } catch (error) {
@@ -306,7 +316,7 @@ const ModalAdd = ({
       text2void(`OK`, false);
       setTimeout(() => {
         handleSubmit();
-      }, 100);
+      }, 10);
     } else {
       if (!oldSKU) {
         form.setFieldValue("sku", value);
@@ -345,15 +355,15 @@ const ModalAdd = ({
       fetchStorageData();
       keepFocus();
 
-      // let intervalId = setInterval(() => {
-      //   console.log("ddđ");
-      //   if (currentRef && document.activeElement !== currentRef) {
-      //     currentRef.focus();
-      //   }
-      // }, 1 * 1000);
+      let intervalId = setInterval(() => {
+        console.log("ddđ");
+        if (refAction?.current) {
+            refAction.current.focus();
+        }
+      }, 10 * 1000);
 
       return () => {
-        // clearInterval(intervalId);
+        clearInterval(intervalId);
         if (
           refAction?.current &&
           document.activeElement === refAction?.current
@@ -421,7 +431,7 @@ const ModalAdd = ({
                       <span className="text-2xl font-bold">
                         Mã vật tư{" "}
                         <span className="text-sm font-bold">
-                          ({skuMaster?.pk_style} items/túi)
+                          {form.getFieldValue("skuConvert")} ({skuMaster?.pk_style} items/túi)
                         </span>
                       </span>
                     }
@@ -538,7 +548,7 @@ const ModalAdd = ({
             </div>
           </div>
 
-          <div className="flex justify-center mt-8 gap-6">
+          {/* <div className="flex justify-center mt-8 gap-6">
             <Button
               onClick={() => {
                 handleClose();
@@ -557,7 +567,7 @@ const ModalAdd = ({
             >
               OK
             </Button>
-          </div>
+          </div> */}
         </div>
         {/* 60988953 */}
       </ConfigProvider>

@@ -272,8 +272,8 @@ export const RenderCol = ({
         { value: MISSION_STATE.PROCESSING, label: t("mission.state.processing"), color: "processing" },
         { value: MISSION_STATE.DONE_PICKING, label: "hoàn thành pick tổng", color: "green" },
         { value: MISSION_STATE.DONE_PICKING_SPLIT, label: "hoàn thành chia hàng", color: "green" },
-        // { value: MISSION_STATE.DONE, label: t("mission.state.done"), color: "success" },
         { value: MISSION_STATE.ERROR, label: t("mission.state.error"), color: "error" },
+        { value: MISSION_STATE.DONE, label: t("mission.state.done"), color: "success" },
       ];
 
       return (
