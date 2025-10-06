@@ -30,6 +30,7 @@ export const domain = {
   remove: "/issue-time-schedule",
   detail: "/issue-time-schedule",
   merge_kit: "/kit-merger",
+  merge_kit_odd: "/kit-merger/odd",
 };
 
 export const lang_key = "issue_time_schedule.table";
