@@ -9,6 +9,7 @@ interface EnvConfig {
   // API
   API_BASE_URL: string;
   WCS_BASE_URL: string;
+  SERVER_PRINTER: string;
 
   // Application
   APP_TITLE: string;
@@ -54,6 +55,7 @@ const config: EnvConfig = {
   // API
   API_BASE_URL: getEnvVariable("API_BASE_URL", "https://iwms-api.rostek.space"),
   WCS_BASE_URL: getEnvVariable("WCS_BASE_URL", "http://35.184.194.168:3142"),
+  SERVER_PRINTER: getEnvVariable("SERVER_PRINTER", "http://localhost:5000"),
 
   // Application
   APP_TITLE: getEnvVariable("APP_TITLE", "IWMS Dashboard"),

@@ -1,5 +1,6 @@
 import apiClient from '@/lib/axios';
 import { TypeRenderForm } from '@/lib/render-form';
+import { INVENTORY_TYPE } from '@/types';
 import {
   Button,
   ConfigProvider,
@@ -116,6 +117,7 @@ const ModalAdd = ({
       bag_quantity: undefined,
       bin_code: '',
     });
+    console.log("sku____", sku);
     let item = masterData[sku];
     if (!item) {
       const isSuppMat = findSubMat(sku, suppMatData);
@@ -136,9 +138,12 @@ const ModalAdd = ({
         return;
       }
       form.setFieldsValue({
-        sku: isSuppMat,
+        type: INVENTORY_TYPE.OTHER,
       });
     }
+    form.setFieldsValue({
+      type: INVENTORY_TYPE.STANDARD,
+    });
     if (item.flg1 === 4) {
       setSkuMaster(item);
       text2void(`Không nhập kho`);
@@ -149,17 +154,18 @@ const ModalAdd = ({
     }
     setSkuMaster(item);
     setCurrentField('qty');
+    console.log('item', item);
     text2void(`OK`, false);
     if (item.flg1 == 2) {
       form.setFieldsValue({
-        sku: item.material_no,
+        // sku: item.material_no,
         storeMethod: 'Carton',
         packingMethod: 'Bag',
         name: item.material_nm,
       });
     } else if (item.flg1 == 1) {
       form.setFieldsValue({
-        sku: item.material_no,
+        // sku: item.material_no,
         storeMethod: 'Plastic Bin',
         packingMethod: 'Bag',
         name: item.material_nm,
@@ -171,6 +177,7 @@ const ModalAdd = ({
       // Validate the form before submitting
       await form.validateFields();
       const values = form.getFieldsValue();
+      const type = form.getFieldValue('type');
 
       const item = masterData[sku];
       // nguyên thùng
@@ -225,6 +232,7 @@ const ModalAdd = ({
         ];
       }
       const body = {
+        type: type,
         product_name: values.sku,
         sku: values.sku,
         bin_code: values.bin_code,
