@@ -37,23 +37,14 @@ const App = () => {
   const [showDetail, setShowDetail] = useState<any>(null);
   const [pageInfo, setPageInfo] = useState({
     page: 1,
-    perPage: 10,
+    limit: 10,
   });
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState<number>(0);
   const [dataList, setDataList] = useState<DataType[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
   const [selectedMission, setSelectedMission] = useState<any>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<{
-    isOpen: boolean;
-    data: string[];
-    type: "single" | "multiple";
-  }>({
-    isOpen: false,
-    data: [],
-    type: "single",
-  });
-
+  const [drawerTitle, setDrawerTitle] = useState("");
   const [allData, setAllData] = useState<DataType[]>([]);
 
   const fetchData = async () => {
@@ -105,42 +96,26 @@ const App = () => {
   }, [allData, searchQuery]);
 
   useEffect(() => {
-    const startIndex = (pageInfo.page - 1) * pageInfo.perPage;
-    const endIndex = startIndex + pageInfo.perPage;
+    const startIndex = (pageInfo.page - 1) * pageInfo.limit;
+    const endIndex = startIndex + pageInfo.limit;
 
     setDataList(filteredData.slice(startIndex, endIndex));
     setTotal(filteredData.length);
-  }, [filteredData, pageInfo.page, pageInfo.perPage]);
+  }, [filteredData, pageInfo.page, pageInfo.limit]);
 
   useEffect(() => {
-    setPageInfo({ page: 1, perPage: pageInfo.perPage });
+    setPageInfo({ page: 1, limit: pageInfo.limit });
   }, [searchQuery]);
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const handleDelete = (
-    payload: string[],
-    type: "single" | "multiple" = "single"
-  ) => {
-    setDeleteConfirm({
-      isOpen: true,
-      data: payload,
-      type: type,
-    });
-  };
-
-  const confirmDelete = async () => {
+  const handleDelete = async (ids: string[]) => {
     try {
-      const { data } = await deleteMissionTemplate(deleteConfirm.data);
+      const { data } = await deleteMissionTemplate(ids);
 
       setSelectedRowKeys([]);
-      setDeleteConfirm({
-        isOpen: false,
-        data: [],
-        type: "single",
-      });
 
       if (data.success) {
         fetchData();
@@ -151,41 +126,6 @@ const App = () => {
       } else {
         toast({
           title: t("common.delete_error"),
-          description: data.desc,
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.log("error", error);
-      setDeleteConfirm({
-        isOpen: false,
-        data: [],
-        type: "single",
-      });
-    }
-  };
-
-  const cancelDelete = () => {
-    setDeleteConfirm({
-      isOpen: false,
-      data: [],
-      type: "single",
-    });
-  };
-
-  const handleCreateMission = async (mission: any) => {
-    try {
-      const { data } = await createMissionTemplate(mission);
-
-      if (data.success) {
-        fetchData();
-        toast({
-          title: t("common.success"),
-          description: data.desc,
-        });
-      } else {
-        toast({
-          title: t("common.error"),
           description: data.desc,
           variant: "destructive",
         });
@@ -246,13 +186,14 @@ const App = () => {
   return (
     <div className="space-y-4">
       <Header
-        handleCreateMission={() =>
-          setShowDetail({ mode: "new", onSubmit: handleCreateMission })
-        }
+        handleCreateMission={() => {
+          setShowDetail({ mode: "new" });
+          setDrawerTitle(t("mission_template.create_new_template"));
+        }}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         selectedRow={selectedRowKeys}
-        handleDelete={(payload) => handleDelete(payload, "multiple")}
+        handleDelete={(payload) => handleDelete(payload)}
       />
       <Card>
         <CardContent>
@@ -268,7 +209,7 @@ const App = () => {
             onRow={(record, rowIndex) => {
               return {
                 onClick: (e) => {
-                  // navigate(`/mission-setting/template/${record.id}`);
+                  setDrawerTitle(t("mission_template.edit_template"));
                   setShowDetail(record);
                 },
               };
@@ -276,26 +217,28 @@ const App = () => {
           />
           <BasePagination
             total={total}
-            pageSize={pageInfo.perPage}
+            pageSize={pageInfo.limit}
             current={pageInfo.page}
-            onChange={(page: number, perPage: number) =>
-              setPageInfo({ page, perPage })
-            }
+            onChange={(page: number, limit: number) => {
+              setPageInfo({ page, limit });
+            }}
           />
           <Drawer
-            title={t("mission_template.create_new_template")}
+            title={drawerTitle}
             height={"94vh"}
             placement="bottom"
             onClose={() => {
               setShowDetail(null);
-              fetchData();
             }}
             open={!!showDetail}
           >
             <StorageHierarchyCard
               missionData={showDetail}
               mode={showDetail?._id ? "update" : "create"}
-              onSubmit={handleCreateMission}
+              onClose={() => {
+                setShowDetail(null);
+                fetchData();
+              }}
             />
           </Drawer>
         </CardContent>
@@ -305,19 +248,6 @@ const App = () => {
         onClose={() => setSelectedMission(null)}
         onSubmit={handleRunMission}
         data={selectedMission}
-      />
-      <DeleteConfirmForm
-        isOpen={deleteConfirm.isOpen}
-        confirmation={
-          deleteConfirm.type === "single"
-            ? t("mission_template.delete_single_confirm")
-            : t("mission_template.delete_multiple_confirm", {
-                count: deleteConfirm.data.length,
-              })
-        }
-        data={deleteConfirm.data}
-        onConfirm={confirmDelete}
-        onCancel={cancelDelete}
       />
     </div>
   );

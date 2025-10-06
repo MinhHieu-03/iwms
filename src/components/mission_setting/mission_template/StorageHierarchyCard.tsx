@@ -1,4 +1,7 @@
-import { patchMissionTemplate } from "@/api/missionSettingApi";
+import {
+  createMissionTemplate,
+  patchMissionTemplate,
+} from "@/api/missionSettingApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useI18n } from "@/contexts/useI18n";
 import { useToast } from "@/hooks/use-toast";
@@ -18,8 +21,14 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Button, Input } from "antd";
-import { Workflow } from "lucide-react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { ArrowDown, ChevronDown, Workflow } from "lucide-react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { initEdges, initNodes } from "./const";
 import CustomStartNode, { CustomEndNode } from "./CustomStartNode";
 import CustomStorageNode from "./CustomStorageNode";
@@ -30,20 +39,22 @@ interface StorageHierarchyCardProps {
   className?: string;
   missionData?: any;
   mode?: string;
-  onSubmit?: (data: any) => Promise<any>;
+  onClose?: () => void;
 }
 
 const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
   className = "flex-1 mr-4",
   missionData = {},
   mode = "update",
-  onSubmit = () => Promise.resolve(),
+  onClose = () => {},
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [startNode, setStartNode] = useState<string | number>(-1);
   const [templateName, setTemplateName] = useState("");
+  const [showInstruction, setShowInstruction] = useState(true);
+  const reactFlowInstanceRef = useRef<any>(null);
 
   const { toast } = useToast();
   const { t } = useI18n();
@@ -51,11 +62,19 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
   useEffect(() => {
     setTemplateName(missionData?.name || "");
     setStartNode(missionData?.start ?? -1);
+
+    setEdges(initEdges(missionData));
+    setNodes(initNodes(missionData));
   }, [missionData]);
 
   useEffect(() => {
-    setEdges(initEdges(missionData));
-    setNodes(initNodes(missionData));
+    if (!reactFlowInstanceRef.current) return;
+    const id = setTimeout(() => {
+      try {
+        reactFlowInstanceRef.current.fitView({ padding: 0.2, duration: 300 });
+      } catch (e) {}
+    }, 0);
+    return () => clearTimeout(id);
   }, [missionData]);
 
   const nodeTypes = useMemo(
@@ -158,6 +177,14 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
         // Store the target node id directly instead of index
         setStartNode(params.target);
       }
+      if (
+        edges.find(
+          (e) =>
+            e.source === params.source && e.sourceHandle === params.sourceHandle
+        )
+      ) {
+        return;
+      }
       setNodeFlow(params);
       const newEdge: Edge = {
         ...params,
@@ -218,9 +245,6 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
     },
     [nodes, startNode]
   );
-
-  console.log("nodes", nodes);
-  console.log("edges", edges);
 
   const checkUnconnectedNode = () => {
     let sourceIsTarget = false;
@@ -309,6 +333,31 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
     }
   };
 
+  console.log("nodes", nodes);
+  console.log("edges", edges);
+
+  const checkConnectivity = (start: string) => {
+    if (!nodes.find((n) => n.id === start)) {
+      return false;
+    }
+
+    const visited = new Set();
+    const queue = [start];
+
+    while (queue.length > 0) {
+      const node = queue.shift();
+
+      if (visited.has(node)) continue;
+      visited.add(node);
+
+      for (const edge of edges.filter((e) => e.source === node)) {
+        if (!visited.has(edge.target)) queue.push(edge.target);
+      }
+    }
+
+    return visited.size === nodes.length;
+  };
+
   const handleSaveChanges = async () => {
     if (
       checkUnconnectedNode().unconnectedNode.length > 0 ||
@@ -332,6 +381,13 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
         title: t("common.error"),
         variant: "destructive",
         description: t("mission_template.connect_start_node"),
+      });
+      return;
+    } else if (!checkConnectivity("start")) {
+      toast({
+        title: t("common.error"),
+        variant: "destructive",
+        description: t("mission_template.all_nodes_must_have_start_node"),
       });
       return;
     } else {
@@ -379,11 +435,11 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
           ui_data: nodeLocations,
         };
 
-        console.log("missionTemplate", missionTemplate);
+        // console.log("missionTemplate", missionTemplate);
 
         let response;
         if (mode === "create") {
-          response = await missionData.onSubmit(missionTemplate);
+          response = await createMissionTemplate(missionTemplate);
         } else {
           response = await patchMissionTemplate(
             missionTemplate,
@@ -396,6 +452,7 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
             title: t("common.success"),
             description: t("mission_template.updated_successfully"),
           });
+          onClose();
         } else {
           toast({
             title: t("common.error"),
@@ -445,6 +502,12 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
                 onNodeDoubleClick={onNodeClick}
                 onConnect={onConnect}
                 nodeTypes={nodeTypes}
+                onInit={(instance) => {
+                  reactFlowInstanceRef.current = instance;
+                  try {
+                    instance.fitView({ padding: 0.2, duration: 300 });
+                  } catch (e) {}
+                }}
                 fitView
                 attributionPosition="bottom-left"
                 multiSelectionKeyCode="shift"
@@ -456,8 +519,25 @@ const StorageHierarchyCard: React.FC<StorageHierarchyCardProps> = ({
                 <MiniMap />
                 <Background gap={16} size={1} />
                 <Panel position="top-right">
-                  <div className="bg-white border p-3 rounded-md shadow-sm text-sm">
-                    <h4 className="font-medium mb-2">Mission Template</h4>
+                  <div className="h-10">
+                    <Button
+                      className="absolute top-0 right-0"
+                      onClick={() => setShowInstruction(!showInstruction)}
+                    >
+                      <ChevronDown
+                        className={`h-4 w-4 ${
+                          showInstruction ? "rotate-180" : ""
+                        }`}
+                      />
+                    </Button>
+                  </div>
+
+                  <div
+                    className={`bg-white border p-3 rounded-md shadow-sm text-sm ${
+                      showInstruction ? "block" : "hidden"
+                    }`}
+                  >
+                    <h4 className="font-medium mb-2">Instruction</h4>
                     <div className="text-xs text-gray-600 space-y-1">
                       <p>
                         • Click "Create Start Node" to add a start node (no

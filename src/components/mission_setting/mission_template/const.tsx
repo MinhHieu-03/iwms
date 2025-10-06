@@ -64,6 +64,7 @@ export const RenderCol: ({
     {
       dataIndex: "action",
       title: "Action",
+      width: 140,
       render: (value: string, record: DataType) => (
         <div className="flex items-center justify-center gap-2">
           <Button
