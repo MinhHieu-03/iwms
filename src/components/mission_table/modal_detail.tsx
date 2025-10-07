@@ -1,7 +1,7 @@
 import { Modal, Descriptions, Tag, Timeline, Divider } from "antd";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
-import { MissionDataType, MISSION_STATE, MISSION_TYPE } from "./const";
+import { MissionDataType, MISSION_STATUS, MISSION_TYPE } from "./const";
 
 interface ModalDetailProps {
   isOpen: boolean;
@@ -14,7 +14,7 @@ const ModalDetail = ({ isOpen, data, onClose }: ModalDetailProps) => {
 
   if (!data) return null;
 
-  const getStateTag = (state: MISSION_STATE) => {
+  const getStateTag = (status: MISSION_STATUS) => {
     const stateMap: Record<string, { text: string; color: string }> = {
       new: { text: t("mission.state.new"), color: "default" },
       processing: { text: t("mission.state.processing"), color: "processing" },
@@ -22,7 +22,7 @@ const ModalDetail = ({ isOpen, data, onClose }: ModalDetailProps) => {
       error: { text: t("mission.state.error"), color: "error" },
       done_picking: { text: t("mission.state.done_picking"), color: "green" },
     };
-    const stateInfo = stateMap[state || 'new'];
+    const stateInfo = stateMap[status || 'new'];
     return <Tag color={stateInfo.color}>{stateInfo.text}</Tag>;
   };
 
@@ -58,7 +58,7 @@ const ModalDetail = ({ isOpen, data, onClose }: ModalDetailProps) => {
               {getTypeTag(data?.type)}
             </Descriptions.Item>
             <Descriptions.Item label={t("mission.state")}>
-              {getStateTag(data?.state || MISSION_STATE.NEW)}
+              {getStateTag(data?.status || MISSION_STATUS.NEW)}
             </Descriptions.Item>
             <Descriptions.Item label={t("mission.robot_code")}>
               {data?.robot_code || "-"}

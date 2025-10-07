@@ -1,4 +1,4 @@
-export enum MISSION_STATE {
+export enum MISSION_STATUS {
   NEW = 'new',
   PROCESSING = 'processing',
   DONE = 'done',

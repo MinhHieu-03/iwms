@@ -9,7 +9,7 @@ import BasePagination from "@/components/ui/antd-pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import apiClient from "@/lib/axios";
 
-import { domain, lang_key, RenderCol, MissionDataType, mockData, MISSION_STATE, MISSION_TYPE } from "./const";
+import { domain, lang_key, RenderCol, MissionDataType, mockData, MISSION_STATUS, MISSION_TYPE } from "./const";
 import ModalAdd, { type FormValues } from "./modal_create";
 import ModalEdit, { type FormValues as FormValuesEdit } from "./modal_update";
 import ModalDetail from "./modal_detail";
@@ -74,7 +74,7 @@ const MissionTable = () => {
         }
         
         if (stateFilter) {
-          filteredData = filteredData.filter(item => item.state === stateFilter);
+          filteredData = filteredData.filter(item => item.status === stateFilter);
         }
         
         if (typeFilter) {
@@ -237,11 +237,11 @@ const MissionTable = () => {
 
   const stateOptions = [
     { label: t("common.all"), value: "" },
-    { label: t("mission.state.new"), value: MISSION_STATE.NEW },
-    { label: t("mission.state.processing"), value: MISSION_STATE.PROCESSING },
-    { label: t("mission.state.done"), value: MISSION_STATE.DONE },
-    { label: t("mission.state.error"), value: MISSION_STATE.ERROR },
-    { label: t("mission.state.done_picking"), value: MISSION_STATE.DONE_PICKING },
+    { label: t("mission.state.new"), value: MISSION_STATUS.NEW },
+    { label: t("mission.state.processing"), value: MISSION_STATUS.PROCESSING },
+    { label: t("mission.state.done"), value: MISSION_STATUS.DONE },
+    { label: t("mission.state.error"), value: MISSION_STATUS.ERROR },
+    { label: t("mission.state.done_picking"), value: MISSION_STATUS.DONE_PICKING },
   ];
 
   const typeOptions = [

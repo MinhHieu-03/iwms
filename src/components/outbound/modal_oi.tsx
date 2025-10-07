@@ -1,5 +1,5 @@
 import apiClient from "@/lib/axios";
-import { KIT_MERGER_STATUS, MISSION_STATE } from "@/types";
+import { KIT_MERGER_STATUS, MISSION_STATUS } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Drawer, Input, message } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -28,15 +28,15 @@ const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
         const { data } = await apiClient.get(`/mission/statistics/${kitMerge}`);
         if (data?.length) {
           const error = data.filter(
-            (item) => item.state === MISSION_STATE.ERROR
+            (item) => item.status === MISSION_STATUS.ERROR
           ).length;
 
           const done_picking = data.filter(
-            (item) => item.state === MISSION_STATE.DONE_PICKING
+            (item) => item.status === MISSION_STATUS.DONE_PICKING
           ).length;
 
           const new_mission = data.filter(
-            (item) => item.state === MISSION_STATE.NEW
+            (item) => item.status === MISSION_STATUS.NEW
           ).length;
 
           const rest = data.length - done_picking - error;
@@ -108,7 +108,7 @@ const DrawerOI: React.FC<any> = ({ isOpen, setIsOpen, data }) => {
   const updateMissionStatus = (boxFounded) => {
     apiClient
       .patch(`/mission/${boxFounded._id}`, {
-        state: MISSION_STATE.DONE_PICKING,
+        status: MISSION_STATUS.DONE_PICKING,
       })
       .then(() => {
         refetchMissionStatistics();

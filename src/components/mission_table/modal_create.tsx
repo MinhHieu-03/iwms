@@ -1,7 +1,7 @@
 import { Modal, Form, Input, Select, InputNumber, Button, Divider } from "antd";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { MISSION_STATE, MISSION_TYPE } from "./const";
+import { MISSION_STATUS, MISSION_TYPE } from "./const";
 
 const { TextArea } = Input;
 
@@ -17,7 +17,7 @@ export interface FormValues {
   inventory_qty_available?: number;
   inventory_id?: string;
   kit_merger?: string;
-  state?: MISSION_STATE;
+  status?: MISSION_STATUS;
   type: MISSION_TYPE;
   ETA?: number;
 }
@@ -71,11 +71,11 @@ const ModalAdd = ({ isOpen, onClose, onFinish, loading }: ModalAddProps) => {
   ];
 
   const missionStateOptions = [
-    { label: t("mission.state.new"), value: MISSION_STATE.NEW },
-    { label: t("mission.state.processing"), value: MISSION_STATE.PROCESSING },
-    { label: t("mission.state.done"), value: MISSION_STATE.DONE },
-    { label: t("mission.state.error"), value: MISSION_STATE.ERROR },
-    { label: t("mission.state.done_picking"), value: MISSION_STATE.DONE_PICKING },
+    { label: t("mission.state.new"), value: MISSION_STATUS.NEW },
+    { label: t("mission.state.processing"), value: MISSION_STATUS.PROCESSING },
+    { label: t("mission.state.done"), value: MISSION_STATUS.DONE },
+    { label: t("mission.state.error"), value: MISSION_STATUS.ERROR },
+    { label: t("mission.state.done_picking"), value: MISSION_STATUS.DONE_PICKING },
   ];
 
   return (
@@ -98,7 +98,7 @@ const ModalAdd = ({ isOpen, onClose, onFinish, loading }: ModalAddProps) => {
         layout="vertical"
         onFinish={handleFinish}
         initialValues={{
-          state: MISSION_STATE.NEW,
+          status: MISSION_STATUS.NEW,
         }}
       >
         <Form.Item
@@ -207,7 +207,7 @@ const ModalAdd = ({ isOpen, onClose, onFinish, loading }: ModalAddProps) => {
 
         <div className="grid grid-cols-2 gap-4">
           <Form.Item
-            name="state"
+            name="status"
             label={t("mission.state")}
           >
             <Select
