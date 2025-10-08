@@ -462,6 +462,10 @@ export const vi: Record<TranslationKey, string> = {
   "mission_template.updated_successfully":
     "Mẫu nhiệm vụ đã được cập nhật thành công",
   "mission_template.search_placeholder": "Tìm kiếm mẫu nhiệm vụ...",
+  "mission_template.all_nodes_must_have_start_node":
+    "Mọi node phải kết nối tới node start",
+  "mission_template.create_new_template": "Tạo mẫu mới",
+  "mission_template.edit_template": "Chỉnh sửa mẫu",
   // Area Management
   "area.management": "Quản lý khu vực",
   "area.create": "Tạo khu vực mới",

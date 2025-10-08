@@ -4,9 +4,10 @@ import { Handle, Position, NodeProps } from "@xyflow/react";
 interface CustomNodeData {
   label: string;
   device_name: string;
+  index?: number;
 }
 
-const CustomStorageNode: React.FC<NodeProps> = ({ data, selected, id }) => {
+const CustomStorageNode: React.FC<NodeProps> = ({ data, selected }) => {
   const nodeData = data as unknown as CustomNodeData;
   return (
     <div
@@ -32,7 +33,7 @@ const CustomStorageNode: React.FC<NodeProps> = ({ data, selected, id }) => {
       <div className="text-sm font-medium text-gray-900">{nodeData.label}</div>
       <div className="flex justify-between text-xs text-gray-500 mt-2 gap-4">
         <div className="w-full flex flex-col text-center">
-          <span className="font-bold">ID:</span> {id || ""}
+          <span className="font-bold">ID:</span> {nodeData.index ?? ""}
         </div>
         <div className="w-full flex flex-col text-center">
           <span className="font-bold">Device:</span>{" "}

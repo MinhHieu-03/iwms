@@ -190,6 +190,10 @@ export const en: Record<TranslationKey, string> = {
   "mission_template.updated_successfully":
     "Mission template updated successfully",
   "mission_template.search_placeholder": "Search mission template...",
+  "mission_template.all_nodes_must_have_start_node":
+    "All nodes must be connected to the start node",
+  "mission_template.create_new_template": "Create New Template",
+  "mission_template.edit_template": "Edit Template",
   "btn.create_new": "Create new",
   "btn.reload": "Refresh",
   "btn.refresh": "Refresh",

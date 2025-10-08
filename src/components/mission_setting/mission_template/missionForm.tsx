@@ -94,11 +94,11 @@ const MissionForm = ({ isOpen, onClose, onSubmit, data }) => {
                             <div className="font-medium">
                               <div className="flex flex-col text-left">
                                 <div className="font-bold text-[16px]">
-                                  {index}. {field.value?.name || `Task ${index + 1}`}
+                                  {index}.{" "}
+                                  {field.value?.name || `Task ${index + 1}`}
                                 </div>
                                 <div className="text-sm text-gray-500">
-                                  Device:{" "}
-                                  {field.value?.device_name || "N/A"}
+                                  Device: {field.value?.device_name || "N/A"}
                                 </div>
                                 {field.value?.flow && (
                                   <div className="text-sm text-gray-500">
