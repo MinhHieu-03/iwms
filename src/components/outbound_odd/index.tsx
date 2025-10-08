@@ -19,7 +19,7 @@ import ModalDetail from "./modal_detail";
 import { createPtlOdd } from "@/hooks/ptl";
 
 const { RangePicker } = DatePicker;
-const { list, create, update, remove, merge_kit } = domain;
+const { list, create, update, remove, merge_kit_odd } = domain;
 
 const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
   const { t } = useTranslation();
@@ -209,7 +209,7 @@ const IssueTimeScheduleTable = ({ setCurrent, gate }) => {
       });
       console.log("body", body);
       //
-      await apiClient.post(merge_kit, body);
+      await apiClient.post(merge_kit_odd, body);
       await mutate.mutateAsync(selectedRowKeys as string[]);
       setCurrent(1);
       setLoading(false);

@@ -24,7 +24,6 @@ import {
 } from "@/api/missionSettingApi";
 import { useToast } from "@/hooks/use-toast";
 import MissionForm from "./missionForm";
-import { DeleteConfirmForm } from "@/components/common/DeleteConfirm";
 
 const { list, create, update, upload, download, remove } = domain;
 
@@ -37,14 +36,14 @@ const App = () => {
   const [showDetail, setShowDetail] = useState<any>(null);
   const [pageInfo, setPageInfo] = useState({
     page: 1,
-    limit: 10,
+    perPage: 10,
   });
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState<number>(0);
   const [dataList, setDataList] = useState<DataType[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
   const [selectedMission, setSelectedMission] = useState<any>(null);
-  const [drawerTitle, setDrawerTitle] = useState("");
+
   const [allData, setAllData] = useState<DataType[]>([]);
 
   const fetchData = async () => {
@@ -96,24 +95,24 @@ const App = () => {
   }, [allData, searchQuery]);
 
   useEffect(() => {
-    const startIndex = (pageInfo.page - 1) * pageInfo.limit;
-    const endIndex = startIndex + pageInfo.limit;
+    const startIndex = (pageInfo.page - 1) * pageInfo.perPage;
+    const endIndex = startIndex + pageInfo.perPage;
 
     setDataList(filteredData.slice(startIndex, endIndex));
     setTotal(filteredData.length);
-  }, [filteredData, pageInfo.page, pageInfo.limit]);
+  }, [filteredData, pageInfo.page, pageInfo.perPage]);
 
   useEffect(() => {
-    setPageInfo({ page: 1, limit: pageInfo.limit });
+    setPageInfo({ page: 1, perPage: pageInfo.perPage });
   }, [searchQuery]);
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const handleDelete = async (ids: string[]) => {
+  const handleDelete = async (payload: string[]) => {
     try {
-      const { data } = await deleteMissionTemplate(ids);
+      const { data } = await deleteMissionTemplate(payload);
 
       setSelectedRowKeys([]);
 
@@ -126,6 +125,28 @@ const App = () => {
       } else {
         toast({
           title: t("common.delete_error"),
+          description: data.desc,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const handleCreateMission = async (mission: any) => {
+    try {
+      const { data } = await createMissionTemplate(mission);
+
+      if (data.success) {
+        fetchData();
+        toast({
+          title: t("common.success"),
+          description: data.desc,
+        });
+      } else {
+        toast({
+          title: t("common.error"),
           description: data.desc,
           variant: "destructive",
         });
@@ -186,14 +207,13 @@ const App = () => {
   return (
     <div className="space-y-4">
       <Header
-        handleCreateMission={() => {
-          setShowDetail({ mode: "new" });
-          setDrawerTitle(t("mission_template.create_new_template"));
-        }}
+        handleCreateMission={() =>
+          setShowDetail({ mode: "new", onSubmit: handleCreateMission })
+        }
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         selectedRow={selectedRowKeys}
-        handleDelete={(payload) => handleDelete(payload)}
+        handleDelete={handleDelete}
       />
       <Card>
         <CardContent>
@@ -209,7 +229,7 @@ const App = () => {
             onRow={(record, rowIndex) => {
               return {
                 onClick: (e) => {
-                  setDrawerTitle(t("mission_template.edit_template"));
+                  // navigate(`/mission-setting/template/${record.id}`);
                   setShowDetail(record);
                 },
               };
@@ -217,28 +237,26 @@ const App = () => {
           />
           <BasePagination
             total={total}
-            pageSize={pageInfo.limit}
+            pageSize={pageInfo.perPage}
             current={pageInfo.page}
-            onChange={(page: number, limit: number) => {
-              setPageInfo({ page, limit });
-            }}
+            onChange={(page: number, perPage: number) =>
+              setPageInfo({ page, perPage })
+            }
           />
           <Drawer
-            title={drawerTitle}
+            title={t("mission_template.create_new_template")}
             height={"94vh"}
             placement="bottom"
             onClose={() => {
               setShowDetail(null);
+              fetchData();
             }}
             open={!!showDetail}
           >
             <StorageHierarchyCard
               missionData={showDetail}
               mode={showDetail?._id ? "update" : "create"}
-              onClose={() => {
-                setShowDetail(null);
-                fetchData();
-              }}
+              onSubmit={handleCreateMission}
             />
           </Drawer>
         </CardContent>

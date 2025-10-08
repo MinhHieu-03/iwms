@@ -2,7 +2,7 @@ import { ColumnsType } from "antd/es/table";
 import { Tag, Tooltip, Select, Button, Space, message } from "antd";
 import dayjs from "dayjs";
 
-export enum MISSION_STATE {
+export enum MISSION_STATUS {
   NEW = "new",
   PROCESSING = "processing",
   DONE = "done",
@@ -41,7 +41,7 @@ export interface MissionDataType {
   inventory?: MissionInventory;
   inventory_id?: string | null;
   kit_merger?: string;
-  state?: MISSION_STATE;
+  status?: MISSION_STATUS;
   status_list: StatusItem[];
   type: MISSION_TYPE;
   ETA?: number;
@@ -60,7 +60,7 @@ export const domain = {
 
 // Helper function to get status color and text
 export const getStatusDisplay = (
-  state: MISSION_STATE,
+  status: MISSION_STATUS,
   t: (key: string) => string
 ): { text: string; color: string } => {
   const stateMap: Record<string, { text: string; color: string }> = {
@@ -71,32 +71,32 @@ export const getStatusDisplay = (
     done_picking: { text: t("mission.state.done_picking"), color: "green" },
   };
 
-  return stateMap[state || 'new'] || {
+  return stateMap[status || 'new'] || {
     text: t("mission.state.unknown"),
     color: "default",
   };
 };
 
 // Get available status transitions based on current state
-export const getAvailableStatusTransitions = (currentState: MISSION_STATE): MISSION_STATE[] => {
-  const transitions: Record<MISSION_STATE, MISSION_STATE[]> = {
-    [MISSION_STATE.NEW]: [MISSION_STATE.PROCESSING, MISSION_STATE.ERROR],
-    [MISSION_STATE.PROCESSING]: [MISSION_STATE.DONE_PICKING, MISSION_STATE.DONE, MISSION_STATE.ERROR],
-    [MISSION_STATE.DONE_PICKING]: [MISSION_STATE.DONE, MISSION_STATE.ERROR],
-    [MISSION_STATE.DONE_PICKING_SPLIT]: [MISSION_STATE.DONE, MISSION_STATE.ERROR],
+export const getAvailableStatusTransitions = (currentStatus: MISSION_STATUS): MISSION_STATUS[] => {
+  const transitions: Record<MISSION_STATUS, MISSION_STATUS[]> = {
+    [MISSION_STATUS.NEW]: [MISSION_STATUS.PROCESSING, MISSION_STATUS.ERROR],
+    [MISSION_STATUS.PROCESSING]: [MISSION_STATUS.DONE_PICKING, MISSION_STATUS.DONE, MISSION_STATUS.ERROR],
+    [MISSION_STATUS.DONE_PICKING]: [MISSION_STATUS.DONE, MISSION_STATUS.ERROR],
+    [MISSION_STATUS.DONE_PICKING_SPLIT]: [MISSION_STATUS.DONE, MISSION_STATUS.ERROR],
 
-    [MISSION_STATE.ERROR]: [MISSION_STATE.NEW, MISSION_STATE.PROCESSING],
-    [MISSION_STATE.DONE]: [], // Terminal state - no transitions allowed
+    [MISSION_STATUS.ERROR]: [MISSION_STATUS.NEW, MISSION_STATUS.PROCESSING],
+    [MISSION_STATUS.DONE]: [], // Terminal state - no transitions allowed
   };
 
-  return transitions[currentState] || Object.values(MISSION_STATE);
+  return transitions[currentStatus] || Object.values(MISSION_STATUS);
 };
 
 export const lang_key = "mission.table";
 
 // Status update handler interface
 export interface StatusUpdateHandler {
-  (missionId: string, newStatus: MISSION_STATE): Promise<void>;
+  (missionId: string, newStatus: MISSION_STATUS): Promise<void>;
 }
 
 export const RenderCol = ({
@@ -157,11 +157,11 @@ export const RenderCol = ({
   },
   {
     title: t("mission.state"),
-    dataIndex: "state",
-    key: "state",
+    dataIndex: "status",
+    key: "status",
     width: 120,
-    render: (state: MISSION_STATE) => {
-      const stateInfo = getStatusDisplay(state, t);
+    render: (status: MISSION_STATUS) => {
+      const stateInfo = getStatusDisplay(status, t);
       return <Tag color={stateInfo.color}>{stateInfo.text}</Tag>;
     },
   },
@@ -254,7 +254,7 @@ export const RenderCol = ({
     fixed: "right",
     width: 180,
     render: (_: any, record: MissionDataType) => {
-      const handleStatusChange = async (newStatus: MISSION_STATE) => {
+      const handleStatusChange = async (newStatus: MISSION_STATUS) => {
         if (onStatusUpdate) {
           try {
             await onStatusUpdate(record._id, newStatus);
@@ -268,18 +268,18 @@ export const RenderCol = ({
 
       // Get available status transitions for current state
       const allStatusOptions = [
-        { value: MISSION_STATE.NEW, label: t("mission.state.new"), color: "default" },
-        { value: MISSION_STATE.PROCESSING, label: t("mission.state.processing"), color: "processing" },
-        { value: MISSION_STATE.DONE_PICKING, label: "hoàn thành pick tổng", color: "green" },
-        { value: MISSION_STATE.DONE_PICKING_SPLIT, label: "hoàn thành chia hàng", color: "green" },
-        { value: MISSION_STATE.ERROR, label: t("mission.state.error"), color: "error" },
-        { value: MISSION_STATE.DONE, label: t("mission.state.done"), color: "success" },
+        { value: MISSION_STATUS.NEW, label: t("mission.state.new"), color: "default" },
+        { value: MISSION_STATUS.PROCESSING, label: t("mission.state.processing"), color: "processing" },
+        { value: MISSION_STATUS.DONE_PICKING, label: "hoàn thành pick tổng", color: "green" },
+        { value: MISSION_STATUS.DONE_PICKING_SPLIT, label: "hoàn thành chia hàng", color: "green" },
+        { value: MISSION_STATUS.ERROR, label: t("mission.state.error"), color: "error" },
+        { value: MISSION_STATUS.DONE, label: t("mission.state.done"), color: "success" },
       ];
 
       return (
         <Space direction="vertical" size="small">
           <Select
-            value={record.state}
+            value={record.status}
             onChange={handleStatusChange}
             style={{ width: 140 }}
             size="small"
@@ -315,7 +315,7 @@ export const mockData: MissionDataType[] = [
     },
     inventory_id: "inv001",
     kit_merger: "kit001",
-    state: MISSION_STATE.PROCESSING,
+    status: MISSION_STATUS.PROCESSING,
     status_list: [
       { status: "Created", updateAt: new Date("2024-01-01T10:00:00Z") },
       { status: "In Progress", updateAt: new Date("2024-01-01T10:30:00Z") },
@@ -339,7 +339,7 @@ export const mockData: MissionDataType[] = [
       qty_available: 5,
     },
     inventory_id: "inv002",
-    state: MISSION_STATE.DONE,
+    status: MISSION_STATUS.DONE,
     status_list: [
       { status: "Created", updateAt: new Date("2024-01-01T09:00:00Z") },
       { status: "In Progress", updateAt: new Date("2024-01-01T09:15:00Z") },
@@ -364,7 +364,7 @@ export const mockData: MissionDataType[] = [
       qty_available: 15,
     },
     inventory_id: "inv003",
-    state: MISSION_STATE.NEW,
+    status: MISSION_STATUS.NEW,
     status_list: [
       { status: "Created", updateAt: new Date("2024-01-01T11:00:00Z") },
     ],
@@ -387,7 +387,7 @@ export const mockData: MissionDataType[] = [
       qty_available: 8,
     },
     inventory_id: "inv004",
-    state: MISSION_STATE.ERROR,
+    status: MISSION_STATUS.ERROR,
     status_list: [
       { status: "Created", updateAt: new Date("2024-01-01T12:00:00Z") },
       { status: "In Progress", updateAt: new Date("2024-01-01T12:15:00Z") },
@@ -412,7 +412,7 @@ export const mockData: MissionDataType[] = [
       qty_available: 10,
     },
     inventory_id: "inv005",
-    state: MISSION_STATE.DONE_PICKING,
+    status: MISSION_STATUS.DONE_PICKING,
     status_list: [
       { status: "Created", updateAt: new Date("2024-01-01T13:00:00Z") },
       { status: "In Progress", updateAt: new Date("2024-01-01T13:10:00Z") },
