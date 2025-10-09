@@ -22,7 +22,7 @@ const MissionManagerment = () => {
             value="task"
             className="data-[state=active]:bg-warehouse-primary data-[state=active]:text-white"
           >
-            Tasks
+            Task
           </TabsTrigger>
           <TabsTrigger
             value="notify"

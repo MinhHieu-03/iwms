@@ -1,6 +1,11 @@
+import { CardContent, CardTitle } from "@/components/ui/card";
 import wcsApiClient from "@/lib/wcsApiConfig";
-import { Button, Descriptions, Modal, Table, Tag, message } from "antd";
-import { useEffect, useState } from "react";
+import { FilterOutlined } from "@ant-design/icons";
+import { Button, Card, Descriptions, Modal, Table, Tag, message } from "antd";
+import { useCallback, useEffect, useState } from "react";
+import SearchForm from "./filterTask";
+import { Filter } from "lucide-react";
+import dayjs from "dayjs";
 
 interface Param {
   assigned: boolean;
@@ -38,32 +43,79 @@ interface Task {
 
 const Task = () => {
   const [data, setData] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [pageInfo, setPageInfo] = useState({ page: 1, perPage: 10 });
+
+  const [filters, setFilters] = useState({
+    mission_log_id: "",
+    status: null,
+    from_time: null,
+    to_time: null,
+  });
+  const [showFilters, setShowFilters] = useState(false);
 
   const columns = [
-    { title: "Device Name", dataIndex: "device_name", key: "device_name" },
-    { title: "Mission Name", dataIndex: "name", key: "name" },
+    {
+      title: "Misson log id",
+      dataIndex: "mission_log_id",
+      key: "mission_log_id",
+    },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: string) => (
-        <Tag color={status === "done" ? "green" : "blue"}>{status}</Tag>
-      ),
+      render: (status: string) => {
+        const statusColorMap: Record<string, string> = {
+          created: "blue",
+          "begin notify": "geekblue",
+          "end notify": "orange",
+          done: "green",
+        };
+
+        return <Tag color={statusColorMap[status] || "gray"}>{status}</Tag>;
+      },
     },
-    { title: "Created At", dataIndex: "create_at", key: "create_at" },
+    {
+      title: "Updated At",
+      dataIndex: "update_at",
+      key: "update_at",
+      render: (text: string) => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
+    },
   ];
 
+  const getTaskList = useCallback(async () => {
+    try {
+      setLoading(true);
+      const params = {
+        mission_log_id: filters.mission_log_id || undefined,
+        status: filters.status || undefined,
+        from_time: filters.from_time || undefined,
+        to_time: filters.to_time || undefined,
+      };
+
+      const { data } = await wcsApiClient.get("/log/task", params);
+      if (data.success) {
+        const sorted = [...data.data].sort(
+          (a: Task, b: Task) =>
+            new Date(b.create_at).getTime() - new Date(a.create_at).getTime()
+        );
+        setData(sorted);
+      } else {
+        message.error(data.desc || "Không thể tải danh sách task");
+      }
+    } catch (error: any) {
+      message.error(
+        error?.response?.data?.message || "Lỗi khi tải danh sách task"
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [pageInfo, filters]);
+
   useEffect(() => {
-    wcsApiClient
-      .get("/log/task")
-      .then(({ data }) => {
-        setData(data.data);
-      })
-      .catch((error) => {
-        message.error("Failed to fetch tasks");
-      });
+    getTaskList();
   }, []);
 
   const handleRowClick = (record: Task) => {
@@ -73,72 +125,89 @@ const Task = () => {
 
   return (
     <>
-      <Table
-        dataSource={data}
-        columns={columns}
-        rowKey="_id"
-        onRow={(record) => ({
-          onClick: () => handleRowClick(record),
-          style: { cursor: "pointer" },
-        })}
-      />
+      <Card>
+        <CardContent>
+          <SearchForm
+            filters={filters}
+            onFilterChange={setFilters}
+            onSubmit={getTaskList}
+          />
+          <Table
+            loading={loading}
+            dataSource={data}
+            columns={columns}
+            rowKey="_id"
+            onRow={(record) => ({
+              onClick: () => handleRowClick(record),
+              style: { cursor: "pointer" },
+            })}
+            pagination={{
+              current: pageInfo.page,
+              pageSize: pageInfo.perPage,
+              onChange: (page) => setPageInfo((prev) => ({ ...prev, page })),
+            }}
+          />
 
-      <Modal
-        title="Task"
-        open={modalVisible}
-        footer={<Button onClick={() => setModalVisible(false)}>Close</Button>}
-        onCancel={() => setModalVisible(false)}
-        width={700}
-      >
-        {selectedTask && (
-          <Descriptions title="Mission Details" bordered column={1}>
-            <Descriptions.Item label="Device Name">
-              {selectedTask.device_name}
-            </Descriptions.Item>
-            <Descriptions.Item label="Status">
-              <Tag
-                color={selectedTask.status === "done" ? "green" : "blue"}
-              ></Tag>
-              {selectedTask.status}
-            </Descriptions.Item>
-            <Descriptions.Item label="Created At">
-              {selectedTask.create_at}
-            </Descriptions.Item>
-            <Descriptions.Item label="Updated At">
-              {selectedTask.update_at}
-            </Descriptions.Item>
-            <Descriptions.Item label="Result">
-              Code: {selectedTask.result.code}, Desc: {selectedTask.result.desc}
-              , Flow: {selectedTask.result.flow}
-            </Descriptions.Item>
-            <Descriptions.Item label="Params">
-              {selectedTask.param.map((p) => (
-                <div key={p.name}>
-                  {p.name} ({p.type}): {p.value || "N/A"}{" "}
-                  {p.assigned ? "(assigned)" : ""}
-                </div>
-              ))}
-            </Descriptions.Item>
-            <Descriptions.Item label="Flow">
-              {Object.entries(selectedTask.flow).map(([k, v]) => (
-                <div key={k}>
-                  {k}: {v}
-                </div>
-              ))}
-            </Descriptions.Item>
-            <Descriptions.Item label="Notify Begin">
-              Enable: {selectedTask.notify.begin.enable ? "Yes" : "No"}, URL:{" "}
-              {selectedTask.notify.begin.url}, Userdata:{" "}
-              {selectedTask.notify.begin.userdata}
-            </Descriptions.Item>
-            <Descriptions.Item label="Notify End">
-              Enable: {selectedTask.notify.end.enable ? "Yes" : "No"}, URL:{" "}
-              {selectedTask.notify.end.url}, Userdata:{" "}
-              {selectedTask.notify.end.userdata}
-            </Descriptions.Item>
-          </Descriptions>
-        )}
-      </Modal>
+          <Modal
+            title="Task"
+            open={modalVisible}
+            footer={
+              <Button onClick={() => setModalVisible(false)}>Close</Button>
+            }
+            onCancel={() => setModalVisible(false)}
+            width={700}
+          >
+            {selectedTask && (
+              <Descriptions title="Mission Details" bordered column={1}>
+                <Descriptions.Item label="Device Name">
+                  {selectedTask.device_name}
+                </Descriptions.Item>
+                <Descriptions.Item label="Status">
+                  <Tag
+                    color={selectedTask.status === "done" ? "green" : "blue"}
+                  ></Tag>
+                  {selectedTask.status}
+                </Descriptions.Item>
+                <Descriptions.Item label="Created At">
+                  {selectedTask.create_at}
+                </Descriptions.Item>
+                <Descriptions.Item label="Updated At">
+                  {selectedTask.update_at}
+                </Descriptions.Item>
+                <Descriptions.Item label="Result">
+                  Code: {selectedTask.result.code}, Desc:{" "}
+                  {selectedTask.result.desc}, Flow: {selectedTask.result.flow}
+                </Descriptions.Item>
+                <Descriptions.Item label="Params">
+                  {selectedTask.param.map((p) => (
+                    <div key={p.name}>
+                      {p.name} ({p.type}): {p.value || "N/A"}{" "}
+                      {p.assigned ? "(assigned)" : ""}
+                    </div>
+                  ))}
+                </Descriptions.Item>
+                <Descriptions.Item label="Flow">
+                  {Object.entries(selectedTask.flow).map(([k, v]) => (
+                    <div key={k}>
+                      {k}: {v}
+                    </div>
+                  ))}
+                </Descriptions.Item>
+                <Descriptions.Item label="Notify Begin">
+                  Enable: {selectedTask.notify.begin.enable ? "Yes" : "No"},
+                  URL: {selectedTask.notify.begin.url}, Userdata:{" "}
+                  {selectedTask.notify.begin.userdata}
+                </Descriptions.Item>
+                <Descriptions.Item label="Notify End">
+                  Enable: {selectedTask.notify.end.enable ? "Yes" : "No"}, URL:{" "}
+                  {selectedTask.notify.end.url}, Userdata:{" "}
+                  {selectedTask.notify.end.userdata}
+                </Descriptions.Item>
+              </Descriptions>
+            )}
+          </Modal>
+        </CardContent>
+      </Card>
     </>
   );
 };

@@ -145,7 +145,7 @@ const wcsApiClient = {
     return request({ method: "post", url, data })
       .then((res) => {
         if (showSuccessMessage && !url.includes("list"))
-          message.success(res.data.msg || "Update successful");
+          // message.success(res.data.msg || "Update successful");
         return res;
       })
       .catch((err) => {
@@ -171,7 +171,7 @@ const wcsApiClient = {
   patch: (url: string, data = {}) => {
     return request({ method: "patch", url, data })
       .then((res) => {
-        message.success(res.data.msg || "Update successful");
+        // message.success(res.data.msg || "Update successful");
         return res;
       })
       .catch((err) => {

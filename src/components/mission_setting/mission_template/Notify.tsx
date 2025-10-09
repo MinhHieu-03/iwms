@@ -1,5 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Table, Modal, Descriptions, Button, Spin, Tag } from "antd";
+import React, { useCallback, useEffect, useState } from "react";
+import { Table, Modal, Descriptions, Tag, message, Card } from "antd";
+import wcsApiClient from "@/lib/wcsApiConfig";
+import { CardContent } from "@/components/ui/card";
+import SearchForm from "./filterNotify";
+import dayjs from "dayjs";
 
 interface Param {
   name: string;
@@ -43,207 +47,179 @@ interface Notify {
   update_at: string;
 }
 
-const API_URL = "http://35.184.194.168:3142/log/notify";
-const AUTH_TOKEN =
-  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNzU5NTE2Mzk3fQ.6JSSuxVnGiXDMonUkH6SOZEVrmhORyBrfusFAXSvrOY";
-
-const mockData = [
-  {
-    type: "begin",
-    url: "http://example.com",
-    message: {
-      task_log_id: "68ca8b2a5fab7b5fd496d5c0",
-      device_name: "RCS1",
-      task_name: "gen pre-schedule task",
-      param: [
-        {
-          name: "pos",
-          type: "str",
-          value: "PK01",
-        },
-        {
-          name: "priority",
-          type: "int",
-          value: "1",
-        },
-        {
-          name: "timeout",
-          type: "float",
-          value: "10",
-        },
-      ],
-      result: {
-        code: 0,
-        desc: "",
-        flow: "ok",
-      },
-      userdata: "my data 1",
-      device_state: {
-        name: "RCS1",
-        type: "RCS",
-        description: "my rcs",
-        connected: true,
-        setting: {},
-        config: {
-          host: "192.168.0.10",
-          port: 8000,
-        },
-        state: {
-          mission: {},
-        },
-        _id: "68ca8ae6805624d69928bd92",
-      },
-    },
-    status: "failed",
-    attempt: 10,
-    create_at: "2025-09-17T17:19:22.183000",
-    update_at: "2025-09-19T15:46:31.156000",
-    _id: "68ca8b2a5fab7b5fd496d5c1",
-  },
-];
-
 const Notify = () => {
   const [data, setData] = useState<Notify[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedNotify, setSelectedNotify] = useState<Notify | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [pageInfo, setPageInfo] = useState({ page: 1, perPage: 10 });
+  const [filters, setFilters] = useState({
+    task_log_id: "",
+    status: null,
+    from_time: null,
+    to_time: null,
+  });
+
+  const getNotifyList = useCallback(async () => {
+    try {
+      setLoading(true);
+      const params = {
+        name: filters.task_log_id || undefined,
+        status: filters.status || undefined,
+        from_time: filters.from_time || undefined,
+        to_time: filters.to_time || undefined,
+      };
+
+      const { data } = await wcsApiClient.get("/log/notify", params);
+      if (data.success) {
+        const sorted = [...data.data].sort(
+          (a: Notify, b: Notify) =>
+            new Date(b.create_at).getTime() - new Date(a.create_at).getTime()
+        );
+        setData(sorted);
+      } else {
+        message.error(data.desc || "Không thể tải danh sách notify");
+      }
+    } catch (error: any) {
+      message.error(
+        error?.response?.data?.message || "Lỗi khi tải danh sách notify"
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [pageInfo, filters]);
+
+  useEffect(() => {
+    getNotifyList();
+  }, []);
 
   const columns = [
     {
-      title: "Device Name",
-      dataIndex: ["message", "device_name"],
-      key: "device_name",
+      title: "Task log id",
+      dataIndex: ["message", "task_log_id"],
+      key: "task_log_id",
     },
     {
-      title: "Task Name",
-      dataIndex: ["message", "task_name"],
-      key: "task_name",
+      title: "Type",
+      dataIndex: ["message", "type"],
+      key: "type",
+      render: (type: string) => (
+        <Tag color={type === "begin" ? "green" : "red"}>{type}</Tag>
+      ),
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: string) => (
-        <Tag color={status === "done" ? "green" : "blue"}>{status}</Tag>
-      ),
+      render: (status: string) => {
+        const statusColorMap: Record<string, string> = {
+          created: "blue",
+          failed: "red",
+          done: "green",
+        };
+
+        return <Tag color={statusColorMap[status] || "gray"}>{status}</Tag>;
+      },
     },
     { title: "Attempts", dataIndex: "attempt", key: "attempt" },
-    { title: "Created At", dataIndex: "create_at", key: "create_at" },
+    {
+      title: "Updated At",
+      dataIndex: "update_at",
+      key: "update_at",
+      render: (text: string) => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
+    },
   ];
-
-  useEffect(() => {
-    setLoading(true);
-    // fetch(API_URL, {
-    //   method: "GET",
-    //   headers: {
-    //     Authorization: AUTH_TOKEN,
-    //     Accept: "application/json",
-    //   },
-    // })
-    //   .then((res) => res.json())
-    //   .then((json) => {
-    //     if (json.success && Array.isArray(json.data)) {
-    //       setData(json.data);
-    //     } else {
-    //       console.error("API response invalid:", json);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.error("API call failed:", err);
-    //   });
-    setTimeout(() => {
-      setData(mockData);
-      setLoading(false);
-    }, 500);
-  }, []);
-
-  const handleRowClick = (record: Notify) => {
-    setSelectedNotify(record);
-    setModalVisible(true);
-  };
 
   return (
     <>
-      {loading ? (
-        <Spin />
-      ) : (
-        <Table
-          loading={loading}
-          dataSource={data}
-          columns={columns}
-          rowKey="_id"
-          onRow={(record) => ({
-            onClick: () => {
-              setSelectedNotify(record);
-              setModalVisible(true);
-            },
-          })}
-          style={{ cursor: "pointer" }}
-        />
-      )}
+      <Card>
+        <CardContent>
+          <SearchForm
+            filters={filters}
+            onFilterChange={setFilters}
+            onSubmit={getNotifyList}
+          />
+          <Table
+            loading={loading}
+            dataSource={data}
+            columns={columns}
+            rowKey="_id"
+            onRow={(record) => ({
+              onClick: () => {
+                setSelectedNotify(record);
+                setModalVisible(true);
+              },
+            })}
+            style={{ cursor: "pointer" }}
+          />
 
-      <Modal
-        title="Notify"
-        open={modalVisible}
-        footer={null}
-        onCancel={() => setModalVisible(false)}
-        width={700}
-      >
-        {selectedNotify && (
-          <Descriptions title="Notify Details" bordered column={1}>
-            <Descriptions.Item label="Type">
-              {selectedNotify.type}
-            </Descriptions.Item>
-            <Descriptions.Item label="Status">
-              <Tag
-                color={selectedNotify.status === "done" ? "green" : "blue"}
-              ></Tag>
-              {selectedNotify.status}
-            </Descriptions.Item>
-            <Descriptions.Item label="Attempts">
-              {selectedNotify.attempt}
-            </Descriptions.Item>
-            <Descriptions.Item label="Created At">
-              {selectedNotify.create_at}
-            </Descriptions.Item>
-            <Descriptions.Item label="Updated At">
-              {selectedNotify.update_at}
-            </Descriptions.Item>
-            <Descriptions.Item label="Device Name">
-              {selectedNotify.message.device_name}
-            </Descriptions.Item>
-            <Descriptions.Item label="Task Name">
-              {selectedNotify.message.task_name}
-            </Descriptions.Item>
-            <Descriptions.Item label="Userdata">
-              {selectedNotify.message.userdata}
-            </Descriptions.Item>
-            <Descriptions.Item label="Result">
-              Code: {selectedNotify.message.result.code}, Desc:{" "}
-              {selectedNotify.message.result.desc}, Flow:{" "}
-              {selectedNotify.message.result.flow}
-            </Descriptions.Item>
-            <Descriptions.Item label="Params">
-              {selectedNotify.message.param?.map((p, idx) => (
-                <div key={`${p.name}-${idx}`}>
-                  {p.name} ({p.type}): {p.value ?? "N/A"}
-                </div>
-              ))}
-            </Descriptions.Item>
-            <Descriptions.Item label="Device State">
-              {selectedNotify.message.device_state ? (
-                <>
-                  Name: {selectedNotify.message.device_state.name}, Type:{" "}
-                  {selectedNotify.message.device_state.type}, Connected:{" "}
-                  {selectedNotify.message.device_state.connected ? "Yes" : "No"}
-                </>
-              ) : (
-                "N/A"
-              )}
-            </Descriptions.Item>
-          </Descriptions>
-        )}
-      </Modal>
+          <Modal
+            title="Notify"
+            open={modalVisible}
+            footer={null}
+            onCancel={() => setModalVisible(false)}
+            width={700}
+          >
+            {selectedNotify && (
+              <Descriptions title="Notify Details" bordered column={1}>
+                <Descriptions.Item label="Type">
+                  {selectedNotify.type}
+                </Descriptions.Item>
+                <Descriptions.Item label="Status">
+                  <Tag
+                    color={selectedNotify.status === "done" ? "green" : "blue"}
+                  ></Tag>
+                  {selectedNotify.status}
+                </Descriptions.Item>
+                <Descriptions.Item label="Attempts">
+                  {selectedNotify.attempt}
+                </Descriptions.Item>
+                <Descriptions.Item label="Created At">
+                  {selectedNotify.create_at}
+                </Descriptions.Item>
+                <Descriptions.Item label="Updated At">
+                  {selectedNotify.update_at}
+                </Descriptions.Item>
+                <Descriptions.Item label="Device Name">
+                  {selectedNotify.message.device_name}
+                </Descriptions.Item>
+                <Descriptions.Item label="Task Name">
+                  {selectedNotify.message.task_name}
+                </Descriptions.Item>
+                <Descriptions.Item label="Userdata">
+                  {selectedNotify.message.userdata}
+                </Descriptions.Item>
+                <Descriptions.Item label="Result">
+                  Code: {selectedNotify.message.result.code}, Desc:{" "}
+                  {selectedNotify.message.result.desc}, Flow:{" "}
+                  {selectedNotify.message.result.flow}
+                </Descriptions.Item>
+                <Descriptions.Item label="Params">
+                  {selectedNotify.message.param?.map((p, idx) => (
+                    <div key={`${p.name}-${idx}`}>
+                      {p.name} ({p.type}): {p.value ?? "N/A"}
+                    </div>
+                  ))}
+                </Descriptions.Item>
+                <Descriptions.Item label="Device State">
+                  {selectedNotify.message.device_state ? (
+                    <>
+                      Name: {selectedNotify.message.device_state.name} <br />
+                      Type: {selectedNotify.message.device_state.type} <br />
+                      Connected:{" "}
+                      {selectedNotify.message.device_state.connected
+                        ? "Yes"
+                        : "No"}
+                    </>
+                  ) : (
+                    "N/A"
+                  )}
+                </Descriptions.Item>
+              </Descriptions>
+            )}
+          </Modal>
+        </CardContent>
+      </Card>
     </>
   );
 };
